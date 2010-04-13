@@ -29,7 +29,7 @@ This looks confusing, but it's not too bad. Hamlet is a newtype so that it can d
 
 There are three type variables: url, m and a. a is simply the contained value, like in any monad. Since Hamlet is a monad transformer, m is the inner monad. This will usually be IO.
 
-url has to do with type-safe URLs. We want to take advantage of the type system of Haskell to ensure we generate only valid URLs, so we create a datatype to represent all possible URLs for an application. That way, any value of type url is *guaranteed* to correlate to a valid URL.
+<p id="type-safe-urls">url has to do with type-safe URLs. We want to take advantage of the type system of Haskell to ensure we generate only valid URLs, so we create a datatype to represent all possible URLs for an application. That way, any value of type url is *guaranteed* to correlate to a valid URL.</p>
 
 Which brings us nicely to the first argument: we can't print out arbitrary data types to HTML documents; we need a String. The first argument (url -> String) provides this conversion.
 

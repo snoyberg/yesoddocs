@@ -37,7 +37,7 @@ becomes
     <a href="http://www.google.com/">Google</a>
     <input type="checkbox" checked name="foo">
 
-Which brings us very nicely to line 8. You'll notice that is says @homeUrl@; content wrapped in an @ refers to a function which returns a URL. Each template is supplied with a function which converts a URL datatype to a String. See below for a more in-depth explanation of this.
+Which brings us very nicely to line 8. You'll notice that is says @homeUrl@; content wrapped in an @ refers to a function which returns a URL. Each template is supplied with a function which converts a URL datatype to a String. See [the type safe URLs part of the monadic documentation]($root/hamlet/monad.html#type-safe-urls) for a more in-depth explanation of this.
 
 Finally, we have line 5. Instead of @, here we use $. Content wrapped in $ is a function which returns an HtmlContent. HtmlContent is simply text that specifies whether it requires entity escaping.
 

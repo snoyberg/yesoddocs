@@ -24,7 +24,7 @@ where argument is the argument you pass to the template. Notice that everything 
     father :: Family -> Hamlet url IO Person
     name :: Person -> Hamlet url IO HtmlContent
 
-There is one exception to the above rule: if a forall binds a value to the first identifier in a chain, that is used instead. foralls will be addressed properly below, but for example's sake:
+There is one exception to the above rule: if a forall binds a value to the first identifier in a chain, that is used instead. foralls are <a href="$root/hamlet/loops.html">explained in the loops section</a>, but for example's sake:
 
     %ul
         $forall people person

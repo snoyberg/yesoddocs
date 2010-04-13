@@ -13,7 +13,7 @@ central:
 
 * Templates are fully compiled at compile time. What's more, they are embedded in Haskell files via quasi-quoting.
 
-* Constant memory usage is allowed through the use of enumerators. Looping and output both use an enumerator interface. (Actually, output is not *exactly* an enumerator; see the monadic section below for details.)
+* Constant memory usage is allowed through the use of enumerators. Looping and output both use an enumerator interface. (Actually, output is not *exactly* an enumerator; see <a href="$root/hamlet/monad.html">the monadic interface section</a> for details.)
 
 * We try to avoid the strings problem by forcing all variables to explicitly state whether they require entity encoding.
 

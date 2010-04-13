@@ -7,6 +7,7 @@ import Text.Hakyll.CreateContext (createPage)
 main = hakyll "http://www.yesodweb.com" $ do
     directory css "css"
     render "index.html"
+
     render "hamlet/index.markdown"
     render "hamlet/synopsis.lhs"
     render "hamlet/syntax.markdown"
@@ -17,5 +18,11 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "hamlet/conditionals.markdown"
     render "hamlet/loops.markdown"
     render "hamlet/monad.markdown"
+
+    render "web-routes-quasi/index.markdown"
+    render "web-routes-quasi/synopsis.lhs"
+    render "web-routes-quasi/syntax.markdown"
+    render "web-routes-quasi/usage.markdown"
+
     where render = renderChain ["template.html"]
                  . createPage

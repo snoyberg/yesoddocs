@@ -1,0 +1,20 @@
+#nav {
+  float: left;
+  width: 200px;
+  padding: 0;
+}
+
+#content {
+  margin-left: 210px;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+#footer {
+  clear: both;
+  text-align: center;
+  border-top: 1px dashed #000;
+  margin-top: 0.5em;
+}

@@ -1,0 +1,36 @@
+---
+title: Overview
+---
+<p>Yesod Web Framework is meant for creating RESTful, type-safe, performant web applications in Haskell. It allows you use the compiler to help you program solid sites.</p>
+<p>The current release is <b>0.0.0</b>; the upcoming release is <b>0.2.0</b>.</p>
+<p>Unlike many other frameworks, Yesod includes very little functionality in its own package. Most useful functionality- templating, controller, etc- are provided by external packages. Many of these packages were created in the process of writing Yesod. However, they are provided separately so that they are available for use in other code. The packages used for different functionality is:</p>
+<table border="1" cellpadding="5">
+  <thead>
+    <th>Component</th>
+    <th>Yesod 0.0.0</th>
+    <th>Yesod 0.2.0</th>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Server interface</th>
+      <td><a href="http://hackage.haskell.org/package/wai">WAI</a></td>
+      <td><a href="http://hackage.haskell.org/package/wai">WAI</a></td>
+    </tr>
+    <tr>
+      <th>Controller</th>
+      <td>Quasi-quoted interface, included in Yesod</td>
+      <td><a href="http://github.com/snoyberg/web-routes-quasi">web-routes-quasi</a></td>
+    </tr>
+    <tr>
+      <th>View</th>
+      <td><a href="http://hackage.haskell.org/package/HStringTemplate">HStringTemplate</a></td>
+      <td><a href="http://github.com/snoyberg/hamlet">hamlet</a></td>
+    </tr>
+    <tr>
+      <th>Model</th>
+      <td>No support</td>
+      <td><a href="http://github.com/snoyberg/persistent">persistent</a></td>
+    </tr>
+  </tbody>
+</table>
+<p>Documentation is sparse at the moment while efforts are put towards releasing the new release.</p>

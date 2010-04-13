@@ -1,6 +1,8 @@
 ---
 title: Hamlet
 ---
+Current version: **unreleased**. Upcoming version: **0.0.0**. Code repo: [http://github.com/snoyberg/hamlet](http://github.com/snoyberg/hamlet)
+
 Hamlet is a templating system loosely based on Haml syntax. Additionally, it is
 a monad to support efficient generation of textual data. Since the former is
 more usual use case, I will address that first.

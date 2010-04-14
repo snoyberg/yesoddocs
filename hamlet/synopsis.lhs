@@ -7,12 +7,12 @@ title: Synopsis - Hamlet
 import Text.Hamlet
 import Data.Text (pack)
 
-data Person m = Person
-    { name :: m HtmlContent
-    , age :: m HtmlContent
-    , page :: m PersonUrls
-    , isMarried :: m Bool
-    , children :: m (Enumerator HtmlContent IO)
+data Person = Person
+    { name :: IO HtmlContent
+    , age :: IO HtmlContent
+    , page :: IO PersonUrls
+    , isMarried :: IO Bool
+    , children :: IO (Enumerator HtmlContent IO)
     }
 data PersonUrls = Homepage | PersonPage String
 
@@ -20,7 +20,12 @@ renderUrls :: PersonUrls -> String
 renderUrls Homepage = "/"
 renderUrls (PersonPage name) = '/' : name
 
-template :: Person (Hamlet PersonUrls IO) -> Hamlet PersonUrls IO ()
+footer :: Monad m => a -> Hamlet url m ()
+footer = [$hamlet|
+#footer Thank you, come again
+|]
+
+template :: Person -> Hamlet PersonUrls IO ()
 template = [$hamlet|
 !!!
 %html
@@ -39,6 +44,7 @@ template = [$hamlet|
                 %li $child$
         %p
             %a!href=@page@ See the page.
+        ^footer^
 |]
 
 main :: IO ()
@@ -58,7 +64,6 @@ main = do
 \end{code}
 
 Outputs (new lines added for readability):
-
     <!DOCTYPE html>
     <html><head><title>Hamlet Demo</title></head><body>
     <h1>Information on Michael</h1>
@@ -66,4 +71,5 @@ Outputs (new lines added for readability):
     <h2>Married</h2>
     <ul><li>Adam</li><li>Ben</li><li>Chris</li></ul>
     <p><a href="/michael">See the page.</a></p>
+    <div id="footer">Thank you, come again</div>
     </body></html>

@@ -15,7 +15,7 @@ The next line is more interesting: this is the resource for a blog post. We pars
 
 * If it starts with a hash (#), the piece matches any integer. This includes negative numbers. This is called an **integer piece**.
 
-* If it starts with an asterick (*), the piece matches all of the remaining pieces. This is only permitted as the last piece in a resource pattern. This is called a **slurp piece**.
+* If it starts with an asterisk (*), the piece matches all of the remaining pieces. This is only permitted as the last piece in a resource pattern. This is called a **slurp piece**.
 
 * Otherwise, it must be a literal match for the value of the piece. This is called a **static piece**.
 
@@ -31,9 +31,9 @@ In all of the lines above, the second column gives the name of the constructor. 
 
 Everything after the second column declares how to handle the given resource. Assume the value in the second column (the constructor name) is MyRoute. There are three possibilities for the rest of the line:
 
-* If there is nothing after the second column, then a single function named handleMyRoute will be called for al requests to that URL pattern.
+* If there is nothing after the second column, then a single function named handleMyRoute will be called for all requests to that URL pattern.
 
-* If there are exactly two words after the second column, and the second of those begins with a lowercase letter, we are dealing with a subsite. This allows you to embed functionality written elsewhere within a site. The [synopsis](synopsis.html) shows an example of using a separate module for handling static content. In this case, the first value is the datatype for the subsite routes, and the second is a function that returns a Site value.
+* If there are exactly three words after the second column, and the second and third of those begin with lowercase letters, we are dealing with a subsite. This allows you to embed functionality written elsewhere within a site. The [synopsis](synopsis.html) shows an example of using a separate module for handling static content. In this case, the first value is the datatype for the subsite routes, the second is a function that returns a Site value, and the third converts the main sites arg datatype to the subsite's arg datatype.
 
 * Otherwise, each word is taken as an HTTP request method, and a separate function is called for each method. If the methods specified are GET and DELETE, the functions would be getMyRoute and deleteMyRoute.
 

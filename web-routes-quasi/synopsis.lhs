@@ -9,7 +9,7 @@ title: Synopsis -- web-routes-quasi
 > import Web.Routes.Site
 > import Network.Wai
 > import Network.Wai.Enumerator
-> import Static (StaticRoutes (..), siteStatic)
+> import Static
 > 
 > import qualified Data.ByteString.Char8 as S
 > import qualified Data.ByteString.Lazy.Char8 as L
@@ -26,24 +26,21 @@ title: Synopsis -- web-routes-quasi
 >     , blogEntries :: [Entry]
 >     }
 > 
-> newtype MyApp url = MyApp
->     { runMyApp :: BlogArgs -> (url -> String) -> Application
+> newtype MyApp arg url = MyApp
+>     { runMyApp :: arg -> (url -> String) -> Application
 >     }
 > 
 > $(createRoutes "BlogRoutes" ''Application ''BlogArgs "runMyApp" [$parseRoutes|
 > /                Home       GET
 > /entry/$         EntryRoute GET
 > /fake/#          Fake
-> /static          Static     StaticRoutes siteStaticBlog
+> /static          Static     StaticRoutes siteStatic staticPath
 > |])
 > 
-> siteStaticBlog :: BlogArgs -> Site StaticRoutes Application
-> siteStaticBlog = siteStatic . staticPath
-> 
-> handleFake :: Integer -> MyApp BlogRoutes
+> handleFake :: Integer -> MyApp BlogArgs BlogRoutes
 > handleFake = undefined
 > 
-> getHome :: MyApp BlogRoutes
+> getHome :: MyApp BlogArgs BlogRoutes
 > getHome = MyApp $ \ba f _ -> return Response
 >     { status = Status302
 >     , responseHeaders = [(Location, S.pack $ f $ EntryRoute $ entrySlug
@@ -51,7 +48,7 @@ title: Synopsis -- web-routes-quasi
 >     , responseBody = Right $ fromLBS $ L.pack ""
 >     }
 > 
-> getEntryRoute :: String -> MyApp BlogRoutes
+> getEntryRoute :: String -> MyApp BlogArgs BlogRoutes
 > getEntryRoute slug = MyApp $ \ba f _ ->
 >     case filter (\x -> entrySlug x == slug) $ blogEntries ba of
 >         [] -> return Response
@@ -82,3 +79,41 @@ title: Synopsis -- web-routes-quasi
 >                     , "</p></body></html>"
 >                     ]
 >                 }
+
+and the code for the associated Static file:
+
+> module Static where
+> 
+> import Network.Wai
+> import Network.Wai.Enumerator
+> import Data.ByteString.Lazy.Char8 (pack)
+> import Web.Routes
+> import Web.Encodings
+> import System.Directory
+> 
+> data StaticRoutes = StaticRoutes { unStaticRoutes :: [String] }
+>     deriving (Show, Read, Eq)
+> 
+> siteStatic :: Site StaticRoutes (String -> Application -> FilePath -> Application)
+> siteStatic = Site
+>     { handleSite = \_ (StaticRoutes r) method badMethod fp -> serveFile method badMethod r fp
+>     , formatPathSegments = unStaticRoutes
+>     , parsePathSegments = Right . StaticRoutes
+>     }
+> 
+> serveFile :: String -> Application -> [String] -> FilePath -> Application
+> serveFile "GET" _ s fp _ = do
+>     let fp' = fp ++ concatMap ((:) '/') s
+>     e <- doesFileExist fp'
+>     if e
+>         then return Response
+>                 { status = Status200
+>                 , responseHeaders = [] -- FIXME content-type
+>                 , responseBody = Left fp'
+>                 }
+>         else return Response
+>                 { status = Status404
+>                 , responseHeaders = []
+>                 , responseBody = Right $ fromLBS $ pack "Not found"
+>                 }
+> serveFile _ badMethod _ _ req = badMethod req

@@ -8,11 +8,11 @@ import Text.Hamlet
 import Data.Text (pack)
 
 data Person = Person
-    { name :: IO HtmlContent
-    , age :: IO HtmlContent
-    , page :: IO PersonUrls
-    , isMarried :: IO Bool
-    , children :: IO (Enumerator HtmlContent IO)
+    { name :: IO HtmlContent -- maybe it requires a database lookup
+    , age :: HtmlContent
+    , page :: PersonUrls
+    , isMarried :: Bool
+    , children :: [HtmlContent]
     }
 data PersonUrls = Homepage | PersonPage String
 
@@ -32,8 +32,8 @@ template = [$hamlet|
     %head
         %title Hamlet Demo
     %body
-        %h1 Information on $name$
-        %p $name$ is $age$ years old.
+        %h1 Information on $*name$
+        %p $*name$ is $age$ years old.
         %h2
             $if isMarried
                 Married
@@ -51,14 +51,13 @@ main :: IO ()
 main = do
     let person = Person
             { name = return $ Unencoded $ pack "Michael"
-            , age = return $ Unencoded $ pack "twenty five & a half"
-            , page = return $ PersonPage "michael"
-            , isMarried = return True
-            , children = return $ fromList
-                            [ Unencoded $ pack "Adam"
-                            , Unencoded $ pack "Ben"
-                            , Unencoded $ pack "Chris"
-                            ]
+            , age = Unencoded $ pack "twenty five & a half"
+            , page = PersonPage "michael"
+            , isMarried = True
+            , children = [ Unencoded $ pack "Adam"
+                         , Unencoded $ pack "Ben"
+                         , Unencoded $ pack "Chris"
+                         ]
             }
     printHamlet renderUrls $ template person
 \end{code}

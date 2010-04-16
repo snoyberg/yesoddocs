@@ -16,6 +16,7 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "hamlet/tagparsing.markdown"
     render "hamlet/contentparsing.markdown"
     render "hamlet/conditionals.markdown"
+    render "hamlet/references.markdown"
     render "hamlet/loops.markdown"
     render "hamlet/monad.markdown"
 

@@ -63,12 +63,14 @@ main = do
 \end{code}
 
 Outputs (new lines added for readability):
-    <!DOCTYPE html>
-    <html><head><title>Hamlet Demo</title></head><body>
-    <h1>Information on Michael</h1>
-    <p>Michael is twenty five &amp; a half years old.</p>
-    <h2>Married</h2>
-    <ul><li>Adam</li><li>Ben</li><li>Chris</li></ul>
-    <p><a href="/michael">See the page.</a></p>
-    <div id="footer">Thank you, come again</div>
-    </body></html>
+<code><pre>
+    &lt;!DOCTYPE html&gt;
+    &lt;html&gt;&lt;head&gt;&lt;title&gt;Hamlet Demo&lt;/title&gt;&lt;/head&gt;&lt;body&gt;
+    &lt;h1&gt;Information on Michael&lt;/h1&gt;
+    &lt;p&gt;Michael is twenty five &amp; a half years old.&lt;/p&gt;
+    &lt;h2&gt;Married&lt;/h2&gt;
+    &lt;ul&gt;&lt;li&gt;Adam&lt;/li&gt;&lt;li&gt;Ben&lt;/li&gt;&lt;li&gt;Chris&lt;/li&gt;&lt;/ul&gt;
+    &lt;p&gt;&lt;a href="/michael"&gt;See the page.&lt;/a&gt;&lt;/p&gt;
+    &lt;div id="footer"&gt;Thank you, come again&lt;/div&gt;
+    &lt;/body&gt;&lt;/html&gt;
+</pre></code>

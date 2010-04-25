@@ -8,6 +8,10 @@ main = hakyll "http://www.yesodweb.com" $ do
     directory css "css"
     render "index.html"
 
+    render "yesod/index.markdown"
+    render "yesod/helloworld.lhs"
+    render "yesod/terminology.markdown"
+
     render "hamlet/index.markdown"
     render "hamlet/synopsis.lhs"
     render "hamlet/syntax.markdown"

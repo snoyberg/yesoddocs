@@ -21,7 +21,7 @@ The next line is more interesting: this is the resource for a blog post. We pars
 
 For the first three types of pieces, the remaining characters in the piece are completely ignored. So in the second line, "entry" is completely ignored. In the third line, you'll see that we have two static pieces, a string piece and an integer piece.
 
-In all of the lines above, the second column gives the name of the constructor. Let's say that we decided to call the datatype for this site BlogRoutes [see the usage section]($root/web-routes-quasi/usage.html); this would result in a datatype:
+In all of the lines above, the second column gives the name of the constructor. Let's say that we decided to call the datatype for this site BlogRoutes ([see the usage section]($root/web-routes-quasi/usage.html)); this would result in a datatype:
 
     data BlogRoutes = Home
                     | Entry String
@@ -33,7 +33,7 @@ Everything after the second column declares how to handle the given resource. As
 
 * If there is nothing after the second column, then a single function named handleMyRoute will be called for all requests to that URL pattern.
 
-* If there are exactly three words after the second column, and the second and third of those begin with lowercase letters, we are dealing with a subsite. This allows you to embed functionality written elsewhere within a site. The [synopsis](synopsis.html) shows an example of using a separate module for handling static content. In this case, the first value is the datatype for the subsite routes, the second is a function that returns a Site value, and the third converts the main sites arg datatype to the subsite's arg datatype.
+* If there are exactly three words after the second column, and the second and third of those begin with lowercase letters, we are dealing with a subsite. This allows you to embed functionality written elsewhere within a site. The [synopsis](synopsis.html) shows an example of using a separate module for handling static content. In this case, the first value is the datatype for the subsite routes, the second is a function that returns a QuasiSite value, and the third converts the main sites arg datatype to the subsite's arg datatype.
 
 * Otherwise, each word is taken as an HTTP request method, and a separate function is called for each method. If the methods specified are GET and DELETE, the functions would be getMyRoute and deleteMyRoute.
 

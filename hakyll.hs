@@ -22,7 +22,7 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "hamlet/monad.markdown"
 
     render "web-routes-quasi/index.markdown"
-    render "web-routes-quasi/synopsis.lhs"
+    render "web-routes-quasi/synopsis.markdown"
     render "web-routes-quasi/syntax.markdown"
     render "web-routes-quasi/usage.markdown"
 

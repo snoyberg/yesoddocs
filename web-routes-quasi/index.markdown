@@ -1,9 +1,9 @@
 ---
 title: web-routes-quasi
 ---
-Current version: **unreleased**. Upcoming version: **0.0.0**. Code repo: [http://github.com/snoyberg/web-routes-quasi](http://github.com/snoyberg/web-routes-quasi)
+Current version: **[0.0.0](http://hackage.haskell.org/package/web-routes-quasi-0.0.0)**. Upcoming version: **none**. Code repo: [http://github.com/snoyberg/web-routes-quasi](http://github.com/snoyberg/web-routes-quasi)
 
-web-routes-quasi is a combination of [quasi-quoting](http://www.haskell.org/haskellwiki/Quasiquotation) and template haskell code to automate generation of URL datatypes and parse and render functions for use with the web-routes package.
+web-routes-quasi is a combination of [quasi-quoting](http://www.haskell.org/haskellwiki/Quasiquotation) and template haskell code to automate generation of URL datatypes and parse, render and dispatch functions for use with the web-routes package.
 
 web-routes is a package which provides support for:
 

@@ -18,3 +18,11 @@ Yesod is a web framework for the Haskell programming language. It has the follow
 * Not tie you down to any server system: Yesod applications run happily on anything from dedicated hosting to [low-end shared hosting](http://www.nearlyfreespech.net/).
 
 The framework loosely follows MVC principles; however, there is no desire to strictly adhere to any set of theoretical principles. The goal is play to the strengths of Haskell to allow users to create secure, fast and featureful websites with minimal code overhead.
+
+The documentation on this site refers to version 0.2.0 of Yesod. In order to get started, install the Haskell Platform (with GHC 6.12) and Git, then run:
+
+    cabal update
+    git clone git://github.com/snoyberg/yesod.git
+    cd yesod
+    git checkout origin/ver0.2
+    cabal install

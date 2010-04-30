@@ -11,6 +11,7 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "yesod/index.markdown"
     render "yesod/helloworld.lhs"
     render "yesod/terminology.markdown"
+    render "yesod/tutorial/blog.lhs"
 
     render "hamlet/index.markdown"
     render "hamlet/synopsis.lhs"

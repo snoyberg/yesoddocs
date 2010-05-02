@@ -6,7 +6,7 @@ The set of routes:
     /                Home       GET
     /entry/$         EntryRoute GET
     /fake/#          Fake
-    /static          Static     StaticRoutes siteStatic staticPath
+    /static          Static     Static siteStatic staticPath
 
 will result in roughly the following Haskell code:
 

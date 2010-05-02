@@ -50,7 +50,8 @@ Now, we'll define the Yesod instance. We'll still use a dummy approot value, but
 >   %head
 >     %title $pageTitle$
 >     %link!rel=stylesheet!href=@stylesheet@
->     %script!src=@script@ FIXME
+>     %script!src=$jquery$
+>     %script!src=@script@
 >     ^pageHead^
 >   %body
 >     %ul#navbar
@@ -61,13 +62,14 @@ Now, we'll define the Yesod instance. We'll still use a dummy approot value, but
 >       ^pageBody^
 > |]
 >       pages _ = pages'
+>       jquery _ = cs "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
 >       stylesheet _ = StaticR $ toStaticRoute ["style.css"]
 >       script _ = StaticR $ toStaticRoute ["script.js"]
 >       pageUrl = PageR . pageSlug
 
 I know those last few functions look a little strange; this is to deal with how Hamlet works. Hamlet passes all functions the argument it receives, in this case the page content. When a function doesn't need that information, it must ignore its argument.
 
-FIXME: style.css and script.js
+There's nothing Yesod-specific about the [style.css]($root/static/yesod/ajax/style.css) and [script.js]($root/static/yesod/ajax/script.js) files, so I won't describe them here.
 
 Now we need our handler functions. We'll have the homepage simply redirect to the first page, so:
 
@@ -91,11 +93,13 @@ And now the cool part: a handler that returns either HTML or JSON data, dependin
 > %article $pageContent.cs$
 > |]
 >   json page = jsonMap
->       [ (jsonScalar $ cs "name", jsonScalar $ cs $ pageName page)
->       , (jsonScalar $ cs "content", jsonScalar $ cs $ pageContent page)
+>       [ ("name", jsonScalar $ cs $ pageName page)
+>       , ("content", jsonScalar $ cs $ pageContent page)
 >       ]
 
-FIXME: more explanation.
+We first try and find the appropriate Page, returning a 404 if it's not there. We then use the applyLayoutJson function, which is really the heart of this example. It allows you an easy way to create responses that will be either HTML or JSON, and which use the default layout in the HTML responses. It takes four arguments: 1) the title of the HTML page, 2) some value, 3) a function from that value to a Hamlet value, and 4) a function from that value to a Json value.
+
+Under the scenes, the Json monad is really just using the Hamlet monad, so it gets all of the benefits thereof, namely interleaved IO and enumerator output. It is pretty straight-forward to generate JSON output by using the three functions jsonMap, jsonList and jsonMap. One thing to note: the input to jsonScalar must be HtmlContent; this helps avoid cross-site scripting attacks, by ensuring that any HTML entities will be escaped.
 
 And now our typical main function. We need two parameters to build our Ajax value: the pages, and the static loader. We'll load up from a local directory.
 

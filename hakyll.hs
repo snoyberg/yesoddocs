@@ -1,17 +1,20 @@
 import Text.Hakyll (hakyll)
-import Text.Hakyll.Render (css)
+import Text.Hakyll.Render (css, static)
 import Text.Hakyll.File (directory)
 import Text.Hakyll.Render (renderChain)
 import Text.Hakyll.CreateContext (createPage)
 
 main = hakyll "http://www.yesodweb.com" $ do
     directory css "css"
+    directory static "static"
+
     render "index.html"
 
     render "yesod/index.markdown"
     render "yesod/helloworld.lhs"
     render "yesod/terminology.markdown"
     render "yesod/tutorial/blog.lhs"
+    render "yesod/tutorial/ajax.lhs"
 
     render "hamlet/index.markdown"
     render "hamlet/synopsis.lhs"

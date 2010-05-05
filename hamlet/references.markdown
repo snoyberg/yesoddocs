@@ -43,7 +43,7 @@ Please note that when dealing with [loops](loops.html), the asterisk denotes the
 
 ### Forall bindings
 
-In general, a reference is interpreted as a function to be run against the template argument. The one exception is when there is a forall binding in place. For example:
+In general, a reference is interpreted as a function to be run against the template argument. The one exception is when there is a [forall](loops.html) or [maybe](maybe.html) binding in place. For example:
 
     person.name
 

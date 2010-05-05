@@ -1,7 +1,7 @@
 ---
 title: Hamlet
 ---
-Current version: **[0.0.0](http://hackage.haskell.org/package/hamlet-0.0.0)**. Upcoming version: **none**. Code repo: [http://github.com/snoyberg/hamlet](http://github.com/snoyberg/hamlet)
+Current version: **[0.0.2](http://hackage.haskell.org/package/hamlet-0.0.2)**. Upcoming version: **none**. Code repo: [http://github.com/snoyberg/hamlet](http://github.com/snoyberg/hamlet)
 
 Hamlet is a templating system loosely based on Haml syntax. Additionally, it is
 a monad to support efficient generation of textual data. Since the former is

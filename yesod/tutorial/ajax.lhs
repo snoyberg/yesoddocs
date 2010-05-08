@@ -43,29 +43,29 @@ Now, we'll define the Yesod instance. We'll still use a dummy approot value, but
 
 > instance Yesod Ajax where
 >   approot _ = ""
->   defaultLayout (Ajax pages' _) content _ = template content where
->       template = [$hamlet|
+>   defaultLayout content = do
+>   Ajax pages _ <- getYesod
+>   hamletToContent [$hamlet|
 > !!!
 > %html
 >   %head
->     %title $pageTitle$
+>     %title $pageTitle.content$
 >     %link!rel=stylesheet!href=@stylesheet@
 >     %script!src=$jquery$
 >     %script!src=@script@
->     ^pageHead^
+>     ^pageHead.content^
 >   %body
 >     %ul#navbar
 >       $forall pages page
 >         %li
->           %a!href=@page.pageUrl@ $page.pageName.cs$
+>           %a!href=@PageR.pageSlug.page@ $cs.pageName.page$
 >     #content
->       ^pageBody^
+>       ^pageBody.content^
 > |]
->       pages _ = pages'
->       jquery _ = cs "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
->       stylesheet _ = StaticR $ toStaticRoute ["style.css"]
->       script _ = StaticR $ toStaticRoute ["script.js"]
->       pageUrl = PageR . pageSlug
+>     where
+>       jquery = cs "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
+>       stylesheet = StaticR $ toStaticRoute ["style.css"]
+>       script = StaticR $ toStaticRoute ["script.js"]
 
 I know those last few functions look a little strange; this is to deal with how Hamlet works. Hamlet passes all functions the argument it receives, in this case the page content. When a function doesn't need that information, it must ignore its argument.
 
@@ -88,9 +88,9 @@ And now the cool part: a handler that returns either HTML or JSON data, dependin
 >       [] -> notFound
 >       page:_ -> applyLayoutJson (pageName page) page html json
 >  where
->   html = [$hamlet|
-> %h1 $pageName.cs$
-> %article $pageContent.cs$
+>   html page = [$hamlet|
+> %h1 $cs.pageName.page$
+> %article $cs.pageContent.page$
 > |]
 >   json page = jsonMap
 >       [ ("name", jsonScalar $ cs $ pageName page)

@@ -70,20 +70,20 @@ The Nav datatype will contain navigation information (ie, the URL and title) of 
 And now the template itself:
 
 > entryTemplate :: TemplateArgs -> Hamlet BlogRoutes IO ()
-> entryTemplate = [$hamlet|
+> entryTemplate args = [$hamlet|
 >   !!!
 >   %html
 >       %head
->           %title $templateTitle$
+>           %title $templateTitle.args$
 >       %body
 >           %h1 Yesod Sample Blog
->           %h2 $templateTitle$
+>           %h2 $templateTitle.args$
 >           %ul#nav
->               $forall templateNavbar nav
+>               $forall templateNavbar.args nav
 >                   %li
->                       %a!href=@nav.navUrl@ $nav.navTitle$
+>                       %a!href=@navUrl.nav@ $navTitle.nav$
 >           #content
->               $templateContent$
+>               $templateContent.args$
 >   |]
 
 Hopefully, that is fairly easy to follow; if not, please review the Hamlet documentation. Just remember that dollar signs mean HtmlContent variables, and at signs mean URLs.

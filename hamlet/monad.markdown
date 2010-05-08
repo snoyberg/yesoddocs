@@ -1,7 +1,7 @@
 ---
 title: Monadic Interface -- Syntax -- Hamlet
 ---
-Most users will be happy to just use the quasi-quoter; however, at a certain point, you have to deal with the resulting Hamlet value. This support can be baked into a framework (like [Yesod](http://www.yesodweb.com/)), but someone has to eventually write *that* support. If you're that somebody, this section is for you.
+Most users will be happy to just use the quasi-quoter; however, at a certain point, you have to deal with the resulting Hamlet value. This support can be baked into a framework (like [Yesod]($root/yesod/)), but someone has to eventually write *that* support. If you're that somebody, this section is for you.
 
 However, even if you don't want to use the Hamlet syntax and quasi-quoter, the monadic interface itself offers you benefits:
 

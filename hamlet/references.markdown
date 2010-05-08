@@ -1,7 +1,7 @@
 ---
 title: References -- Syntax -- Hamlet
 ---
-References are how you refer to template arguments. Under the surface, everything is handled via functions; however, to maintain a more standard look-and-feel, we use a more object-oriented syntax. It's important to remember nonetheless that everything gets converted to function calls at the end of the day.
+References give you access to the Haskell world. They do not allow embedding of arbitrary Haskell code, but only simple chains of function calls.
 
 Let me start off by describing a design decision: we want to make code simple for the usual case, and yet offer the ability to do more complicated things when necesary. In particular: usually, people will end up writing Haskell code like this:
 
@@ -15,11 +15,11 @@ Let me start off by describing a design decision: we want to make code simple fo
 
 In this case, if we want a reference to the name of the person, we would simply write:
 
-    person.name
+    name.person
 
 This will be converted to the Haskell code:
 
-    name $ person argument
+    name person
 
 where argument is the argument passed to the template, and everything will work out correctly. However, occasionally we'll want to run monadic code. For example:
 
@@ -27,35 +27,33 @@ where argument is the argument passed to the template, and everything will work 
 
 One approach would be to force the user to run all non-pure code before calling the template. While this has its merits, Hamlet wants to allow writing very memory-efficient code, which will sometimes mean interleaving monadic calls. So references allow you to specify that a given function will return a monadic value; in particular:
 
-    person.*lookupOccupation
+    *lookupOccupation.person
 
 You can chain monadic and non-monadic calls together as much as you like, Hamlet handles all the juggling. For example:
 
-    family.*father.firstSon.*home.address
+    address.*home.firstSon.*father.family
 
 would become:
 
-    (father $ family argument) >>= home . firstSon >>= return . address
+    (father family) >>= home . firstSon >>= return . address
 
-Most people will be using pure functions the majority of the time, in which case references look very much like object-oriented code. However, when you need the extra power, it's there.
+Most people will be using pure functions the majority of the time, in which case references look very much like function application. However, when you need the extra power, it's there.
 
 Please note that when dealing with [loops](loops.html), the asterisk denotes the difference between lists and enumerators. See the [loops](loops.html) page for more details.
 
-### Forall bindings
+### forall and maybe bindings
 
-In general, a reference is interpreted as a function to be run against the template argument. The one exception is when there is a [forall](loops.html) or [maybe](maybe.html) binding in place. For example:
+Within a template, there are two ways to introduce new identifiers: through [$forall](loops.html) and [$maybe](maybe.html). For example:
 
-    person.name
+    name person
 
 would become
 
-    name $ person argument
+    name person
 
-However, let's say you have the following in place:
+where person is the variable in scope when the Hamlet template is created.  However, let's say you have the following in place:
 
     $forall people person
         person.name
 
-Then, person would be treated as a value instead of a function and the code would be:
-
-    name person
+Then, person would be the values within the people list.

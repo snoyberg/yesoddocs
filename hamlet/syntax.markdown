@@ -34,7 +34,7 @@ I haven't used it in this example, but a period will give a class name. This coi
 becomes
 
     <span style="color:red">This is red</span>
-    <a href="http://www.google.com/">Google</a>
+    <a href="/some/link/">Google</a>
     <input type="checkbox" checked name="foo">
 
 Which brings us very nicely to line 8. You'll notice that is says @homeUrl@; content wrapped in an @ refers to a function which returns a URL. Each template is supplied with a function which converts a URL datatype to a String. See [the type safe URLs part of the monadic documentation]($root/hamlet/monad.html#type-safe-urls) for a more in-depth explanation of this.

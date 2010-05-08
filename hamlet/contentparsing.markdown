@@ -16,3 +16,11 @@ What's the difference between the three delimiters (&#36;@^) mentioned above? Th
     HtmlContent
     url
     Hamlet url m ()
+
+### Query strings
+
+Sometimes, when displaying a URL, you will want to attach a query string to it. For this, there is a modification of the at sign (@) available. If you place a question mark (?) after the first at sign, the expected return type is instead:
+
+    (url, [(String, String)])
+
+Hamlet automatically handles percent and HTML encoding the parameters.

@@ -20,30 +20,30 @@ renderUrls :: PersonUrls -> String
 renderUrls Homepage = "/"
 renderUrls (PersonPage name) = '/' : name
 
-footer :: Monad m => a -> Hamlet url m ()
+footer :: Monad m => Hamlet url m ()
 footer = [$hamlet|
 #footer Thank you, come again
 |]
 
 template :: Person -> Hamlet PersonUrls IO ()
-template = [$hamlet|
+template person = [$hamlet|
 !!!
 %html
     %head
         %title Hamlet Demo
     %body
-        %h1 Information on $*name$
-        %p $*name$ is $age$ years old.
+        %h1 Information on $*name.person$
+        %p $*name.person$ is $age.person$ years old.
         %h2
-            $if isMarried
+            $if isMarried.person
                 Married
             $else
                 Not married
         %ul
-            $forall children child
+            $forall children.person child
                 %li $child$
         %p
-            %a!href=@page@ See the page.
+            %a!href=@page.person@ See the page.
         ^footer^
 |]
 

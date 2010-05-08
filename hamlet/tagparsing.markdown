@@ -13,4 +13,4 @@ becomes
 
     <input type="checkbox" checked>
 
-If there is an equal sign, everything following it is parsed as content (as per the next section).
+If there is an equal sign, everything following it is parsed as content (as per [content parsing](contentparsing.html)).

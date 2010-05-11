@@ -22,23 +22,27 @@ Since we want to alter the list of messages, we're going to need a mutable varia
 >   , chatAuth :: Auth
 >   }
 
+Yesod comes baked in with three different authentication methods: OpenId, Rpxnow and e-mail based. For those not familiar with Rpxnow, it's a service that makes it easy to log in through multiple backends, such as Google, Twitter, Yahoo, etc.
+
+The e-mail method allows users to register an e-mail address, get a verification key by e-mail, set password and log in. As you might imagine, this requires some setup in general: usually, you'll have to add some database tables and configure e-mail sending. For testing, Yesod includes inMemoryEmailSettings, which uses an in-memory database and simply outputs verification information to standard error.
+
 > loadChat :: IO Chat
 > loadChat = do
 >   msgs <- newMVar []
+>   aes <- inMemoryEmailSettings
 >   return $ Chat msgs Auth
 >       { authIsOpenIdEnabled = True
 >       , authRpxnowApiKey = Just "c8043882f14387d7ad8dfc99a1a8dab2e028f690"
+>       , authEmailSettings = Just aes
 >       }
 
-For those not familiar with Rpxnow, it's a service that makes it easy to support logins from external sites. You need to sign up for each site you create and get a private key. I guess I broke the rules by putting the one above in this tutorial... oh well.
+There are three resource patterns: the homepage, the auth subsite, and the messages page. When you GET the messages page, it will give you the history. POSTing will allow you to add a message. The homepage will have login information.
 
 > mkYesod "Chat" [$parseRoutes|
 > /                  HomeR      GET
 > /auth              AuthR      Auth   siteAuth   chatAuth
 > /messages          MessagesR  GET POST
 > |]
-
-There are three resource patterns: the homepage, the auth subsite, and the messages page. When you GET the messages page, it will give you the history. POSTing will allow you to add a message. The homepage will have login information.
 
 And now let's hit the typeclasses; as usual, we need the Yesod typeclass. Now, we'll also add the YesodAuth typeclass. Like Yesod, it provides default values when possible. Since we need to provide a return URL for OpenID, we now need a valid value for approot instead of just an empty string.
 

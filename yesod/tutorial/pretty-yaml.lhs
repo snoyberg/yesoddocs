@@ -1,7 +1,7 @@
 ---
 title: Pretty YAML -- Tutorials -- Yesod
 ---
-Sorry, I didn't have a chance to comment this one yet. However, the goal is simply to convert a YAML file into pretty HTML. Enjoy!
+This example uses the data-object-yaml file to display YAML files as cleaned-up HTML. If you've read through the other tutorials, this one should be easy to follow.
 
 > {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
 
@@ -18,8 +18,7 @@ Sorry, I didn't have a chance to comment this one yet. However, the goal is simp
 > / Homepage GET POST
 > |]
 
-> instance Yesod PY where
->     approot _ = "http://localhost:3000"
+> instance Yesod PY where approot _ = ""
 
 > template :: Monad m => Maybe (Hamlet url m ()) -> Hamlet url m ()
 > template myaml = [$hamlet|
@@ -40,7 +39,6 @@ Sorry, I didn't have a chance to comment this one yet. However, the goal is simp
 > getHomepage :: Handler PY RepHtml
 > getHomepage = hamletToRepHtml $ template Nothing
 
-> --FIXMEpostHomepage :: Handler PY RepHtmlJson
 > postHomepage :: Handler PY RepHtml
 > postHomepage = do
 >     rr <- getRequest
@@ -49,12 +47,6 @@ Sorry, I didn't have a chance to comment this one yet. However, the goal is simp
 >             Nothing -> invalidArgs [("yaml", "Missing input")]
 >             Just x -> return x
 >     so <- liftIO $ decode $ B.concat $ L.toChunks $ fileContent fi
->     {- FIXME
->     let ho' = fmap Text to
->     templateHtmlJson "pretty-yaml" ho' $ \ho ->
->         return . setHtmlAttrib "yaml" (Scalar $ cs ho :: HtmlObject)
->     -}
->     --let ho = cs (so :: StringObject) :: HtmlObject
 >     hamletToRepHtml $ template $ Just $ objToHamlet so
 
 > objToHamlet :: Monad m => StringObject -> Hamlet url m ()

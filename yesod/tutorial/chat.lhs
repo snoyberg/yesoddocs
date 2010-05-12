@@ -59,12 +59,15 @@ Now we'll write the homepage; that funny iframe bit at the bottom comes straight
 
 > getHomeR :: Handler Chat RepHtml
 > getHomeR = applyLayout "Chat Home" (return ()) [$hamlet|
-> %p You can log in with OpenId:
+> %h1 OpenID
 > %form!action=@AuthR.OpenIdForward@
->   OpenID:
 >   %input!type=text!name=openid
 >   %input!type=submit!value=Login
-> Or use any of these:
+> %h1 Email (well, sort of)
+> %form!method=post!action=@AuthR.EmailRegisterR@
+>   %input!type=email!name=email
+>   %input!type=submit!value=Register
+> %h1 Rpxnow
 > <iframe src="http://yesod-test.rpxnow.com/openid/embed?token_url=@AuthR.RpxnowR@" scrolling="no" frameBorder="no" allowtransparency="true" style="width:400px;height:240px"></iframe>
 > |]
 

@@ -64,8 +64,8 @@ Now, we'll define the Yesod instance. We'll still use a dummy approot value, but
 > |]
 >     where
 >       jquery = cs "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
->       stylesheet = StaticR $ toStaticRoute ["style.css"]
->       script = StaticR $ toStaticRoute ["script.js"]
+>       stylesheet = StaticR $ StaticRoute ["style.css"]
+>       script = StaticR $ StaticRoute ["script.js"]
 
 I know those last few functions look a little strange; this is to deal with how Hamlet works. Hamlet passes all functions the argument it receives, in this case the page content. When a function doesn't need that information, it must ignore its argument.
 
@@ -86,7 +86,7 @@ And now the cool part: a handler that returns either HTML or JSON data, dependin
 >   Ajax pages _ <- getYesod
 >   case filter (\e -> pageSlug e == slug) pages of
 >       [] -> notFound
->       page:_ -> applyLayoutJson (pageName page) page html json
+>       page:_ -> applyLayoutJson (pageName page) (return ()) (html page) (json page)
 >  where
 >   html page = [$hamlet|
 > %h1 $cs.pageName.page$

@@ -6,11 +6,11 @@ This example uses the data-object-yaml file to display YAML files as cleaned-up 
 > {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
 
 > import Yesod
+> import Data.Object
 > import Data.Object.Yaml
 > import Web.Encodings
 > import qualified Data.ByteString as B
 > import qualified Data.ByteString.Lazy as L
-> import Data.Object.String
 
 > data PY = PY
 

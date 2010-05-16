@@ -37,7 +37,7 @@ Now the routes; we'll have a homepage, a pattern for the pages, and use a static
 > /static            StaticR Static siteStatic ajaxStatic
 > |]
 
-That third line there is the syntax for a subsite: StaticRoutes is the datatype for the subsite URLs; siteStatic returns the site itself (parse, render and dispatch functions); and ajaxStatic gets the subsite argument from the master argument.
+That third line there is the syntax for a subsite: Static is the datatype for the subsite argument; siteStatic returns the site itself (parse, render and dispatch functions); and ajaxStatic gets the subsite argument from the master argument.
 
 Now, we'll define the Yesod instance. We'll still use a dummy approot value, but we're also going to define a default layout.
 

@@ -1,11 +1,47 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Droid Sans", sans-serif;
+  background: #a2c8d1;
+}
+
+h1 {
+  font-family: Cardo, arial;
+  font-weight: normal;
+  padding-left: 120px; 
+  line-height: 90px;
+  height: 90px;
+  background: url(../static/logo.png) no-repeat top left;
+  margin: 10px 0 0 10px;
+}
+
+h2 {
+  color: #5d85af;
+  font-family: Cardo, arial;
+  font-weight: normal;
+  margin: 0;
+  font-size: 160%;
+}
+
 #nav {
   float: left;
   width: 200px;
-  padding: 0;
+  padding: 0 0 0 5px;
+  font-size: 80%;
+}
+
+#nav a {
+  text-decoration: none;
 }
 
 #content {
   margin-left: 210px;
+  background: #fff;
+  padding: 1em;
+}
+
+#wrapper {
+  background: #e6f0f2;
 }
 
 ul {
@@ -16,7 +52,6 @@ ul {
   clear: both;
   text-align: center;
   border-top: 1px dashed #000;
-  margin-top: 0.5em;
   padding-top: 5px;
 }
 
@@ -28,3 +63,59 @@ ul {
   margin-top: 5em;
   border-top: 2px solid #000;
 }
+
+a.selected, a.selected:hover {
+  color: #900;
+  cursor: default;
+}
+
+pre code {
+  padding: 5px;
+  background: #e6ecf2;
+  line-height: 140%;
+  display: block;
+}
+
+/* treeview */
+.treeview, .treeview ul { 
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.treeview ul {
+	margin-top: 4px;
+}
+
+.treeview .hitarea {
+	background: url(../static/treeview-default.gif) -64px -25px no-repeat;
+	height: 16px;
+	width: 16px;
+	margin-left: -16px;
+	float: left;
+	cursor: pointer;
+}
+/* fix for IE6 */
+* html .hitarea {
+	display: inline;
+	float:none;
+}
+
+.treeview li { 
+	margin: 0;
+	padding: 3px 0pt 3px 16px;
+}
+
+.treeview .hover { color: red; cursor: pointer; }
+
+.treeview li { background: url(../static/treeview-default-line.gif) 0 0 no-repeat; }
+.treeview li.collapsable, .treeview li.expandable { background-position: 0 -176px; }
+
+.treeview .expandable-hitarea { background-position: -80px -3px; }
+
+.treeview li.last { background-position: 0 -1766px }
+.treeview li.lastCollapsable, .treeview li.lastExpandable { background-image: url(../static/treeview-default.gif); }  
+.treeview li.lastCollapsable { background-position: 0 -111px }
+.treeview li.lastExpandable { background-position: -32px -67px }
+
+.treeview div.lastCollapsable-hitarea, .treeview div.lastExpandable-hitarea { background-position: 0; }

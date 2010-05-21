@@ -8,6 +8,8 @@ main = hakyll "http://www.yesodweb.com" $ do
     directory css "css"
     directory static "static"
 
+    static "favicon.ico"
+
     render "index.html"
 
     render "yesod/index.markdown"

@@ -31,6 +31,8 @@ Like the [blog tutorial](blog.html), we'll define some data first.
 
 Now the routes; we'll have a homepage, a pattern for the pages, and use a static subsite for the Javascript and CSS files.
 
+> staticFiles "static/yesod/ajax"
+
 > mkYesod "Ajax" [$parseRoutes|
 > /                  HomeR   GET
 > /page/$page        PageR   GET
@@ -64,8 +66,8 @@ Now, we'll define the Yesod instance. We'll still use a dummy approot value, but
 > |]
 >     where
 >       jquery = cs "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
->       stylesheet = StaticR $ StaticRoute ["style.css"]
->       script = StaticR $ StaticRoute ["script.js"]
+>       stylesheet = StaticR style_css
+>       script = StaticR script_js
 
 I know those last few functions look a little strange; this is to deal with how Hamlet works. Hamlet passes all functions the argument it receives, in this case the page content. When a function doesn't need that information, it must ignore its argument.
 

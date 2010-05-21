@@ -13,7 +13,7 @@ title: Multi-lingual -- Tutorials -- Yesod
 
 > mkYesod "I18N" [$parseRoutes|
 > /            HomepageR GET
-> /set/$lang   SetLangR  GET
+> /set/#String SetLangR  GET
 > |]
 
 > instance Yesod I18N where

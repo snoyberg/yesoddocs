@@ -35,7 +35,7 @@ Now the routes; we'll have a homepage, a pattern for the pages, and use a static
 
 > mkYesod "Ajax" [$parseRoutes|
 > /                  HomeR   GET
-> /page/$page        PageR   GET
+> /page/#String      PageR   GET
 > /static            StaticR Static siteStatic ajaxStatic
 > |]
 

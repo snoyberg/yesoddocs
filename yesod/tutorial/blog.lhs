@@ -33,7 +33,7 @@ Now we use the first "magical" Yesod set of functions: mkYesod and parseRoutes. 
 
 > mkYesod "Blog" [$parseRoutes|
 > /               HomeR   GET
-> /entry/$slug    EntryR  GET
+> /entry/#String  EntryR  GET
 > |]
 
 Usually, the next thing you want to do after a call to mkYesod is to create an instance of Yesod. Every Yesod app needs this; it is a centralized place to define some settings. All settings but approot have sensible defaults. In general, you should put in a valid, fully-qualified URL for your approot, but you can sometimes get away with just doing this:

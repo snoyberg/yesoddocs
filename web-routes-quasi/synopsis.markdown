@@ -4,8 +4,8 @@ title: Synopsis -- web-routes-quasi
 The set of routes:
 
     /                Home       GET
-    /entry/$         EntryRoute GET
-    /fake/#          Fake
+    /entry/#String   EntryRoute GET
+    /fake/#Integer   Fake
     /static          Static     Static siteStatic staticPath
 
 will result in roughly the following Haskell code:

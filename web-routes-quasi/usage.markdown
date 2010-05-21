@@ -8,17 +8,17 @@ The createQuasiRoutes function is necessarily quite complicated; please see the 
 However, users will always need to write their own handlers. When calling createQuasiRoutes, you will need to provide some datatype for handler functions to return; for our purposes here, we will assume that this datatype is Handler. You also need an argument datatype; we'll assume that it is MyArgs. Finally, let's assume that we have the following routes ([see the syntax page for explanation](syntax.html)):
 
     /                        Home    GET
-    /user/#userid            User    GET POST
+    /user/#UserId            User    GET POST
     /auth                    Auth    AuthRoutes authSite getAuthArgs
-    /page/$pagename          Page
-    /static/*rest            Static  GET
+    /page/#PageName          Page
+    /static/*Strings         Static  GET
 
 You would need to provide functions with the following type signatures:
 
     getHome :: Handler
-    getUser :: Integer -> Handler
-    postUser :: Integer -> Handler
+    getUser :: UserId -> Handler
+    postUser :: UserId -> Handler
     authSite :: QuasiSite Application AuthArgs masterArgs
     getAuthArgs :: MyArgs -> AuthArgs
-    handlePage :: String -> Handler
+    handlePage :: PageName -> Handler
     getStatic :: [String] -> Handler

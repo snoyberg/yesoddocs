@@ -25,7 +25,7 @@ h2 {
 
 #nav {
   float: left;
-  width: 200px;
+  width: 170px;
   padding: 0 0 0 5px;
   font-size: 80%;
 }
@@ -35,7 +35,7 @@ h2 {
 }
 
 #content {
-  margin-left: 210px;
+  margin-left: 185px;
   background: #fff;
   padding: 1em;
 }

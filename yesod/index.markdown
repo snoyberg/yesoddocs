@@ -24,5 +24,4 @@ The documentation on this site refers to version 0.2.0 of Yesod. In order to get
     cabal update
     git clone git://github.com/snoyberg/yesod.git
     cd yesod
-    git checkout origin/ver0.2
     cabal install

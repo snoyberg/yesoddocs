@@ -78,7 +78,7 @@ ul {
   border-top: 2px solid #000;
 }
 
-a.selected, a.selected:hover {
+#nav a.selected, a.selected:hover {
   color: #900;
   cursor: default;
 }

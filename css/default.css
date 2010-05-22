@@ -9,10 +9,9 @@ h1 {
   font-family: Cardo, arial;
   font-weight: normal;
   padding-left: 120px; 
-  line-height: 90px;
-  height: 90px;
+  line-height: 60px;
   background: url(../static/logo.png) no-repeat top left;
-  margin: 10px 0 0 10px;
+  margin: 5px 0 5px 10px;
 }
 
 h2 {
@@ -27,21 +26,30 @@ h2 {
   float: left;
   width: 170px;
   padding: 0 0 0 5px;
-  font-size: 80%;
+  font-size: 95%;
 }
 
 #nav a {
   text-decoration: none;
+  color: #00f;
+}
+
+#nav a:visited {
+  color: #3f00ff;
+}
+
+.weight {
+    clear: both;
 }
 
 #content {
-  margin-left: 185px;
-  background: #fff;
+  margin-left: 180px;
+  background: #eee;
   padding: 1em;
 }
 
 #wrapper {
-  background: #e6f0f2;
+  background: #e6f0f2 url(../static/nav.png) repeat-y top left;
 }
 
 ul {

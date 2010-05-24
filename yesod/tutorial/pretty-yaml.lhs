@@ -1,7 +1,7 @@
 ---
 title: Pretty YAML -- Tutorials -- Yesod
 ---
-This example uses the data-object-yaml file to display YAML files as cleaned-up HTML. If you've read through the other tutorials, this one should be easy to follow.
+This example uses the [data-object-yaml package](http://hackage.haskell.org/package/data-object-yaml) to display YAML files as cleaned-up HTML. If you've read through the other tutorials, this one should be easy to follow.
 
 > {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
 

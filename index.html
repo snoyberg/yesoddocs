@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Yesod Web Framework</title>
+    <script src="http://cdn.jquerytools.org/1.2.2/full/jquery.tools.min.js"></script>
+    <script>
+      $(function(){
+        $("section").attr("id", "");
+        $("#scrollable").scrollable({
+          circular: true,
+          mousewheel: true
+        }).navigator({
+          navi: "nav",
+          naviItem: "a",
+          activeClass: "current",
+          history: true
+        });
+      });
+    </script>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+      }
+      #wrapper {
+        width: 960px;
+        margin: 0 auto;
+      }
+      header {
+        padding-left: 100px;
+        background: #eee url(static/logo.png) no-repeat 20px 20px;
+        height: 100px;
+      }
+      h1, h2 {
+        margin: 0 0 10px 0;
+      }
+      nav ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        text-align: center;
+      }
+      nav li {
+        display: inline;
+      }
+      nav a {
+        color: #000;
+        font-size: 130%;
+        text-decoration: none;
+        margin: 0 10px;
+      }
+      nav a.current {
+        text-decoration: underline;
+      }
+      nav a:hover {
+        color: #900;
+      }
+      article {
+        float: left;
+        width: 310px;
+        height: 300px;
+        margin: 0 5px;
+        text-align: center;
+      }
+      .two-blocks article {
+        width: 470px;
+      }
+      #scrollable {
+        height: 300px;
+        position: relative;
+        overflow: hidden;
+      }
+      #items {
+        width: 20000em;
+        position: absolute;
+      }
+      section {
+        float: left;
+      }
+    </style>
+  </head>
+  <body>
+   <div id="wrapper">
+    <header>
+      <h1>Yesod Web Framework</h1>
+      <h2>A solid foundation for web applications</h2>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#type-safety">Type Safety</a></li>
+      </ul>
+    </nav>
+    <div><a class="prev browse left"></div>
+    <div id="scrollable">
+      <div id="items">
+        <section id="overview" class="two-blocks">
+          <article>
+            <h3>Hello World</h3>
+            Text1
+          </article>
+          <article>
+            <h3>Overview</h3>
+            Text2
+          </article>
+        </section>
+        <section id="type-safety">
+          <article>
+            <h3>Model</h3>
+            Something
+          </article>
+          <article>
+            <h3>View</h3>
+            Text2
+          </article>
+          <article>
+            <h3>Controller</h3>
+            Text3
+          </article>
+        </section>
+      </div>
+    </div>
+    <div><a class="next browse right"></div>
+  </div>
+</body>
+</html>

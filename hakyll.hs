@@ -10,7 +10,8 @@ main = hakyll "http://www.yesodweb.com" $ do
 
     static "favicon.ico"
 
-    render "index.markdown"
+    createPage "index.html"
+    render "overview.markdown"
 
     render "yesod/index.markdown"
     render "yesod/helloworld.lhs"

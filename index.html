@@ -11,7 +11,7 @@
           mousewheel: true
         }).navigator({
           navi: "nav",
-          naviItem: "a",
+          naviItem: "a.tab",
           activeClass: "current",
           history: true
         });
@@ -21,52 +21,85 @@
       body {
         font-family: sans-serif;
         margin: 0;
+        background-color: #ffd;
       }
       #wrapper {
         width: 960px;
         margin: 0 auto;
+        border: 1px solid #5f1010;
       }
       header {
-        padding-left: 100px;
-        background: #eee url(static/logo.png) no-repeat 20px 20px;
+        padding: 15px 0 0 100px;
+        background: #5f1010 url(static/logo.png) no-repeat 20px 30px;
         height: 100px;
+        color: #fff;
+        font-family: serif;
       }
       h1, h2 {
         margin: 0 0 10px 0;
       }
       nav ul {
         margin: 0;
-        padding: 0;
+        padding: 10px 0 5px 0;
         list-style: none;
         text-align: center;
+        background-color: #ccc;
+        line-height: 20px;
+        background: -webkit-gradient(
+          linear,
+          left top,
+          left bottom,
+          color-stop(0.03, rgb(95,10,10)),
+          color-stop(0.2, rgb(255,255,221))
+        );
+        background: -moz-linear-gradient(
+          center top,
+          rgb(95,10,10) 3%,
+          rgb(255,255,221) 30%
+        );
+        border-bottom: 1px solid #5f1010;
       }
       nav li {
         display: inline;
       }
       nav a {
-        color: #000;
-        font-size: 130%;
+        color: #006;
         text-decoration: none;
         margin: 0 10px;
+        padding-left: 5px;
       }
       nav a.current {
-        text-decoration: underline;
+        color: #5f1010;
       }
       nav a:hover {
-        color: #900;
+        text-decoration: underline;
+      }
+      nav a.external {
+        font-weight: bold;
       }
       article {
         float: left;
-        width: 310px;
+        width: 316px;
         height: 300px;
-        margin: 0 5px;
-        text-align: center;
+        margin: 0 2px;
+        background-color: #dcf8f9;
+      }
+      article.left {
+        margin-left: 0;
+        width: 317px;
+      }
+      article.right {
+        margin-right: 0;
+        width: 318px;
       }
       .two-blocks article {
-        width: 470px;
+        width: 476px;
+      }
+      .two-blocks article.left, .two-blocks article.right {
+        width: 478px;
       }
       #scrollable {
-        height: 300px;
+        height: 340px;
         position: relative;
         overflow: hidden;
       }
@@ -76,6 +109,62 @@
       }
       section {
         float: left;
+      }
+      h3 {
+        color: #5f1010;
+        margin: 0;
+        text-align: center;
+        background: #ffd;
+        line-height: 40px;
+        font-size: 24px;
+        font-family: serif;
+        background: -webkit-gradient(
+          linear,
+          left top,
+          left bottom,
+          color-stop(0.0, #ff9777),
+          color-stop(0.2, #ffd)
+        );
+        background: -moz-linear-gradient(
+          center top,
+          rgb(95,10,10) 3%,
+          rgb(255,255,221) 30%
+        );
+      }
+      h4 {
+        margin: 0;
+        line-height: 30px;
+        font-size: 20px;
+        color: #5f1010;
+        font-family: serif;
+        text-align: center;
+        background: -webkit-gradient(
+          linear,
+          left top,
+          left bottom,
+          color-stop(0.03, #2edadc),
+          color-stop(0.9, rgb(255,255,221))
+        );
+        background: -moz-linear-gradient(
+          center top,
+          #2edadc 3%,
+          rgb(255,255,221) 90%
+        );
+      }
+      pre code {
+        display: block;
+        background-color: #000;
+        color: #eee;
+        line-height: 140%;
+        margin: 0 10px;
+        padding: 5px;
+        border: 2px solid #666;
+      }
+      article ul {
+        padding-left: 20px;
+      }
+      article p {
+        padding: 0 10px;
       }
     </style>
   </head>
@@ -87,40 +176,82 @@
     </header>
     <nav>
       <ul>
-        <li><a href="#overview">Overview</a></li>
-        <li><a href="#type-safety">Type Safety</a></li>
+        <li><a class="tab" href="#overview">Overview</a></li>
+        <li><a class="tab" href="#type-safety">Type Safety</a></li>
+        <li><a class="tab" href="#architecture">Architecture</a></li>
+        <li><a class="external" href="http://docs.yesodweb.com/yesod/">Docs</a></li>
       </ul>
     </nav>
-    <div><a class="prev browse left"></div>
     <div id="scrollable">
       <div id="items">
         <section id="overview" class="two-blocks">
-          <article>
-            <h3>Hello World</h3>
-            Text1
+          <h3>Overview</h3>
+          <article class="left">
+            <h4>Overview</h4>
+            <p>Yesod is a Haskell web framework promoting <b>type-safe</b>, <b>RESTful</b> web application development. It is built from the ground up on principles which allow the creation of <b>efficient</b> execution. Its <b>modular</b> nature lets you pick and choose which parts of the framework you wish to use, while its default collection of libraries allows you to write in a consistent, <b>concise</b> manner.</p>
           </article>
-          <article>
-            <h3>Overview</h3>
-            Text2
+          <article class="right">
+            <h4>Hello World</h4>
+            <pre><code>import Yesod
+data HelloWorld = HelloWorld
+mkYesod "HelloWorld" [$parseRoutes|/ Home GET|]
+instance Yesod HelloWorld where approot _ = ""
+getHome = applyLayout [$hamlet|%h1 Hello World|]
+main = toWaiApp HelloWorld &gt;&gt;= basicHandler 3000</code></pre>
           </article>
         </section>
         <section id="type-safety">
-          <article>
-            <h3>Model</h3>
-            Something
+          <h3>Type Safety</h3>
+          <article class="left">
+            <h4>Model</h4>
+            <ul>
+              <li>Built on persistent.</li>
+              <li>Supports both SQL and non-SQL databases.</li>
+              <li>Every field is fully typed.</li>
+              <li>Searching, sorting, updating, inserting all type checked.</li>
+              <li>All marshalling and SQL code auto-generated.</li>
+            </ul>
           </article>
           <article>
-            <h3>View</h3>
-            Text2
+            <h4>View</h4>
+            <ul>
+              <li>Built on Hamlet.</li>
+              <li>Haml-like syntax.</li>
+              <li>Automatic, intelligent HTML entity escaping based on types.</li>
+              <li>Built-in support for type-safe URLs.</li>
+              <li>Compile-time checked.</li>
+            </ul>
           </article>
-          <article>
-            <h3>Controller</h3>
-            Text3
+          <article class="right">
+            <h4>Controller</h4>
+            <ul>
+              <li>Built on web-routes-quasi.</li>
+              <li>Every application has its own URL datatype.</li>
+              <li>You cannot create an invalid internal link.</li>
+              <li>All parse and render code automatically generated.</li>
+            </ul>
+          </article>
+        </section>
+        <section id="architecture" class="two-blocks">
+          <h3>Architecture</h3>
+          <article class="left">
+            <h4>RESTful</h4>
+            <ul>
+              <li>Separate handlers for each request method.</li>
+              <li>Different representations for each content type.</li>
+              <li>Content type determined automatically from request headers.
+            </ul>
+          </article>
+          <article class="right">
+            <h4>Modular</h4>
+            <ul>
+              <li>Composed of many smaller packages.</li>
+              <li>Has spawned the creation of many packages available for use outside of Yesod.</li>
+            </ul>
           </article>
         </section>
       </div>
     </div>
-    <div><a class="next browse right"></div>
   </div>
 </body>
 </html>

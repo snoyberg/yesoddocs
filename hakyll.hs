@@ -10,7 +10,7 @@ main = hakyll "http://www.yesodweb.com" $ do
 
     static "favicon.ico"
 
-    createPage "index.html"
+    renderChain [] $ createPage "index.html"
     render "overview.markdown"
 
     render "yesod/index.markdown"

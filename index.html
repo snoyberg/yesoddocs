@@ -19,45 +19,44 @@
     </script>
     <style>
       body {
-        font-family: sans-serif;
+        font-family: arial;
         margin: 0;
-        background-color: #ffd;
+        background-color: #4c4c4c;
       }
       #wrapper {
         width: 960px;
         margin: 0 auto;
-        border: 1px solid #5f1010;
+        background: #5f1010;
       }
       header {
         padding: 15px 0 0 100px;
         background: #5f1010 url(static/logo.png) no-repeat 20px 30px;
         height: 100px;
-        color: #fff;
-        font-family: serif;
+        color: #eee;
       }
-      h1, h2 {
+      h1, h2, h3 {
         margin: 0 0 10px 0;
+        font-weight: normal;
       }
       nav ul {
         margin: 0;
         padding: 10px 0 5px 0;
         list-style: none;
         text-align: center;
-        background-color: #ccc;
         line-height: 20px;
         background: -webkit-gradient(
           linear,
           left top,
           left bottom,
           color-stop(0.03, rgb(95,10,10)),
-          color-stop(0.2, rgb(255,255,221))
+          color-stop(0.2, #b9acac),
+          color-stop(0.9, #eee)
         );
         background: -moz-linear-gradient(
           center top,
           rgb(95,10,10) 3%,
           rgb(255,255,221) 30%
         );
-        border-bottom: 1px solid #5f1010;
       }
       nav li {
         display: inline;
@@ -65,14 +64,19 @@
       nav a {
         color: #006;
         text-decoration: none;
-        margin: 0 10px;
-        padding-left: 5px;
+        padding: 0 15px;
+        display: inline-block;
+        line-height: 25px;
       }
       nav a.current {
-        color: #5f1010;
+        background: url(/static/arrowbullet.png) no-repeat center left;
+        cursor: default;
       }
       nav a:hover {
-        text-decoration: underline;
+        background: #fff;
+      }
+      nav a.current:hover {
+        background: url(/static/arrowbullet.png) no-repeat center left;
       }
       nav a.external {
         font-weight: bold;
@@ -82,7 +86,7 @@
         width: 316px;
         height: 300px;
         margin: 0 2px;
-        background-color: #dcf8f9;
+        background-color: #eee;
       }
       article.left {
         margin-left: 0;
@@ -99,9 +103,11 @@
         width: 478px;
       }
       #scrollable {
-        height: 340px;
+        height: 302px;
         position: relative;
         overflow: hidden;
+        background: #4c4c4c;
+        padding-top: 3px;
       }
       #items {
         width: 20000em;
@@ -111,39 +117,17 @@
         float: left;
       }
       h3 {
-        color: #5f1010;
-        margin: 0;
-        text-align: center;
-        background: #ffd;
-        line-height: 40px;
-        font-size: 24px;
-        font-family: serif;
-        background: -webkit-gradient(
-          linear,
-          left top,
-          left bottom,
-          color-stop(0.0, #ff9777),
-          color-stop(0.2, #ffd)
-        );
-        background: -moz-linear-gradient(
-          center top,
-          rgb(95,10,10) 3%,
-          rgb(255,255,221) 30%
-        );
-      }
-      h4 {
         margin: 0;
         line-height: 30px;
         font-size: 20px;
         color: #5f1010;
-        font-family: serif;
         text-align: center;
         background: -webkit-gradient(
           linear,
           left top,
           left bottom,
           color-stop(0.03, #2edadc),
-          color-stop(0.9, rgb(255,255,221))
+          color-stop(0.7, #eee)
         );
         background: -moz-linear-gradient(
           center top,
@@ -161,6 +145,12 @@
         border: 2px solid #666;
       }
       article ul {
+        padding: 0 10px;
+        list-style: none;
+      }
+      article li {
+        margin: 5px 0;
+        background: url(/static/arrowbullet.png) no-repeat top left;
         padding-left: 20px;
       }
       article p {
@@ -185,13 +175,12 @@
     <div id="scrollable">
       <div id="items">
         <section id="overview" class="two-blocks">
-          <h3>Overview</h3>
           <article class="left">
-            <h4>Overview</h4>
+            <h3>Overview</h3>
             <p>Yesod is a Haskell web framework promoting <b>type-safe</b>, <b>RESTful</b> web application development. It is built from the ground up on principles which allow the creation of <b>efficient</b> execution. Its <b>modular</b> nature lets you pick and choose which parts of the framework you wish to use, while its default collection of libraries allows you to write in a consistent, <b>concise</b> manner.</p>
           </article>
           <article class="right">
-            <h4>Hello World</h4>
+            <h3>Hello World</h3>
             <pre><code>import Yesod
 data HelloWorld = HelloWorld
 mkYesod "HelloWorld" [$parseRoutes|/ Home GET|]
@@ -201,9 +190,8 @@ main = toWaiApp HelloWorld &gt;&gt;= basicHandler 3000</code></pre>
           </article>
         </section>
         <section id="type-safety">
-          <h3>Type Safety</h3>
           <article class="left">
-            <h4>Model</h4>
+            <h3>Model</h3>
             <ul>
               <li>Built on persistent.</li>
               <li>Supports both SQL and non-SQL databases.</li>
@@ -213,7 +201,7 @@ main = toWaiApp HelloWorld &gt;&gt;= basicHandler 3000</code></pre>
             </ul>
           </article>
           <article>
-            <h4>View</h4>
+            <h3>View</h3>
             <ul>
               <li>Built on Hamlet.</li>
               <li>Haml-like syntax.</li>
@@ -223,7 +211,7 @@ main = toWaiApp HelloWorld &gt;&gt;= basicHandler 3000</code></pre>
             </ul>
           </article>
           <article class="right">
-            <h4>Controller</h4>
+            <h3>Controller</h3>
             <ul>
               <li>Built on web-routes-quasi.</li>
               <li>Every application has its own URL datatype.</li>
@@ -233,9 +221,8 @@ main = toWaiApp HelloWorld &gt;&gt;= basicHandler 3000</code></pre>
           </article>
         </section>
         <section id="architecture" class="two-blocks">
-          <h3>Architecture</h3>
           <article class="left">
-            <h4>RESTful</h4>
+            <h3>RESTful</h3>
             <ul>
               <li>Separate handlers for each request method.</li>
               <li>Different representations for each content type.</li>
@@ -243,7 +230,7 @@ main = toWaiApp HelloWorld &gt;&gt;= basicHandler 3000</code></pre>
             </ul>
           </article>
           <article class="right">
-            <h4>Modular</h4>
+            <h3>Modular</h3>
             <ul>
               <li>Composed of many smaller packages.</li>
               <li>Has spawned the creation of many packages available for use outside of Yesod.</li>

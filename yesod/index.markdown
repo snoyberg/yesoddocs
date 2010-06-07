@@ -15,7 +15,7 @@ Yesod is a web framework for the Haskell programming language. It has the follow
 
 * Space-efficiency without complications by using enumerators under the scenes and providing higher-level abstractions over them.
 
-* Not tie you down to any server system: Yesod applications run happily on anything from dedicated hosting to [low-end shared hosting](http://www.nearlyfreespech.net/).
+* Not tie you down to any server system: Yesod applications run happily on anything from dedicated hosting to [low-end shared hosting](http://www.nearlyfreespeech.net/).
 
 The framework loosely follows MVC principles; however, there is no desire to strictly adhere to any set of theoretical principles. The goal is play to the strengths of Haskell to allow users to create secure, fast and featureful websites with minimal code overhead.
 

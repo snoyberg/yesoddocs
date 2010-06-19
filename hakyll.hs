@@ -35,7 +35,6 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "hamlet/references.markdown"
     render "hamlet/loops.markdown"
     render "hamlet/maybe.markdown"
-    render "hamlet/monad.markdown"
 
     render "web-routes-quasi/index.markdown"
     render "web-routes-quasi/synopsis.markdown"

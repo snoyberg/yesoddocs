@@ -3,7 +3,7 @@ title: References -- Syntax -- Hamlet
 ---
 References give you access to the Haskell world. They do not allow embedding of arbitrary Haskell code, but only simple chains of function calls.
 
-Let me start off by describing a design decision: we want to make code simple for the usual case, and yet offer the ability to do more complicated things when necesary. In particular: usually, people will end up writing Haskell code like this:
+Let's say you have the following Haskell code:
 
     data Person = Person
         { name :: HtmlContent
@@ -21,25 +21,9 @@ This will be converted to the Haskell code:
 
     name person
 
-where argument is the argument passed to the template, and everything will work out correctly. However, occasionally we'll want to run monadic code. For example:
+where argument is the argument passed to the template, and everything will work out correctly.
 
-    lookupOccupation :: Person -> IO HtmlContent
-
-One approach would be to force the user to run all non-pure code before calling the template. While this has its merits, Hamlet wants to allow writing very memory-efficient code, which will sometimes mean interleaving monadic calls. So references allow you to specify that a given function will return a monadic value; in particular:
-
-    *lookupOccupation.person
-
-You can chain monadic and non-monadic calls together as much as you like, Hamlet handles all the juggling. For example:
-
-    address.*home.firstSon.*father.family
-
-would become:
-
-    (father family) >>= home . firstSon >>= return . address
-
-Most people will be using pure functions the majority of the time, in which case references look very much like function application. However, when you need the extra power, it's there.
-
-Please note that when dealing with [loops](loops.html), the asterisk denotes the difference between lists and enumerators. See the [loops](loops.html) page for more details.
+**NOTE**: Previous versions of Hamlet allowed embedding of monadic code in templates. This feature was not used very often and introduced a significant performance hit, and was removed in version 0.3.0.
 
 ### forall and maybe bindings
 

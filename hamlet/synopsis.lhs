@@ -5,14 +5,14 @@ title: Synopsis - Hamlet
 {-# LANGUAGE QuasiQuotes #-}
 
 import Text.Hamlet
-import Data.Text (pack)
+import qualified Data.ByteString.Lazy as L
 
 data Person = Person
-    { name :: IO HtmlContent -- maybe it requires a database lookup
-    , age :: HtmlContent
+    { name :: String
+    , age :: String
     , page :: PersonUrls
     , isMarried :: Bool
-    , children :: [HtmlContent]
+    , children :: [String]
     }
 data PersonUrls = Homepage | PersonPage String
 
@@ -20,20 +20,20 @@ renderUrls :: PersonUrls -> String
 renderUrls Homepage = "/"
 renderUrls (PersonPage name) = '/' : name
 
-footer :: Monad m => Hamlet url m ()
+footer :: Hamlet url
 footer = [$hamlet|
 #footer Thank you, come again
 |]
 
-template :: Person -> Hamlet PersonUrls IO ()
+template :: Person -> Hamlet PersonUrls
 template person = [$hamlet|
 !!!
 %html
     %head
         %title Hamlet Demo
     %body
-        %h1 Information on $*name.person$
-        %p $*name.person$ is $age.person$ years old.
+        %h1 Information on $string.name.person$
+        %p $string.name.person$ is $string.age.person$ years old.
         %h2
             $if isMarried.person
                 Married
@@ -41,7 +41,7 @@ template person = [$hamlet|
                 Not married
         %ul
             $forall children.person child
-                %li $child$
+                %li $string.child$
         %p
             %a!href=@page.person@ See the page.
         ^footer^
@@ -50,16 +50,13 @@ template person = [$hamlet|
 main :: IO ()
 main = do
     let person = Person
-            { name = return $ Unencoded $ pack "Michael"
-            , age = Unencoded $ pack "twenty five & a half"
+            { name = "Michael"
+            , age = "twenty five & a half"
             , page = PersonPage "michael"
             , isMarried = True
-            , children = [ Unencoded $ pack "Adam"
-                         , Unencoded $ pack "Ben"
-                         , Unencoded $ pack "Chris"
-                         ]
+            , children = ["Adam", "Ben", "Chris"]
             }
-    printHamlet renderUrls $ template person
+    L.putStrLn $ renderHamlet renderUrls $ template person
 \end{code}
 
 Outputs (new lines added for readability):

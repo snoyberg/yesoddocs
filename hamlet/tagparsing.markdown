@@ -14,3 +14,11 @@ becomes
     <input type="checkbox" checked>
 
 If there is an equal sign, everything following it is parsed as content (as per [content parsing](contentparsing.html)).
+
+### Optional attributes
+
+Sometimes, you'll want to optionally add an attribute. The most common example of this is the selected attribute on a option tag, or the checked attribute on a checkbox/radiobox. To do this, you enclose the conditional statementin colons immediately following the excalamation point. For example:
+
+    %select!name=colors
+        $forall colors color
+            %option!value=$string.colorName.color$!:colorSelected.color:selected $string.colorName.color$

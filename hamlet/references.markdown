@@ -29,7 +29,7 @@ where argument is the argument passed to the template, and everything will work 
 
 Within a template, there are two ways to introduce new identifiers: through [$forall](loops.html) and [$maybe](maybe.html). For example:
 
-    name person
+    name.person
 
 would become
 
@@ -38,6 +38,6 @@ would become
 where person is the variable in scope when the Hamlet template is created.  However, let's say you have the following in place:
 
     $forall people person
-        person.name
+        name.person
 
 Then, person would be the values within the people list.

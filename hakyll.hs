@@ -41,5 +41,13 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "web-routes-quasi/syntax.markdown"
     render "web-routes-quasi/usage.markdown"
 
+    render "persistent/index.markdown"
+    render "persistent/synopsis.lhs"
+    render "persistent/overview.markdown"
+    render "persistent/defining-entities.markdown"
+    render "persistent/type-classes.markdown"
+    render "persistent/backends.markdown"
+    render "persistent/relations.markdown"
+
     where render = renderChain ["template.html"]
                  . createPage

@@ -15,7 +15,7 @@ The other two functions are <code>toPersistValue</code> and <code>fromPersistVal
 
 This is the heart of Persistent. It really has two components: a set of associated data types (see [type families](http://www.haskell.org/haskellwiki/GHC/Type_families)) and functions.
 
-The functions are essentially a bare minimum necessary to implement <abbr title="Create Read Update Delete">CRUD</abbr> operations:
+The functions are the bare minimum necessary to implement <abbr title="Create Read Update Delete">CRUD</abbr> operations:
 
 * Create: insert and replace
 
@@ -90,3 +90,4 @@ which is really equivalent to:
 
     listToMaybe <$> select [PersonNameEq "Michael"] []
 </li>
+</ul>

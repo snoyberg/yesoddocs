@@ -1,7 +1,7 @@
 ---
 title: Defining Entities - Persistent
 ---
-Remember that Persistent is non-relational. That makes our job in defining entities much simpler: we simply work one entity at a time. (We'll describe later on how to model relations.)
+Remember that Persistent is non-relational. That makes our job in defining entities much simpler: we simply work one entity at a time. (We'll describe [later on](relations.html) how to model relations.)
 
 A single entity consists of:
 
@@ -13,7 +13,7 @@ A single entity consists of:
 
 * A list of typeclasses that the entity should derive.
 
-A field in turns consists of:
+A field in turn consists of:
 
 * A field name. This must begin with a lower case letter.
 
@@ -35,13 +35,13 @@ And finally a unique key consists of:
 
 As a convenience, there is also a quasi-quoted syntax which is a little easier to use. It is merely a simpler way to define your entities. The quasiquoter is the [persist](http://docs.yesodweb.com/haddock/persistent/Database-Persist-Quasi.html) function.
 
-The syntax is very straight forward: each non-indented line is the name of an entity. All indented lines following is belong to that entity.
+The syntax is very straight forward: each non-indented line is the name of an entity. All indented lines following it belong to that entity.
 
 * If a line begins with the word "deriving", then all of the following words are typeclasses which the entity should derive.
 
-* If a line begins with an upper-case letter, the first word is a unique key constructor name, and the remaining words are field names to be included in the unique key.
+* If a line begins with an upper-case letter, the first word is a unique key constructor name and the remaining words are field names to be included in the unique key.
 
-* Otherwise, a line declares a new field. The first word is the field name, the second word is the data type for that field, and the remaining words are each attributes.
+* Otherwise, a line declares a new field. The first word is the field name, the second word is the data type for that field, and each of the remaining words is an attribute.
 
 ### Attributes
 
@@ -51,6 +51,6 @@ Attributes are purposely defined as simple strings so that other tools can defin
 
 * update: A field which can be updated. This will signal the template haskell code to create an appropriate update constructor. If the entity is named Person and the field is named age, the update constructor would be PersonAge.
 
-* Asc, Desc: A field sortable in either ascending or descending order. The resulting constructors names would be PersonAgeAsc and PersonAgeDesc.
+* Asc, Desc: A field sortable in either ascending or descending order. The resulting constructor names would be PersonAgeAsc and PersonAgeDesc.
 
 * Eq, Ne, Lt, Gt, Le, Ge: A field which can be filtered using one of these comparisons (equals, not equals, less than, etc). Constructor names are PersonAgeEq, PersonAgeNe, etc.

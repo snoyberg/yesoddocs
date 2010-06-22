@@ -1,7 +1,7 @@
 ---
 title: Yesod
 ---
-Current version: **[0.2.0](http://hackage.haskell.org/package/yesod-0.2.0)**. Upcoming version: **0.3.0**. Code repo: [http://github.com/snoyberg/yesod](http://github.com/snoyberg/yesod)
+Current version: **[0.3.0](http://hackage.haskell.org/package/yesod-0.3.0)**. Upcoming version: **0.4.0**. Code repo: [http://github.com/snoyberg/yesod](http://github.com/snoyberg/yesod)
 
 Yesod is a web framework for the Haskell programming language. It has the following design goals:
 
@@ -19,9 +19,7 @@ Yesod is a web framework for the Haskell programming language. It has the follow
 
 The framework loosely follows MVC principles; however, there is no desire to strictly adhere to any set of theoretical principles. The goal is play to the strengths of Haskell to allow users to create secure, fast and featureful websites with minimal code overhead.
 
-The documentation on this site refers to version 0.2.0 of Yesod. In order to get started, install the Haskell Platform (with GHC 6.12) and Git, then run:
+The documentation on this site refers to version 0.3.0 of Yesod. In order to get started, install [the Haskell Platform](http://hackage.haskell.org/platform/) (with GHC 6.12), then run:
 
     cabal update
-    git clone git://github.com/snoyberg/yesod.git
-    cd yesod
-    cabal install
+    cabal install yesod

@@ -19,7 +19,7 @@ This example uses the [data-object-yaml package](http://hackage.haskell.org/pack
 
 > instance Yesod PY where approot _ = ""
 
-> template :: Monad m => Maybe (Hamlet url m ()) -> Hamlet url m ()
+> template :: Maybe (Hamlet url) -> Hamlet url
 > template myaml = [$hamlet|
 > !!!
 > %html
@@ -48,8 +48,8 @@ This example uses the [data-object-yaml package](http://hackage.haskell.org/pack
 >     so <- liftIO $ decode $ B.concat $ L.toChunks $ fileContent fi
 >     hamletToRepHtml $ template $ Just $ objToHamlet so
 
-> objToHamlet :: Monad m => StringObject -> Hamlet url m ()
-> objToHamlet (Scalar s) = [$hamlet|$cs.s$|]
+> objToHamlet :: StringObject -> Hamlet url
+> objToHamlet (Scalar s) = [$hamlet|$string.s$|]
 > objToHamlet (Sequence list) = [$hamlet|
 > %ul
 >     $forall list o
@@ -58,7 +58,7 @@ This example uses the [data-object-yaml package](http://hackage.haskell.org/pack
 > objToHamlet (Mapping pairs) = [$hamlet|
 > %dl
 >     $forall pairs pair
->         %dt $cs.fst.pair$
+>         %dt $string.fst.pair$
 >         %dd ^objToHamlet.snd.pair^
 > |]
 

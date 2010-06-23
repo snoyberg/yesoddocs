@@ -7,7 +7,7 @@ title: Multi-lingual -- Tutorials -- Yesod
 > {-# LANGUAGE TypeFamilies #-}
 
 > import Yesod
-> import Network.Wai.Handler.SimpleServer
+> import Data.Monoid (mempty)
 
 > data I18N = I18N
 
@@ -28,13 +28,13 @@ title: Multi-lingual -- Tutorials -- Yesod
 >             , ("es", "Spanish")
 >             , ("he", "Hebrew")
 >             ]
->     applyLayout "I18N Homepage" (return ()) [$hamlet|
-> %h1 $cs.hello$
+>     applyLayout "I18N Homepage" mempty [$hamlet|
+> %h1 $string.hello$
 > %p In other languages:
 > %ul
 >     $forall choices choice
 >         %li
->             %a!href=@SetLangR.fst.choice@ $cs.snd.choice$
+>             %a!href=@SetLangR.fst.choice@ $string.snd.choice$
 > |]
 
 > chooseHello :: [String] -> String

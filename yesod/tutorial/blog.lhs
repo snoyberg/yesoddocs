@@ -55,8 +55,8 @@ We go ahead and send a 302 redirect request to the entry resource. Notice how we
 Next we'll define a template for entry pages. Normally, I tend to just define them within the handler function, but it's easier to follow if they're separate. Also for clarity, I'll define a datatype for the template arguments. It would also be possible to simply use the Entry datatype with some filter functions, but I'll save that for a later tutorial.
 
 > data TemplateArgs = TemplateArgs
->   { templateTitle :: HtmlContent
->   , templateContent :: HtmlContent
+>   { templateTitle :: Html ()
+>   , templateContent :: Html ()
 >   , templateNavbar :: [Nav]
 >   }
 
@@ -64,12 +64,12 @@ The Nav datatype will contain navigation information (ie, the URL and title) of 
 
 > data Nav = Nav
 >   { navUrl :: BlogRoutes
->   , navTitle :: HtmlContent
+>   , navTitle :: Html ()
 >   }
 
 And now the template itself:
 
-> entryTemplate :: TemplateArgs -> Hamlet BlogRoutes IO ()
+> entryTemplate :: TemplateArgs -> Hamlet BlogRoutes
 > entryTemplate args = [$hamlet|
 >   !!!
 >   %html
@@ -86,7 +86,7 @@ And now the template itself:
 >               $templateContent.args$
 >   |]
 
-Hopefully, that is fairly easy to follow; if not, please review the Hamlet documentation. Just remember that dollar signs mean HtmlContent variables, and at signs mean URLs.
+Hopefully, that is fairly easy to follow; if not, please review the Hamlet documentation. Just remember that dollar signs mean Html variables, and at signs mean URLs.
 
 Finally, the entry route handler:
 
@@ -98,8 +98,8 @@ Finally, the entry route handler:
 >       (entry:_) -> do
 >           let nav = reverse $ map toNav entries
 >           let tempArgs = TemplateArgs
->                   { templateTitle = cs $ entryTitle entry
->                   , templateContent = cs $ entryContent entry
+>                   { templateTitle = string $ entryTitle entry
+>                   , templateContent = string $ entryContent entry
 >                   , templateNavbar = nav
 >                   }
 >           hamletToRepHtml $ entryTemplate tempArgs
@@ -107,7 +107,7 @@ Finally, the entry route handler:
 >    toNav :: Entry -> Nav
 >    toNav e = Nav
 >       { navUrl = EntryR $ entrySlug e
->       , navTitle = cs $ entryTitle e
+>       , navTitle = string $ entryTitle e
 >       }
 
 For the most part, those conversions are pretty simple. cs is sort of a universal conversion function; it plays things very conservatively, and therefore HTML-entity escapes all strings it is passed in. If you want to try experimenting a bit, try to figure out how to *not* escape the content.

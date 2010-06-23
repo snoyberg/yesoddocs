@@ -8,6 +8,7 @@ We're going to use jQuery for the Javascript, though anything would work just fi
 > {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
 > import Yesod
 > import Yesod.Helpers.Static
+> import Data.Monoid (mempty)
 
 Like the [blog tutorial](blog.html), we'll define some data first.
 
@@ -62,12 +63,12 @@ Now, we'll define the Yesod instance. We'll still use a dummy approot value, but
 >     %ul#navbar
 >       $forall pages page
 >         %li
->           %a!href=@PageR.pageSlug.page@ $cs.pageName.page$
+>           %a!href=@PageR.pageSlug.page@ $string.pageName.page$
 >     #content
 >       ^pageBody.content^
 > |]
 >     where
->       jquery = cs "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
+>       jquery = string "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
 >       stylesheet = StaticR style_css
 >       script = StaticR script_js
 
@@ -88,15 +89,15 @@ And now the cool part: a handler that returns either HTML or JSON data, dependin
 >   Ajax pages _ <- getYesod
 >   case filter (\e -> pageSlug e == slug) pages of
 >       [] -> notFound
->       page:_ -> applyLayoutJson (pageName page) (return ()) (html page) (json page)
+>       page:_ -> applyLayoutJson (pageName page) mempty (html page) (json page)
 >  where
 >   html page = [$hamlet|
-> %h1 $cs.pageName.page$
-> %article $cs.pageContent.page$
+> %h1 $string.pageName.page$
+> %article $string.pageContent.page$
 > |]
 >   json page = jsonMap
->       [ ("name", jsonScalar $ cs $ pageName page)
->       , ("content", jsonScalar $ cs $ pageContent page)
+>       [ ("name", jsonScalar $ string $ pageName page)
+>       , ("content", jsonScalar $ string $ pageContent page)
 >       ]
 
 We first try and find the appropriate Page, returning a 404 if it's not there. We then use the applyLayoutJson function, which is really the heart of this example. It allows you an easy way to create responses that will be either HTML or JSON, and which use the default layout in the HTML responses. It takes four arguments: 1) the title of the HTML page, 2) some value, 3) a function from that value to a Hamlet value, and 4) a function from that value to a Json value.

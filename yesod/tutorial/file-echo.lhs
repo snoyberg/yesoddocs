@@ -1,6 +1,8 @@
 > {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
 
 > import Yesod
+> import Data.Monoid (mempty)
+> import Data.ByteString.Char8 (unpack)
 
 > data Echo = Echo
 
@@ -10,7 +12,7 @@
 
 > instance Yesod Echo where approot _ = ""
 
-> getHomepage = applyLayout "Upload a file" (return ()) [$hamlet|
+> getHomepage = applyLayout "Upload a file" mempty [$hamlet|
 > %form!method=post!action=.!enctype=multipart/form-data
 >   File name:
 >   %input!type=file!name=file
@@ -21,6 +23,6 @@
 >   rr <- getRequest
 >   (_, files) <- liftIO $ reqRequestBody rr
 >   fi <- maybe notFound return $ lookup "file" files
->   return [(contentTypeFromString $ cs $ fileContentType fi, toContent $ fileContent fi)]
+>   return [(unpack $ fileContentType fi, toContent $ fileContent fi)]
 
 > main = toWaiApp Echo >>= basicHandler 3000

@@ -9,6 +9,7 @@ In this tutorial, we'll create an app that let's you log in and add messages. Th
 > import Yesod
 > import Yesod.Helpers.Auth
 > import Control.Concurrent.MVar
+> import Data.Monoid (mempty)
 
 > data Message = Message
 >   { messageAuthor :: String
@@ -58,7 +59,7 @@ This basically says "send users to MessagesR on login, and to HomeR when they *n
 Now we'll write the homepage; that funny iframe bit at the bottom comes straight from RPXnow.
 
 > getHomeR :: Handler Chat RepHtml
-> getHomeR = applyLayout "Chat Home" (return ()) [$hamlet|
+> getHomeR = applyLayout "Chat Home" mempty [$hamlet|
 > %h1 OpenID
 > %form!action=@AuthR.OpenIdForward@
 >   %input!type=text!name=openid
@@ -86,7 +87,7 @@ Next, we'll write the GET handler for messages. We use the "requireCreds" to get
 >           %head
 >               %title Silly Chat Server
 >           %body
->               %p Logged in as $cs.credsIdent.creds$
+>               %p Logged in as $string.credsIdent.creds$
 >               %form!method=post!action=@MessagesR@
 >                   Enter your message: 
 >                   %input!type=text!name=message!width=400
@@ -94,8 +95,8 @@ Next, we'll write the GET handler for messages. We use the "requireCreds" to get
 >               %h1 Messages
 >               %dl
 >                   $forall msgs msg
->                       %dt $cs.messageAuthor.msg$
->                       %dd $cs.messageContent.msg$
+>                       %dt $string.messageAuthor.msg$
+>                       %dd $string.messageContent.msg$
 >   |]
 
 Pretty straight-forward. Now we'll add the post handler.

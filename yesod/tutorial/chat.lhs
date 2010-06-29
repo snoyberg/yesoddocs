@@ -35,6 +35,8 @@ The e-mail method allows users to register an e-mail address, get a verification
 >       { authIsOpenIdEnabled = True
 >       , authRpxnowApiKey = Just "c8043882f14387d7ad8dfc99a1a8dab2e028f690"
 >       , authEmailSettings = Just aes
+>       , authFacebook = Just ("134280699924829", "a7685e10c8977f5435e599aaf1d232eb")
+>       , authFacebookPerms = ["email"]
 >       }
 
 There are three resource patterns: the homepage, the auth subsite, and the messages page. When you GET the messages page, it will give you the history. POSTing will allow you to add a message. The homepage will have login information.
@@ -68,6 +70,8 @@ Now we'll write the homepage; that funny iframe bit at the bottom comes straight
 > %form!method=post!action=@AuthR.EmailRegisterR@
 >   %input!type=email!name=email
 >   %input!type=submit!value=Register
+> %h1 Facebook
+> %a!href=@AuthR.StartFacebookR@ Facebook Connect
 > %h1 Rpxnow
 > <iframe src="http://yesod-test.rpxnow.com/openid/embed?token_url=@AuthR.RpxnowR@" scrolling="no" frameBorder="no" allowtransparency="true" style="width:400px;height:240px"></iframe>
 > |]
@@ -88,6 +92,7 @@ Next, we'll write the GET handler for messages. We use the "requireCreds" to get
 >               %title Silly Chat Server
 >           %body
 >               %p Logged in as $string.credsIdent.creds$
+>               %p Your full creds: $string.show.creds$
 >               %form!method=post!action=@MessagesR@
 >                   Enter your message: 
 >                   %input!type=text!name=message!width=400

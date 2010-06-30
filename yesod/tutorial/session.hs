@@ -13,7 +13,7 @@ getRoot = do
     %input!type=text!name=key
     %input!type=text!name=val
     %input!type=submit
-%h1 $cs.show.sess$
+%h1 $string.show.sess$
 |]
 
 postRoot :: Handler Session ()

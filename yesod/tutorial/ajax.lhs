@@ -39,7 +39,7 @@ Now the routes; we'll have a homepage, a pattern for the pages, and use a static
 > mkYesod "Ajax" [$parseRoutes|
 > /                  HomeR   GET
 > /page/#String      PageR   GET
-> /static            StaticR Static siteStatic ajaxStatic
+> /static            StaticR Static ajaxStatic
 > |]
 
 That third line there is the syntax for a subsite: Static is the datatype for the subsite argument; siteStatic returns the site itself (parse, render and dispatch functions); and ajaxStatic gets the subsite argument from the master argument.

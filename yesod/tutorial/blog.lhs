@@ -63,13 +63,13 @@ Next we'll define a template for entry pages. Normally, I tend to just define th
 The Nav datatype will contain navigation information (ie, the URL and title) of each entry.
 
 > data Nav = Nav
->   { navUrl :: BlogRoutes
+>   { navUrl :: Routes Blog
 >   , navTitle :: Html ()
 >   }
 
 And now the template itself:
 
-> entryTemplate :: TemplateArgs -> Hamlet BlogRoutes
+> entryTemplate :: TemplateArgs -> Hamlet (Routes Blog)
 > entryTemplate args = [$hamlet|
 >   !!!
 >   %html

@@ -43,7 +43,7 @@ There are three resource patterns: the homepage, the auth subsite, and the messa
 
 > mkYesod "Chat" [$parseRoutes|
 > /                  HomeR      GET
-> /auth              AuthR      Auth   siteAuth   chatAuth
+> /auth              AuthR      Auth chatAuth
 > /messages          MessagesR  GET POST
 > |]
 

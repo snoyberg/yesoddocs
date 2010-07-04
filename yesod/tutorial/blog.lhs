@@ -74,16 +74,16 @@ And now the template itself:
 >   !!!
 >   %html
 >       %head
->           %title $templateTitle.args$
+>           %title $<templateTitle.args>$
 >       %body
 >           %h1 Yesod Sample Blog
->           %h2 $templateTitle.args$
+>           %h2 $<templateTitle.args>$
 >           %ul#nav
 >               $forall templateNavbar.args nav
 >                   %li
->                       %a!href=@navUrl.nav@ $navTitle.nav$
+>                       %a!href=@navUrl.nav@ $<navTitle.nav>$
 >           #content
->               $templateContent.args$
+>               $<templateContent.args>$
 >   |]
 
 Hopefully, that is fairly easy to follow; if not, please review the Hamlet documentation. Just remember that dollar signs mean Html variables, and at signs mean URLs.

@@ -43,13 +43,13 @@ This example uses the [data-object-yaml package](http://hackage.haskell.org/pack
 >     rr <- getRequest
 >     (_, files) <- liftIO $ reqRequestBody rr
 >     fi <- case lookup "yaml" files of
->             Nothing -> invalidArgs [("yaml", "Missing input")]
+>             Nothing -> invalidArgs ["yaml: Missing input"]
 >             Just x -> return x
 >     so <- liftIO $ decode $ B.concat $ L.toChunks $ fileContent fi
 >     hamletToRepHtml $ template $ Just $ objToHamlet so
 
 > objToHamlet :: StringObject -> Hamlet url
-> objToHamlet (Scalar s) = [$hamlet|$string.s$|]
+> objToHamlet (Scalar s) = [$hamlet|$s$|]
 > objToHamlet (Sequence list) = [$hamlet|
 > %ul
 >     $forall list o
@@ -58,7 +58,7 @@ This example uses the [data-object-yaml package](http://hackage.haskell.org/pack
 > objToHamlet (Mapping pairs) = [$hamlet|
 > %dl
 >     $forall pairs pair
->         %dt $string.fst.pair$
+>         %dt $fst.pair$
 >         %dd ^objToHamlet.snd.pair^
 > |]
 

@@ -29,12 +29,12 @@ title: Multi-lingual -- Tutorials -- Yesod
 >             , ("he", "Hebrew")
 >             ]
 >     applyLayout "I18N Homepage" mempty [$hamlet|
-> %h1 $string.hello$
+> %h1 $hello$
 > %p In other languages:
 > %ul
 >     $forall choices choice
 >         %li
->             %a!href=@SetLangR.fst.choice@ $string.snd.choice$
+>             %a!href=@SetLangR.fst.choice@ $snd.choice$
 > |]
 
 > chooseHello :: [String] -> String

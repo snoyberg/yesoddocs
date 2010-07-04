@@ -35,8 +35,7 @@ The e-mail method allows users to register an e-mail address, get a verification
 >       { authIsOpenIdEnabled = True
 >       , authRpxnowApiKey = Just "c8043882f14387d7ad8dfc99a1a8dab2e028f690"
 >       , authEmailSettings = Just aes
->       , authFacebook = Just ("134280699924829", "a7685e10c8977f5435e599aaf1d232eb")
->       , authFacebookPerms = ["email"]
+>       , authFacebook = Just ("134280699924829", "a7685e10c8977f5435e599aaf1d232eb", ["email"])
 >       }
 
 There are three resource patterns: the homepage, the auth subsite, and the messages page. When you GET the messages page, it will give you the history. POSTing will allow you to add a message. The homepage will have login information.
@@ -91,8 +90,8 @@ Next, we'll write the GET handler for messages. We use the "requireCreds" to get
 >           %head
 >               %title Silly Chat Server
 >           %body
->               %p Logged in as $string.credsIdent.creds$
->               %p Your full creds: $string.show.creds$
+>               %p Logged in as $credsIdent.creds$
+>               %p Your full creds: $show.creds$
 >               %form!method=post!action=@MessagesR@
 >                   Enter your message: 
 >                   %input!type=text!name=message!width=400
@@ -100,8 +99,8 @@ Next, we'll write the GET handler for messages. We use the "requireCreds" to get
 >               %h1 Messages
 >               %dl
 >                   $forall msgs msg
->                       %dt $string.messageAuthor.msg$
->                       %dd $string.messageContent.msg$
+>                       %dt $messageAuthor.msg$
+>                       %dd $messageContent.msg$
 >   |]
 
 Pretty straight-forward. Now we'll add the post handler.
@@ -109,7 +108,7 @@ Pretty straight-forward. Now we'll add the post handler.
 > postMessagesR :: Handler Chat ()
 > postMessagesR = do
 >   creds <- requireCreds -- now we know we're logged in
->   message <- runFormPost $ notEmpty $ required $ input "message"
+>   message <- runFormPost' $ stringInput "message"
 >   msgs <- chatMsgs `fmap` getYesod
 >   let msg = Message (credsIdent creds) message
 >   liftIO $ modifyMVar_ msgs $ return . (:) msg

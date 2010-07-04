@@ -1,3 +1,4 @@
 *.swp
 _cache
 _site
+/dist

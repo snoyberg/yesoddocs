@@ -110,8 +110,6 @@ Finally, the entry route handler:
 >       , navTitle = string $ entryTitle e
 >       }
 
-For the most part, those conversions are pretty simple. cs is sort of a universal conversion function; it plays things very conservatively, and therefore HTML-entity escapes all strings it is passed in. If you want to try experimenting a bit, try to figure out how to *not* escape the content.
-
 All that's left now is the main function. Yesod is built on top of WAI, so you can use any WAI handler you wish. For the tutorials, we'll use the basicHandler that comes built-in with Yesod: it serves content via CGI if the appropriate environment variables are available, otherwise with simpleserver.
 
 > main :: IO ()

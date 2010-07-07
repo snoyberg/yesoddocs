@@ -27,11 +27,15 @@ This site provides documentation for a number of the underlying projects which p
 <td>Haml-inspired layout combined with Haskell type safety and enumerators for performance. This package combines very well with web-routes-quasi by allow you to specify a URL datatype. It also allows embedding of other templates without storing all the data in memory, and automatic HTML entity encoding with the HtmlContent datatype.</td>
 </tr>
 <tr>
+<th>[persistent]($root/persistent/)</th>
+<td>A persistence layer targetting multiple backends. Its main feature is very strong type safety, but uses template haskell to avoid writing a lot of boilerplate code. By taking a non-relational approach to data, it can work on both SQL and non-SQL backends.</td>
+</tr>
+<tr>
 <th>[clientsession](http://hackage.haskell.org/package/clientsession)</th>
 <td>Store session data in an encrypted, checksummed cookie. This approach allows you to avoid a database lookup for each and every user request, and make it easier to scale out your application to multiple servers.</td>
 </tr>
 <tr>
-<th>[authenticate](http://hackage.haskell.org/package/clientsession)</th>
+<th>[authenticate](http://hackage.haskell.org/package/authenticate)</th>
 <td>Provides 3rd-party authentication. Currently only OpenId v1 and RPXnow are supported; hopefully more systems will be added in the future.</td>
 </tr>
 </tbody>

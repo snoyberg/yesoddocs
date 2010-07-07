@@ -38,5 +38,9 @@ This site provides documentation for a number of the underlying projects which p
 <th>[authenticate](http://hackage.haskell.org/package/authenticate)</th>
 <td>Provides 3rd-party authentication. Currently only OpenId v1 and RPXnow are supported; hopefully more systems will be added in the future.</td>
 </tr>
+<tr>
+<th>[yesod]($root/yesod/)</th>
+<td>A web framework tying together all of the other pieces mentioned on this page to provide a consistent API for quickly creating type-safe, RESTful, performant web applications.</td>
+</tr>
 </tbody>
 </table>

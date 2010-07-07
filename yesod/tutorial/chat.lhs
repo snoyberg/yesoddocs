@@ -1,6 +1,8 @@
 ---
 title: Chat -- Tutorials -- Yesod
 ---
+**NOTE: This tutorial requires the development version of Yesod (version 0.4.0). The [tutorial main page]($root/yesod/tutorial/) has instructions on setting up your environment.**
+
 OK, maybe chat is a little over-reaching for this tutorial... but I like typing less, and chat is shorter than message board ;).
 
 In this tutorial, we'll create an app that let's you log in and add messages. The server will display all messages to logged-in users.

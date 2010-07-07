@@ -1,6 +1,8 @@
 ---
 title: Blog -- Tutorials -- Yesod
 ---
+**NOTE: This tutorial requires the development version of Yesod (version 0.4.0). The [tutorial main page]($root/yesod/tutorial/) has instructions on setting up your environment.**
+
 Well, just about every web framework I've seen starts with a blog tutorial- so here's mine! Actually, you'll see that this is actually a much less featureful blog than most, but gives a good introduction to Yesod basics. I recommend you start by [reading the terminology section]($root/yesod/terminology.html).
 
 This file is literate Haskell, so we'll start off with our language pragmas and import statements. Basically every Yesod application will start off like this:
@@ -63,27 +65,27 @@ Next we'll define a template for entry pages. Normally, I tend to just define th
 The Nav datatype will contain navigation information (ie, the URL and title) of each entry.
 
 > data Nav = Nav
->   { navUrl :: Routes Blog
+>   { navUrl :: Route Blog
 >   , navTitle :: Html ()
 >   }
 
 And now the template itself:
 
-> entryTemplate :: TemplateArgs -> Hamlet (Routes Blog)
+> entryTemplate :: TemplateArgs -> Hamlet (Route Blog)
 > entryTemplate args = [$hamlet|
 >   !!!
 >   %html
 >       %head
->           %title $<templateTitle.args>$
+>           %title $templateTitle.args$
 >       %body
 >           %h1 Yesod Sample Blog
->           %h2 $<templateTitle.args>$
+>           %h2 $templateTitle.args$
 >           %ul#nav
 >               $forall templateNavbar.args nav
 >                   %li
->                       %a!href=@navUrl.nav@ $<navTitle.nav>$
+>                       %a!href=@navUrl.nav@ $navTitle.nav$
 >           #content
->               $<templateContent.args>$
+>               $templateContent.args$
 >   |]
 
 Hopefully, that is fairly easy to follow; if not, please review the Hamlet documentation. Just remember that dollar signs mean Html variables, and at signs mean URLs.

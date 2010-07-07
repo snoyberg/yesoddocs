@@ -1,6 +1,8 @@
 ---
 title: AJAX -- Tutorials -- Yesod
 ---
+**NOTE: This tutorial requires the development version of Yesod (version 0.4.0). The [tutorial main page]($root/yesod/tutorial/) has instructions on setting up your environment.**
+
 We're going to write a very simple AJAX application. It will be a simple site with a few pages and a navbar; when you have Javascript, clicking on the links will load the pages via AJAX. Otherwise, it will use static HTML.
 
 We're going to use jQuery for the Javascript, though anything would work just fine. Also, the AJAX responses will be served as JSON. Let's get started.
@@ -54,7 +56,7 @@ Now, we'll define the Yesod instance. We'll still use a dummy approot value, but
 > !!!
 > %html
 >   %head
->     %title $<pageTitle.content>$
+>     %title $pageTitle.content$
 >     %link!rel=stylesheet!href=@StaticR.style_css@
 >     %script!src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
 >     %script!src=@StaticR.script_js@

@@ -39,7 +39,7 @@ Executable i18n
   Main-is:             yesod/tutorial/i18n.lhs
 
 Executable session
-  Main-is:             yesod/tutorial/session.hs
+  Main-is:             yesod/tutorial/session.lhs
 
 source-repository head
   type:     git

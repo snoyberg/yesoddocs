@@ -26,4 +26,4 @@
 >   fi <- maybe notFound return $ lookup "file" files
 >   return [(fileContentType fi, toContent $ fileContent fi)]
 
-> main = toWaiApp Echo >>= basicHandler 3000
+> main = basicHandler 3000 Echo

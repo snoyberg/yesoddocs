@@ -65,4 +65,4 @@ This example uses the [data-object-yaml package](http://hackage.haskell.org/pack
 > |]
 
 > main :: IO ()
-> main = toWaiApp PY >>= basicHandler 3000
+> main = basicHandler 3000 PY

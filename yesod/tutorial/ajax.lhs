@@ -108,5 +108,4 @@ And now our typical main function. We need two parameters to build our Ajax valu
 > main = do
 >   pages <- loadPages
 >   let static = fileLookupDir "static/yesod/ajax" typeByExt
->   app <- toWaiApp $ Ajax pages static
->   basicHandler 3000 app
+>   basicHandler 3000 $ Ajax pages static

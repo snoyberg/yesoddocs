@@ -117,5 +117,4 @@ All that's left now is the main function. Yesod is built on top of WAI, so you c
 > main :: IO ()
 > main = do
 >   entries <- loadEntries
->   app <- toWaiApp $ Blog entries
->   basicHandler 3000 app
+>   basicHandler 3000 $ Blog entries

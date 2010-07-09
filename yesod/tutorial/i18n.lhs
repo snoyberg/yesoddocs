@@ -50,4 +50,4 @@ title: Multi-lingual -- Tutorials -- Yesod
 >     redirect RedirectTemporary HomepageR
 
 > main :: IO ()
-> main = toWaiApp I18N >>= basicHandler 3000
+> main = basicHandler 3000 I18N

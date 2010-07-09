@@ -29,4 +29,4 @@
 > instance Yesod Session where
 >     approot _ = ""
 >     clientSessionDuration _ = 1
-> main = toWaiApp Session >>= basicHandler 3000
+> main = basicHandler 3000 Session

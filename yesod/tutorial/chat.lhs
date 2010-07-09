@@ -123,5 +123,4 @@ Finally, we'll do our standard main function.
 > main :: IO ()
 > main = do
 >   chat <- loadChat
->   app <- toWaiApp chat
->   basicHandler 3000 app
+>   basicHandler 3000 chat

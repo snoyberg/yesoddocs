@@ -14,6 +14,7 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "overview.markdown"
 
     render "yesod/index.markdown"
+    render "yesod/changelog.markdown"
     render "yesod/helloworld.lhs"
     render "yesod/terminology.markdown"
     render "yesod/articles.markdown"
@@ -27,6 +28,7 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "yesod/deploying.markdown"
 
     render "hamlet/index.markdown"
+    render "hamlet/changelog.markdown"
     render "hamlet/synopsis.lhs"
     render "hamlet/syntax.markdown"
     render "hamlet/indentation.markdown"
@@ -40,11 +42,13 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "hamlet/maybe.markdown"
 
     render "web-routes-quasi/index.markdown"
+    render "web-routes-quasi/changelog.markdown"
     render "web-routes-quasi/synopsis.markdown"
     render "web-routes-quasi/syntax.markdown"
     render "web-routes-quasi/usage.markdown"
 
     render "persistent/index.markdown"
+    render "persistent/changelog.markdown"
     render "persistent/synopsis.lhs"
     render "persistent/overview.markdown"
     render "persistent/defining-entities.markdown"

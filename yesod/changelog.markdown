@@ -9,7 +9,7 @@ inconsistent.
 
 * Widgets. These allow you to create composable pieces of a webpage that
 keep track of their own Javascript and CSS. It includes a function for
-obtaining unique identifiers to avoid name collissions, and does automatic
+obtaining unique identifiers to avoid name collisions, and does automatic
 dependency combining; in other words, if you have two widgets that depend on
 jQuery, the combined widget will only include it once.
 

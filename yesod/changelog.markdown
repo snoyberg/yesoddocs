@@ -18,6 +18,8 @@ widget-based API. It includes basic input functions as well as fancier
 Javascript-driven functions; for example, there is a plain day entry field,
 and a day entry field which automatically loads the jQuery UI date picker.
 
+* Added the yesod executable which performs basic scaffolding.
+
 * Cleaned up a bunch of API function names for consistency. For example,
 Yesod.Request now has a logical lookupGetName, lookupPostName, etc naming
 scheme.

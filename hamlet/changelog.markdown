@@ -21,3 +21,9 @@ write [$hamlet|$foo bar baz$|].
 You can now do away with $string.var$ and simply type $var$. Currently, the
 ToHtml typeclass is not exposed, and it only provides instances for String and
 Html, though this is open for discussion.
+
+* Added hamletFile and xhamletFile which loads a Hamlet template from an
+external file. The file is parsed at compile time, just like a quasi-quoted
+template, and must be UTF-8 encoded. Additionally, be warned that the compiler
+won't automatically know to recompile a module if the template file gets
+changed.

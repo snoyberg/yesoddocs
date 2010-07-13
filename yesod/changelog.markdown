@@ -1,7 +1,7 @@
 ---
 title: Changelog -- Yesod
 ---
-### New in Yesod 0.4.0 (not yet released)
+### New in Yesod 0.4.0
 
 A big thanks on this release to Simon Michael, who pointed out a number of
 places where the docs were unclear, the API was unintuitive, or the names were

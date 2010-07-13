@@ -1,7 +1,7 @@
 ---
 title: Blog, part 1 -- Screencasts -- Yesod
 ---
-<a href="http://vimeo.com/13294691">See the video</a>
+<object width="600" height="400"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=13296597&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=00ADEF&amp;fullscreen=1" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=13296597&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=00ADEF&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="600" height="400"></embed></object><p><a href="http://vimeo.com/13296597">Blog Tutorial - Part 1 - Yesod Web Framework 0.4.0</a> from <a href="http://vimeo.com/user1975429">Michael Snoyman</a> on <a href="http://vimeo.com">Vimeo</a>.</p>
 
 Here's the source code:
 

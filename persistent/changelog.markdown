@@ -1,7 +1,7 @@
 ---
 title: Changelog -- persistent
 ---
-### New in persistent 0.1.0 (not yet released)
+### New in persistent 0.1.0
 
 * Split up the PersistEntity typeclass into PersistBackend and PersistEntity.
 This makes the TH generation code universal to all backends, and means backend

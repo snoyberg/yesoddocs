@@ -1,7 +1,7 @@
 ---
 title: Changelog -- Hamlet
 ---
-### New in Hamlet 0.4.0 (not yet released)
+### New in Hamlet 0.4.0
 
 * Internal template parsing is now done via Parsec. This opened the doors for
 the other changes mentioned below, but also hopefully gives more meaningful

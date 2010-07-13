@@ -1,7 +1,7 @@
 ---
 title: Changelog -- web-routes-quasi
 ---
-### New in web-routes-quasi 0.5.0 (not yet released)
+### New in web-routes-quasi 0.5.0
 
 * Major simplifications. Instead of providing a single function to create all
 of your TH declarations, it now provides a number of smaller functions. This

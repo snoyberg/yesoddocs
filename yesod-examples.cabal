@@ -11,6 +11,8 @@ Stability:           Experimental
 Category:            Web
 Build-type:          Simple
 Cabal-version:       >=1.6
+extra-source-files:  static/yesod/ajax/script.js,
+                     static/yesod/ajax/style.css
 
 Executable helloworld
   Main-is:             yesod/helloworld.lhs
@@ -40,6 +42,18 @@ Executable i18n
 
 Executable session
   Main-is:             yesod/tutorial/session.lhs
+
+Executable widgets
+  Main-is:             yesod/tutorial/widgets.lhs
+
+Executable persistent-synopsis
+  Main-is:             persistent/synopsis.lhs
+  Build-depends:       transformers >= 0.2.1 && < 0.3,
+                       persistent-sqlite >= 0.1.0 && < 0.2
+
+Executable hamlet-synopsis
+  Main-is:             hamlet/synopsis.lhs
+  Build-depends:       hamlet >= 0.4.0 && < 0.5
 
 source-repository head
   type:     git

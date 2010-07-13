@@ -3,19 +3,18 @@ title: Synopsis - Persistent
 ---
 This example uses the sqlite backend for Persistent, since it can run in-memory and has no external dependencies.
 
-> {-# LANGUAGE TypeFamilies, FlexibleInstances, GeneralizedNewtypeDeriving, QuasiQuotes #-}
+> {-# LANGUAGE TypeFamilies, GeneralizedNewtypeDeriving, QuasiQuotes #-}
 >
-> import Database.Persist
 > import Database.Persist.Sqlite
 > import Control.Monad.IO.Class (liftIO)
 >
-> persistSqlite [$persist|Person
+> mkPersist [$persist|Person
 >     name String Eq
 >     age Int update
 > |]
 >
 > main :: IO ()
-> main = withSqlite ":memory:" $ runSqlite go
+> main = withSqlite ":memory:" 8 $ runSqlite go
 >
 > go :: SqliteReader IO ()
 > go = do

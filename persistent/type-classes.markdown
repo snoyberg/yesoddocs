@@ -1,6 +1,8 @@
 ---
 title: Type classes - Persistent
 ---
+**NOTE: This documentation still reflects persistent version 0.0.0. It will be updated soon.**
+
 The API for Persistent really consists of just two type classes: [PersistField](http://docs.yesodweb.com/haddock/persistent/Database-Persist.html#t%3APersistField) and [PersistEntity](http://docs.yesodweb.com/haddock/persistent/Database-Persist.html#t%3APersistEntity). The former is for individual fields which can be included in an entity; the latter is for entities which are comprised of a number of fields.
 
 ### PersistField

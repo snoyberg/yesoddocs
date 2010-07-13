@@ -1,7 +1,7 @@
 ---
 title: Persistent
 ---
-Current version: **[0.0.0](http://hackage.haskell.org/package/persistent-0.0.0)**. Upcoming version: **0.0.0**. Code repo: [http://github.com/snoyberg/persistent](http://github.com/snoyberg/persistent)
+Current version: **[0.1.0](http://hackage.haskell.org/package/persistent-0.1.0)**. Code repo: [http://github.com/snoyberg/persistent](http://github.com/snoyberg/persistent)
 
 Persistent is a persistence layer with a huge emphasis on type safety. It uses template haskell to automate the boilerplate production of data types and constructors that allow you to do regular database activities with full compile-time guarantees of type correctness.
 
@@ -11,6 +11,6 @@ While persistent is designed to integrate tightly with Yesod, it is quite usable
 
 To use Persistent, you must also use a backend, which provides database-specific code. The currently available backends are:
 
-* [persistent-sqlite 0.0.0](http://hackage.haskell.org/package/persistent-sqlite-0.0.0)
+* [persistent-sqlite 0.1.0](http://hackage.haskell.org/package/persistent-sqlite-0.1.0)
 
-* [persistent-postgresql 0.0.0](http://hackage.haskell.org/package/persistent-postgresql-0.0.0)
+* [persistent-postgresql 0.1.0](http://hackage.haskell.org/package/persistent-postgresql-0.1.0)

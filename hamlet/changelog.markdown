@@ -15,10 +15,10 @@ and pounds in an attribute value. For example:
 
 * Space-delimited references in addition to period-delimited ones. This only
 applies to references in content, not in statements. For example, you could
-write [$hamlet|$foo bar baz$|].
+write [\$hamlet|\$foo bar baz\$|].
 
 * Dollar-sign interpolation is now polymorphic, based on the ToHtml typeclass.
-You can now do away with $string.var$ and simply type $var$. Currently, the
+You can now do away with \$string.var\$ and simply type \$var\$. Currently, the
 ToHtml typeclass is not exposed, and it only provides instances for String and
 Html, though this is open for discussion.
 

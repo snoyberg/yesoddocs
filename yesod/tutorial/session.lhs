@@ -1,5 +1,3 @@
-**NOTE: This tutorial requires the development version of Yesod (version 0.4.0). The [tutorial main page]($root/yesod/tutorial/) has instructions on setting up your environment.**
-
 > {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
 > import Yesod
 > import Control.Applicative ((<$>), (<*>))

@@ -1,8 +1,6 @@
 ---
 title: Pretty YAML -- Tutorials -- Yesod
 ---
-**NOTE: This tutorial requires the development version of Yesod (version 0.4.0). The [tutorial main page]($root/yesod/tutorial/) has instructions on setting up your environment.**
-
 This example uses the [data-object-yaml package](http://hackage.haskell.org/package/data-object-yaml) to display YAML files as cleaned-up HTML. If you've read through the other tutorials, this one should be easy to follow.
 
 > {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}

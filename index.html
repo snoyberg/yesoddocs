@@ -190,7 +190,7 @@ data HelloWorld = HelloWorld
 mkYesod "HelloWorld" [$parseRoutes|/ Home GET|]
 instance Yesod HelloWorld where approot _ = ""
 getHome = applyLayout [$hamlet|%h1 Hello World|]
-main = toWaiApp HelloWorld &gt;&gt;= basicHandler 3000</code></pre>
+main = basicHandler 3000 HelloWorld</code></pre>
           </article>
         </section>
         <section id="type-safety">

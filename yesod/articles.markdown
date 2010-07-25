@@ -1,6 +1,8 @@
 ---
 title: Articles -- Yesod
 ---
+* [Ajax Push](http://braincrater.wordpress.com/2010/07/22/ajax-chat-app-using-yesod/)
+
 * [The Handler Monad](http://www.snoyman.com/blog/entry/handler-monad/)- June 15, 2010. Slightly out-of-date, as we've migrated back to a form of either monad transformer.
 
 * [Sessions, messages and ultimate destination](http://www.snoyman.com/blog/entry/sessions/)- July 16, 2010

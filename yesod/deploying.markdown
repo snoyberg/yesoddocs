@@ -79,3 +79,51 @@ This is basically the same as the FastCGI version, but tells lighttpd to run a f
     )
 
     cgi.assign = (".cgi" => "")
+
+### FastCGI on nginx
+
+nginx treats FastCGI a little bit differently than Apache and lighttpd. In nginx, the user is responsible for starting the FastCGI process, **not** the web server. Without getting into too much detail, this means you need to run your FastCGI executable with a wrapper program, the best example being [spawn-fcgi](http://redmine.lighttpd.net/projects/spawn-fcgi).
+
+There are lots of options available here; you can choose between having your application receive requests via TCP or Unix sockets, port number, etc. See the spawn-fcgi docs for more details. Here's the command I use in the [yesod-hello](http://github.com/snoyberg/yesod-hello) repository:
+
+    spawn-fcgi -n -s /tmp/hello.socket hello
+
+The -n option says not to run the program in the background; "-s /tmp/hello.socket" says to use a Unix named socket; and "hello" is the name of the executable.
+
+Next comes the nginx config file. Please note that I have *not* mastered nginx config files, and suggestions on improving this are welcome.
+
+    error_log  /dev/null;
+    pid        /tmp/nginx.pid;
+    daemon off;
+     
+    events {
+      worker_connections  4096;
+    }
+     
+    http {
+      fastcgi_param  QUERY_STRING       $query_string;
+      fastcgi_param  REQUEST_METHOD     $request_method;
+      fastcgi_param  CONTENT_TYPE       $content_type;
+      fastcgi_param  CONTENT_LENGTH     $content_length;
+      fastcgi_param  PATH_INFO          $request_uri;
+      fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+      fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+      fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
+      fastcgi_param  REMOTE_ADDR        $remote_addr;
+      fastcgi_param  SERVER_ADDR        $server_addr;
+      fastcgi_param  SERVER_PORT        $server_port;
+      fastcgi_param  SERVER_NAME        $server_name;
+     
+      access_log off;
+      server_names_hash_bucket_size 128; # this seems to be required for some vhosts
+     
+      server {
+        listen       3000;
+     
+        location ~ $ {
+          fastcgi_pass   unix:/tmp/hello.socket;
+        }
+      }
+    }
+
+Things of note: the "daemon off" line says not to fork into the background; all of those fastcgi_param lines allow you flexibility in the variables provided to your application; "listen 3000" says what port the HTTP server will listen on; and fastcgi_pass says how to talk to the fastcgi application. That "location" line says where to attach the FastCGI app.

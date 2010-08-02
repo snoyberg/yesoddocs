@@ -6,11 +6,11 @@ The set of routes:
     /                Home       GET
     /entry/#String   EntryRoute GET
     /fake/#Integer   Fake
-    /static          Static     Static siteStatic staticPath
+    /static          Static     Static staticPath
 
 will result in roughly the following Haskell code:
 
-    data Routes = Home | EntryRoute String | Fake Integer | Static StaticRoutes
+    data Routes = Home | EntryRoute String | Fake Integer | Static StaticRoute
 
     parseRoutes :: [String] -> Either String Routes
     parseRoutes [] = Right Home

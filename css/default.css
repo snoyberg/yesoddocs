@@ -50,12 +50,12 @@ h3 {
 
 #content {
   margin-left: 180px;
-  background: #eee;
+  background: #fff;
   padding: 1em;
 }
 
 #wrapper {
-  background: #e6f0f2 url(../static/nav.png) repeat-y top left;
+  background: #f8f8f8;
 }
 
 ul {

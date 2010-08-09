@@ -59,5 +59,11 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "persistent/backends.markdown"
     render "persistent/relations.markdown"
 
+    render "book/index.markdown"
+    render "book/introduction.markdown"
+    render "book/tools.markdown"
+    render "book/wai.markdown"
+    render "book/hamlet.markdown"
+
     where render = renderChain ["template.html"]
                  . createPage

@@ -3,6 +3,7 @@ body {
   margin: 0;
   font-family: "Droid Sans", sans-serif;
   background: #a2c8d1;
+  line-height: 140%;
 }
 
 h1 {
@@ -149,3 +150,9 @@ th, td {
 .treeview li.lastExpandable { background-position: -32px -67px }
 
 .treeview div.lastCollapsable-hitarea, .treeview div.lastExpandable-hitarea { background-position: 0; }
+
+.advanced {
+    background-color: #ddd;
+    margin-left: 2em;
+    padding: 3px;
+}

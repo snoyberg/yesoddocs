@@ -64,6 +64,7 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "book/tools.markdown"
     render "book/wai.markdown"
     render "book/hamlet.markdown"
+    render "book/deploying.markdown"
 
     where render = renderChain ["template.html"]
                  . createPage

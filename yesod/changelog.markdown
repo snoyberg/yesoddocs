@@ -1,6 +1,37 @@
 ---
 title: Changelog -- Yesod
 ---
+### Yesod 0.5.0 (not yet released)
+
+* Forms no longer have special types for special views; instead, there is a
+toFormField attribute when declaring entities to specify a form rendering
+function.
+
+* URL settings for jQuery and Nic are now in their own typeclasses. This will
+be the approach used in the future when adding more widgets and forms that
+require Javascript libraries.
+
+* You can explicitly specify the id and name attributes to be used in forms if
+you like. When omitted, a unique name is automatically generated.
+
+* The isAuthorized function now takes a function specifying whether the
+request is a write request. This should make it simpler to develop read/write
+authorization systems. Bonus points: if you use HTTP request methods properly,
+the isWriteRequest function will automatically determine whether a request is
+a read or write request.
+
+* You can now specify splitPath and joinPath functions yourself. Previously,
+the built-in versions had very specific URL rules, such as enforcing a
+trailing slash. If you want something more flexible, you can override these
+functions.
+
+* addStaticContent is used to serve CSS and Javascript code from widgets from
+external files. This allows caching to take place as you'd normally like.
+
+* Static files served from the static subsite can have a hash string added to
+the query string; this is done automatically when using the getStaticFiles
+function. This allows you to set your expires headers far in the future.
+
 ### New in Yesod 0.4.0
 
 A big thanks on this release to Simon Michael, who pointed out a number of

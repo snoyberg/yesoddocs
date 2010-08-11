@@ -1,6 +1,13 @@
 ---
 title: Changelog -- web-routes-quasi
 ---
+### web-routes-quasi 0.6.0
+
+* This release reflects changes in web-routes 0.23. In particular, this allows
+a type-safe URL to be rendered to both a path and a query-string. This was
+needed to support hashed static files in Yesod. Routing itself is still
+performed solely on the path piece, ignoring the query-string.
+
 ### New in web-routes-quasi 0.5.0
 
 * Major simplifications. Instead of providing a single function to create all

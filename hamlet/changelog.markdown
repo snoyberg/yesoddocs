@@ -1,6 +1,28 @@
 ---
 title: Changelog -- Hamlet
 ---
+### Hamlet 0.5.0 (not yet released)
+
+* Use can use parantheses when referencing variables. This allows you to have
+functions applied to multiple arguments.
+
+* Added the hamlet' and xhamlet' quasiquoters for generating plain Html
+values.
+
+* Added runtime Hamlet support.
+
+* Added "file debug" support. This is a mode that is a drop-in replacement for
+external files compiled via template haskell. However, this mode also has a
+runtime component, in that is reads your templates at runtime, thus avoiding
+the need to a recompile for each template change. This takes a runtime hit
+obviously, so it's recommended that you switch back to the compile-time
+templates for production systems.
+
+* Added the Cassius and Julius template languages for CSS and Javascript,
+respectively. The former is white-space sensitive, whereas the latter is just
+a passthrough for raw Javascript code. The big feature in both of them is that
+they support variable interpolation just like Hamlet does.
+
 ### New in Hamlet 0.4.0
 
 * Internal template parsing is now done via Parsec. This opened the doors for

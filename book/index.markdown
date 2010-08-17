@@ -9,4 +9,5 @@ I've begun writing chapters do give a much more in-depth explanation of Yesod. T
 1) [Web Application Interface](wai.html)
 1) [Theory](theory.html)
 1) [Hamlet](hamlet.html)
+1) [Forms](forms.html)
 1) [Deploying Your Webapp](deploying.html)

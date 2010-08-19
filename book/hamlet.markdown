@@ -55,7 +55,44 @@ One other convenience in Hamlet: a line consisting solely of three exclamation m
         %body
             %h1 My Page Title
 
-### FIXME Backslash escaping
+### Backslash escaping
+
+Since Hamlet is white-space sensitive, we need a way to escape whitespace at the beginning of a line. A backslash has special meaning *when it is the first non-whitespace character*. Otherwise, it is interpretted literally as a backslash. There are three cases:
+
+* When there are no characters following the backslash, Hamlet translates it into a newline.
+
+* When there are two backslashes together, Hamlet translates it into a single backslash.
+
+* Otherwise, the backslash is simply thrown out.
+
+Let's see some examples where this is useful.
+
+    %b Hello
+    \ World
+
+becomes
+
+    <b>Hello</b> World
+
+whereas
+
+    %b Hello
+    \
+    World
+
+becomes
+
+    <b>Hello</b>
+    World
+
+One other related convenience is the trailing dollar sign. While the backslash allow leading whitespace, the dollar sign helps with trailing whitespace. The trailing dollar sign is never necessary, but it prevents overzealous text editors from pruning "extra" space characters. For example:
+
+    Hello $
+    %b World
+
+becomes
+
+    Hello <b>World</b>
 
 ## Calling Hamlet
 
@@ -134,6 +171,80 @@ Wrapping a variable with carets (^) allows embedding of other templates.
 
 ### URLs
 
-Here's the part where Hamlet shines: <a href="theory.html#type-safe-urls">type-safe URLs</a>.
+Here's the part where Hamlet shines: [type-safe URLs](theory.html#type-safe-urls). Instead of splicing together strings for href and src attributes, we use at-sign interpolation:
 
-FIXME conditional attributes
+    %a!href=@Home@ Return to homepage
+
+You can also include query string parameters like this:
+
+    let myurl = (Home, [("name", "Michael")])
+    [$hamlet|
+        %a!href=@?myurl@ Homepage with query string parameters
+    |]
+
+Notice the question mark after the at-sign.
+
+### Conditional attributes
+
+Now that we know about variables, we can mention one more important feature: conditional attributes. The most common use case is setting the "checked" and "selected" attributes for checkboxes and lists. An example would be:
+
+    let isBlue = False
+    let isGreen = False
+    let isRed = False
+    [$hamlet|
+        $select!name=color
+            %option!:isBlue:selected Blue
+            %option!:isGreen:selected Green
+            %option!:isRed:selected Red
+    |]
+
+Would produce (whitespace added for convenience):
+
+    <select name="color">
+        <option>Blue</option>
+        <option selected>Green</option>
+        <option>Red</option>
+    </select>
+
+The syntax is simple: if there is a colon immediately following an exclamation mark, then everything up till the next colon is taken to be a variable reference. That variable must be a Bool; if the value is True, the given attribute is set, otherwise it isn't.
+
+## Control structures
+
+### if/elseif/else
+
+The syntax is very simple, and the nesting rules are a straight-forward extension of what we've seen up until now. A simple example:
+
+    $if isOver25
+        %p You are over 25 years old.
+    $elseif isOver21
+        %p You are over 21 years old.
+    $else
+        %p You're making me feel old.
+
+### forall
+
+forall is how we deal with lists in Hamlet. forall also introduces the concept of *variable binding*. We can use it to improve the color example from above:
+
+    let colors =
+            [ ("Blue", False)
+            , ("Green", True)
+            , ("Red", False)
+            ]
+    [$hamlet|
+        $select!name=color
+            $forall colors color
+                %option!:snd.color:selected $fst.color$
+    |]
+
+The first parameter is the name of the list, and the second is the variable name being bound to.
+
+### maybe/nothing
+
+This is a very nice convenience. It works very similarly to forall, in that it introduces variable binding.
+
+    let username = Maybe "Michael"
+    [$hamlet|
+        $maybe username u
+            %p You are logged in as $u$.
+        $nothing
+            %p You are not logged in.

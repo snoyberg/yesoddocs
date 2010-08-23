@@ -32,6 +32,14 @@ external files. This allows caching to take place as you'd normally like.
 the query string; this is done automatically when using the getStaticFiles
 function. This allows you to set your expires headers far in the future.
 
+* A new Yesod.Mail module provides datatypes and functions for creating
+multipart MIME email messages and sending them via the sendmail executable.
+Since these functions generate lazy bytestrings, you can use any delivery
+mechanism you want.
+
+* Change the type of defaultLayout to use Widgets instead of PageContent. This
+makes it easier to avoid double-including scripts and stylesheets.
+
 ### New in Yesod 0.4.0
 
 A big thanks on this release to Simon Michael, who pointed out a number of

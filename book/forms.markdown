@@ -65,4 +65,14 @@ So how about displaying that form? As mentioned, the Html datatype seems like th
     <input type="text" name="name">
     <input type="number" name="age">
 
-Now what? Do we simply concatenate them together? That will just show two input fields without any labeling.
+Now what? Do we simply concatenate them together? That will just show two input fields without any labeling. Often times, we'd like to show the input fields as rows in a table, so perhaps we should create Html looking like this:
+
+    <tr><th>Name</th><td><input type="text" name="name"></td></tr>
+
+But what if we want to display the field using lists, or paragraphs, or some other kind of format? And what about inline error messages? Sometimes we want them and sometimes we don't.
+
+At the end of the day, we need something more complicated than a simple data type. Instead, we need a form to support some arbitrary datatype representing the input controls. We'll see some concrete examples of this in the continuation of this chapter.
+
+## Fields
+
+Let's get our hands dirty with some actual Yesod examples. We want a form for parsing a Person; it would look something like this:

@@ -10,6 +10,7 @@ title: Multi-lingual -- Tutorials -- Yesod
 > import Data.Monoid (mempty)
 
 > data I18N = I18N
+> type Handler = GHandler I18N I18N
 
 > mkYesod "I18N" [$parseRoutes|
 > /            HomepageR GET
@@ -19,7 +20,7 @@ title: Multi-lingual -- Tutorials -- Yesod
 > instance Yesod I18N where
 >     approot _ = "http://localhost:3000"
 
-> getHomepageR :: Handler I18N RepHtml
+> getHomepageR :: Handler RepHtml
 > getHomepageR = do
 >     ls <- languages
 >     let hello = chooseHello ls
@@ -28,7 +29,9 @@ title: Multi-lingual -- Tutorials -- Yesod
 >             , ("es", "Spanish")
 >             , ("he", "Hebrew")
 >             ]
->     applyLayout "I18N Homepage" mempty [$hamlet|
+>     defaultLayout $ do
+>       setTitle $ string "I18N Homepage"
+>       addBody [$hamlet|
 > %h1 $hello$
 > %p In other languages:
 > %ul
@@ -43,7 +46,7 @@ title: Multi-lingual -- Tutorials -- Yesod
 > chooseHello ("es":_) = "Hola"
 > chooseHello (_:rest) = chooseHello rest
 
-> getSetLangR :: String -> Handler I18N ()
+> getSetLangR :: String -> Handler ()
 > getSetLangR lang = do
 >     setLanguage lang
 >     redirect RedirectTemporary HomepageR

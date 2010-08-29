@@ -28,6 +28,7 @@ Since normally you'll need to perform an IO action to load up your entries from 
 Each Yesod application needs to define the site argument. You can use this for storing anything that should be loaded before running your application. For example, you might store a database connection there. In our case, we'll store our list of entries.
 
 > data Blog = Blog { blogEntries :: [Entry] }
+> type Handler = GHandler Blog Blog
 
 Now we use the first "magical" Yesod set of functions: mkYesod and parseRoutes. If you want to see *exactly* what they do, look at their Haddock docs. For now, we'll try to keep this tutorial simple:
 
@@ -44,7 +45,7 @@ This only works if you application is being served from the root of your webserv
 
 We defined two resource patterns for our blog: the homepage, and the page for each entry. For each of these, we are allowing only the GET request method. For the homepage, we want to simply redirect to the most recent entry, so we'll use:
 
-> getHomeR :: Handler Blog ()
+> getHomeR :: Handler ()
 > getHomeR = do
 >   Blog entries <- getYesod
 >   let newest = last entries
@@ -55,8 +56,8 @@ We go ahead and send a 302 redirect request to the entry resource. Notice how we
 Next we'll define a template for entry pages. Normally, I tend to just define them within the handler function, but it's easier to follow if they're separate. Also for clarity, I'll define a datatype for the template arguments. It would also be possible to simply use the Entry datatype with some filter functions, but I'll save that for a later tutorial.
 
 > data TemplateArgs = TemplateArgs
->   { templateTitle :: Html ()
->   , templateContent :: Html ()
+>   { templateTitle :: Html
+>   , templateContent :: Html
 >   , templateNavbar :: [Nav]
 >   }
 
@@ -64,7 +65,7 @@ The Nav datatype will contain navigation information (ie, the URL and title) of 
 
 > data Nav = Nav
 >   { navUrl :: Route Blog
->   , navTitle :: Html ()
+>   , navTitle :: Html
 >   }
 
 And now the template itself:
@@ -90,7 +91,7 @@ Hopefully, that is fairly easy to follow; if not, please review the Hamlet docum
 
 Finally, the entry route handler:
 
-> getEntryR :: String -> Handler Blog RepHtml
+> getEntryR :: String -> Handler RepHtml
 > getEntryR slug = do
 >   Blog entries <- getYesod
 >   case filter (\e -> entrySlug e == slug) entries of

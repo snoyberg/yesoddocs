@@ -16,9 +16,9 @@ data Person = Person
     }
 data PersonUrls = Homepage | PersonPage String
 
-renderUrls :: PersonUrls -> String
-renderUrls Homepage = "/"
-renderUrls (PersonPage name) = '/' : name
+renderUrls :: PersonUrls -> [(String, String)] -> String
+renderUrls Homepage _ = "/"
+renderUrls (PersonPage name) _ = '/' : name
 
 footer :: Hamlet url
 footer = [$hamlet|

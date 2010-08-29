@@ -11,7 +11,9 @@
 
 > instance Yesod Echo where approot _ = ""
 
-> getHomepage = applyLayout "Upload a file" mempty [$hamlet|
+> getHomepage = defaultLayout $ do
+>   setTitle $ string "Upload a file"
+>   addBody [$hamlet|
 > %form!method=post!action=.!enctype=multipart/form-data
 >   File name:
 >   %input!type=file!name=file

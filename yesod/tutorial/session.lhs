@@ -3,10 +3,11 @@
 > import Control.Applicative ((<$>), (<*>))
 > 
 > data Session = Session
+> type Handler = GHandler Session Session
 > mkYesod "Session" [$parseRoutes|
 > / Root GET POST
 > |]
-> getRoot :: Handler Session RepHtml
+> getRoot :: Handler RepHtml
 > getRoot = do
 >     sess <- reqSession `fmap` getRequest
 >     hamletToRepHtml [$hamlet|
@@ -17,7 +18,7 @@
 > %h1 $show.sess$
 > |]
 > 
-> postRoot :: Handler Session ()
+> postRoot :: Handler ()
 > postRoot = do
 >     (key, val) <- runFormPost' $ (,) <$> stringInput "key" <*> stringInput "val"
 >     setSession key val

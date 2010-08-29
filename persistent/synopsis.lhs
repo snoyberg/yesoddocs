@@ -14,11 +14,11 @@ This example uses the sqlite backend for Persistent, since it can run in-memory 
 > |]
 >
 > main :: IO ()
-> main = withSqlite ":memory:" 8 $ runSqlite go
+> main = withSqliteConn ":memory:" $ runSqlConn go
 >
-> go :: SqliteReader IO ()
+> go :: SqlPersist IO ()
 > go = do
->   initialize (undefined :: Person)
+>   runMigration $ migrate (undefined :: Person)
 >   key <- insert $ Person "Michael" 25
 >   liftIO $ print key
 >   p1 <- get key
@@ -26,10 +26,10 @@ This example uses the sqlite backend for Persistent, since it can run in-memory 
 >   update key [PersonAge 26]
 >   p2 <- get key
 >   liftIO $ print p2
->   p3 <- select [PersonNameEq "Michael"] []
+>   p3 <- selectList [PersonNameEq "Michael"] [] 0 0
 >   liftIO $ print p3
 >   delete key
->   p4 <- select [PersonNameEq "Michael"] []
+>   p4 <- selectList [PersonNameEq "Michael"] [] 0 0
 >   liftIO $ print p4
 
 The output of the above is:

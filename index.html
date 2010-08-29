@@ -185,12 +185,11 @@
           </article>
           <article class="right">
             <h3>Hello World</h3>
-            <pre><code>import Yesod
-data HelloWorld = HelloWorld
-mkYesod "HelloWorld" [$parseRoutes|/ Home GET|]
-instance Yesod HelloWorld where approot _ = ""
-getHome = return $ RepPlain $ toContent "Hello World!"
-main = basicHandler 3000 HelloWorld</code></pre>
+            <pre><code>&gt; cabal update
+&gt; cabal install yesod
+&gt; yesod # enter some basic information
+&gt; cabal configure &amp;&amp; cabal build
+&gt; ./dist/build/simple-server/simple-server</code></pre>
           </article>
         </section>
         <section id="type-safety">

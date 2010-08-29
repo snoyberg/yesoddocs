@@ -12,6 +12,7 @@ This example uses the [data-object-yaml package](http://hackage.haskell.org/pack
 > import qualified Data.ByteString.Lazy as L
 
 > data PY = PY
+> type Handler = GHandler PY PY
 
 > mkYesod "PY" [$parseRoutes|
 > / Homepage GET POST
@@ -35,10 +36,10 @@ This example uses the [data-object-yaml package](http://hackage.haskell.org/pack
 >             %div ^yaml^
 > |]
 
-> getHomepage :: Handler PY RepHtml
+> getHomepage :: Handler RepHtml
 > getHomepage = hamletToRepHtml $ template Nothing
 
-> postHomepage :: Handler PY RepHtml
+> postHomepage :: Handler RepHtml
 > postHomepage = do
 >     rr <- getRequest
 >     (_, files) <- liftIO $ reqRequestBody rr

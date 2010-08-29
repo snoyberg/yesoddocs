@@ -20,6 +20,7 @@ main = hakyll "http://www.yesodweb.com" $ do
     renderPlain "yesod/tutorial/pretty-yaml.lhs"
     renderPlain "yesod/tutorial/i18n.lhs"
     renderPlain "yesod/tutorial/widgets.lhs"
+    renderPlain "yesod/tutorial/form.lhs"
 
     render "overview.markdown"
 

@@ -43,6 +43,9 @@ Executable session
 Executable widgets
   Main-is:             yesod/tutorial/widgets.lhs
 
+Executable form
+  Main-is:             yesod/tutorial/form.lhs
+
 Executable persistent-synopsis
   Main-is:             persistent/synopsis.lhs
   Build-depends:       transformers >= 0.2.1 && < 0.3,

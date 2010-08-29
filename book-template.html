@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Yesod Web Framework Book- $title</title>
+    <meta charset="utf-8">
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 30px 0 0 0;
+      }
+      h1 {
+        text-align: center;
+      }
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+      }
+      nav ul {
+        list-style: none;
+        padding: 5px 0 5px 30px;
+        background: #eee url($root/static/logo-small.png) no-repeat 5px center;
+        margin: 0;
+        border-bottom: 1px solid #000;
+      }
+      nav li {
+        display: inline;
+        padding-right: 10px;
+      }
+      nav a, nav a:visited {
+        color: #009;
+        text-decoration: none;
+      }
+      nav a:hover {
+        color: #909;
+      }
+      article, ol {
+        width: 760px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="$root">Homepage</a></li>
+        <li><a href="$root/book/">Read the Book</a></li>
+        <li><a href="$root/screencasts/">Watch the Screencasts</a></li>
+        <li><a href="$root/examples/">See Some Code</a></li>
+      </ul>
+    </nav>
+    <h1>Yesod Web Framework Book- $title</h1>
+    <article>
+      $body
+    </article>
+  </body>
+</html>

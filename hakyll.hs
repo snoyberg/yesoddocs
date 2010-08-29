@@ -10,20 +10,25 @@ main = hakyll "http://www.yesodweb.com" $ do
 
     static "favicon.ico"
 
-    renderChain [] $ createPage "index.html"
+    renderPlain "index.html"
+    renderPlain "screencasts/index.html"
+    renderPlain "examples/index.html"
+    renderPlain "book/index.html"
+
+    renderPlain "yesod/tutorial/blog.lhs"
+    renderPlain "yesod/tutorial/ajax.lhs"
+    renderPlain "yesod/tutorial/pretty-yaml.lhs"
+    renderPlain "yesod/tutorial/i18n.lhs"
+    renderPlain "yesod/tutorial/widgets.lhs"
+
     render "overview.markdown"
 
     render "yesod/index.markdown"
+    render "yesod/tutorial/index.markdown"
     render "yesod/changelog.markdown"
     render "yesod/helloworld.lhs"
     render "yesod/terminology.markdown"
     render "yesod/articles.markdown"
-    render "yesod/tutorial/index.markdown"
-    render "yesod/tutorial/blog.lhs"
-    render "yesod/tutorial/ajax.lhs"
-    render "yesod/tutorial/pretty-yaml.lhs"
-    render "yesod/tutorial/i18n.lhs"
-    render "yesod/tutorial/widgets.lhs"
     render "yesod/screencast/hello-world.markdown"
     render "yesod/screencast/blog-part1.markdown"
     render "yesod/screencast/blog-part2.markdown"
@@ -58,13 +63,14 @@ main = hakyll "http://www.yesodweb.com" $ do
     render "persistent/backends.markdown"
     render "persistent/relations.markdown"
 
-    render "book/index.markdown"
-    render "book/introduction.markdown"
-    render "book/tools.markdown"
-    render "book/wai.markdown"
-    render "book/hamlet.markdown"
-    render "book/forms.markdown"
-    render "book/deploying.markdown"
+    renderBook "book/introduction.markdown"
+    renderBook "book/tools.markdown"
+    renderBook "book/wai.markdown"
+    renderBook "book/hamlet.markdown"
+    renderBook "book/forms.markdown"
+    renderBook "book/deploying.markdown"
 
     where render = renderChain ["template.html"]
                  . createPage
+          renderPlain = renderChain [] . createPage
+          renderBook = renderChain ["book-template.html"] . createPage

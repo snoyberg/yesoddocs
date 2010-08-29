@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Yesod Web Framework Examples</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/themes/cupertino/jquery-ui.css">
+    <script>
+      $(function(){
+        $("#accordion").accordion({
+          collapsible:true,
+          autoHeight: false,
+          active: false,
+          change: function(event, ui){
+            var href = "";
+            ui.newContent.children("a.ajax").each(function(ignored, a_){
+              var a = $(a_);
+              href = a.attr("href");
+            });
+            if (href != "") {
+              ui.newContent.html("<div id='loading'>Loading</div>");
+              $.get(href, function(data) {
+                $('#loading').html(data);
+              });
+            }
+          }
+        });
+      });
+    </script>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        text-align: center;
+      }
+      #accordion {
+        width: 760px;
+        margin: 0 auto;
+      }
+      #accordion div {
+        height: 400px;
+      }
+      h3.ui-helper-reset {
+        padding-left: 30px;
+      }
+      nav ul {
+        list-style: none;
+        padding: 5px 0 5px 30px;
+        background: #eee url($root/static/logo-small.png) no-repeat 5px center;
+        margin: 0;
+        border-bottom: 1px solid #000;
+      }
+      nav li {
+        display: inline;
+        padding-right: 10px;
+      }
+      nav a, nav a:visited {
+        color: #009;
+        text-decoration: none;
+      }
+      nav a:hover {
+        color: #909;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="$root">Homepage</a></li>
+        <li><a href="$root/book/">Read the Book</a></li>
+        <li><a href="$root/screencasts/">Watch the Screencasts</a></li>
+        <li>See Some Code</li>
+      </ul>
+    </nav>
+    <h1>Yesod Web Framework Examples</h1>
+    <div id="accordion">
+      <h3>Blog</h3>
+      <div><a class='ajax' href="$root/yesod/tutorial/blog.html">Blog</a></div>
+      <h3>Ajax</h3>
+      <div><a class='ajax' href="$root/yesod/tutorial/ajax.html">Ajax</a></div>
+      <h3>Pretty YAML</h3>
+      <div><a class='ajax' href="$root/yesod/tutorial/pretty-yaml.html">Pretty YAML</a></div>
+      <h3>Internationalization</h3>
+      <div><a class='ajax' href="$root/yesod/tutorial/i18n.html">Internationalization</a></div>
+      <h3>Widgets</h3>
+      <div><a class='ajax' href="$root/yesod/tutorial/widgets.html">Widgets</a></div>
+    </div>
+  </body>
+</html>

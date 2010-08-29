@@ -1,7 +1,7 @@
 ---
 title: Yesod
 ---
-Current version: **[0.4.1](http://hackage.haskell.org/package/yesod-0.4.1)**. Code repo: [http://github.com/snoyberg/yesod](http://github.com/snoyberg/yesod)
+Current version: **[0.5.0](http://hackage.haskell.org/package/yesod-0.5.0)**. Code repo: [http://github.com/snoyberg/yesod](http://github.com/snoyberg/yesod)
 
 Yesod is a web framework for the Haskell programming language. It has the following design goals:
 

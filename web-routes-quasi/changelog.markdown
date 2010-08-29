@@ -1,7 +1,7 @@
 ---
 title: Changelog -- web-routes-quasi
 ---
-### web-routes-quasi 0.6.0
+### web-routes-quasi 0.6.0 (August 29, 2010)
 
 * This release reflects changes in web-routes 0.23. In particular, this allows
 a type-safe URL to be rendered to both a path and a query-string. This was

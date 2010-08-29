@@ -1,7 +1,7 @@
 ---
 title: Changelog -- persistent
 ---
-### Persistent 0.2.0 (not yet released)
+### Persistent 0.2.0 (August 29, 2010)
 
 * SQL prepared statements are cached. This can lead to a huge speedup,
 especially on SQLite.

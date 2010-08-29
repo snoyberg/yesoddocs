@@ -1,7 +1,7 @@
 ---
 title: Changelog -- Hamlet
 ---
-### Hamlet 0.5.0 (not yet released)
+### Hamlet 0.5.0 (August 29, 2010)
 
 * Use can use parantheses when referencing variables. This allows you to have
 functions applied to multiple arguments.

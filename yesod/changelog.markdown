@@ -1,7 +1,7 @@
 ---
 title: Changelog -- Yesod
 ---
-### Yesod 0.5.0 (not yet released)
+### Yesod 0.5.0 (August 29, 2010)
 
 * Forms no longer have special types for special views; instead, there is a
 toFormField attribute when declaring entities to specify a form rendering
@@ -39,6 +39,12 @@ mechanism you want.
 
 * Change the type of defaultLayout to use Widgets instead of PageContent. This
 makes it easier to avoid double-including scripts and stylesheets.
+
+* Major reworking of the Auth subsite to make it easier to use.
+
+* Update of the site scaffolder to include much more functionality. Also
+removed the Handler type alias from the library, as the scaffolder now
+provides that.
 
 ### New in Yesod 0.4.0
 

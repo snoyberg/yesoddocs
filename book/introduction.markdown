@@ -1,5 +1,5 @@
 ---
-title: Yesod Book- Introduction
+title: Introduction
 ---
 Since web programming began, people haved been trying to make the development process a more pleasant process. As a community, we have continually pushed new techniques to try and solve 
 

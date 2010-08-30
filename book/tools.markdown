@@ -1,4 +1,4 @@
 ---
-title: Yesod Book- Tools
+title: Tools
 ---
 Sorry, nothing here yet.

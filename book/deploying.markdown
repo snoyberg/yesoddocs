@@ -1,5 +1,5 @@
 ---
-title: Yesod Book- Deploying Your Webapp
+title: Deploying Your Webapp
 ---
 <blockquote><b>Dammit, I'm a programmer, not a sysadmin!</b></blockquote>
 

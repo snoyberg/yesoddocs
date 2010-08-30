@@ -1,5 +1,5 @@
 ---
-title: Yesod Book- Web Application Interface
+title: Web Application Interface
 ---
 It is a problem almost every language used for web development has dealt with: the low level interface between the web server and the application. The earliest example of a solution is the venerable and battle-worn <abbr title="Common Gateway Interface">CGI</abbr>, providing a language-agnostic interface using only standard input, standard output and environment variables.
 

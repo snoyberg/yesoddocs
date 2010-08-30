@@ -1,5 +1,5 @@
 ---
-title: Yesod Book: Theory
+title: Theory
 ---
 <h2 id="type-safe-urls">Type-safe URLs</h2>
 

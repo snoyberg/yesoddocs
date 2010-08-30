@@ -1,5 +1,5 @@
 ---
-title: Yesod Book- Hamlet
+title: Hamlet
 ---
 Any templating system can be used with Yesod; as Yesod is built on top of [WAI](wai.html), we only need to be able to produce a response body understood by that interface. However, Yesod spawned the creation of a templating system called Hamlet which is designed to interoperate well with the Yesod ecosystem. It's also a very useful tool *outside* of Yesod, and is arguing the most popular of the project spun off from Yesod.
 

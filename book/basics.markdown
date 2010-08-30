@@ -83,4 +83,53 @@ Another nice thing here is that you aren't limited to Strings: if you use Int in
 
 ## The site argument
 
-In our two examples, we've had this extra datatype (HelloWorld in the first, Names in the second) that hasn't really seemed to be doing much.
+In our two examples, we've had this extra datatype (HelloWorld in the first, Names in the second) that hasn't really seemed to be doing much. We call this the **site argument**, and contrary to appearances it is central to a Yesod application. Its purposes can be broken down into three groups:
+
+* Storing data loaded at the initialization of your webapp. This could be settings loaded from a file, database connections, static file contents loaded into memory, etc.
+
+* A datatype to allow instancing various type classes on. You've seen one example so far: the Yesod type class. You'll see a few more of these typeclasses in the future. For the most part, they provide a method for you to supply configuration to Yesod about your application.
+
+* Type safe URLs are a central concept to Yesod, and we access this via **associated types** (aka, type families).
+
+The last line of our hello world example was:
+
+    main = basicHandler 3000 HelloWorld
+
+basicHandler is a function that runs a Yesod application using a simple HTTP server, and 3000 is the port it listens on. In this case, HelloWorld required no initialization, so we could load it up like this. However, we could also use any IO action necessary to construct the HelloWorld value before entering the application.
+
+## Type safe URLs
+
+And let's finally pull things full circle. We've spoken about resource patterns, and each time there was some name associated with a resource pattern. Let's put together a snippet of an application to demonstrate:
+
+    1 data MyApp = TypeSafe
+    2 mkYesod "MyApp" [$parseRoutes|
+    3 /             RootR GET
+    4 /name/#String NameR GET
+    5 /age/#Int     AgeR  GET
+    6 |]
+
+This is how we would create a new application with a site argument called MyApp and three resource patterns. If this style of Haskell looks unfamiliar to you, it's a combination of quasi-quotation and template haskell. You don't need to understand the details to use Yesod, but it is essentially letting us create a brand new language within Haskell to allow us to write concicse, safe code.
+
+This piece of code defines three resource patterns: RootR, NameR and AgeR. We've already seen that this interacts with the dispatch system: we will need to write handler functions getRootR, getNameR and getAgeR. What we **haven't** seen is that this also creates a data type:
+
+    data MyAppRoute = RootR | NameR String | AgeR Int
+
+As simple as this looks, it's one of the most powerful features Yesod offers for ensuring the safety of your applications. Every valid URL in our application can be expressed as a value of type MyAppRoute. Here are some mappings:
+
+    /             -> RootR
+    /name/michael -> NameR "michael"
+    /age/935      -> AgeR 935
+
+In Yesod, we don't splice together strings to generate URLs; we simply build up plain old Haskell data types. This means **the compiler can prevent invalid links**. This feature ties in very nicely with Yesod's templating system (Hamlet), as we'll see later.
+
+As I mentioned, there is an associated type (type family) involved as well. This looks like:
+
+    type instance Route MyApp = MyAppRoute
+
+Understanding type families is not a prerequisite to using Yesod, though you may find it useful. Type families also play a big role in our persistence layer.
+
+## Summary
+
+This chapter set out some of the foundations of Yesod. We stay very close to RESTful principles by having a unique resources (URLs) and allowing multiple representations. We also respect that different request methods mean different things, and use different handlers by default.
+
+Every Yesod application has a site argument datatype, which is central to everything it does. There is also an associated type-safe URL datatype which gives Yesod very strong type safety guarantees when constructing links.

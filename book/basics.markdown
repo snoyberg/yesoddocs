@@ -1,9 +1,9 @@
 ---
 title: Basics
 ---
-Yesod comes with a scaffolding tool that creates a basic site template for you. This takes care of a lot of the tedious, boilerplate code you need to get started: writing a cabal file, creating default layout templates, a directory structure, etc. It's the best way to get started on a site. However, for learning Yesod, we'll start off without it. This will give you a much better feel for *how* Yesod works.
+Yesod comes with a scaffolding tool that creates a basic site template for you. This takes care of a lot of the tedious, boilerplate code which you need to get started: writing a cabal file, creating default layout templates, a directory structure, et cetera. It's the best way to get started on a site. However, for learning Yesod, we'll start off without it. This will give you a much better feel for *how* Yesod works.
 
-So it proper tradition, we'll start with Hello World.
+So in proper tradition, we'll start with Hello World.
 
     1 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
     2 import Yesod
@@ -59,11 +59,11 @@ This typeclass is the core of Yesod's RESTful approach to representations. Every
 
     newtype RepPlain = RepPlain Content
     instance HasReps RepPlain where
-        chooseRep (RepPlain c) _ = return ("text/plain", c)
+        chooseRep (RepPlain content) _ = return ("text/plain", content)
 
-What's interesting here is that we ignore entirely the list of expected content types. A number of the built in representations (RepHtml, RepJson, RepXml) in fact only support a single representation, and therefore what the client wants is irrelevant. An example to the contrary is RepHtmlJson. This instance helps greatly in programming AJAX applications that degrade nicely; we'll see some examples in later chapters.
+What's interesting here is that we ignore entirely the list of expected content types. A number of the built in representations (RepHtml, RepJson, RepXml) in fact only support a single representation, and therefore what the client wants is irrelevant. An example to the contrary is RepHtmlJson, which provides either an HTML or JSON representation. This instance helps greatly in programming AJAX applications that degrade nicely; we'll see some examples in later chapters.
 
-<p class="advanced">The datatype Content is in fact a type synonym for the WAI's ResponseBody datatype, allowing you to create content from enumerators, static files or lazy bytestrings. More information is available in the [WAI chapter](wai.html).</p>
+<p class="advanced">The datatype Content is in fact a type synonym for the WAI's ResponseBody datatype, allowing you to create content from enumerators, static files, or lazy bytestrings. More information is available in the [WAI chapter](wai.html).</p>
 
 ## Resources
 
@@ -77,9 +77,9 @@ I mentioned the terms resource and resource pattern above. A resource is another
     6 getNameR name = return $ RepPlain $ toContent $ "Hello " ++ name
     7 main = basicHandler 3000 Names
 
-On line 4 we declare a resource pattern named NameR. It has two "pieces" to it: the first piece is the static piece "name", while the second is a dynamic piece matching any String. Jumping down to line 6, we see that our handler function now takes a single argument: the name passed via the URL. So if you visit "/name/Michael/", Yesod will call the function getNameR with the argument "Michael".
+On line 4 we declare a resource pattern named NameR. It has two "pieces" to it: the first is a static piece "name", while the second is a dynamic piece matching any String. Jumping down to line 6, we see that our handler function now takes a single argument: the name passed via the URL. So if you visit "/name/Michael/", Yesod will call the function getNameR with the argument "Michael".
 
-Another nice thing here is that you aren't limited to Strings: if you use Int instead, Yesod automatically parses the appropriate piece of the URL into an integer for you and hands it to your handler function. If the piece is not a valid integer, the user will be a 404 not found message.
+Another nice thing here is that you aren't limited to Strings: if you use Int instead, Yesod automatically parses the appropriate piece of the URL into an integer for you and hands it to your handler function. If the piece is not a valid integer, the user will be served a 404 not found message.
 
 ## The site argument
 
@@ -87,7 +87,7 @@ In our two examples, we've had this extra datatype (HelloWorld in the first, Nam
 
 * Storing data loaded at the initialization of your webapp. This could be settings loaded from a file, database connections, static file contents loaded into memory, etc.
 
-* A datatype to allow instancing various type classes on. You've seen one example so far: the Yesod type class. You'll see a few more of these typeclasses in the future. For the most part, they provide a method for you to supply configuration to Yesod about your application.
+* Instanciation of various type classes. You've seen one example so far: the Yesod type class. You'll see a few more of these typeclasses in the future. For the most part, they provide a method for you to supply configuration to Yesod about your application.
 
 * Type safe URLs are a central concept to Yesod, and we access this via **associated types** (aka, type families).
 
@@ -108,7 +108,7 @@ And let's finally pull things full circle. We've spoken about resource patterns,
     5 /age/#Int     AgeR  GET
     6 |]
 
-This is how we would create a new application with a site argument called MyApp and three resource patterns. If this style of Haskell looks unfamiliar to you, it's a combination of quasi-quotation and template haskell. You don't need to understand the details to use Yesod, but it is essentially letting us create a brand new language within Haskell to allow us to write concicse, safe code.
+This is how we would create a new application with a site argument called MyApp and three resource patterns. If this style of Haskell looks unfamiliar to you, it's a combination of quasi-quotation and template haskell. You don't need to understand the details to use Yesod, but it is essentially letting us create a brand new language within Haskell to allow us to write concise, safe code.
 
 This piece of code defines three resource patterns: RootR, NameR and AgeR. We've already seen that this interacts with the dispatch system: we will need to write handler functions getRootR, getNameR and getAgeR. What we **haven't** seen is that this also creates a data type:
 

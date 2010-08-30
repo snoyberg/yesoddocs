@@ -66,6 +66,7 @@ main = hakyll "http://www.yesodweb.com" $ do
 
     renderBook "book/introduction.markdown"
     renderBook "book/basics.markdown"
+    renderBook "book/templates.markdown"
     renderBook "book/tools.markdown"
     renderBook "book/wai.markdown"
     renderBook "book/hamlet.markdown"

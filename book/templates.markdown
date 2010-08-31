@@ -115,7 +115,7 @@ Notice that we use percent signs instead of dollar signs for Julius; since jQuer
 
 ## Overriding defaultLayout
 
-defaultLayout is a method of the Yesod typeclass, so you can simply provide an alternative implementation there. Yesod internally uses the defaultLayout method whenever possible: error messages, the built-in subsites, etc. This means that a lot of the built in features will automatically get styled like the rest of your site. A simply implementation is:
+defaultLayout is a method of the Yesod typeclass, so you can simply provide an alternative implementation there. Yesod internally uses the defaultLayout method whenever possible: error messages, the built-in subsites, etc. This means that a lot of the built in features will automatically get styled like the rest of your site. A simple implementation is:
 
     defaultLayout widget = do
         PageContent title headTag bodyTag <- widgetToPageContent widget
@@ -153,7 +153,7 @@ A common requirement in web applications is setting a message during one request
 
 2) The handler that checks for a valid password redirects to the original login form when there is an invalid password.
 
-At first glance the option 1 sounds preferable, since it avoids an extra HTTP request. However, in general it's a good idea to avoid returning content from a POST request, since it can complicate back/forward button usage and make refreshing a page tricky. The problem with the second approach is that we need some way to tell the original login form page to display the error message.
+At first glance option 1 sounds preferable, since it avoids an extra HTTP request. However, in general it's a good idea to avoid returning content from a POST request, since it can complicate back/forward button usage and make refreshing a page tricky. The problem with the second approach is that we need some way to tell the original login form page to display the error message.
 
 Yesod provides a built in set of functions: getMessage and setMessage. We will cover these in more detail when discussing sessions, but for now it's enough to know that your defaultLayout should display the message returned by getMessage. Not only will this simplify your application code by just having to call getMessage once, but it will make interoperation with built-in Yesod features much better. A basic example would be:
 
@@ -190,7 +190,7 @@ For those not familiar, the dollar sign and parantheses indicate a Template Hask
 
     hamletToRepHtml $(hamletFileDebug "my-template.hamlet")
 
-So why do we have two sets of functions? The first fully embeds the contacts of the template in the code at compile time and never looks at the template again until a recompile. This is ideal for a production environment: compile your code and you have no runtime dependency on any template files. It also avoids a runtime penalty of needing to read a file.
+So why do we have two sets of functions? The first fully embeds the contents of the template in the code at compile time and never looks at the template again until a recompile. This is ideal for a production environment: compile your code and you have no runtime dependency on any template files. It also avoids a runtime penalty of needing to read a file.
 
 The debug set of functions is intended for development. These functions work a little bit of magic: at compile time, they inspect your template, determine which variables they reference, and generate some Haskell code to load up those variables. At run time, they read in the template again and feed in those variables. This has a number of implications:
 
@@ -202,19 +202,19 @@ The debug set of functions is intended for development. These functions work a l
 
 This is also the reason why Yesod does not export these functions by default. The Yesod scaffolding tool creates a Settings.hs file which exports these functions, in a slightly modified form, and chooses whether to use the debug or regular version based upon build flags. Long story short: it automatically uses the debug version during development and non-debug version during production.
 
-Excepting very short templates, this is probably how you'll write most of your templates in Yesod. The typical file structure is to create hamlet, cassius and julius folders and place the respective templates in each. Each templates has a filename extension matching the template language. In other words, you'd typically have:
+Excepting very short templates, this is probably how you'll write most of your templates in Yesod. The typical file structure is to create hamlet, cassius and julius folders and place the respective templates in each. Each template has a filename extension matching the template language. In other words, you'd typically have:
 
-    # In hamlet/homepage.hamlet
+    # hamlet/homepage.hamlet
     %h1 Hello World!
 
-    # In cassius/homepage.cassius
+    # cassius/homepage.cassius
     h1
         color: green
 
-    # In julius/homepage.julius
+    # julius/homepage.julius
     alert("Don't you hate it when you get an alert when you open a page?");
     
-    # In your settings file, something like the following
+    # Settings.hs, paraphrasing
     import qualified Text.Hamlet
     import qualified Text.Cassius
     import qualified Text.Julius
@@ -235,6 +235,6 @@ Excepting very short templates, this is probably how you'll write most of your t
 
 Yesod has templating languages for HTML, CSS and Javascript. All of them allow variable interpolation, safe handling of URLs and embedding sub-templates. Since the code is dealt with at compile time, you can use the compiler as your friend and get strong type safety guarantees. Oh, and XSS vulnerabilities get handled automatically.
 
-There are three ways to embed the templates: through quasi-quotation, regular external and debug external. Quasi-quotation is great for small, simple templates that won't be changing often. Debug mode is great for development, and since it has the same type signature as the regular external functions, you can easily switch to using it for your production code.
+There are three ways to embed the templates: through quasi-quotation, regular external and debug external. Quasi-quotation is great for small, simple templates that won't be changing often. Debug mode is great for development, and since it has the same type signature as the regular external functions, you can easily switch to using them for your production code.
 
 By using built-in Yesod constructs like defaultLayout and getMessage, you'll get a consistent look-and-feel throughout your site, including pages automatically generated by Yesod such as error pages and authentication.

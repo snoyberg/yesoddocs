@@ -11,11 +11,11 @@ Handler is one such monad transformer stack. It uses a reader to track informati
 
 ### There is no Handler
 
-OK, I've been lying to you this whole time. Yesod does not actually export a datatype called Handler. Instead, it exports GHandler, which stands for "Generic Handler." When you use the scaffolding tool, a type synonym is create for you called Handler. If your **site argument** is called MyApp, then Handler is defined as:
+OK, I've been lying to you this whole time. Yesod does not actually export a datatype called Handler. Instead, it exports GHandler, which stands for "Generic Handler." When you use the scaffolding tool, a type synonym is created for you called Handler. If your **site argument** is called MyApp, then Handler is defined as:
 
     type Handler = GHandler MyApp MyApp
 
-<p class="advanced">The reason MyApp needs to be specified twice is to do with subsites, an advanced topic we're going to ignore for the moment. Subsites actually pervade a lot of the design of Yesod, but you are shielded from this most of the time. We'll discuss subsites in a later chapter.</p>
+<p class="advanced">The reason MyApp needs to be specified twice has to do with subsites, an advanced topic we're going to ignore for the moment. Subsites actually pervade a lot of the design of Yesod, but you are shielded from this most of the time. We'll discuss subsites in a later chapter.</p>
 
 For the remainder of this chapter, we'll assume that you have the Handler data type defined.
 

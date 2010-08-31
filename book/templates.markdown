@@ -174,4 +174,67 @@ Yesod provides a built in set of functions: getMessage and setMessage. We will c
 
 ## External template files
 
-Quasi-quoting your templates can be convenient, as no extra files are needed, your template is close to your code, and recompilation happens automatically whenever your template changes.
+Quasi-quoting your templates can be convenient, as no extra files are needed, your template is close to your code, and recompilation happens automatically whenever your template changes. On the other hand, this also clutters your Haskell code with templates and requires a recompile for any change in the template. Hamlet provides two sets of functions for including an external template:
+
+1) hamletFile/cassiusFile/juliusFile
+
+2) hamletFileDebug/cassiusFileDebug/juliusFileDebug
+
+What's very nice about these is that they have the exact same type signature, so they can be exchanged without changing your code otherwise. These functions are not exported by the Yesod module and must be imported directly from their respective modules (Text.Hamlet, Text.Cassius, Text.Julius). You'll see in a second why that is.
+
+Usage is very straight-forward. Assuming there is a Hamlet template stored in "my-template.hamlet", you could write:
+
+    hamletToRepHtml $(hamletFile "my-template.hamlet")
+
+For those not familiar, the dollar sign and parantheses indicate a Template Haskell interpolation. Using the second set of functions, the above would become:
+
+    hamletToRepHtml $(hamletFileDebug "my-template.hamlet")
+
+So why do we have two sets of functions? The first fully embeds the contacts of the template in the code at compile time and never looks at the template again until a recompile. This is ideal for a production environment: compile your code and you have no runtime dependency on any template files. It also avoids a runtime penalty of needing to read a file.
+
+The debug set of functions is intended for development. These functions work a little bit of magic: at compile time, they inspect your template, determine which variables they reference, and generate some Haskell code to load up those variables. At run time, they read in the template again and feed in those variables. This has a number of implications:
+
+* Changes to your template become immediately visible upon saving the file, no recompile required.
+
+* If you introduce new variables to the template that were not there before, you'll need to recompile. This might require you manually nudging GHC to recompile the Haskell file, since it won't think anything has changed.
+
+* Due to some of the tricks needed to pull this off, some of the more corner cases of templates are not supported. For example, using a forall to bind a function to a variable. This is an obscure enough case that it shouldn't be an issue.
+
+This is also the reason why Yesod does not export these functions by default. The Yesod scaffolding tool creates a Settings.hs file which exports these functions, in a slightly modified form, and chooses whether to use the debug or regular version based upon build flags. Long story short: it automatically uses the debug version during development and non-debug version during production.
+
+Excepting very short templates, this is probably how you'll write most of your templates in Yesod. The typical file structure is to create hamlet, cassius and julius folders and place the respective templates in each. Each templates has a filename extension matching the template language. In other words, you'd typically have:
+
+    # In hamlet/homepage.hamlet
+    %h1 Hello World!
+
+    # In cassius/homepage.cassius
+    h1
+        color: green
+
+    # In julius/homepage.julius
+    alert("Don't you hate it when you get an alert when you open a page?");
+    
+    # In your settings file, something like the following
+    import qualified Text.Hamlet
+    import qualified Text.Cassius
+    import qualified Text.Julius
+    
+    hamletFile x = Text.Hamlet.hamletFileDebug $ "hamlet/" ++ x ++ ".hamlet"
+    -- same for cassius and julius
+    -- when moving to production, you would just remove Debug
+
+    # And finally your handler code
+    import Settings
+    getHomeR = defaultLayout $ do
+        setTitle "Homepage"
+        addBody $(hamletFile "homepage")
+        addStyle $(cassiusFile "homepage")
+        addJavascript $(juliusFile "homepage")
+
+## Summary
+
+Yesod has templating languages for HTML, CSS and Javascript. All of them allow variable interpolation, safe handling of URLs and embedding sub-templates. Since the code is dealt with at compile time, you can use the compiler as your friend and get strong type safety guarantees. Oh, and XSS vulnerabilities get handled automatically.
+
+There are three ways to embed the templates: through quasi-quotation, regular external and debug external. Quasi-quotation is great for small, simple templates that won't be changing often. Debug mode is great for development, and since it has the same type signature as the regular external functions, you can easily switch to using it for your production code.
+
+By using built-in Yesod constructs like defaultLayout and getMessage, you'll get a consistent look-and-feel throughout your site, including pages automatically generated by Yesod such as error pages and authentication.

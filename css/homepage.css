@@ -11,6 +11,10 @@ article {
   width: 760px;
   margin: 0 auto;
   display: block;
+  padding: 10px;
+  border-radius: 5px;
+  border: 2px solid #000;
+  background: #FADBA2;
 }
 
 article img {

@@ -1,5 +1,5 @@
 Name:                yesod-examples
-Version:             0.5.0.1
+Version:             0.5.0.2
 Synopsis:            Example programs using the Yesod Web Framework.
 Description:         These are the same examples and tutorials found on the documentation site.
 Homepage:            http://docs.yesodweb.com/
@@ -48,7 +48,8 @@ Executable form
 
 Executable mkToForm
   Main-is:             yesod/tutorial/mkToForm.hs
-  Build-depends:       time
+  Build-depends:       time,
+                       persistent >= 0.2.0.1 && < 0.3
 
 Executable persistent-synopsis
   Main-is:             persistent/synopsis.lhs

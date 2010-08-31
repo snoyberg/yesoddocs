@@ -1,7 +1,7 @@
 ---
 title: Templates
 ---
-The templating system is Yesod is called Hamlet. This book contains a [full reference](hamlet.html) chapter on it, so this chapter will be more about showing the usage of Hamlet. It will also show Hamlet's sister languages, Cassius and Julius, which produce CSS and Javascript, respectively.
+The templating system in Yesod is called Hamlet. This book contains a [full reference](hamlet.html) chapter on it, so this chapter will be more about showing the usage of Hamlet. It will also show Hamlet's sister languages, Cassius and Julius, which produce CSS and Javascript, respectively.
 
     1 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
     2 import Yesod
@@ -142,3 +142,36 @@ The headTag variable will automatically have all of the CSS and Javascript decla
                 color: red
             |]
         hamletToRepHtml [$hamlet|...|]
+
+<p class="advanced">There's actually much more to the embedding of CSS and Javascript than I have implied. By default, the raw code is inserted into your HTML via style and script tags. However, Yesod also has the ability to automatically create static files and serve the code externally. The site template created with the scaffolding tool does all of this for you.</p>
+
+### getMessage
+
+A common requirement in web applications is setting a message during one request and displaying it during another. For example, let's say you are logging into a site and type the wrong password. The application would like to show a message saying "invalid password" and allow you to type in your username/password again. There are basically two approaches to this:
+
+1) In the handler that checks for a valid password, return a login form with the error message whenever an invalid password is submitted.
+
+2) The handler that checks for a valid password redirects to the original login form when there is an invalid password.
+
+At first glance the option 1 sounds preferable, since it avoids an extra HTTP request. However, in general it's a good idea to avoid returning content from a POST request, since it can complicate back/forward button usage and make refreshing a page tricky. The problem with the second approach is that we need some way to tell the original login form page to display the error message.
+
+Yesod provides a built in set of functions: getMessage and setMessage. We will cover these in more detail when discussing sessions, but for now it's enough to know that your defaultLayout should display the message returned by getMessage. Not only will this simplify your application code by just having to call getMessage once, but it will make interoperation with built-in Yesod features much better. A basic example would be:
+
+    defaultLayout widget = do
+        PageLayout title headTag bodyTag <- widgetToPageLayout widget
+        mmsg <- getMessage
+        hamletToRepHtml [$hamlet|
+        !!!
+        %html
+            %head
+                %title $title$
+                ^headTag^
+            %body
+                $maybe mmsg msg
+                    #message $msg$
+                ^bodyTag^
+        |]
+
+## External template files
+
+Quasi-quoting your templates can be convenient, as no extra files are needed, your template is close to your code, and recompilation happens automatically whenever your template changes.

@@ -1,7 +1,3 @@
----
-title: Widgets -- Tutorials -- Yesod
----
-
 > {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings #-}
 > import Yesod
 > import Yesod.Widget

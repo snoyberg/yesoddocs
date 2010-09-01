@@ -1,4 +1,4 @@
-Forms can be a tedious part of web development since they require synchronization of code in many different areas: the HTML form declaration, parsing of the form and reconstructing a datatype from the raw values. The Yesod form library simplifies things greatly. We'll start off with a basic application.
+<p>Forms can be a tedious part of web development since they require synchronization of code in many different areas: the HTML form declaration, parsing of the form and reconstructing a datatype from the raw values. The Yesod form library simplifies things greatly. We'll start off with a basic application.</p>
 
 
 > {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings #-}
@@ -25,15 +25,15 @@ We use an applicative approach and stay mostly declarative. The "fmap name p" bi
 > getRootR = do
 >     (res, wform, enctype) <- runFormGet $ personFormlet Nothing
 
-We use runFormGet to bind to GET (query-string) parameters; we could also use runFormPost. The "Nothing" is the initial value of the form. You could also supply a "Just Person" value if you like. There is a three-tuple returned, containing the parsed value, the HTML form as a widget and the encoding type for the form.
+<p>We use runFormGet to bind to GET (query-string) parameters; we could also use runFormPost. The "Nothing" is the initial value of the form. You could also supply a "Just Person" value if you like. There is a three-tuple returned, containing the parsed value, the HTML form as a widget and the encoding type for the form.</p>
 
-We use a widget for the form since it allows embedding CSS and Javascript code in forms directly. This allows unobtrusive adding of rich Javascript controls like date pickers.
+<p>We use a widget for the form since it allows embedding CSS and Javascript code in forms directly. This allows unobtrusive adding of rich Javascript controls like date pickers.</p>
 
 >     defaultLayout $ do
 >         setTitle "Form Example"
 >         form <- extractBody wform
 
-extractBody returns the HTML of a widget and "passes" all of the other declarations (the CSS, Javascript, etc) up to the parent widget. The rest of this is just standard Hamlet code and our main function.
+<p>extractBody returns the HTML of a widget and "passes" all of the other declarations (the CSS, Javascript, etc) up to the parent widget. The rest of this is just standard Hamlet code and our main function.</p>
 
 >         addBody [$hamlet|
 > %p Last result: $show.res$

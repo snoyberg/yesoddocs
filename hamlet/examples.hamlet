@@ -1,0 +1,8 @@
+%header
+    %h1 Yesod Web Framework Examples
+%article
+    #accordion
+        $forall examples e
+            %h3 $snd.e$
+            %div
+                %a.ajax!href=@ExampleR.fst.e@ $snd.e$

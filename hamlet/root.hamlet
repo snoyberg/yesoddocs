@@ -15,6 +15,6 @@
                 %img!src=@StaticR.video_png@
                 Watch the Screencasts
         %li
-            %a!href="FIXME CODE"
+            %a!href=@ExamplesR@
                 %img!src=@StaticR.code_png@
                 See some Code

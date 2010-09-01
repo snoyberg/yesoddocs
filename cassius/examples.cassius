@@ -1,0 +1,8 @@
+#accordion div
+  height: 400px
+h3.ui-helper-reset
+  padding-left: 30px
+div.ui-accordion-content
+    background: #fff
+div.ui-accordion-content a
+    color: #00f

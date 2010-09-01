@@ -1,7 +1,3 @@
----
-title: Multi-lingual -- Tutorials -- Yesod
----
-
 > {-# LANGUAGE QuasiQuotes #-}
 > {-# LANGUAGE TemplateHaskell #-}
 > {-# LANGUAGE TypeFamilies #-}

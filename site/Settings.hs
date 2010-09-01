@@ -11,9 +11,9 @@ hamletFile :: String -> Q Exp
 hamletFile x = Text.Hamlet.hamletFile $ "hamlet/" ++ x ++ ".hamlet"
 
 cassiusFile :: String -> Q Exp
-cassiusFile x = Text.Cassius.cassiusFileDebug $ "cassius/" ++ x ++ ".cassius"
+cassiusFile x = Text.Cassius.cassiusFile $ "cassius/" ++ x ++ ".cassius"
 
 juliusFile :: String -> Q Exp
-juliusFile x = Text.Julius.juliusFileDebug $ "julius/" ++ x ++ ".julius"
+juliusFile x = Text.Julius.juliusFile $ "julius/" ++ x ++ ".julius"
 
 staticFiles "static"

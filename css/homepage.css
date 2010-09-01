@@ -1,5 +1,6 @@
 body {
   font-family: sans-serif;
+  margin: 0;
 }
 
 header {
@@ -66,4 +67,23 @@ footer {
 
 footer p {
   margin: 0;
+}
+
+#topbar ul {
+  list-style: none;
+  padding: 5px 0 5px 30px;
+  background: #eee url(/static/logo-small.png) no-repeat 5px center;
+  margin: 0;
+  border-bottom: 1px solid #000;
+}
+#topbar li {
+  display: inline;
+  padding-right: 10px;
+}
+#topbar a, #topbar a:visited {
+  color: #009;
+  text-decoration: none;
+}
+#topbar a:hover {
+  color: #909;
 }

@@ -1,6 +1,3 @@
----
-title: Synopsis - Hamlet
----
 \begin{code}
 {-# LANGUAGE QuasiQuotes #-}
 

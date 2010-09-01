@@ -1,6 +1,3 @@
----
-title: Synopsis -- web-routes-quasi
----
 The set of routes:
 
     /                Home       GET

@@ -1,0 +1,95 @@
+---
+title: web-routes-quasi
+---
+This chapter has not yet been written properly. Instead, it's a conglomeration of the old content from the web-routes-quasi section. It will be cleaned up as the book is written.
+
+[The web-routes-quasi synopsis]($root/web-routes-quasi/synopsis.html) gives an overview of how the library is used.
+
+## Overview
+
+web-routes-quasi is a combination of [quasi-quoting](http://www.haskell.org/haskellwiki/Quasiquotation) and template haskell code to automate generation of URL datatypes and parse, render and dispatch functions for use with the web-routes package.
+
+web-routes is a package which provides support for:
+
+* type-safe URLs
+
+* parsing of request paths to a URL datatype
+
+* render of a URL datatype to a URL string
+
+* dispatch of a request to handler functions
+
+* creating pluggable web components that can be used together
+
+Directly writing all of the necesary functions for web-routes is error-prone and tedious. web-routes-quasi makes this process safe and concise.
+
+<h2 id="syntax">Syntax</h2>
+
+Each line represents a single resource pattern. A resource pattern is a list of path pieces, a constructor name, and a handler. Let's look at a quick example, using everyone's favorite demo- a blog:
+
+    /                                         Home      GET
+    /entries/#EntryName                       Entry     GET
+    /entries/#EntryName/comments/#CommentId   Comment   PUT DELETE
+
+The first line declares a resource for the root of the web application. The second column names the constructor as Home, and that it handles the GET method.
+
+The next line is more interesting: this is the resource for a blog post. We parse the first column into pieces, slitting at each forward slash. There are three possibilities for each piece:
+
+* If it starts with a hash (#), it is a **single piece**. The text after the hash denotes the data type, which must be an instance of SinglePiece. This will parse exactly one path segment.
+
+* If it starts with an asterisk (*), it is a **multi piece**. The text after the asterisk denotes the data type, which must be an instance of MultiPiece. The piece matches all of the remaining pieces. This is only permitted as the last piece in a resource pattern.
+
+* Otherwise, it must be a literal match for the value of the piece. This is called a **static piece**.
+
+The definitions of SinglePiece and MultiPiece are fairly straight-forward:
+
+    class SinglePiece a where
+        fromSinglePiece :: String -> Either String a
+        toSinglePiece :: a -> String
+    class MultiPiece a where
+        fromMultiPiece :: [String] -> Either String a
+        toMultiPiece :: a -> [String]
+
+web-routes-quasi defines some basic instances, in particular String, Integer and Int instances for SinglePiece and [String] for MultiPiece.
+
+In all of the lines above, the second column gives the name of the constructor. Let's say that we decided to call the datatype for this site BlogRoutes ([see the usage section](#usage)); this would result in a datatype:
+
+    data BlogRoutes = Home
+                    | Entry EntryName
+                    | Comment EntryName CommentId
+
+### Declaring handlers
+
+Everything after the second column declares how to handle the given resource. Assume the value in the second column (the constructor name) is MyRoute. There are three possibilities for the rest of the line:
+
+* If there is nothing after the second column, then a single function named handleMyRoute will be called for all requests to that URL pattern.
+
+* If there are exactly three words after the second column, and the second and third of those begin with lowercase letters, we are dealing with a subsite. This allows you to embed functionality written elsewhere within a site. The [synopsis]($root/web-routes-quasi/synopsis.html) shows an example of using a separate module for handling static content. In this case, the first value is the datatype for the subsite argument, the second is a function that returns a QuasiSite value, and the third converts the main sites arg datatype to the subsite's arg datatype.
+
+* Otherwise, each word is taken as an HTTP request method, and a separate function is called for each method. If the methods specified are GET and DELETE, the functions would be getMyRoute and deleteMyRoute. Alternatively, if there is a colon in the word (eg, GET:myGetFunction), the text before the colon is the request method and the text after the colon is the handler function name.
+
+This page is meant to only explain the syntax of the quasi-quoted data, not to explain how to write functions that are called by it. That information is [available in the usage section](#usage).
+
+<h2 id="usage">Usage</h2>
+
+Most of the time, there are only two functions you'll need from this package: parseRoutes and createQuasiRoutes. The former is a quasi-quoter that converts [the web-routes-quasi syntax](#syntax) into a list of resources; the latter declares datatypes and functions based on a list of resources.
+
+The createQuasiRoutes function is necessarily quite complicated; please see the haddock documentation. In an ideal world, normal users will never need to use that function directly, as web frameworks will provide wrappers around it. For example, Yesod does this.
+
+However, users will always need to write their own handlers. When calling createQuasiRoutes, you will need to provide some datatype for handler functions to return; for our purposes here, we will assume that this datatype is Handler. You also need an argument datatype; we'll assume that it is MyArgs. Finally, let's assume that we have the following routes ([see the syntax page for explanation](#syntax)):
+
+    /                        Home    GET
+    /user/#UserId            User    GET POST
+    /auth                    Auth    AuthRoutes authSite getAuthArgs
+    /page/#PageName          Page
+    /static/*Strings         Static  GET
+
+You would need to provide functions with the following type signatures:
+
+    getHome :: Handler
+    getUser :: UserId -> Handler
+    postUser :: UserId -> Handler
+    authSite :: QuasiSite Application AuthArgs masterArgs
+    getAuthArgs :: MyArgs -> AuthArgs
+    handlePage :: PageName -> Handler
+    getStatic :: [String] -> Handler

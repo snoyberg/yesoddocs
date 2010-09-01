@@ -1,6 +1,3 @@
----
-title: Synopsis - Persistent
----
 This example uses the sqlite backend for Persistent, since it can run in-memory and has no external dependencies.
 
 > {-# LANGUAGE TypeFamilies, GeneralizedNewtypeDeriving, QuasiQuotes #-}

@@ -3,6 +3,8 @@ title: Hamlet
 ---
 Any templating system can be used with Yesod; as Yesod is built on top of [WAI](wai.html), we only need to be able to produce a response body understood by that interface. However, Yesod spawned the creation of a templating system called Hamlet which is designed to interoperate well with the Yesod ecosystem. It's also a very useful tool *outside* of Yesod, and is arguing the most popular of the project spun off from Yesod.
 
+If you want a quick overview of what Hamlet looks like, you can [check out the Hamlet synopsis]($root/hamlet/synopsis.html).
+
 ## Basics
 
 The name Hamlet comes from its similarity to Haml. If you are familiar with the latter, you should feel right at home with Hamlet method for creating and nesting tags. However, you should know that this is a very superficial resemblance, as Hamlet approaches most things very differently than Haml.
@@ -171,7 +173,7 @@ Wrapping a variable with carets (^) allows embedding of other templates.
 
 ### URLs
 
-Here's the part where Hamlet shines: [type-safe URLs](theory.html#type-safe-urls). Instead of splicing together strings for href and src attributes, we use at-sign interpolation:
+Here's the part where Hamlet shines: type-safe URLs. Instead of splicing together strings for href and src attributes, we use at-sign interpolation:
 
     %a!href=@Home@ Return to homepage
 

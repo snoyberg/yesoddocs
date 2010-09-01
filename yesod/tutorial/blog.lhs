@@ -1,7 +1,7 @@
 ---
 title: Blog -- Tutorials -- Yesod
 ---
-Well, just about every web framework I've seen starts with a blog tutorial- so here's mine! Actually, you'll see that this is actually a much less featureful blog than most, but gives a good introduction to Yesod basics. I recommend you start by [reading the terminology section]($root/yesod/terminology.html).
+Well, just about every web framework I've seen starts with a blog tutorial- so here's mine! Actually, you'll see that this is actually a much less featureful blog than most, but gives a good introduction to Yesod basics. I recommend you start by [reading the basics chapter]($root/book/basics.html).
 
 This file is literate Haskell, so we'll start off with our language pragmas and import statements. Basically every Yesod application will start off like this:
 

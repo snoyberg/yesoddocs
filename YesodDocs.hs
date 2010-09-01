@@ -4,6 +4,8 @@ module YesodDocs where
 
 import Yesod
 import Yesod.Helpers.Static
+import Yesod.Helpers.Sitemap
+import Yesod.Helpers.AtomFeed
 import Yesod.Form.Jquery
 import Settings
 import Text.Pandoc
@@ -14,6 +16,7 @@ import Control.Arrow ((&&&))
 import Data.List (groupBy)
 import Data.Function (on)
 import qualified System.IO.UTF8 as U
+import Data.Time
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
@@ -21,6 +24,11 @@ data YesodDocs = YesodDocs
     }
 
 mkYesod "YesodDocs" [$parseRoutes|
+/favicon.ico FaviconR GET
+/robots.txt RobotsR GET
+/sitemap.xml SitemapR GET
+/feed FeedR GET
+
 /static StaticR Static getStatic
 
 / HomeR GET
@@ -244,6 +252,45 @@ getEntryR slug = do
   where
     mkNavbar :: [Entry] -> [(String, [Entry])]
     mkNavbar = map (entryYearMonth . head &&& id) . groupBy ((==) `on` entryYearMonth)
+
+getFaviconR = sendFile "image/x-icon" "favicon.ico" >> return ()
+
+getRobotsR = robots SitemapR
+
+getSitemapR = do
+    y <- getYesod
+    sitemap $ home : screencasts : examples : book
+            : map go1 chapters
+           ++ map go2 (getEntries y)
+  where
+    date = UTCTime (read "2010-09-01") $ secondsToDiffTime 0
+    home = SitemapUrl HomeR date Daily 1.0
+    screencasts = SitemapUrl ScreencastsR date Daily 0.9
+    examples = SitemapUrl ExamplesR date Daily 0.9
+    book = SitemapUrl BookR date Daily 0.9
+    go1 (name, title) = SitemapUrl (ChapterR name) date Weekly 0.8
+    go2 e = SitemapUrl
+                (EntryR $ entrySlug e)
+                (UTCTime (entryDay e) $ secondsToDiffTime 0)
+                Monthly 0.5
+
+getFeedR = do
+    y <- getYesod
+    let uday = entryDay $ head $ getEntries y
+    atomFeed AtomFeed
+        { atomTitle = "Yesob Web Framework"
+        , atomLinkSelf = FeedR
+        , atomLinkHome = HomeR
+        , atomUpdated = UTCTime uday $ secondsToDiffTime 0
+        , atomEntries = map go $ take 10 $ getEntries y
+        }
+  where
+    go e = AtomFeedEntry
+        { atomEntryLink = EntryR $ entrySlug e
+        , atomEntryUpdated = UTCTime (entryDay e) $ secondsToDiffTime 0
+        , atomEntryTitle = entryTitle e
+        , atomEntryContent = entryContent e
+        }
 
 withYesodDocs f = do
     entries <- loadEntries

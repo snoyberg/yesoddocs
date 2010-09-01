@@ -1,0 +1,14 @@
+%header
+    %h1 Yesod Web Framework Book
+%article
+    %p
+        This book (currently a work in progress) gives a thorough introduction to the Yesod Web Framework and accompanying libraries. It is not yet complete, but work is going on daily to make it better. If you have any suggestions, you can $
+        %a!href="mailto:michael+yesodbook@@snoyman.com" email me
+        \ or simply send patches to the $
+        %a!href="http://github.com/snoyberg/yesoddocs/" Yesod documentation site github repo
+        \.
+    
+    %ol
+        $forall chapters c
+            %li
+                %a!href=@ChapterR.fst.c@ $snd.c$

@@ -1,6 +1,3 @@
----
-title: Web Application Interface
----
 It is a problem almost every language used for web development has dealt with: the low level interface between the web server and the application. The earliest example of a solution is the venerable and battle-worn <abbr title="Common Gateway Interface">CGI</abbr>, providing a language-agnostic interface using only standard input, standard output and environment variables.
 
 Back when Perl was becoming the de facto web programming language, a major shortcoming of CGI became apparent: the process needed to be started anew for each request. When dealing with an interpretted language and application requiring database connection, this overhead became unbearable. FastCGI (and later SCGI) arose as a successor to CGI, but it seems that much of the programming world went in a different direction.

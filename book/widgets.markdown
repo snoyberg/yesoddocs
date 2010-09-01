@@ -1,6 +1,3 @@
----
-title: Widgets
----
 A web page is made up of more than HTML. Specifically, Javascript and CSS play a very important role. Let's create a little page to demonstrate the three technologies working together:
 
     !!!

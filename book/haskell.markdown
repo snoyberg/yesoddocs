@@ -1,6 +1,3 @@
----
-title: Mini-introduction to Haskell
----
 This chapter should give you a bare minimum introduction to Haskell to feel comfortable with the rest of the code in this book. As is often the case with web programming, you can suffice with a subset of the language to get started, and pick up more as you go along. Obviously, the more you know the better. If you already know Haskell, do yourself a favor and skip to the next chapter.
 
 ## Data types

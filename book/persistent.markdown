@@ -1,6 +1,3 @@
----
-title: Persistent
----
 This chapter has not yet been written properly. Instead, it's a conglomeration of the old content from the persistent section. It will be cleaned up as the book is written.
 
 [The persistent synopsis]($root/persistent/synopsis.html) gives an overview of how the library is used.

@@ -1,0 +1,40 @@
+article
+    font-size: 130%
+    padding: 10px
+    border-radius: 5px
+    border: 2px solid #000
+    background: #f3e2d2
+
+article img
+    border: 0
+    float: left
+
+article p
+    margin-left: 180px
+
+nav img
+    border: 0
+    display: block
+    margin: 10px auto
+
+nav ul
+    list-style: none
+    padding: 0
+    text-align: center
+
+nav li
+    display: inline-block
+    margin: 20px
+
+nav a, nav a:visited
+    text-decoration: none
+    color: #000
+    font-size: 150%
+    display: block
+    padding: 20px
+    border-radius: 5px
+    border: 2px solid #000
+    background: #D2E3F3
+
+nav a:hover
+    background: orange

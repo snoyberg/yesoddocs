@@ -1,6 +1,3 @@
----
-title: The Handler Monad
----
 Most of the code you write in Yesod lives within the Handler monad, so it's important to understand what it's doing. Monads have a reputation for being difficult to understand; if you are intimidated by monads, have no fear of this chapter (or of the Handler monad itself). You needn't have an understanding of monads to use them. In fact, my advice is to not bother trying to understand them at first. After usage, understanding follows.
 
 Monads provide a method for encapsulating certain functionalities. There are a number of "standard" monads out there: reader provides some data which doesn't change, state provides data which can be changed, writer "logs" information, and error allows early termination of a function with a special return value. (Contrary to its name, the error monad doesn't need to be about errors.)

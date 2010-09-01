@@ -25,7 +25,7 @@ main = hakyll "http://www.yesodweb.com" $ do
     renderPlain "yesod/tutorial/widgets.lhs"
     renderPlain "yesod/tutorial/form.lhs"
 
-    renderPlain "hamlet/synopsis.lhs"
+    renderPlain "synopsis/hamlet.lhs"
     renderPlain "web-routes-quasi/synopsis.markdown"
     renderPlain "persistent/synopsis.lhs"
 

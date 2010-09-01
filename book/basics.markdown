@@ -1,6 +1,3 @@
----
-title: Basics
----
 Yesod comes with a scaffolding tool that creates a basic site template for you. This takes care of a lot of the tedious, boilerplate code which you need to get started: writing a cabal file, creating default layout templates, a directory structure, et cetera. It's the best way to get started on a site. However, for learning Yesod, we'll start off without it. This will give you a much better feel for *how* Yesod works.
 
 So in proper tradition, we'll start with Hello World.

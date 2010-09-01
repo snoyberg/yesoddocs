@@ -1,6 +1,3 @@
----
-title: Introduction
----
 Since web programming began, people haved been trying to make the development process a more pleasant process. As a community, we have continually pushed new techniques to try and solve 
 
 Yesod attempts to ease the web development process by playing to the strengths of the Haskell programming language. Haskell's strong compile-time guarantees of correctness not only encompass a types; referential transparency ensures that we don't have any unintended side effects. Pattern matching on algebraic data types can help guarantee we've accounted for every possible case. By building upon Haskell, entire classes of bugs disappear.

@@ -1,6 +1,3 @@
----
-title: Deploying Your Webapp
----
 <blockquote><b>Dammit, I'm a programmer, not a sysadmin!</b></blockquote>
 
 You've now written the most perfect web application ever. It makes angels sing and babies laugh. Now comes the most dreaded part of the process: deployment. You must somehow take your pure code and throw it out into the unholy realm of the Interwebs. What ever shall you do?

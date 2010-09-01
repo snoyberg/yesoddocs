@@ -1,0 +1,31 @@
+%header
+    %h1 Yesod in Five Minutes
+%article
+    %ol
+        %li
+            Get the $
+            %a!href="http://hackage.haskell.org/platform/" Haskell Platform
+        %li
+            Update your list of packages by running $
+            %code cabal update
+        %li
+            Install Yesod by running $
+            %code cabal install yesod
+        %li
+            %i Optional: $
+            get the examples from this site by running $
+            %code cabal install yesod-examples
+        %li
+            Create a new project by using the scaffolding tool: run $
+            %code yesod
+            \ and answer the questions.
+        %li
+            Change into the project directory and start your new application by running $
+            %code runhaskell simple-server.hs
+        %li
+            See your application at $
+            %a!href="http://localhost:3000/" http://localhost:3000
+        %li
+            Learn more about Yesod by $
+            %a!href=@BookR@ reading the book
+            \.

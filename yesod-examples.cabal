@@ -57,7 +57,7 @@ Executable persistent-synopsis
                        persistent-sqlite
 
 Executable hamlet-synopsis
-  Main-is:             hamlet/synopsis.lhs
+  Main-is:             synopsis/hamlet.lhs
   Build-depends:       hamlet
 
 source-repository head

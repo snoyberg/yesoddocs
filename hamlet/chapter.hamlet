@@ -1,0 +1,12 @@
+%header
+    %h1 Yesod Book: $title$
+%article
+    $html$
+    %p
+        %a!href=@BookR@ Table of Contents
+        $maybe previous p
+            %br
+            %a!href=@ChapterR.fst.p@ Previous: $snd.p$
+        $maybe next p
+            %br
+            %a!href=@ChapterR.fst.p@ Next: $snd.p$

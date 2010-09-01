@@ -1,6 +1,3 @@
----
-title: Templates
----
 The templating system in Yesod is called Hamlet. This book contains a [full reference](hamlet.html) chapter on it, so this chapter will be more about showing the usage of Hamlet. It will also show Hamlet's sister languages, Cassius and Julius, which produce CSS and Javascript, respectively.
 
     1 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}

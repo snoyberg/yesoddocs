@@ -1,0 +1,20 @@
+%header
+    %h1 Yesod Web Framework
+    %h2 Haskell web development with a solid foundation
+%article
+    %img!src=@StaticR.large_logo_png@!alt="Yesod Web Framework"
+    %p Yesod is a Haskell web framework promoting type-safe, RESTful web application development. It is built from the ground up on principles which allow the creation of efficient execution. It provides all the tools you need to quickly create fast, safe web applications.
+%nav
+    %ul
+        %li
+            %a!href=@BookR@
+                %img!src=@StaticR.book_png@
+                Read the Book
+        %li
+            %a!href="FIXME SCREENCASTS"
+                %img!src=@StaticR.video_png@
+                Watch the Screencasts
+        %li
+            %a!href="FIXME CODE"
+                %img!src=@StaticR.code_png@
+                See some Code

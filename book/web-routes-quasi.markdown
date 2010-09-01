@@ -1,6 +1,3 @@
----
-title: web-routes-quasi
----
 This chapter has not yet been written properly. Instead, it's a conglomeration of the old content from the web-routes-quasi section. It will be cleaned up as the book is written.
 
 [The web-routes-quasi synopsis]($root/web-routes-quasi/synopsis.html) gives an overview of how the library is used.

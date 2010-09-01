@@ -13,6 +13,7 @@ import Entry
 import Control.Arrow ((&&&))
 import Data.List (groupBy)
 import Data.Function (on)
+import qualified System.IO.UTF8 as U
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
@@ -99,7 +100,7 @@ getBookR = defaultLayout $ do
 
 getChapterR chapter = do
     title <- maybe notFound return $ lookup chapter chapters
-    raw <- liftIO $ readFile $ "book/" ++ chapter ++ ".markdown"
+    raw <- liftIO $ U.readFile $ "book/" ++ chapter ++ ".markdown"
     let pandoc = readMarkdown defaultParserState raw
     let html = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
     let previous = getPrev chapters
@@ -141,12 +142,12 @@ getExamplesR = do
 
 getExampleR name = do
     title <- maybe notFound return $ lookup name examples
-    raw <- liftIO $ readFile $ "yesod/tutorial/" ++ name ++ ".lhs"
+    raw <- liftIO $ U.readFile $ "yesod/tutorial/" ++ name ++ ".lhs"
     let html = hscolour CSS defaultColourPrefs True False title True raw
     return $ RepHtml $ toContent html
 
 getScreencastsR = do
-    raw <- liftIO $ readFile "screencasts.html"
+    raw <- liftIO $ U.readFile "screencasts.html"
     y <- getYesod
     defaultLayout $ do
         setTitle "Yesod Web Framework Screencasts"
@@ -199,7 +200,7 @@ getArticlesR =
 
 getSynWrqR = do
     let title = "web-routes-quasi Synopsis"
-    raw <- liftIO $ readFile "synopsis/web-routes-quasi.markdown"
+    raw <- liftIO $ U.readFile "synopsis/web-routes-quasi.markdown"
     let pandoc = readMarkdown defaultParserState raw
     let content = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
     defaultLayout $ do
@@ -208,7 +209,7 @@ getSynWrqR = do
 
 synLhs file title' = do
     let title = title' ++ " Synopsis"
-    raw <- liftIO $ readFile $ "synopsis/" ++ file ++ ".lhs"
+    raw <- liftIO $ U.readFile $ "synopsis/" ++ file ++ ".lhs"
     let content = preEscapedString
                 $ hscolour CSS defaultColourPrefs True False title True raw
     defaultLayout $ do

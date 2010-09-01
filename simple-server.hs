@@ -7,9 +7,14 @@ import Settings
 import Text.Pandoc
 import Language.Haskell.HsColour hiding (string)
 import Language.Haskell.HsColour.Colourise (defaultColourPrefs)
+import Entry
+import Control.Arrow ((&&&))
+import Data.List (groupBy)
+import Data.Function (on)
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
+    , getEntries :: [Entry]
     }
 
 mkYesod "YesodDocs" [$parseRoutes|
@@ -30,11 +35,14 @@ mkYesod "YesodDocs" [$parseRoutes|
 /synopsis/web-routes-quasi SynWrqR GET
 /synopsis/persistent SynPerR GET
 /synopsis/hamlet SynHamR GET
+
+/blog BlogR GET
+/blog/#String EntryR GET
 |]
 
 navLinks =
     [ ("Home" :: String, Right HomeR)
-    , ("Blog", Left "http://www.snoyman.com/blog/")
+    , ("Blog", Right BlogR)
     , ("Yesod in 5 Minutes", Right FiveMinutesR)
     , ("Book", Right BookR)
     , ("Screencasts", Right ScreencastsR)
@@ -55,7 +63,10 @@ instance Yesod YesodDocs where
             widget
             addStyle $(cassiusFile "default-layout")
         hamletToRepHtml $(hamletFile "default-layout")
-instance YesodJquery YesodDocs
+instance YesodJquery YesodDocs where
+    urlJqueryJs _ = Left $ StaticR jquery_js
+    urlJqueryUiJs _ = Left $ StaticR jquery_ui_js
+    urlJqueryUiCss  _ = Left $ StaticR jquery_ui_css
 
 getHomeR = defaultLayout $ do
             setTitle "Yesod Web Framework for Haskell"
@@ -206,4 +217,32 @@ synLhs file title' = do
 getSynPerR = synLhs "persistent" "Persistent"
 getSynHamR = synLhs "hamlet" "Hamlet"
 
-main = basicHandler 3000 $ YesodDocs $ fileLookupDir "static" typeByExt
+getBlogR = do
+    y <- getYesod
+    redirect RedirectTemporary $ EntryR $ entrySlug $ head $ getEntries y
+    return ()
+
+getEntryR slug = do
+    let isCurrent x = x == slug
+    y <- getYesod
+    entry <-
+        case filter (\x -> entrySlug x == slug) $ getEntries y of
+            [] -> notFound
+            e:_ -> return e
+    let navbar = mkNavbar $ getEntries y
+    defaultLayout $ do
+        setTitle $ string $ "Yesod Blog: " ++ entryTitle entry
+        addBody $(hamletFile "blog")
+        addStyle $(cassiusFile "blog")
+        addScriptEither $ urlJqueryJs y
+        addScript $ StaticR jquery_cookie_js
+        addScript $ StaticR jquery_treeview_js
+        addJavascript $(juliusFile "blog")
+  where
+    mkNavbar :: [Entry] -> [(String, [Entry])]
+    mkNavbar = map (entryYearMonth . head &&& id) . groupBy ((==) `on` entryYearMonth)
+
+main = do
+    entries <- loadEntries
+    let static = fileLookupDir "static" typeByExt
+    basicHandler 3000 $ YesodDocs static entries

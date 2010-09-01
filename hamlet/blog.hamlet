@@ -1,0 +1,19 @@
+#middle
+    #archive
+        %h2 Archives
+        %ul
+            $forall navbar month
+                %li
+                    $fst.month$
+                    %ul
+                        $forall snd.month entry
+                            %li
+                                %a!:isCurrent.entrySlug.entry:class=current!href="../$entrySlug.entry$/"
+                                    $entryTitle.entry$
+    #content
+        %h1 Yesod Blog
+        %h2 $entryTitle.entry$
+        %h3.date $entryDate.entry$
+        #main-content
+            $entryContent.entry$
+        <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/snoyblog/embed.js"></script><noscript><a href="http://disqus.com/forums/snoyblog/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>

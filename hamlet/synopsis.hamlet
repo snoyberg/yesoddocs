@@ -1,0 +1,4 @@
+%header
+    %h1 $title$
+%article
+    $content$

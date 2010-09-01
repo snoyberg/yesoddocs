@@ -26,6 +26,10 @@ mkYesod "YesodDocs" [$parseRoutes|
 /examples/#String ExampleR GET
 
 /screencasts ScreencastsR GET
+
+/synopsis/web-routes-quasi SynWrqR GET
+/synopsis/persistent SynPerR GET
+/synopsis/hamlet SynHamR GET
 |]
 
 navLinks =
@@ -179,5 +183,27 @@ getArticlesR =
             "June 18, 2010"
             ""
         ]
+
+getSynWrqR = do
+    let title = "web-routes-quasi Synopsis"
+    raw <- liftIO $ readFile "synopsis/web-routes-quasi.markdown"
+    let pandoc = readMarkdown defaultParserState raw
+    let content = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
+    defaultLayout $ do
+        setTitle title
+        addBody $(hamletFile "synopsis")
+
+synLhs file title' = do
+    let title = title' ++ " Synopsis"
+    raw <- liftIO $ readFile $ "synopsis/" ++ file ++ ".lhs"
+    let content = preEscapedString
+                $ hscolour CSS defaultColourPrefs True False title True raw
+    defaultLayout $ do
+        setTitle $ string title
+        addStylesheet $ StaticR hscolour_css
+        addBody $(hamletFile "synopsis")
+
+getSynPerR = synLhs "persistent" "Persistent"
+getSynHamR = synLhs "hamlet" "Hamlet"
 
 main = basicHandler 3000 $ YesodDocs $ fileLookupDir "static" typeByExt

@@ -31,8 +31,8 @@ This example uses the sqlite backend for Persistent, since it can run in-memory 
 
 The output of the above is:
 
-    PersonId 1
-    Just (Person {personName = "Michael", personAge = 25})
-    Just (Person {personName = "Michael", personAge = 26})
-    [(PersonId 1,Person {personName = "Michael", personAge = 26})]
-    []
+<code><pre>PersonId 1
+Just (Person {personName = "Michael", personAge = 25})
+Just (Person {personName = "Michael", personAge = 26})
+[(PersonId 1,Person {personName = "Michael", personAge = 26})]
+[]</pre></code>

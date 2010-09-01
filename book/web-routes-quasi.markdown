@@ -1,6 +1,6 @@
 This chapter has not yet been written properly. Instead, it's a conglomeration of the old content from the web-routes-quasi section. It will be cleaned up as the book is written.
 
-[The web-routes-quasi synopsis]($root/web-routes-quasi/synopsis.html) gives an overview of how the library is used.
+[The web-routes-quasi synopsis](/synopsis/web-routes-quasi/) gives an overview of how the library is used.
 
 ## Overview
 
@@ -61,7 +61,7 @@ Everything after the second column declares how to handle the given resource. As
 
 * If there is nothing after the second column, then a single function named handleMyRoute will be called for all requests to that URL pattern.
 
-* If there are exactly three words after the second column, and the second and third of those begin with lowercase letters, we are dealing with a subsite. This allows you to embed functionality written elsewhere within a site. The [synopsis]($root/web-routes-quasi/synopsis.html) shows an example of using a separate module for handling static content. In this case, the first value is the datatype for the subsite argument, the second is a function that returns a QuasiSite value, and the third converts the main sites arg datatype to the subsite's arg datatype.
+* If there are exactly three words after the second column, and the second and third of those begin with lowercase letters, we are dealing with a subsite. This allows you to embed functionality written elsewhere within a site. The [synopsis](/synopsis/web-routes-quasi/) shows an example of using a separate module for handling static content. In this case, the first value is the datatype for the subsite argument, the second is a function that returns a QuasiSite value, and the third converts the main sites arg datatype to the subsite's arg datatype.
 
 * Otherwise, each word is taken as an HTTP request method, and a separate function is called for each method. If the methods specified are GET and DELETE, the functions would be getMyRoute and deleteMyRoute. Alternatively, if there is a colon in the word (eg, GET:myGetFunction), the text before the colon is the request method and the text after the colon is the handler function name.
 

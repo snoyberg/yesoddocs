@@ -52,7 +52,7 @@ Executable mkToForm
                        persistent >= 0.2.0.1 && < 0.3
 
 Executable persistent-synopsis
-  Main-is:             persistent/synopsis.lhs
+  Main-is:             synopsis/persistent.lhs
   Build-depends:       transformers >= 0.2.1 && < 0.3,
                        persistent-sqlite
 

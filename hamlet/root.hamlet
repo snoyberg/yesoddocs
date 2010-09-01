@@ -11,7 +11,7 @@
                 %img!src=@StaticR.book_png@
                 Read the Book
         %li
-            %a!href="FIXME SCREENCASTS"
+            %a!href=@ScreencastsR@
                 %img!src=@StaticR.video_png@
                 Watch the Screencasts
         %li

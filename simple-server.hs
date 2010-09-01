@@ -24,6 +24,8 @@ mkYesod "YesodDocs" [$parseRoutes|
 
 /examples ExamplesR GET
 /examples/#String ExampleR GET
+
+/screencasts ScreencastsR GET
 |]
 
 navLinks =
@@ -31,7 +33,7 @@ navLinks =
     , ("Blog", Left "http://www.snoyman.com/blog/")
     , ("Yesod in 5 Minutes", Right FiveMinutesR)
     , ("Book", Right BookR)
-    , ("Screencasts", Left "FIXME")
+    , ("Screencasts", Right ScreencastsR)
     , ("Examples", Right ExamplesR)
     , ("Articles", Right ArticlesR)
     ]
@@ -125,6 +127,18 @@ getExampleR name = do
     raw <- liftIO $ readFile $ "yesod/tutorial/" ++ name ++ ".lhs"
     let html = hscolour CSS defaultColourPrefs True False title True raw
     return $ RepHtml $ toContent html
+
+getScreencastsR = do
+    raw <- liftIO $ readFile "screencasts.html"
+    y <- getYesod
+    defaultLayout $ do
+        setTitle "Yesod Web Framework Screencasts"
+        addScriptEither $ urlJqueryJs y
+        addScriptEither $ urlJqueryUiJs y
+        addStylesheetEither $ urlJqueryUiCss y
+        addJavascript $(juliusFile "screencasts")
+        addStyle $(cassiusFile "screencasts")
+        addBody $ const $ preEscapedString raw
 
 data Article = Article
     { articleUrl :: String

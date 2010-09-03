@@ -11,9 +11,11 @@ import Settings
 import Text.Pandoc
 import Language.Haskell.HsColour hiding (string)
 import Language.Haskell.HsColour.Colourise (defaultColourPrefs)
+import qualified Language.Haskell.HsColour.CSS as CSS
 import Entry
 import Control.Arrow ((&&&))
-import Data.List (groupBy)
+import Data.List (groupBy, stripPrefix)
+import Data.Maybe (fromMaybe)
 import Data.Function (on)
 import qualified System.IO.UTF8 as U
 import Data.Time
@@ -109,7 +111,8 @@ getBookR = defaultLayout $ do
 getChapterR chapter = do
     title <- maybe notFound return $ lookup chapter chapters
     raw <- liftIO $ U.readFile $ "book/" ++ chapter ++ ".markdown"
-    let pandoc = readMarkdown defaultParserState raw
+    raw' <- liftIO $ mapM go $ lines raw
+    let pandoc = readMarkdown defaultParserState $ unlines raw'
     let html = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
     let previous = getPrev chapters
     let next = getNext chapters
@@ -117,6 +120,7 @@ getChapterR chapter = do
         setTitle $ string $ "Yesod Book: " ++ title
         addBody $(hamletFile "chapter")
         addStyle $(cassiusFile "chapter")
+        addStylesheet $ StaticR hscolour_css
   where
     getPrev (x:(y, y'):rest)
         | y == chapter = Just x
@@ -126,6 +130,28 @@ getChapterR chapter = do
         | x == chapter = Just y
         | otherwise = getNext $ y : rest
     getNext _ = Nothing
+    go ('~':filename) = snippet filename
+    go x = return x
+
+snippet :: String -> IO String
+snippet filename = do
+    raw <- U.readFile $ "snippets/" ++ filename ++ ".hs"
+    let raw' = unlines $ go False $ lines raw
+    return $ "<pre><code>" ++ (unlines $ zipWith go' [1..] $ lines
+           $ CSS.hscolour False raw')
+  where
+    go _ [] = []
+    go False ("-- START":rest) = go True rest
+    go True ("-- STOP":rest) = go False rest
+    go False (_:rest) = go False rest
+    go True (x:rest) = x : go True rest
+    go' _ "</pre>" = "</code></pre>"
+    go' i s = showI i ++ ' ' : removePre s
+    showI i
+        | i < 10 = ' ' : ' ' : show i
+        | i < 100 = ' ' : show i
+        | otherwise = show i
+    removePre s = fromMaybe s $ stripPrefix "<pre>" s
 
 examples :: [(String, String)]
 examples =
@@ -149,10 +175,12 @@ getExamplesR = do
         addBody $(hamletFile "examples")
         addStylesheet $ StaticR hscolour_css
 
+colorize title raw isLit = hscolour CSS defaultColourPrefs True False title isLit raw
+
 getExampleR name = do
     title <- maybe notFound return $ lookup name examples
     raw <- liftIO $ U.readFile $ "yesod/tutorial/" ++ name ++ ".lhs"
-    let html = hscolour CSS defaultColourPrefs True False title True raw
+    let html = colorize title raw True
     return $ RepHtml $ toContent html
 
 getScreencastsR = do
@@ -219,8 +247,7 @@ getSynWrqR = do
 synLhs file title' = do
     let title = title' ++ " Synopsis"
     raw <- liftIO $ U.readFile $ "synopsis/" ++ file ++ ".lhs"
-    let content = preEscapedString
-                $ hscolour CSS defaultColourPrefs True False title True raw
+    let content = preEscapedString $ colorize title raw True
     defaultLayout $ do
         setTitle $ string title
         addStylesheet $ StaticR hscolour_css

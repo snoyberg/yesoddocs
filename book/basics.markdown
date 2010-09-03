@@ -2,13 +2,7 @@ Yesod comes with a scaffolding tool that creates a basic site template for you. 
 
 So in proper tradition, we'll start with Hello World.
 
-    1 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
-    2 import Yesod
-    3 data HelloWorld = HelloWorld
-    4 mkYesod "HelloWorld" [$parseRoutes|/ HomeR GET|]
-    5 instance Yesod HelloWorld where approot _ = ""
-    6 getHomeR = return $ RepPlain $ toContent "Hello World!"
-    7 main = basicHandler 3000 HelloWorld
+~basics-helloworld
 
 Let's start by looking at line 6. getHomeR is the **handler function** for the HomeR **resource pattern** when called with the GET request method. We defined the HomeR resource pattern up on line 4; the "/ HomeR GET" bit says that HomeR responds to requests on the root of our application (/) and answers the GET request method.
 
@@ -66,13 +60,7 @@ What's interesting here is that we ignore entirely the list of expected content 
 
 I mentioned the terms resource and resource pattern above. A resource is another term for a URL. A resource pattern is a group of related URLs. A simple example of a URL pattern from above would be /name/<some name>. The individual resources /name/adam/, /name/bob/, /name/charlie/ all clearly belong to the same pattern. Let's see how we could write a program to take advantage of this:
 
-    1 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
-    2 import Yesod
-    3 data Names = Names
-    4 mkYesod "Names" [$parseRoutes|/name/#String NameR GET|]
-    5 instance Yesod Names where approot _ = ""
-    6 getNameR name = return $ RepPlain $ toContent $ "Hello " ++ name
-    7 main = basicHandler 3000 Names
+~basics-names
 
 On line 4 we declare a resource pattern named NameR. It has two "pieces" to it: the first is a static piece "name", while the second is a dynamic piece matching any String. Jumping down to line 6, we see that our handler function now takes a single argument: the name passed via the URL. So if you visit "/name/Michael/", Yesod will call the function getNameR with the argument "Michael".
 

@@ -1,12 +1,6 @@
 The templating system in Yesod is called Hamlet. This book contains a [full reference](hamlet.html) chapter on it, so this chapter will be more about showing the usage of Hamlet. It will also show Hamlet's sister languages, Cassius and Julius, which produce CSS and Javascript, respectively.
 
-    1 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
-    2 import Yesod
-    3 data HelloWorld = HelloWorld
-    4 mkYesod "HelloWorld" [$parseRoutes|/ HomeR GET|]
-    5 instance Yesod HelloWorld where approot _ = ""
-    6 getHomeR = hamletToRepHtml [$hamlet|Hello World!|]
-    7 main = basicHandler 3000 HelloWorld
+~templates-helloworld
 
 Excepting line 6, this is identical to the Hello World from the previous chapter. The [$hamlet| and |] stuff introduces some *quasi-quotation*, which allows us to embed an arbitrary string and have it converted to Haskell code. We'll see some other ways of using Hamlet as well.
 
@@ -24,23 +18,11 @@ The datatype Html is simply a way of building up text values, based upon the inc
 
 But that's a really boring HTML page: it's just the text "Hello World!" without any tags! Let's see something a little bit more interesting:
 
-    getHomeR = hamletToRepHtml [$hamlet|
-    %h1 Hello World!
-    %p Here are some of my favorite links:
-    %ul
-        %li
-            %a!href="http://docs.yesodweb.com/" Yesod Web Framework Docs
-        %li
-            %a!href="http://www.haskell.org/" Haskell Homepage
-    %p Thanks for visiting!
-    |]
+~templates-helloworld2
 
 Let's see how we could spice up the names example from the previous chapter:
 
-    getNameR name = hamletToRepHtml [$hamlet|
-    %h1 Welcome to the Names Webapp
-    %p You want me to tell you your name? Fine, it's $name$.
-    |]
+~templates-names
 
 Notice that we include the name in the template by surrounding it with the dollar sign. A nifty feature is that if you include Strings in this manner, they are automatically HTML-entity escaped. That's right: you automatically avoid a large vector of XSS attacks.
 

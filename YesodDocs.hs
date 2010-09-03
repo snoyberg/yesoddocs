@@ -116,6 +116,7 @@ getChapterR chapter = do
     defaultLayout $ do
         setTitle $ string $ "Yesod Book: " ++ title
         addBody $(hamletFile "chapter")
+        addStyle $(cassiusFile "chapter")
   where
     getPrev (x:(y, y'):rest)
         | y == chapter = Just x

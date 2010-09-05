@@ -95,6 +95,7 @@ navLinks =
 instance Yesod YesodDocs where
     approot _ = ""
     defaultLayout widget = do
+        setHeader "Cache-Control" "max-age=3600, public"
         curr <- getCurrentRoute
         tm <- getRouteToMaster
         let isCurrent x = fmap (Right . tm) curr == Just x

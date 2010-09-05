@@ -12,7 +12,7 @@ $(function(){
       if (href != "") {
         ui.newContent.html("<div id='loading'>Loading</div>");
         $.get(href, function(data) {
-          $('#loading').html(data);
+          $('#loading').parent().html(data);
         });
       }
     }

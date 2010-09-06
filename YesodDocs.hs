@@ -95,6 +95,7 @@ chapters =
     , ("basics", "Basics")
     , ("templates", "Templates")
     , ("handler", "The Handler Monad")
+    , ("routing", "Routing")
     , ("wai", "Web Application Interface")
     , ("hamlet", "Hamlet")
     , ("forms", "Forms")

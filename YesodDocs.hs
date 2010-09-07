@@ -103,6 +103,7 @@ chapters =
     , ("persistent", "Persistent")
     , ("web-routes-quasi", "web-routes-quasi")
     , ("widgets", "Widgets")
+    -- subsites
     ]
 
 getBookR = defaultLayout $ do

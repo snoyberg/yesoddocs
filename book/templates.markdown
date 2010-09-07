@@ -1,3 +1,15 @@
+<div class="advanced">
+
+Just a little heads-up on some of the examples below: in order to simplify the examples below, we're going to assume the OverloadedStrings language extension. If you rather not use this extension, you'll need to make some minor modifications, such as replacing:
+
+    setTitle "Home Page"
+
+with
+
+    setTitle $ string "Home Page"
+
+</div>
+
 The templating system in Yesod is called Hamlet. This book contains a [full reference](hamlet.html) chapter on it, so this chapter will be more about showing the usage of Hamlet. It will also show Hamlet's sister languages, Cassius and Julius, which produce CSS and Javascript, respectively.
 
 ~templates-helloworld

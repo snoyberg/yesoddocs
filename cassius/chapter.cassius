@@ -1,2 +1,6 @@
 #disqus_thread
     margin: 0 20px
+.advanced
+    background: #eee
+    margin-left: 1em
+    padding: 0 0.5em

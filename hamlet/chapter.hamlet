@@ -1,7 +1,8 @@
 %header
     %h1 Yesod Book: $title$
 %article
-    $html$
+    .hyphenate
+        $html$
     %p
         %a!href=@BookR@ Table of Contents
         $maybe previous p

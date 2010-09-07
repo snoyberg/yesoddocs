@@ -123,6 +123,7 @@ getChapterR chapter = do
         addBody $(hamletFile "chapter")
         addStyle $(cassiusFile "chapter")
         addStylesheet $ StaticR hscolour_css
+        addScript $ StaticR hyphenate_js
   where
     getPrev (x:(y, y'):rest)
         | y == chapter = Just x

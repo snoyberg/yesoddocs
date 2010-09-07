@@ -4,3 +4,7 @@
     background: #eee
     margin-left: 1em
     padding: 0 0.5em
+.hyphenate
+    text-align: justify
+.hyphenate > p, .hyphenate > div > p
+    text-indent: 1.5em

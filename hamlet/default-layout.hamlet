@@ -1,5 +1,5 @@
 !!!
-%html
+%html!lang=en
     %head
         %title $pageTitle.pc$
         %meta!charset=utf-8

@@ -84,7 +84,7 @@ navLinks =
     ]
 
 instance Yesod YesodDocs where
-    approot _ = ""
+    approot _ = "http://www.yesodweb.com"
     defaultLayout widget = do
         setHeader "Cache-Control" "max-age=3600, public"
         curr <- getCurrentRoute

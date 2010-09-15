@@ -4,7 +4,7 @@ You've now written the most perfect web application ever. It makes angels sing a
 
 Yesod tries to give you as much flexibility at this point as possible. Some people have their own dedicated servers and want to run their Yesod app as a standalone application. Some people are stuck on shared hosting and want to use CGI. All of these are supported as first class citizens in the Yesod world.
 
-This magic is provided by the WAI; Yesod targets an abstract interface that is supported by multiple handlers. You can [read more about WAI](wai.html), but the point here is to set up an optimal serving strategy.
+This magic is provided by the WAI; Yesod targets an abstract interface that is supported by multiple handlers. You can [read more about WAI](/book/wai/), but the point here is to set up an optimal serving strategy.
 
 ## Development
 

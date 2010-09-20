@@ -11,4 +11,6 @@
     %ol
         $forall chapters c
             %li
-                %a!href=@ChapterR.fst.c@ $snd.c$
+                %a!href=@ChapterR.chapterSlug.c@
+                    $chapterTitle.c$
+                %span.status $chapterStatus.c$

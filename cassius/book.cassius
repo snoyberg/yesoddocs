@@ -1,0 +1,5 @@
+.status
+    font-style: italic
+    font-size: 80%
+    padding-left: 15px
+    color: #666

@@ -19,6 +19,7 @@ import Data.Maybe (fromMaybe)
 import Data.Function (on)
 import qualified System.IO.UTF8 as U
 import Data.Time
+import Text.Hamlet (ToHtml (..))
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
@@ -90,28 +91,39 @@ getFiveMinutesR = defaultLayout $ do
     setTitle "Yesod in Five Minutes"
     addBody $(hamletFile "five-minutes")
 
+data Chapter = Chapter
+    { chapterSlug :: String
+    , chapterTitle :: String
+    , chapterStatus :: ChapterStatus
+    }
+data ChapterStatus = Outline | Incomplete | Unproofed | Proofread | Finished
+    deriving Show
+instance ToHtml ChapterStatus where toHtml = string . show
 chapters =
-    [ ("introduction" :: String, "Introduction" :: String)
-    , ("basics", "Basics")
-    , ("templates", "Templates")
-    , ("handler", "The Handler Monad")
-    , ("routing", "Routing")
-    , ("wai", "Web Application Interface")
-    , ("hamlet", "Hamlet")
-    , ("forms", "Forms")
-    , ("deploying", "Deploying your Webapp")
-    , ("persistent", "Persistent")
-    , ("web-routes-quasi", "web-routes-quasi")
-    , ("widgets", "Widgets")
+    [ Chapter "introduction" "Introduction" Incomplete
+    , Chapter "basics" "Basics" Unproofed
+    , Chapter "templates" "Templates" Unproofed
+    , Chapter "handler" "The Handler Monad" Incomplete
+    , Chapter "routing" "Routing" Unproofed
+    , Chapter "wai" "Web Application Interface" Unproofed
+    , Chapter "hamlet" "Hamlet" Unproofed
+    , Chapter "forms" "Forms" Outline
+    , Chapter "deploying" "Deploying your Webapp" Unproofed
+    , Chapter "persistent" "Persistent" Outline
+    , Chapter "web-routes-quasi" "web-routes-quasi" Outline
+    , Chapter "widgets" "Widgets" Incomplete
     -- subsites
     ]
 
 getBookR = defaultLayout $ do
     setTitle "Yesod Web Framework Book"
     addBody $(hamletFile "book")
+    addStyle $(cassiusFile "book")
 
 getChapterR chapter = do
-    title <- maybe notFound return $ lookup chapter chapters
+    title <- case filter (\x -> chapterSlug x == chapter) chapters of
+                [] -> notFound
+                x:_ -> return $ chapterTitle x
     raw <- liftIO $ U.readFile $ "book/" ++ chapter ++ ".markdown"
     raw' <- liftIO $ mapM go $ lines raw
     let pandoc = readMarkdown defaultParserState $ unlines raw'
@@ -121,15 +133,16 @@ getChapterR chapter = do
     defaultLayout $ do
         setTitle $ string $ "Yesod Book: " ++ title
         addBody $(hamletFile "chapter")
+        addStyle $(cassiusFile "book")
         addStyle $(cassiusFile "chapter")
         addStylesheet $ StaticR hscolour_css
         addScript $ StaticR hyphenate_js
   where
-    getPrev (x:(y, y'):rest)
+    getPrev (x:yc@(Chapter y y' _):rest)
         | y == chapter = Just x
-        | otherwise = getPrev $ (y, y') : rest
+        | otherwise = getPrev $ yc : rest
     getPrev _ = Nothing
-    getNext ((x, _):y:rest)
+    getNext ((Chapter x _ _):y:rest)
         | x == chapter = Just y
         | otherwise = getNext $ y : rest
     getNext _ = Nothing
@@ -299,7 +312,7 @@ getSitemapR = do
     screencasts = SitemapUrl ScreencastsR date Daily 0.9
     examples = SitemapUrl ExamplesR date Daily 0.9
     book = SitemapUrl BookR date Daily 0.9
-    go1 (name, title) = SitemapUrl (ChapterR name) date Weekly 0.8
+    go1 (Chapter name title _) = SitemapUrl (ChapterR name) date Weekly 0.8
     go2 e = SitemapUrl
                 (EntryR $ entrySlug e)
                 (UTCTime (entryDay e) $ secondsToDiffTime 0)

@@ -11,6 +11,8 @@ article img
 
 article p
     margin-left: 180px
+    margin-bottom: 0
+    margin-top: 0
 
 nav img
     border: 0
@@ -21,6 +23,7 @@ nav ul
     list-style: none
     padding: 0
     text-align: center
+    margin: 0
 
 nav li
     display: inline-block
@@ -38,3 +41,6 @@ nav a, nav a:visited
 
 nav a:hover
     background: orange
+
+h1, h2
+    margin: 5px 0

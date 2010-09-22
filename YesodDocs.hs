@@ -62,6 +62,7 @@ navLinks =
     , ("Screencasts", Right ScreencastsR)
     , ("Examples", Right ExamplesR)
     , ("Articles", Right ArticlesR)
+    , ("Wiki", Left "http://wiki.yesodweb.com/")
     ]
 
 instance Yesod YesodDocs where

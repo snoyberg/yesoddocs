@@ -14,21 +14,37 @@ import Data.Time
 import System.Locale
 import Text.Hamlet
 import Data.Ord (comparing)
+import Text.Pandoc
+
+data EntryFormat = EFHtml | EFMarkdown
 
 loadEntry :: String -> IO Entry
 loadEntry slug = do
     let fp = "blog/" ++ slug
     withFile fp ReadMode $ \h -> do
-        title <- S.hGetLine h
+        firstLine <- toString `fmap` S.hGetLine h
+        (format, title) <-
+            case firstLine of
+                "!markdown" -> do
+                    title <- toString `fmap` S.hGetLine h
+                    return (EFMarkdown, title)
+                _ -> return (EFHtml, firstLine)
         date' <- S.hGetLine h
         let date = read $ toString date' :: Day
         contents <- S.hGetContents h
+        let html =
+                case format of
+                    EFHtml -> unsafeByteString contents
+                    EFMarkdown -> preEscapedString
+                                $ writeHtmlString defaultWriterOptions
+                                $ readMarkdown defaultParserState
+                                $ toString contents
         return Entry
             { entrySlug = slug
-            , entryTitle = toString title
+            , entryTitle = title
             , entryDate = showDay date
             , entryDay = date
-            , entryContent = unsafeByteString contents
+            , entryContent = html
             , entryYearMonth = toYearMonth date
             }
   where

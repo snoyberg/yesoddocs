@@ -169,7 +169,7 @@ which is really equivalent to:
 </li>
 </ul>
 
-<h2 id="relations>Relations</h2>
+<h2 id="relations">Relations</h2>
 
 Persistent itself is non-relational. However, data *is* relational. As a motivating example, let's discuss a blog application, with multiple authors. Each author can have multiple entries; how does this work in Persistent?
 

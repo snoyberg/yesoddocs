@@ -176,6 +176,7 @@ examples =
     , ("ajax", "Ajax")
     , ("form", "Form")
     , ("widgets", "Widgets")
+    , ("generalized-hamlet", "Generalized Hamlet")
     , ("pretty-yaml", "Pretty YAML")
     , ("i18n", "Internationalization")
     ]

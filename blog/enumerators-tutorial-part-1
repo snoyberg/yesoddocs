@@ -1,0 +1,110 @@
+!markdown
+Enumerators Tutorial Part 1: Iteratee
+2010-09-30
+
+## Introduction
+
+One of the upcoming patterns in Haskell is the enumerators. Unfortunately, it's very difficult to get started with them since:
+
+* There are multiple implementations, all with slightly different approaches.
+
+* Some of the implementations (in my opinion) use incredibly confusing naming.
+
+* The tutorials that get written usually don't directly target an existing implementation, and work more on building up intuition than giving instructions on how to use the library.
+
+I'm hoping that this tutorial will fill the gap a bit. I'm going to be basing this on the [enumerator package](http://hackage.haskell.org/package/enumerator). I'm using version 0.4.0.2, but this should be applicable to older and hopefully newer versions as well. This package is newer and less used than the [iteratee](http://hackage.haskell.org/package/iteratee) package, but I've chosen it for three reasons:
+
+* It has a much smaller dependency list.
+
+* It's a smaller package, and therefore easier to wrap your mind around.
+
+* I think the naming is better.
+
+That said, both packages are built around the same basic principles, so learning one will definitely help you with the other.
+
+### Three Parts
+
+The title of this post says this is part 1. In theory, there will be three parts (though I may do more or less, I'm not certain yet). There are really three main concepts to learn to use the enumerator package: iteratees, enumerators and enumeratees. A basic definition would be:
+
+* Iteratees are *consumers*: they are fed data and do something with it.
+
+* Enumerators are *producers*: they feed data to an iteratee.
+
+* Enumeratees are *pipes*: they are fed data from an enumerator and then feed it to an iteratee.
+
+### What good are enumerators?
+
+But before you really get into this library, let's give some motivation for *why* we would want to use it. Here's some real life examples I use the enumerator package for:
+
+* When reading values from a database, I don't necessarily want to pull all records into memory at once. Instead, I would like to have them fed to a function which will consume them bit by bit.
+
+* When processing a YAML file, instead of reading in the whole structure, maybe you only need to grab the value of one or two records.
+
+* If you want to download a file via HTTP and save the results in a file, it would be a waste of RAM to store the whole file in memory and then write it out. Enumerators let you perform interleaved IO actions easily.
+
+A lot of these problems can also be solved using lazy I/O. However, lazy I/O is not necessarily a panacea: you might want to read some of [Oleg's stuff](http://okmij.org/ftp/Streams.html#iteratee) on the pitfalls of lazy I/O.
+
+## Intuition
+
+Let's say we want to write a function that sums the numbers in a list. Forgetting uninteresting details like space leaks, a perfectly good implementation could be:
+
+    sum1 :: [Int] -> Int
+    sum1 [] = 0
+    sum1 (x:xs) = x + sum xs
+
+But let's say that we don't have a list of numbers. Instead, the user is typing numbers on the command line, and hitting "q" when done. In other words, we have a function like:
+
+    getNumber :: IO (Maybe Int)
+
+We could write our new sum function as:
+
+    sum2 :: IO Int
+    sum2 = do
+        maybeNum <- getNumber
+        case maybeNum of
+            Nothing -> return 0
+            Just num -> do
+                rest <- sum
+                return $ num + rest
+
+It's fairly annoying to have to write two completely separate sum functions just because our data source changed. Ideally, we would like to generalize things a bit. Let's start by noticing a similarity between these two functions: they both only **yield** a value when they are informed that there are no more numbers. In the case of sum1, we check for an empty list; in sum2, we check for Nothing.
+
+## The Stream datatype.
+
+The first datatype defined in the enumerator package is:
+
+    data Stream a = Chunks [a] | EOF
+
+The EOF constructor indicates that no more data is available. The Chunks constructor simply allows us to put multiple pieces of data together for efficiency. We could now rewrite sum2 to use this Stream datatype:
+
+    getNumber2 :: IO (Stream Int)
+    getNumber2 = do
+        maybeNum <- getNumber -- using the original getNumber function
+        case maybeNum of
+            Nothing -> return EOF
+            Just num -> return $ Chunks [num]
+
+    sum3 :: IO Int
+    sum3 = do
+        stream <- getNumber2
+        case stream of
+            EOF -> return 0
+            Chunks nums -> do
+                let nums' = sum nums
+                rest <- sum3
+                return $ nums' + rest
+
+Not that it's much better than sum2, but at least it shows how to use the Stream datatype. The problem here is that we still refer explicitly to the getNumber2 function, hard-coding the data source.
+
+One possible solution is to make the data source an argument to the sum function, ie:
+
+    sum4 :: IO (Stream Int) -> IO Int
+    sum4 getNum = do
+        stream <- getNum
+        ...
+
+That's all well and good, but let's pretend we want to have *two* datasources to sum over: values the user enters on the command line, and some numbers we read over an HTTP connection, perhaps. The problem here is one of **control**: sum4 is running the show here by calling getNum. This is a **pull** data model. Enumerators have an **inversion of control/push** model, putting the enumerator in charge. This allows cool things like feeding in multiple data sources, and also makes it easier to write enumerators that properly deal with resource allocation.
+
+## The Step datatype
+
+So we need a new datatype that will represent the state of our summing operation.

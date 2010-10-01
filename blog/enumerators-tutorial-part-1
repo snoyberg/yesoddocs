@@ -46,6 +46,8 @@ A lot of these problems can also be solved using lazy I/O. However, lazy I/O is 
 
 ## Intuition
 
+*Note: you can see the code in this post as a [github gist](http://gist.github.com/605826).*
+
 Let's say we want to write a function that sums the numbers in a list. Forgetting uninteresting details like space leaks, a perfectly good implementation could be:
 
     sum1 :: [Int] -> Int

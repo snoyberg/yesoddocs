@@ -35,3 +35,6 @@ footer p
 
 #topbar a:hover
     color: #909
+
+abbr
+    border-bottom: 1px dotted #666

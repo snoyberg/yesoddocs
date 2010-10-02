@@ -52,7 +52,7 @@ Let's say we want to write a function that sums the numbers in a list. Forgettin
 
     sum1 :: [Int] -> Int
     sum1 [] = 0
-    sum1 (x:xs) = x + sum xs
+    sum1 (x:xs) = x + sum1 xs
 
 But let's say that we don't have a list of numbers. Instead, the user is typing numbers on the command line, and hitting "q" when done. In other words, we have a function like:
 

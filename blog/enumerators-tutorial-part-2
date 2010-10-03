@@ -180,7 +180,7 @@ One last thing to note about our function: notice the b in our type signature.
 
     getNumberEnum :: MonadIO m => Enumerator Int m b
 
-This is saying that our Enumerator can feed <code>Int</code>s to any Iteraee accepting <code>Int</code>s, and it doesn't matter what the final output type will be. This is in general the way enumerators work. This allows us to create drastically different iteratees that work with the same enumerators:
+This is saying that our Enumerator can feed <code>Int</code>s to any Iteratee accepting <code>Int</code>s, and it doesn't matter what the final output type will be. This is in general the way enumerators work. This allows us to create drastically different iteratees that work with the same enumerators:
 
     intsToStrings :: (Show a, Monad m) => Iteratee a m String
     intsToStrings = (unlines . map show) `fmap` consume

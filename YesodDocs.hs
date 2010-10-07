@@ -86,6 +86,9 @@ instance YesodJquery YesodDocs where
 getHomeR = defaultLayout $ do
             setTitle "Yesod Web Framework for Haskell"
             addBody $(hamletFile "root")
+            addHead [$hamlet|
+%meta!name=description!value="Yesod Web Framework for Haskell. Create RESTful web apps with type safety."
+|]
             addStyle $(cassiusFile "root")
 
 getFiveMinutesR = defaultLayout $ do

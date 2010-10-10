@@ -104,8 +104,8 @@ data ChapterStatus = Outline | Incomplete | Unproofed | Proofread | Finished
     deriving Show
 instance ToHtml ChapterStatus where toHtml = string . show
 chapters =
-    [ Chapter "introduction" "Introduction" Incomplete
-    , Chapter "basics" "Basics" Unproofed
+    [ Chapter "introduction" "Introduction" Unproofed
+    , Chapter "basics" "Basics" Proofread
     , Chapter "templates" "Templates" Unproofed
     , Chapter "handler" "The Handler Monad" Incomplete
     , Chapter "routing" "Routing" Unproofed
@@ -117,6 +117,7 @@ chapters =
     , Chapter "web-routes-quasi" "web-routes-quasi" Outline
     , Chapter "widgets" "Widgets" Incomplete
     -- subsites
+    -- enumerator package, pull in three blog posts
     ]
 
 getBookR = defaultLayout $ do

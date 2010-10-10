@@ -1,3 +1,5 @@
+__Question for my dear readers: is this first section too advanced for the beginning of the book?__
+
 Yesod comes with a scaffolding tool that creates a basic site template for you. This takes care of a lot of the tedious, boilerplate code which you need to get started: writing a cabal file, creating default layout templates, a directory structure, et cetera. It's the best way to get started on a site. However, for learning Yesod, we'll start off without it. This will give you a much better feel for *how* Yesod works.
 
 So in proper tradition, we'll start with Hello World.
@@ -58,7 +60,7 @@ What's interesting here is that we ignore entirely the list of expected content 
 
 ## Resources
 
-I mentioned the terms resource and resource pattern above. A resource is another term for a URL. A resource pattern is a group of related URLs. A simple example of a URL pattern from above would be /name/<some name>. The individual resources /name/adam/, /name/bob/, /name/charlie/ all clearly belong to the same pattern. Let's see how we could write a program to take advantage of this:
+I mentioned the terms resource and resource pattern above. A resource is another term for a URL. A resource pattern is a group of related URLs. A simple example of a URL pattern from above would be /name/*some-name*/. The individual resources /name/adam/, /name/bob/, /name/charlie/ all clearly belong to the same pattern. Let's see how we could write a program to take advantage of this:
 
 ~basics-names
 
@@ -95,7 +97,7 @@ And let's finally pull things full circle. We've spoken about resource patterns,
 
 This is how we would create a new application with a site argument called MyApp and three resource patterns. If this style of Haskell looks unfamiliar to you, it's a combination of quasi-quotation and template haskell. You don't need to understand the details to use Yesod, but it is essentially letting us create a brand new language within Haskell to allow us to write concise, safe code.
 
-This piece of code defines three resource patterns: RootR, NameR and AgeR. We've already seen that this interacts with the dispatch system: we will need to write handler functions getRootR, getNameR and getAgeR. What we **haven't** seen is that this also creates a data type:
+This piece of code defines three resource patterns: RootR, NameR and AgeR. We've already seen how this interacts with the dispatch system: we will need to write handler functions getRootR, getNameR and getAgeR. What we **haven't** seen is that this also creates a data type:
 
     data MyAppRoute = RootR | NameR String | AgeR Int
 
@@ -105,7 +107,7 @@ As simple as this looks, it's one of the most powerful features Yesod offers for
     /name/michael -> NameR "michael"
     /age/935      -> AgeR 935
 
-In Yesod, we don't splice together strings to generate URLs; we simply build up plain old Haskell data types. This means **the compiler can prevent invalid links**. This feature ties in very nicely with Yesod's templating system (Hamlet), as we'll see later.
+In Yesod, we don't splice together strings to generate URLs; we simply build up plain old Haskell data types. This means **the compiler can prevent invalid links**. This feature ties in very nicely with Yesod's templating system (Hamlet), as [we'll see later](../templates/).
 
 As I mentioned, there is an associated type (type family) involved as well. This looks like:
 

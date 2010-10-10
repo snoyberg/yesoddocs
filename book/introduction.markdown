@@ -1,8 +1,8 @@
-Since web programming began, people haved been trying to make the development process a more pleasant process. As a community, we have continually pushed new techniques to try and solve 
+Since web programming began, people haved been trying to make the development process a more pleasant one. As a community, we have continually pushed new techniques to try and solve some of the lingering difficulties of security threats, the stateless nature of HTTP, the multiple languages (HTML, CSS, Javascript) necessary to create a powerful web application, and more.
 
-Yesod attempts to ease the web development process by playing to the strengths of the Haskell programming language. Haskell's strong compile-time guarantees of correctness not only encompass a types; referential transparency ensures that we don't have any unintended side effects. Pattern matching on algebraic data types can help guarantee we've accounted for every possible case. By building upon Haskell, entire classes of bugs disappear.
+Yesod attempts to ease the web development process by playing to the strengths of the Haskell programming language. Haskell's strong compile-time guarantees of correctness not only encompass types; referential transparency ensures that we don't have any unintended side effects. Pattern matching on algebraic data types can help guarantee we've accounted for every possible case. By building upon Haskell, entire classes of bugs disappear.
 
-Unfortunately, using Haskell isn't enough. The web, by its very nature, is *not* type safe. Even the simplest case of distinguishing between an integer and string is impossible: all data on the web is transfered as text, evading our best efforts of type safety. Every app writer is left with the task of validating that all input is valid. I call this problem **the boundary issue**: as much as your application is type safe on the inside, every boundary with the outside world still needs to be sanitized.
+Unfortunately, using Haskell isn't enough. The web, by its very nature, is *not* type safe. Even the simplest case of distinguishing between an integer and string is impossible: all data on the web is transfered as raw bytes, evading our best efforts of type safety. Every app writer is left with the task of validating that all input is valid. I call this problem **the boundary issue**: as much as your application is type safe on the inside, every boundary with the outside world still needs to be sanitized.
 
 ## Type Safety
 
@@ -30,6 +30,12 @@ The usage of quasi-quotation is a minor example of this: by allowing HTML, CSS a
 
 Yesod has spawned the creation of over a dozen packages, all of which are usable in a context outside of Yesod itself. One of the goals of the project is to contribute back to the community as much as possible; as such, even if you are not planning on using Yesod in your next project, a large portion of this book may still be relevant for your needs.
 
-As such, we're going to begin by discussing some of the underlying packages: their purpose, their design and their usage. Later on, we will begin looking at Yesod itself and see how these packages interact to provide you with a consistent and comprehendable web development environment.
+Of course, these libraries have all been designed to integrate well together. Using the Yesod Framework should give you a strong feeling of consistency throughout the various APIs.
 
-FIXME RESTful, PHP UTF-8 support example, real language, powerful, libraries, concurrent
+## A solid foundation
+
+I remember once seeing a PHP framework advertising support for UTF-8. In the Haskell world, we usually have the opposite problem: there are a number of packages providing powerful and well-designed support for the problem. The Haskell community is constantly pushing the boundaries finding the cleanest, most efficient solutions to problems.
+
+The downside of such a powerful ecosystem is the complexity of choice. By using Yesod, you will already have most of the tools chosen for you, and you can be guaranteed they work together. Of course, you always have the option of pulling in your own solution.
+
+As a real-life example, Yesod and Hamlet (the default templating language) use [blaze-builder](http://hackage.haskell.org/package/blaze-builder) for textual content generation. This choice was made because blaze provides the fastest interface for generating UTF-8 data. Anyone who wants to use one of the other great libraries out there, such as [text](http://hackage.haskell.org/package/text) should have no problem dropping it in.

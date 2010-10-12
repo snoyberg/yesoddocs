@@ -111,7 +111,7 @@ chapters =
     , Chapter "routing" "Routing" Unproofed
     , Chapter "wai" "Web Application Interface" Unproofed
     , Chapter "hamlet" "Hamlet" Unproofed
-    , Chapter "forms" "Forms" Outline
+    , Chapter "forms" "Forms" Unproofed
     , Chapter "deploying" "Deploying your Webapp" Unproofed
     , Chapter "persistent" "Persistent" Outline
     , Chapter "web-routes-quasi" "web-routes-quasi" Outline

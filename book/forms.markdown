@@ -1,4 +1,4 @@
-I've mentioned the boundary issue already: whenever data enters or leaves our application, we need to validate our data. Probably the most difficult place this occurs is forms. Coding forms has a lot of complexities in it; in an ideal world, we'd like a solution that addresses the following problems:
+I've mentioned the boundary issue already: whenever data enters or leaves our application, we need to validate our data. Probably the most difficult place this occurs is forms. Coding forms is complex; in an ideal world, we'd like a solution that addresses the following problems:
 
 * Ensure data is valid.
 
@@ -18,13 +18,13 @@ Let's start off with a silly example: we want to create a website that generates
 
 ~forms-random1
 
-In lines 1-6, we set up a new datatype to hold all of the parameter information we need for this program. There's nothing special at all about this datatype, it's a <abbr title="Plain Old Haskell Datatype">POHD</abbr>. Lines 8-13 is where we introduce the forms API in Yesod.
+In lines 1-6, we set up a new datatype to hold all of the parameter information we need for this program. There's nothing special at all about this datatype, it's a <abbr title="Plain Old Haskell Datatype">POHD</abbr>. Lines 8-13 are where we introduce the forms API in Yesod.
 
-First, notice the type signature: this function takes a <code>Maybe Params</code>. This allows us to either start with a blank form (<code>Nothing</code>) or initialize our form to some default value. This can be especially useful when creating a add/edit interface. The return type of the function is a Form; we'll deal more with that later. Also, since this pattern of taking a Maybe value is so common, it has a synonym defined as <code>Formlet</code> (line 9).
+First, notice the type signature: this function takes a <code>Maybe Params</code>. This allows us to either start with a blank form (<code>Nothing</code>) or initialize our form to some default value. This can be especially useful when creating an add/edit interface. The return type of the function is a Form; we'll deal more with that later. Also, since this pattern of taking a Maybe value is so common, it has a synonym defined as <code>Formlet</code> (line 9).
 
 Let's skip down to line 11: we start off with <code>&lt;$&gt;</code>: this stresses the fact that we deal with forms using their <code>Applicative</code> instance. This allows us to check *all* fields in a form for validation errors. Lines 12-14 all start with <code>&lt;*&gt;</code>; you can see more information on the Applicative typeclass on the [wikibook Applicative page](http://en.wikibooks.org/wiki/Haskell/Applicative_Functors).
 
-Continuing along line 11, we call <code>intField</code>. This is doing exactly what you expect: specifying we want an integral value. "Minimum number" is the label displayed to the user, and the last part of the line gives the initial value of the field.
+Continuing along line 11, we call <code>intField</code>. This is doing exactly what you expect: specifying that we want an integral value. "Minimum number" is the label displayed to the user, and the last part of the line gives the initial value of the field.
 
 So how exactly is this initial value used? Well, if the user submits a value for the field, the initial value is ignored entirely. If there is *not* a user-submitted value (eg, this is the first time we are showing the user the form), if an initial value is given, then that is put in the field. If no initial value is provided, the field starts off blank.
 

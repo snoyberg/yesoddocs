@@ -38,6 +38,9 @@ Moving on to the handler function, on line 18 we call our <code>paramsFormlet</c
 
 3. The value for the enctype attribute of the form. Unless you have file submissions, this will be url-encoded.
 
+<div class="image"><img src="/static/book/forms/random1-initial.png" title="Initial state of form">Initial state of form</div>
+<div class="image"><img src="/static/book/forms/random1-filled.png" title="After submitting the form">After submitting the form</div>
+
 ### Something not there to be noticed
 
 Did you notice that at no point did I specify the name attribute for any of those fields? There's actually a bit of magic at play here, so let's unravel it. First: Yesod can automatically provide unique names to forms, and by default it does that. Let's have a look at the generated code (newlines and tabbing added for convenience; Hamlet always spits out condensed code):
@@ -78,6 +81,9 @@ To make life easier for you, Yesod defines an IsString instance for FormFieldSet
             , ffsId = Just "single-word"
             , ffsName = Just "single-word"
             } (fmap singleWord mparams)
+
+<div class="image"><img src="/static/book/forms/random2-valid.png" title="Valid entry">Valid entry</div>
+<div class="image"><img src="/static/book/forms/random2-invalid.png" title="Invalid entry">Invalid entry</div>
 
 <p class="advanced">You may have noticed that the minimum and maximum number input fields have a type="number" attribute. This is an example of Yesod including HTML 5 support by default. On some browsers (Chrome, for instance) this field gets rendered with up/down errors to control to value, plus it prevents non-numeric input. On browsers without any specific support, it gets rendered as a plain type="text" input. [diveintohtml5 has a chapter on forms](http://diveintohtml5.org/forms.html).</p>
 
@@ -138,6 +144,12 @@ Just to leave you with a good taste in your mouth, let's see an example where th
 On lines 1 and 2, we declare two new instances: YesodJquery and YesodNic. These typeclasses allow us to specify where to get the relevant Javascript libraries and the attached CSS files. By default, they download them from CDNs. Line 3 starts our <code>Survey</code> datatype. On lines 9 through 14, we set up our surveyFormlet, very similar to our formlet from the previous two examples. The jqueryAutocompleteField function takes a *route* as its first argument, of where to get the autocomplete results. The rest of the example is fairly boilerplate.
 
 What's awesome about this example is that no where did we pull in the Javascript libraries: it was taken care of for us automatically. This is the huge advantage of widgets: we are able to package up some complete functionality in one module and use it with a single line of code in another. All of the field set up code was also handled for us automatically.
+
+<div class="image"><img src="/static/book/forms/js-date.png" title="jQuery date selection">jQuery date selection</div>
+<div class="image"><img src="/static/book/forms/js-autocomplete.png" title="jQuery autocomplete">jQuery autocomplete</div>
+<div class="image"><img src="/static/book/forms/js-nic.png" title="NIC HTML Editor">NIC HTML Editor</div>
+
+<p class="advanced">You may be screaming at your screen right now, "Isn't that an XSS vulnerability?" Normally, allowing a user to input arbitrary HTML to a page would be dangerous. However, thanks to the [xss-sanitize](http://hackage.haskell.org/package/xss-sanitize) package, all user input is validated and ensured to not have XSS attacks.</p>
 
 ## Summary
 

@@ -8,3 +8,12 @@
     text-align: justify
 .hyphenate > p, .hyphenate > div > p
     text-indent: 1.5em
+.image
+    border: 1px solid #000
+    padding: 3px
+    display: inline-block
+    font-style: italic
+    text-align: center
+.image img
+    display: block
+    padding-bottom: 4px

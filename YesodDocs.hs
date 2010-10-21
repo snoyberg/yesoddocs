@@ -231,6 +231,11 @@ getArticlesR =
   where
     articles =
         [ Article
+            "http://docs.yesodweb.com/blog/custom-forms/"
+            "Custom Forms and the Form Monad"
+            "October 20, 2010"
+            "Explains a new way of creating forms introduced in Yesod 0.6."
+        , Article
             "http://braincrater.wordpress.com/2010/07/22/ajax-chat-app-using-yesod/"
             "Ajax Push"
             "July 22, 2010"

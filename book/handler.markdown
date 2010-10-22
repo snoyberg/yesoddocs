@@ -11,6 +11,41 @@
 
 <hr>
 
+FIXME ~basics-names
+
+On line 4 we declare a resource pattern named NameR. It has two "pieces" to it: the first is a static piece "name", while the second is a dynamic piece matching any String. Jumping down to line 6, we see that our handler function now takes a single argument: the name passed via the URL. So if you visit "/name/Michael/", Yesod will call the function getNameR with the argument "Michael".
+
+Another nice thing here is that you aren't limited to Strings: if you use Int instead, Yesod automatically parses the appropriate piece of the URL into an integer for you and hands it to your handler function. If the piece is not a valid integer, the user will be served a 404 not found message.
+
+    1 data MyApp = TypeSafe
+    2 mkYesod "MyApp" [$parseRoutes|
+    3 /             RootR GET
+    4 /name/#String NameR GET
+    5 /age/#Int     AgeR  GET
+    6 |]
+
+This is how we would create a new application with a site argument called MyApp and three resource patterns. If this style of Haskell looks unfamiliar to you, it's a combination of quasi-quotation and template haskell. You don't need to understand the details to use Yesod, but it is essentially letting us create a brand new language within Haskell to allow us to write concise, safe code.
+
+This piece of code defines three resource patterns: RootR, NameR and AgeR. We've already seen how this interacts with the dispatch system: we will need to write handler functions getRootR, getNameR and getAgeR. What we **haven't** seen is that this also creates a data type:
+
+    data MyAppRoute = RootR | NameR String | AgeR Int
+
+As simple as this looks, it's one of the most powerful features Yesod offers for ensuring the safety of your applications. Every valid URL in our application can be expressed as a value of type MyAppRoute. Here are some mappings:
+
+    /             -> RootR
+    /name/michael -> NameR "michael"
+    /age/935      -> AgeR 935
+
+In Yesod, we don't splice together strings to generate URLs; we simply build up plain old Haskell data types. This means **the compiler can prevent invalid links**. This feature ties in very nicely with Yesod's templating system (Hamlet), as [we'll see later](../templates/).
+
+As I mentioned, there is an associated type (type family) involved as well. This looks like:
+
+    type instance Route MyApp = MyAppRoute
+
+Understanding type families is not a prerequisite to using Yesod, though you may find it useful. Type families also play a big role in our persistence layer.
+
+<hr>
+
 Most of the code you write in Yesod lives within the Handler monad, so it's important to understand what it's doing. Monads have a reputation for being difficult to understand; if you are intimidated by monads, have no fear of this chapter (or of the Handler monad itself). You needn't have an understanding of monads to use them. In fact, my advice is to not bother trying to understand them at first. After usage, understanding follows.
 
 Monads provide a method for encapsulating certain functionalities. There are a number of "standard" monads out there: reader provides some data which doesn't change, state provides data which can be changed, writer "logs" information, and error allows early termination of a function with a special return value. (Contrary to its name, the error monad doesn't need to be about errors.)

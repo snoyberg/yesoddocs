@@ -2,8 +2,10 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
 import Yesod
 data HelloWorld = HelloWorld
-mkYesod "HelloWorld" [$parseRoutes|/ HomeR GET|]
+mkYesod "HelloWorld" [$parseRoutes|
+/ HomeR GET
+|]
 instance Yesod HelloWorld where approot _ = ""
-getHomeR = return $ RepPlain $ toContent "Hello World!"
+getHomeR = defaultLayout [$hamlet|Hello World!|]
 main = basicHandler 3000 HelloWorld
 -- STOP

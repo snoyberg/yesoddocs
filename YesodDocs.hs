@@ -105,6 +105,7 @@ data ChapterStatus = Outline | Incomplete | Unproofed | Proofread | Finished
 instance ToHtml ChapterStatus where toHtml = string . show
 chapters =
     [ Chapter "introduction" "Introduction" Unproofed
+    , Chapter "haskell" "Introduction to Haskell" Outline
     , Chapter "basics" "Basics" Outline
     , Chapter "yesod-typeclass" "Yesod Typeclass" Outline
     , Chapter "templates" "Templates" Outline -- FIXME do we still want this?

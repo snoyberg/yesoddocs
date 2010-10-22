@@ -1,3 +1,9 @@
+I have not yet decided whether having a chapter like this is a good idea. I would like Yesod to be accessible to users without a Haskell background, but on the other hand giving such a brief introduction to such a powerful language may simply lead to a misunderstanding of what's happening.
+
+For now, finishing this chapter is a low priority. If you are reading this, and would really like this chapter to be completed, please let me know (direct email, or the comments below).
+
+<hr>
+
 This chapter should give you a bare minimum introduction to Haskell to feel comfortable with the rest of the code in this book. As is often the case with web programming, you can suffice with a subset of the language to get started, and pick up more as you go along. Obviously, the more you know the better. If you already know Haskell, do yourself a favor and skip to the next chapter.
 
 ## Data types

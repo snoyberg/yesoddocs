@@ -1,3 +1,24 @@
+# FIXME Outline
+
+* (FIXME Organize these appropriately)
+* Database-agnostic
+* Non-relational
+* Declarative approach
+* "The boundary issue" and how we solve it
+* Type families
+* Update, sort, filter
+* Uniqueness
+* Handling relations
+* mkToForm
+* Migration (SQL only)
+* insert, insertBy
+* replace, update
+* get, getBy
+* selectList
+* Advanced: select enumerator interface
+
+<hr>
+
 This chapter has not yet been written properly. Instead, it's a conglomeration of the old content from the persistent section. It will be cleaned up as the book is written.
 
 [The persistent synopsis](/synopsis/persistent/) gives an overview of how the library is used.

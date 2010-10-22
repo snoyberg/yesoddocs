@@ -1,3 +1,12 @@
+# FIXME Refactor
+
+* Why Applicative
+* Isolating it all in one place, declarative
+* Rest of the chapter
+* Redirect-after-post
+
+<hr>
+
 I've mentioned the boundary issue already: whenever data enters or leaves our application, we need to validate our data. Probably the most difficult place this occurs is forms. Coding forms is complex; in an ideal world, we'd like a solution that addresses the following problems:
 
 * Ensure data is valid.

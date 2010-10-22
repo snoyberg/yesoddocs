@@ -1,3 +1,13 @@
+# FIXME Refactor
+
+* why widgets
+* polymorphic hamlet
+* cassius, julius
+* cassiusFileDebug, juliusFileDebug
+* Deps only included once
+* Modular page components (some example)
+* Explain default site template
+
 A web page is made up of more than HTML. Specifically, Javascript and CSS play a very important role. Let's create a little page to demonstrate the three technologies working together:
 
     !!!

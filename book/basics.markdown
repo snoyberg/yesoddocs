@@ -1,3 +1,19 @@
+## FIXME Refactor
+
+New structure:
+
+* Framework versus library (scaffolding), use library to learn
+* Hello World
+* Routing, handler functions
+* Site argument datatype
+* WAI application, any handler
+* Routes datatype, resources, type safe URLs
+* Touch on Hamlet, mention cassius and julius
+* Example with links
+* wai-handler-devel
+
+<hr>
+
 __Question for my dear readers: is this first section too advanced for the beginning of the book?__
 
 Yesod comes with a scaffolding tool that creates a basic site template for you. This takes care of a lot of the tedious, boilerplate code which you need to get started: writing a cabal file, creating default layout templates, a directory structure, et cetera. It's the best way to get started on a site. However, for learning Yesod, we'll start off without it. This will give you a much better feel for *how* Yesod works.

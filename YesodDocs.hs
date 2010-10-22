@@ -105,19 +105,29 @@ data ChapterStatus = Outline | Incomplete | Unproofed | Proofread | Finished
 instance ToHtml ChapterStatus where toHtml = string . show
 chapters =
     [ Chapter "introduction" "Introduction" Unproofed
-    , Chapter "basics" "Basics" Proofread
-    , Chapter "templates" "Templates" Unproofed
-    , Chapter "handler" "The Handler Monad" Incomplete
-    , Chapter "routing" "Routing" Unproofed
-    , Chapter "wai" "Web Application Interface" Unproofed
-    , Chapter "hamlet" "Hamlet" Unproofed
-    , Chapter "forms" "Forms" Unproofed
-    , Chapter "deploying" "Deploying your Webapp" Unproofed
+    , Chapter "basics" "Basics" Outline
+    , Chapter "yesod-typeclass" "Yesod Typeclass" Outline
+    , Chapter "templates" "Templates" Outline -- FIXME do we still want this?
+    , Chapter "widgets" "Widgets" Outline
+    , Chapter "handler" "Routing and Handlers" Outline
+    , Chapter "forms" "Basic Forms" Outline
     , Chapter "persistent" "Persistent" Outline
-    , Chapter "web-routes-quasi" "web-routes-quasi" Outline
-    , Chapter "widgets" "Widgets" Incomplete
+    , Chapter "rest" "RESTful Content" Outline
+    , Chapter "auth" "Authentication and Authorization" Outline
+    , Chapter "advanced-forms" "Advanced Forms" Outline
+    , Chapter "email" "Sending Email" Outline
+    , Chapter "deploying" "Deploying your Webapp" Unproofed
+    , Chapter "request" "Request Datatype" Outline
+    , Chapter "i18n" "Internationalization" Outline
+    , Chapter "subsite" "Creating a Subsite" Outline
+    , Chapter "web-client" "Web Client Code" Outline
+    , Chapter "low-level" "Low Level Tricks" Outline
     -- subsites
     -- enumerator package, pull in three blog posts
+    , Chapter "enumerator" "Enumerator Package" Outline
+    , Chapter "hamlet" "Hamlet" Unproofed
+    , Chapter "wai" "Web Application Interface" Unproofed
+    , Chapter "web-routes-quasi" "web-routes-quasi" Outline
     ]
 
 getBookR = defaultLayout $ do

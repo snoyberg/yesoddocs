@@ -10,9 +10,9 @@ You will also likely want to run <code>cabal install yesod-auth</code>.
 
 # Library versus Framework
 
-I'm going to be a bit bold a say the defining line between a library and a framework is that a framework tells you how to lay out your code into a file/folder structure. You may not agree with this definition, but it's useful to explain how this book will start off.
+I'm going to be a bit bold a say the defining line between a library and a framework is that a framework tells you how to lay out your code into a file/folder structure. You may not agree with this definition, but it's useful to explain how this book will begin.
 
-The Yesod Web Framework comes with a tool that automatically generates a full site templates with a bunch of bells and whistles. This is the recommended way to get started on a new Yesod application. This added convenience, however, hides away some of the important details going on under the scenes.
+The Yesod Web Framework comes with a tool that automatically generates a full site template with a bunch of bells and whistles. This is the recommended way to get started on a new Yesod application. This added convenience, however, hides away some of the important details going on behind the scenes.
 
 So to start off, we're going to be treating Yesod as a library. Having to explicitly write all the code is a good exercise to get started. Later on, we'll introduce the scaffolding tool and describe the standard layout of a Yesod project.
 
@@ -67,7 +67,7 @@ In our hello world, we defined just a single resource (HomeR). A web application
 
 Overall, this is the same. Our foundation is now Links instead of HelloWorld, and in addition to the HomeR resource, we've added Page1R and Page2R. As such, we've also added two more handler functions: getPage1R and getPage2R.
 
-The only truly new feature is inside the hamlet quasi-quotation on lines 10-12. We'll delve into syntax later, but we can that:
+The only truly new feature is inside the hamlet quasi-quotation on lines 10-12. We'll delve into syntax later, but we can see that:
 
     %a!href=@Page1R@ Go to page 1!
 
@@ -79,7 +79,7 @@ One of the advantages interpreted languages have over compiled languages is fast
 
 Fortunately, there's a nice solution to this: [wai-handler-devel](http://hackage.haskell.org/package/wai-handler-devel-0.1.0.1) embeds a Haskell interpreter and automatically reloads code changes for you. This can be a great way to develop your Yesod projects, and when you're ready to to move to production, you can compile against a more efficient backend. The Yesod site template comes built in with a script to do this for you.
 
-It's a little bit more involved to set up your code to be used by wai-handler-devel, so our examples will just use basicHandler. But as a simple example, try placing the following in HelloWorld.hs:
+It's a little bit more involved to set up your code to be used by wai-handler-devel, so our examples will just use basicHandler. But as a simple example, try saving the following as HelloWorld.hs:
 
 ~basics-devel
 

@@ -79,7 +79,7 @@ We can also add CSS declarations right along with defaultLayout:
 
     getHomeR = defaultLayout $ do
         setTitle "Home Page"
-        addHtml [$hamlet|%h1 Hello World|]
+        addBody [$hamlet|%h1 Hello World|]
         addStyle [$cassius|
         h1
             color: green
@@ -89,7 +89,7 @@ Cassius, like Hamlet, uses a whitespace sensitive formatting. It also allows var
 
     getHomeR = defaultLayout $ do
         let myClass = "some-missspelled-class-name"
-        addHtml [$hamlet|%h1.myClass Hello World|]
+        addBody [$hamlet|%h1.myClass Hello World|]
         addStyle [$cassius|
         h1.$myClass$
             color: green

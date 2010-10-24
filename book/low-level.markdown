@@ -1,2 +1,1 @@
-Advanced: low level
-    Stream from a file
+This chapter, not yet written, will cover some more low-level details in Yesod. In particular, we'll touch on how to use the enumerator interface in WAI to do memory efficient file and database streaming without resorting to lazy IO.

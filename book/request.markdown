@@ -1,3 +1,3 @@
-Advanced: Request datatype
-    Fields
-    WAI request
+In Yesod, the Request datatype contains all of the raw information sent from the client to the server for each request. You can often avoid using it directly: routing is handled for you, so pathinfo can be ignored. And instead of direct access to GET and POST parameters, the recommended approach is the form library.
+
+However, sometimes you will need the raw information, and Yesod is happy to provide it. This chapter will give more information, such as how to get a client IP address, list request headers, and parse a request body in an arbitrary format. For now, however, I'll just provide a link to the [Yesod.Request](http://hackage.haskell.org/packages/archive/yesod/0.5.4.2/doc/html/Yesod-Request.html) documentation.

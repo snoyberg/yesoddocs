@@ -1,2 +1,3 @@
-Advanced: i18n
-    Show different character encoding
+Yesod does not currently provide a prebuilt internationalization solution such as gettext. Instead, it provides some basic functionality for determining the user's language preference and leaves the rest to you. This chapter will give an example of how to use types to deal with i18n. We will additionally cover how to return responses in a character encoding besides UTF8.
+
+This chapter, however, has not yet been written. Please check back later.

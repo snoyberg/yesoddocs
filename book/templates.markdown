@@ -104,65 +104,6 @@ And just so that Javascript doesn't feel left out, we have Julius. Julius is bas
 
 Notice that we use percent signs instead of dollar signs for Julius; since jQuery uses dollar signs extensively, it would be very tedious to need to escape dollar signs constantly.
 
-## Overriding defaultLayout
-
-defaultLayout is a method of the Yesod typeclass, so you can simply provide an alternative implementation there. Yesod internally uses the defaultLayout method whenever possible: error messages, the built-in subsites, etc. This means that a lot of the built in features will automatically get styled like the rest of your site. A simple implementation is:
-
-    defaultLayout widget = do
-        PageContent title headTag bodyTag <- widgetToPageContent widget
-        hamletToRepHtml [$hamlet|
-        !!!
-        %html
-            %head
-                %title $title$
-                ^headTag^
-            %body
-                %h1 Our Website Banner
-                %h2 And Our Silly Slogan
-                ^bodyTag^
-                %p And some footer with copyright information
-        |]
-
-The headTag variable will automatically have all of the CSS and Javascript declarations stated above. You can even introduce your own CSS and Javascript in the defaultLayout function:
-
-    defaultLayout widget = do
-        PageContent title headTag bodyTag <- widgetToPageContent $ do
-            widget
-            addStyle [$cassius|
-            h1
-                color: red
-            |]
-        hamletToRepHtml [$hamlet|...|]
-
-<p class="advanced">There's actually much more to the embedding of CSS and Javascript than I have implied. By default, the raw code is inserted into your HTML via style and script tags. However, Yesod also has the ability to automatically create static files and serve the code externally. The site template created with the scaffolding tool does all of this for you.</p>
-
-### getMessage
-
-A common requirement in web applications is setting a message during one request and displaying it during another. For example, let's say you are logging into a site and type the wrong password. The application would like to show a message saying "invalid password" and allow you to type in your username/password again. There are basically two approaches to this:
-
-1) In the handler that checks for a valid password, return a login form with the error message whenever an invalid password is submitted.
-
-2) The handler that checks for a valid password redirects to the original login form when there is an invalid password.
-
-At first glance option 1 sounds preferable, since it avoids an extra HTTP request. However, in general it's a good idea to avoid returning content from a POST request, since it can complicate back/forward button usage and make refreshing a page tricky. The problem with the second approach is that we need some way to tell the original login form page to display the error message.
-
-Yesod provides a built in set of functions: getMessage and setMessage. We will cover these in more detail when discussing sessions, but for now it's enough to know that your defaultLayout should display the message returned by getMessage. Not only will this simplify your application code by just having to call getMessage once, but it will make interoperation with built-in Yesod features much better. A basic example would be:
-
-    defaultLayout widget = do
-        PageLayout title headTag bodyTag <- widgetToPageLayout widget
-        mmsg <- getMessage
-        hamletToRepHtml [$hamlet|
-        !!!
-        %html
-            %head
-                %title $title$
-                ^headTag^
-            %body
-                $maybe mmsg msg
-                    #message $msg$
-                ^bodyTag^
-        |]
-
 ## External template files
 
 Quasi-quoting your templates can be convenient, as no extra files are needed, your template is close to your code, and recompilation happens automatically whenever your template changes. On the other hand, this also clutters your Haskell code with templates and requires a recompile for any change in the template. Hamlet provides two sets of functions for including an external template:
@@ -222,10 +163,10 @@ Excepting very short templates, this is probably how you'll write most of your t
         addStyle $(cassiusFile "homepage")
         addJavascript $(juliusFile "homepage")
 
-## Summary
+For simplicity, most of the examples in this book will use quasi-quoted syntax. Just remember that you can always swap this out for external files.
+
+# Summary
 
 Yesod has templating languages for HTML, CSS and Javascript. All of them allow variable interpolation, safe handling of URLs and embedding sub-templates. Since the code is dealt with at compile time, you can use the compiler as your friend and get strong type safety guarantees. Oh, and XSS vulnerabilities get handled automatically.
 
 There are three ways to embed the templates: through quasi-quotation, regular external and debug external. Quasi-quotation is great for small, simple templates that won't be changing often. Debug mode is great for development, and since it has the same type signature as the regular external functions, you can easily switch to using them for your production code.
-
-By using built-in Yesod constructs like defaultLayout and getMessage, you'll get a consistent look-and-feel throughout your site, including pages automatically generated by Yesod such as error pages and authentication.

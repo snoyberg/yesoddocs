@@ -107,9 +107,9 @@ chapters =
     [ Chapter "introduction" "Introduction" Unproofed
     , Chapter "haskell" "Introduction to Haskell" Outline
     , Chapter "basics" "Basics" Unproofed
+    , Chapter "templates" "Templates" Outline
     , Chapter "widgets" "Widgets" Outline
     , Chapter "yesod-typeclass" "Yesod Typeclass" Outline
-    , Chapter "templates" "Templates" Outline -- FIXME do we still want this?
     , Chapter "handler" "Routing and Handlers" Outline
     , Chapter "forms" "Basic Forms" Outline
     , Chapter "persistent" "Persistent" Outline

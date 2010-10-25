@@ -10,6 +10,23 @@ Yesod is closer in principle to the latter technique. Even so, there are signifi
 
 Coding this more advanced system manually is tedious and error prone. Therefore, Yesod relies heavily on Template Haskell and Quasi-Quotation to automatically generate this code for you. This chapter will explain the syntax of the routing declarations, give you a glimpse of what code is generated for you, and explain the interaction between routing and handler functions.
 
+# Route Syntax
+
+## Pieces
+
+The first thing Yesod does when it gets a request (well, maybe not the **first**) is split up the requested path into pieces. The pieces are simply tokenized at all forward slashes. So:
+
+    toPieces "/" = []
+    toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]
+
+You may notice that there are some funny things going on with trailing slashes, or double slashes ("/foo//bar//"), or a few other things. Yesod believes in having **canonical URLs**; if someone requests a URL missing a trailing slashes, or with a double slash, they get an automatic redirect to the canonical version. This follows the RESTful principle of one URL for one resource, and can help with your search rankings.
+
+What this means for you is that you needn't concern yourself with the exact structure of your URLs: you can safely think about pieces of a path, and Yesod automatically handles intercalating the slashes and escaping problematic characters.
+
+If, by the way, you want more fine-tuned control of how paths are split into pieces and joined together again, you'll want to look at the splitPath and joinPath methods in the Yesod typeclass.
+
+
+
 <hr>
 
 # FIXME Refactor

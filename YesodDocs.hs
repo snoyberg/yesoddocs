@@ -76,7 +76,7 @@ instance Yesod YesodDocs where
             render (Right u) = render' u
         pc <- widgetToPageContent $ do
             widget
-            addStyle $(cassiusFile "default-layout")
+            addCassius $(cassiusFile "default-layout")
         hamletToRepHtml $(hamletFile "default-layout")
 instance YesodJquery YesodDocs where
     urlJqueryJs _ = Left $ StaticR jquery_js
@@ -85,15 +85,15 @@ instance YesodJquery YesodDocs where
 
 getHomeR = defaultLayout $ do
             setTitle "Yesod Web Framework for Haskell"
-            addBody $(hamletFile "root")
-            addHead [$hamlet|
+            addHamlet $(hamletFile "root")
+            addHtmlHead [$hamlet|
 %meta!name=description!value="Yesod Web Framework for Haskell. Create RESTful web apps with type safety."
 |]
-            addStyle $(cassiusFile "root")
+            addCassius $(cassiusFile "root")
 
 getFiveMinutesR = defaultLayout $ do
     setTitle "Yesod in Five Minutes"
-    addBody $(hamletFile "five-minutes")
+    addHamlet $(hamletFile "five-minutes")
 
 data Chapter = Chapter
     { chapterSlug :: String
@@ -134,8 +134,8 @@ chapters =
 
 getBookR = defaultLayout $ do
     setTitle "Yesod Web Framework Book"
-    addBody $(hamletFile "book")
-    addStyle $(cassiusFile "book")
+    addHamlet $(hamletFile "book")
+    addCassius $(cassiusFile "book")
 
 getChapterR chapter = do
     title <- case filter (\x -> chapterSlug x == chapter) chapters of
@@ -149,9 +149,9 @@ getChapterR chapter = do
     let next = getNext chapters
     defaultLayout $ do
         setTitle $ string $ "Yesod Book: " ++ title
-        addBody $(hamletFile "chapter")
-        addStyle $(cassiusFile "book")
-        addStyle $(cassiusFile "chapter")
+        addHamlet $(hamletFile "chapter")
+        addCassius $(cassiusFile "book")
+        addCassius $(cassiusFile "chapter")
         addStylesheet $ StaticR hscolour_css
         addScript $ StaticR hyphenate_js
   where
@@ -204,9 +204,9 @@ getExamplesR = do
         addScriptEither $ urlJqueryJs y
         addScriptEither $ urlJqueryUiJs y
         addStylesheetEither $ urlJqueryUiCss y
-        addJavascript $(juliusFile "examples")
-        addStyle $(cassiusFile "examples")
-        addBody $(hamletFile "examples")
+        addJulius $(juliusFile "examples")
+        addCassius $(cassiusFile "examples")
+        addHamlet $(hamletFile "examples")
         addStylesheet $ StaticR hscolour_css
 
 colorize title raw isLit = hscolour CSS defaultColourPrefs True False title isLit raw
@@ -225,9 +225,9 @@ getScreencastsR = do
         addScriptEither $ urlJqueryJs y
         addScriptEither $ urlJqueryUiJs y
         addStylesheetEither $ urlJqueryUiCss y
-        addJavascript $(juliusFile "screencasts")
-        addStyle $(cassiusFile "screencasts")
-        addBody $ const $ preEscapedString raw
+        addJulius $(juliusFile "screencasts")
+        addCassius $(cassiusFile "screencasts")
+        addHamlet $ const $ preEscapedString raw
 
 data Article = Article
     { articleUrl :: String
@@ -239,7 +239,7 @@ data Article = Article
 getArticlesR =
     defaultLayout $ do
         setTitle "Yesod Articles"
-        addBody $(hamletFile "articles")
+        addHamlet $(hamletFile "articles")
   where
     articles =
         [ Article
@@ -281,7 +281,7 @@ getSynWrqR = do
     let content = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
     defaultLayout $ do
         setTitle title
-        addBody $(hamletFile "synopsis")
+        addHamlet $(hamletFile "synopsis")
 
 synLhs file title' = do
     let title = title' ++ " Synopsis"
@@ -290,7 +290,7 @@ synLhs file title' = do
     defaultLayout $ do
         setTitle $ string title
         addStylesheet $ StaticR hscolour_css
-        addBody $(hamletFile "synopsis")
+        addHamlet $(hamletFile "synopsis")
 
 getSynPerR = synLhs "persistent" "Persistent"
 getSynHamR = synLhs "hamlet" "Hamlet"
@@ -310,12 +310,12 @@ getEntryR slug = do
     let navbar = mkNavbar $ getEntries y
     defaultLayout $ do
         setTitle $ string $ "Yesod Blog: " ++ entryTitle entry
-        addBody $(hamletFile "blog")
-        addStyle $(cassiusFile "blog")
+        addHamlet $(hamletFile "blog")
+        addCassius $(cassiusFile "blog")
         addScriptEither $ urlJqueryJs y
         addScript $ StaticR jquery_cookie_js
         addScript $ StaticR jquery_treeview_js
-        addJavascript $(juliusFile "blog")
+        addJulius $(juliusFile "blog")
   where
     mkNavbar :: [Entry] -> [(String, [Entry])]
     mkNavbar = map (entryYearMonth . head &&& id) . groupBy ((==) `on` entryYearMonth)

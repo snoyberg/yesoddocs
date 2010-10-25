@@ -1,3 +1,15 @@
+# Introduction
+
+Forms deal with the boundary between the user and the application. Another boundary we need to deal with is between the application and the storage layer. Whether it be a SQL database, a YAML file, or a binary blob, odds are your storage layer isn't going to give you Haskell datatypes.
+
+Persistent is the storage layer of choice for Yesod. It follows the guiding principles of type safety and concise, declarative syntax. Some other nice features are:
+
+* Database-agnostic. While the most highly supported backends are Postgresql and SQLite, there is preliminary support for MongoDB and Redis.
+
+* By being non-relational in nature, we simultaneously are able to support a wider number of storage layers and are not constrained by some of the performance bottlenecks incurred through joins.
+
+* A major source of frustration in dealing with SQL databases is changes to the schema. Persistent can automatically perform database migrations.
+
 # FIXME Outline
 
 * (FIXME Organize these appropriately)

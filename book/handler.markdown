@@ -1,3 +1,17 @@
+# Introduction
+
+If we look at Yesod as a Model-View-Controller framework, routing and handlers make up the controller. For contrast, let's describe two other routing approaches used in other web development environments:
+
+* Dispatch based on file name. This is how PHP and ASP work, for example.
+
+* Have a centralized routing function that parses routes based on regular expressions. Django and Rails follow this approach.
+
+Yesod is closer in principle to the latter technique. Even so, there are significant differences. Instead of using regular expressions, Yesod matches on pieces of a route. Instead of having a one-way route-to-handler mapping, Yesod has an intermediate data type (called the route datatype, or a type-safe URL) and creates two-way conversion functions.
+
+Coding this more advanced system manually is tedious and error prone. Therefore, Yesod relies heavily on Template Haskell and Quasi-Quotation to automatically generate this code for you. This chapter will explain the syntax of the routing declarations, give you a glimpse of what code is generated for you, and explain the interaction between routing and handler functions.
+
+<hr>
+
 # FIXME Refactor
 
 * Explain routing syntax, naming scheme for handler functions

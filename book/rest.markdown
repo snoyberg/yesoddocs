@@ -1,3 +1,4 @@
+One of the great stories from the beginning of the web was search engines wiping out entire web sites. The story goes that when dynamic sites were first starting, 
 * Atom feeds
 * JSON (Ajax example)
 * Request methods

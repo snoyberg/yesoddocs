@@ -112,6 +112,7 @@ chapters =
     , Chapter "yesod-typeclass" "Yesod Typeclass" Outline
     , Chapter "handler" "Routing and Handlers" Outline
     , Chapter "forms" "Basic Forms" Outline
+    , Chapter "sessions" "Sessions" Outline
     , Chapter "persistent" "Persistent" Outline
     , Chapter "rest" "RESTful Content" Outline
     , Chapter "auth" "Authentication and Authorization" Outline

@@ -114,7 +114,7 @@ chapters =
     , Chapter "forms" "Basic Forms" Outline
     , Chapter "sessions" "Sessions" Outline
     , Chapter "persistent" "Persistent" Outline
-    , Chapter "rest" "RESTful Content" Outline
+    , Chapter "rest" "RESTful Content" Unproofed
     , Chapter "auth" "Authentication and Authorization" Outline
     , Chapter "advanced-forms" "Advanced Forms" Outline
     , Chapter "email" "Sending Email" Outline

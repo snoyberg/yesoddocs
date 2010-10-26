@@ -12,10 +12,6 @@ Persistent is the storage layer of choice for Yesod. It follows the guiding prin
 
 # FIXME Outline
 
-* (FIXME Organize these appropriately)
-* Database-agnostic
-* Non-relational
-* Declarative approach
 * "The boundary issue" and how we solve it
 * Type families
 * Update, sort, filter

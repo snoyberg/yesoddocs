@@ -8,7 +8,7 @@ instance Yesod HelloWorld where approot _ = ""
 -- START
 getHomeR = defaultLayout $ do
     setTitle "Hello World"
-    addStyle [$cassius|
+    addCassius [$cassius|
 p
     color: red
 |]

@@ -2,5 +2,5 @@
 for f in snippets/*.hs
 do
     mkdir -p snippets/tmp/$f
-    ghc --make $f -outputdir snippets/tmp/$f -o snippets/tmp/$f-exe
+    ghc --make $f -outputdir snippets/tmp/$f -o snippets/tmp/$f-exe || exit
 done

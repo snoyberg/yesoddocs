@@ -7,14 +7,14 @@ mkYesod "HelloWorld" [$parseRoutes|
 instance Yesod HelloWorld where approot _ = ""
 -- START
 footer = do
-    addStyle [$cassius|
+    addCassius [$cassius|
 #footer
     margin-top: 10px
     padding-top: 10px
     border-top: 1px dashed #000
     text-align: center
 |]
-    addBody [$hamlet|
+    addHamlet [$hamlet|
 #footer
     This page powered by the $
     %a!href="http://docs.yesodweb.com/" Yesod Web Framework
@@ -22,11 +22,11 @@ footer = do
 
 getHomeR = defaultLayout $ do
     setTitle "Hello World"
-    addStyle [$cassius|
+    addCassius [$cassius|
 p
     color: red
 |]
-    addBody [$hamlet|%p Hello World!|]
+    addHamlet [$hamlet|%p Hello World!|]
     footer
 -- STOP
 main = basicHandler 3000 HelloWorld

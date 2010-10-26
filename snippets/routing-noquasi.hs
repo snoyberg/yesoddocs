@@ -9,8 +9,8 @@ mkYesod "NoQuasi"
                        , SinglePiece "String"
                        ] ["GET"]
     ]
-getHomeR = defaultLayout $ addBody [$hamlet|Hello|]
-getNameR name = defaultLayout $ addBody [$hamlet|Hello $name$|]
+getHomeR = defaultLayout $ addHamlet [$hamlet|Hello|]
+getNameR name = defaultLayout $ addHamlet [$hamlet|Hello $name$|]
 -- STOP
 instance Yesod NoQuasi where approot _ = ""
 main = basicHandler 3001 NoQuasi

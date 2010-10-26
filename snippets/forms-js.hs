@@ -22,7 +22,7 @@ data Survey = Survey
     }
 
 surveyFormlet msurvey = fieldsToTable $ Survey
-    <$> maybeJqueryDayField "My birthday" (fmap birthday msurvey)
+    <$> maybeJqueryDayField def "My birthday" (fmap birthday msurvey)
     <*> jqueryAutocompleteField ColorsR "Favorite color" (fmap favoriteColor msurvey)
     <*> nicHtmlField "About me"
             { ffsId = Just "about-me"
@@ -34,7 +34,7 @@ getRootR = do
                     FormSuccess x -> Just x
                     _ -> Nothing
     defaultLayout $ do
-        addStyle [$cassius|
+        addCassius [$cassius|
 #about-me
     width: 400px
     height: 300px

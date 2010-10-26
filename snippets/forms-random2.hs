@@ -63,6 +63,7 @@ Between $
                 case res of
                     FormFailure [x] -> Just $ string x
                     _ -> Nothing
+            , fiRequired = True
             }
     return (res, [fi], UrlEncoded)
 -- STOP
@@ -79,7 +80,7 @@ getRootR = do
                 let word = if number == 1 then single else plural
                 return $ "You got " ++ show number ++ " " ++ word
     defaultLayout $ do
-        addStyle [$cassius|
+        addCassius [$cassius|
 input[type=number]
     width: 50px
 .errors

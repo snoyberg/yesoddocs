@@ -11,7 +11,7 @@
 * Auth stuff (isAuthorized, isWriteRequest, authRoute)
 * Customize URLs (splitPath, joinPath, examples)
 
-In the last chapter we showed some example Yesod applications and explained that the foundation datatype needed to be an instance of the Yesod typeclass. This typeclass is a central place to declare settings for your Yesod application. Besides approot, all of these settings are optional, but they 
+In the basics chapter we showed some example Yesod applications and explained that the foundation datatype needed to be an instance of the Yesod typeclass. This typeclass is a central place to declare settings for your Yesod application. Besides approot, all of these settings are optional, but they 
 
 <hr>
 

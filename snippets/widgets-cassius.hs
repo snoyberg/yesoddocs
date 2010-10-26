@@ -12,6 +12,6 @@ getHomeR = defaultLayout $ do
 p
     color: red
 |]
-    [$hamlet|%p Hello World!|]
+    addWidget [$hamlet|%p Hello World!|]
 -- STOP
 main = basicHandler 3000 HelloWorld

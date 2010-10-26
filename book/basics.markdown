@@ -10,11 +10,11 @@ You will also likely want to run <code>cabal install yesod-auth</code>.
 
 # Library versus Framework
 
-I'm going to be a bit bold a say the defining line between a library and a framework is that a framework tells you how to lay out your code into a file/folder structure. You may not agree with this definition, but it's useful to explain how this book will begin.
+I'm going to be a bit bold and say the defining line between a library and a framework is that a framework tells you how to lay out your code into a file/folder structure. You may not agree with this definition, but it's useful to explain how this book will begin.
 
 The Yesod Web Framework comes with a tool that automatically generates a full site template with a bunch of bells and whistles. This is the recommended way to get started on a new Yesod application. This added convenience, however, hides away some of the important details going on behind the scenes.
 
-So to start off, we're going to be treating Yesod as a library. Having to explicitly write all the code is a good exercise to get started. Later on, we'll introduce the scaffolding tool and describe the standard layout of a Yesod project.
+So to start off, we're going to be treating Yesod as a library. Having to explicitly write all the code is a good exercise to get started. [Later on](/book/scaffold/), we'll introduce the scaffolding tool and describe the standard layout of a Yesod project.
 
 # Hello World
 

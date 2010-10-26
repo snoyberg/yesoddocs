@@ -14,6 +14,7 @@ footer = do
     border-top: 1px dashed #000
     text-align: center
 |]
+    -- Just keeping you on your toes: this could be addWidget or addHtml as ell.
     addHamlet [$hamlet|
 #footer
     This page powered by the $
@@ -26,7 +27,7 @@ getHomeR = defaultLayout $ do
 p
     color: red
 |]
-    addHamlet [$hamlet|%p Hello World!|]
+    addHtml [$hamlet|%p Hello World!|]
     footer
 -- STOP
 main = basicHandler 3000 HelloWorld

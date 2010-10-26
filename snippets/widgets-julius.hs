@@ -9,6 +9,6 @@ instance Yesod HelloWorld where approot _ = ""
 getHomeR = defaultLayout $ do
     setTitle "Hello World"
     addJulius [$julius|alert("This is Javascript");|]
-    [$hamlet|%p Hello World!|]
+    addWidget [$hamlet|%p Hello World!|]
 -- STOP
 main = basicHandler 3000 HelloWorld

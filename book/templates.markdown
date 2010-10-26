@@ -10,11 +10,13 @@ with
 
 </div>
 
-The templating system in Yesod is called Hamlet. This book contains a [full reference](hamlet.html) chapter on it, so this chapter will be more about showing the usage of Hamlet. It will also show Hamlet's sister languages, Cassius and Julius, which produce CSS and Javascript, respectively.
+The templating system in Yesod is called Hamlet. This book contains a [full reference](/book/hamlet/) chapter on it, so this chapter will be more about showing the usage of Hamlet. It will also show Hamlet's sister languages, Cassius and Julius, which produce CSS and Javascript, respectively.
 
 ~templates-helloworld
 
-Excepting line 6, this is identical to the Hello World from the previous chapter. The [$hamlet| and |] stuff introduces some *quasi-quotation*, which allows us to embed an arbitrary string and have it converted to Haskell code. We'll see some other ways of using Hamlet as well.
+__Note: the rest of this chapter reflects a previous version of the book. The content still must be updated; I appologize for the confusion. Nonetheless, the material is accurate.__
+
+Excepting line 6, this is identical to the Hello World from the chapter. The [$hamlet| and |] stuff introduces some *quasi-quotation*, which allows us to embed an arbitrary string and have it converted to Haskell code. We'll see some other ways of using Hamlet as well.
 
 hamletToRepHtml does exactly what it sounds like; it converts a value of type Hamlet to a RepHtml. So this example is really the first time we're serving an HTML page from our application.
 

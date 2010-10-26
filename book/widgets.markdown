@@ -6,7 +6,7 @@ In practice, this works out fairly nicely when building a single page, becuase w
 
 # Expanding Hello World
 
-In the previous chapter, our Hello World example produced some very basic HTML:
+In the [basics chapter](/book/basics/), our Hello World example produced some very basic HTML:
 
     <!DOCTYPE html> 
     <html><head><title></title></head><body>Hello World!</body></html>
@@ -29,6 +29,50 @@ When we place a hamlet template in a widget, the content gets appended to the bo
 ~widgets-style-attribute
 
 But the better approach would be to declare this information in a separate CSS section, either a style tag or an external stylesheet.
+
+## Polymorphic Hamlet
+
+The hamlet quasi-quoter is special in that its result can be polymorphic. So line 3 of the previous example could read:
+
+    addWidget [$hamlet|%p!style="color:red" Hello World!|]
+
+or
+
+    addHamlet [$hamlet|%p!style="color:red" Hello World!|]
+
+or
+
+    addHtml [$hamlet|%p!style="color:red" Hello World!|]
+
+Without changing the resulting HTML page. It might be useful to look at the type signatures of these three functions:
+
+    addWidget :: Widget () -> Widget ()
+    addHamlet :: Hamlet    -> Widget ()
+    addHtml   :: Html      -> Widget ()
+
+addWidget is actually just <code>id</code> in disguise; it can be useful for forcing a specific type, and you'll see below that it can make your widget code look more consistent. You may be wondering why we need all three of these. Sometimes, it is easier to get a hold of a Hamlet or Html value than a Widget. In most usage, however, you can just stick with addWidget.
+
+My point in explaining this now is so make clear that
+
+    defaultLayout [$hamlet|...|]
+
+and
+
+    defaultLayout $ do
+        addWidget [$hamlet|...|]
+
+are equivalent. We'll be using the latter form for mostly aesthetic reasons. However, there is one time when addWidget is a requirement: due to how we implement Hamlet polymorphism, the following code won't compile:
+
+    defaultLayout $ do
+        [$hamlet|...|]
+        setTitle "My title"
+
+The type checker gets confused trying to figure out the exact type of the hamlet quasi-quotation. Using addWidget solves this problem.
+
+<div class="advanced">
+<p>Once again, there *is* no such thing as a Widget. Technically speaking, addWidget is <code>GWidget s m () -&gt; GWidget s m ()</code>, and for that matter addHamlet is <code>Hamlet (Route m) -&gt; GWidget s m ()</code>. But worrying about all these types right now is just distracting; you can just pretend you have a simple Widget datatype.</p>
+<p>Oh, and what's the difference between Hamlet and Html? Html is a fully formed chunk of HTML data. Hamlet is a *function* which takes a URL renderer and returns an Html. This is how we implement type-safe URLs in Yesod: by passing around URL rendering functions.</p>
+</div>
 
 ## Cassius
 
@@ -81,8 +125,6 @@ Produces the following (once again, whitespace added):
 
 Notice how all of the CSS declarations get placed into the same style tag, while the HTML all gets placed in the body tag appropriately. This was a simple example of using widgets; in fact, in real code, this footer would just be included as part of your template. But these humble foundations allow very complex pages to be built up easily.
 
-<p class="advanced">You may be scratching your head wondering what's going on the sudden addition of addBody. It turns out that a Hamlet template is *polymorphic*; it can be a plain Html value, a Hamlet value, or even a widget. When we treat it as a Hamlet, we need to use the addBody function to insert it into a widget.</p>
-
 ## Julius
 
 Just for completeness, let's see a little example with Javascript.
@@ -124,7 +166,19 @@ Some things to notice:
 
 * The code is structured so that external script tags come before inline scripts. In many cases (such as ours), this is a necessity, since the inline Javascript references the external library.
 
-# FIXME: Using caret interpolation
+## When a Widget is not a Hamlet
+
+Let's take that last example and do something slightly different. Instead of simply concatenating the two widgets (colorChanger and buttons) together, we want to display that in a table (I know, **soooo** old fashioned). It turns out we can use caret-interpolation from Hamlet like so:
+
+~widgets-caret
+
+This is incredibly useful: we can build up very complex widgets, complete with CSS and Javascript dependencies, and then arrange their HTML however we want. We'll see that this is very important when we want to write forms. But we no longer have the ability to swap addHamlet for addWidget: the final type of a hamlet quasi-quotation must match the types of any values embedded with caret interpolation. Since colorChanger and buttons are both <code>Widget</code>s, the whole quasi-quotation is a Widget too.
+
+<div class="advanced"><p>You can embed *any* Widget value within a quasi-quotation. In fact, you could rewrite getHomeR as:</p>
+
+~widgets-embed
+
+<p>Whether you would ever want to write code that way is a different story. But it's nice to know that you can.</p></div>
 
 # Summary
 

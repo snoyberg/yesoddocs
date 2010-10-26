@@ -116,7 +116,7 @@ chapters =
     , Chapter "persistent" "Persistent" Outline
     , Chapter "rest" "RESTful Content" Unproofed
     , Chapter "auth" "Authentication and Authorization" Outline
-    -- FIXME chapter on the site template
+    , Chapter "scaffold" "Scaffolding and the Site Template" Outline
     , Chapter "advanced-forms" "Advanced Forms" Outline
     , Chapter "email" "Sending Email" Outline
     , Chapter "deploying" "Deploying your Webapp" Unproofed

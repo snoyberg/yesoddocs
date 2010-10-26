@@ -27,7 +27,7 @@
 >             ]
 >     defaultLayout $ do
 >       setTitle $ string "I18N Homepage"
->       addBody [$hamlet|
+>       addHamlet [$hamlet|
 > %h1 $hello$
 > %p In other languages:
 > %ul

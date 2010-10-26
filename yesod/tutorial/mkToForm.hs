@@ -8,14 +8,11 @@ import Yesod.Form.Nic
 import Database.Persist.Sqlite
 import Database.Persist.TH
 import Data.Time (Day)
+import MkToForm
 
-share2 mkToForm mkPersist [$persist|
-Entry
-    title String
-    day Day Desc toFormField=YesodJquery.jqueryDayField
-    content Html toFormField=YesodNic.nicHtmlField
-    deriving
-|]
+jqueryDayField' :: YesodJquery m => FormFieldSettings -> FormletField s m Day
+jqueryDayField' = jqueryDayField def
+mkToForm (undefined :: Entry)
 
 instance Item Entry where
     itemTitle = entryTitle
@@ -44,7 +41,7 @@ getRootR = do
     entries <- runDB $ selectList [] [EntryDayDesc] 0 0
     defaultLayout $ do
         setTitle $ string "Yesod Blog Tutorial Homepage"
-        addBody [$hamlet|
+        addHamlet [$hamlet|
 %h1 Archive
 %ul
     $forall entries entry
@@ -58,7 +55,7 @@ getEntryR entryid = do
     entry <- runDB $ get404 entryid
     defaultLayout $ do
         setTitle $ string $ entryTitle entry
-        addBody [$hamlet|
+        addHamlet [$hamlet|
 %h1 $entryTitle.entry$
 %h2 $show.entryDay.entry$
 $entryContent.entry$

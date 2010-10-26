@@ -86,7 +86,7 @@ And now the cool part: a handler that returns either HTML or JSON data, dependin
 >       [] -> notFound
 >       page:_ -> defaultLayoutJson (do
 >           setTitle $ string $ pageName page
->           addBody $ html page
+>           addHamlet $ html page
 >           ) (json page)
 >  where
 >   html page = [$hamlet|

@@ -13,7 +13,7 @@
 
 > getHomepage = defaultLayout $ do
 >   setTitle $ string "Upload a file"
->   addBody [$hamlet|
+>   addHamlet [$hamlet|
 > %form!method=post!action=.!enctype=multipart/form-data
 >   File name:
 >   %input!type=file!name=file

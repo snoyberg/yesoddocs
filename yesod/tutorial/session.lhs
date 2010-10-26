@@ -9,7 +9,7 @@
 > |]
 > getRoot :: Handler RepHtml
 > getRoot = do
->     sess <- reqSession `fmap` getRequest
+>     sess <- getSession
 >     hamletToRepHtml [$hamlet|
 > %form!method=post
 >     %input!type=text!name=key

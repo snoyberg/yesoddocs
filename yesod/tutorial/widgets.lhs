@@ -21,17 +21,17 @@
 > #wrapper ^h^
 > %footer Brought to you by Yesod Widgets&trade;
 > |]
-> getRootR = defaultLayout $ flip wrapWidget wrapper $ do
+> getRootR = defaultLayout $ wrapper $ do
 >     i <- newIdent
 >     setTitle $ string "Hello Widgets"
->     addStyle [$cassius|
+>     addCassius [$cassius|
 >   #$i$
 >       color: red|]
 >     addStylesheet $ StaticR $ StaticRoute ["style.css"] []
 >     addStylesheetRemote "http://localhost:3000/static/style2.css"
 >     addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
 >     addScript $ StaticR $ StaticRoute ["script.js"] []
->     addBody [$hamlet|
+>     addHamlet [$hamlet|
 > %h1#$i$ Welcome to my first widget!!!
 > %p
 >     %a!href=@RootR@ Recursive link.
@@ -39,14 +39,14 @@
 >     %a!href=@FormR@ Check out the form.
 > %p.noscript Your script did not load. :(
 > |]
->     addHead [$hamlet|%meta!keywords=haskell|]
+>     addHtmlHead [$hamlet|%meta!keywords=haskell|]
 > 
 > handleFormR = do
->     (res, form, enctype) <- runFormPost $ fieldsToTable $ (,,,,,,,,)
+>     (res, form, enctype, nonce) <- runFormPost $ fieldsToTable $ (,,,,,,,,)
 >         <$> stringField "My Field" Nothing
 >         <*> stringField "Another field" (Just "some default text")
 >         <*> intField "A number field" (Just 5)
->         <*> jqueryDayField "A day field" Nothing
+>         <*> jqueryDayField def "A day field" Nothing
 >         <*> timeField "A time field" Nothing
 >         <*> boolField "A checkbox" (Just False)
 >         <*> jqueryAutocompleteField AutoCompleteR "Autocomplete" Nothing
@@ -57,19 +57,20 @@
 >                     FormSuccess (_, _, _, _, _, _, _, x, _) -> Just x
 >                     _ -> Nothing
 >     defaultLayout $ do
->         addStyle [$cassius|
+>         addCassius [$cassius|
 > .tooltip
 >     color: #666
 >     font-style: italic
 > textarea.html
 >     width: 300px
 >     height: 150px|]
->         wrapWidget form $ \h -> [$hamlet|
+>         addWidget [$hamlet|
 > %form!method=post!enctype=$enctype$
 >     %table
->         ^h^
+>         ^form^
 >         %tr
 >             %td!colspan=2
+>                 $nonce$
 >                 %input!type=submit
 >     $maybe mhtml html
 >         $html$

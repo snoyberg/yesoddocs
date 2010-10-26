@@ -1,5 +1,5 @@
 Name:                yesod-examples
-Version:             0.5.1
+Version:             0.6.0
 Synopsis:            Example programs using the Yesod Web Framework.
 Description:         These are the same examples and tutorials found on the documentation site.
 Homepage:            http://docs.yesodweb.com/
@@ -17,7 +17,7 @@ extra-source-files:  static/yesod/ajax/script.js,
 Executable blog
   Main-is:             yesod/tutorial/blog.lhs
   Build-depends:       base >= 4 && < 5,
-                       yesod >= 0.5.0.1 && < 0.6
+                       yesod >= 0.6 && < 0.7
 
 Executable ajax
   Main-is:             yesod/tutorial/ajax.lhs
@@ -47,9 +47,10 @@ Executable form
   Main-is:             yesod/tutorial/form.lhs
 
 Executable mkToForm
-  Main-is:             yesod/tutorial/mkToForm.hs
+  Main-is:             mkToForm.hs
   Build-depends:       time,
-                       persistent >= 0.2.0.1 && < 0.3
+                       persistent >= 0.3 && < 0.4
+  hs-source-dirs:      yesod/tutorial
 
 Executable persistent-synopsis
   Main-is:             synopsis/persistent.lhs

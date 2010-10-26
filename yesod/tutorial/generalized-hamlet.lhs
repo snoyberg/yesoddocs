@@ -16,17 +16,18 @@ your own instances.
 > data NewHamlet = NewHamlet
 > mkYesod "NewHamlet" [$parseRoutes|/ RootR GET|]
 > instance Yesod NewHamlet where approot _ = ""
+> type Widget = GWidget NewHamlet NewHamlet
 > 
 > myHtml :: Html
 > myHtml = [$hamlet|%p Just don't use any URLs in here!|]
 >
-> myInnerWidget :: Widget NewHamlet ()
+> myInnerWidget :: Widget ()
 > myInnerWidget = do
->     addBody [$hamlet|
+>     addHamlet [$hamlet|
 >   #inner Inner widget
 >   $myHtml$
 > |]
->     addStyle [$cassius|
+>     addCassius [$cassius|
 >#inner
 >     color: red|]
 > 
@@ -36,12 +37,12 @@ your own instances.
 >     %a!href=@RootR@ Link to home
 > |]
 > 
-> myWidget :: Widget NewHamlet ()
+> myWidget :: Widget ()
 > myWidget = [$hamlet|
 >     %h1 Embed another widget
 >     ^myInnerWidget^
 >     %h1 Embed a Hamlet
->     ^addBody.myPlainTemplate^
+>     ^addHamlet.myPlainTemplate^
 > |]
 > 
 > getRootR :: GHandler NewHamlet NewHamlet RepHtml

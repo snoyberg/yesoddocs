@@ -35,7 +35,7 @@ We use an applicative approach and stay mostly declarative. The "fmap name p" bi
 
 <p>extractBody returns the HTML of a widget and "passes" all of the other declarations (the CSS, Javascript, etc) up to the parent widget. The rest of this is just standard Hamlet code and our main function.</p>
 
->         addBody [$hamlet|
+>         addHamlet [$hamlet|
 > %p Last result: $show.res$
 > %form!enctype=$enctype$
 >     %table

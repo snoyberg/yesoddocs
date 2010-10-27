@@ -108,7 +108,7 @@ chapters =
     , Chapter "haskell" "Introduction to Haskell" Outline
     , Chapter "basics" "Basics" Unproofed
     , Chapter "templates" "Templates" Outline
-    , Chapter "widgets" "Widgets" Outline
+    , Chapter "widgets" "Widgets" Unproofed
     , Chapter "yesod-typeclass" "Yesod Typeclass" Outline
     , Chapter "handler" "Routing and Handlers" Outline
     , Chapter "forms" "Basic Forms" Outline

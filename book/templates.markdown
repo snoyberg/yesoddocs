@@ -59,7 +59,7 @@ The examples above are missing most of the common pieces of an HTML page: a html
 
     getHomeR = defaultLayout $ do
         setTitle "Home Page"
-        addBody [$hamlet|%h1 Hello World|]
+        addHamlet [$hamlet|%h1 Hello World|]
 
 <p class="advanced">This example is actually using widgets, a concept we will cover in full in the [widgets chapter](widgets.html). For the moment, we'll just be treating the widget functions as magic without really explaining them.</p>
 
@@ -81,8 +81,8 @@ We can also add CSS declarations right along with defaultLayout:
 
     getHomeR = defaultLayout $ do
         setTitle "Home Page"
-        addBody [$hamlet|%h1 Hello World|]
-        addStyle [$cassius|
+        addHamlet [$hamlet|%h1 Hello World|]
+        addCassius [$cassius|
         h1
             color: green
         |]
@@ -91,8 +91,8 @@ Cassius, like Hamlet, uses a whitespace sensitive formatting. It also allows var
 
     getHomeR = defaultLayout $ do
         let myClass = "some-missspelled-class-name"
-        addBody [$hamlet|%h1.myClass Hello World|]
-        addStyle [$cassius|
+        addHamlet [$hamlet|%h1.myClass Hello World|]
+        addCassius [$cassius|
         h1.$myClass$
             color: green
         |]
@@ -161,9 +161,9 @@ Excepting very short templates, this is probably how you'll write most of your t
     import Settings
     getHomeR = defaultLayout $ do
         setTitle "Homepage"
-        addBody $(hamletFile "homepage")
-        addStyle $(cassiusFile "homepage")
-        addJavascript $(juliusFile "homepage")
+        addHamlet $(hamletFile "homepage")
+        addCassius $(cassiusFile "homepage")
+        addJulius $(juliusFile "homepage")
 
 For simplicity, most of the examples in this book will use quasi-quoted syntax. Just remember that you can always swap this out for external files.
 

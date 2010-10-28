@@ -109,7 +109,7 @@ chapters =
     , Chapter "basics" "Basics" Unproofed
     , Chapter "templates" "Templates" Outline
     , Chapter "widgets" "Widgets" Unproofed
-    , Chapter "yesod-typeclass" "Yesod Typeclass" Outline
+    , Chapter "yesod-typeclass" "Yesod Typeclass" Unproofed
     , Chapter "handler" "Routing and Handlers" Outline
     , Chapter "forms" "Basic Forms" Outline
     , Chapter "sessions" "Sessions" Outline

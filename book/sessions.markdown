@@ -2,6 +2,10 @@ This is currently just a dump from a blog post I wrote; it needs to be cleaned u
 
 <hr>
 
+FIXME: mention encryptKey and clientSessionDuration
+
+<hr>
+
 <p>This post discusses the session API as present in Yesod 0.4. This version has not been released yet, but you can <a href="http://docs.yesodweb.com/haddock/yesod/">see the Haddocks online</a>. The API is not much different from previous versions, but the names have changed a bit.</p>
 <h3>Sessions</h3>
 <p>Most web frameworks provide some notion of user sessions, where you can store small bits of information for each user. In the case of Yesod, we use the <a href="http://hackage.haskell.org/package/clientsession">clientsession package</a> (also written by yours truly) to store data in an HTTP cookie. While this might sound insecure and inefficient at first, it's not:</p>

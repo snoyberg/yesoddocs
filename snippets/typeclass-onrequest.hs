@@ -7,5 +7,5 @@ instance Yesod OnRequest where
     approot _ = ""
     onRequest = liftIO $ putStrLn "Hey, I got a request"
 -- STOP
-getRootR = defaultOnRequest [$hamlet|Hello World|]
+getRootR = defaultLayout [$hamlet|Hello World|]
 main = basicHandler 4000 OnRequest

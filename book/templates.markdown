@@ -124,6 +124,10 @@ For those not familiar, the dollar sign and parantheses indicate a Template Hask
 
     hamletToRepHtml $(hamletFileDebug "my-template.hamlet")
 
+Note that in order to use this, you need to enable the TemplateHaskell language extension. You can do so by adding the following line to the top of your source file:
+
+    {-# LANGUAGE TemplateHaskell #-}
+
 So why do we have two sets of functions? The first fully embeds the contents of the template in the code at compile time and never looks at the template again until a recompile. This is ideal for a production environment: compile your code and you have no runtime dependency on any template files. It also avoids a runtime penalty of needing to read a file.
 
 The debug set of functions is intended for development. These functions work a little bit of magic: at compile time, they inspect your template, determine which variables they reference, and generate some Haskell code to load up those variables. At run time, they read in the template again and feed in those variables. This has a number of implications:

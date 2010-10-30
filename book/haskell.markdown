@@ -1,3 +1,13 @@
+Haskell is a powerful, fast, type-safe, functional programming language. This book takes as an assumption that you are already familiar with most of the basics of Haskell. There are two wonderful books for learning Haskell, both of which are available for reading online:
+
+* [Learn You a Haskell for Great Good!](http://learnyouahaskell.com/)
+
+* [Real World Haskell](http://book.realworldhaskell.org/read/)
+
+<hr>
+
+The remainder of this chapter is intended to be a brief introduction to Haskell, mainly focusing on syntax so that readers can follow the example code.
+
 I have not yet decided whether having a chapter like this is a good idea. I would like Yesod to be accessible to users without a Haskell background, but on the other hand giving such a brief introduction to such a powerful language may simply lead to a misunderstanding of what's happening.
 
 For now, finishing this chapter is a low priority. If you are reading this, and would really like this chapter to be completed, please let me know (direct email, or the comments below).
@@ -44,4 +54,16 @@ With warnings turned on, the compiler can check to make sure your code accounts 
 
 ## Functions
 
+FIXME
 
+## Language Pragmas
+
+FIXME
+
+## Quasi-quotation
+
+FIXME
+
+## Type families
+
+FIXME

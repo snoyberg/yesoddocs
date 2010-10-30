@@ -105,7 +105,7 @@ data ChapterStatus = Outline | Incomplete | Unproofed | Proofread | Finished
 instance ToHtml ChapterStatus where toHtml = string . show
 chapters =
     [ Chapter "introduction" "Introduction" Unproofed
-    , Chapter "haskell" "Introduction to Haskell" Outline
+    , Chapter "haskell" "Introduction to Haskell" Incomplete
     , Chapter "basics" "Basics" Unproofed
     , Chapter "templates" "Templates" Outline
     , Chapter "widgets" "Widgets" Unproofed

@@ -148,10 +148,13 @@ getChapterR chapter = do
     let html = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
     let previous = getPrev chapters
     let next = getNext chapters
+    y <- getYesod
     defaultLayout $ do
         setTitle $ string $ "Yesod Book: " ++ title
+        addScriptEither $ urlJqueryJs y
         addHamlet $(hamletFile "chapter")
         addCassius $(cassiusFile "book")
+        addJulius $(juliusFile "chapter")
         addCassius $(cassiusFile "chapter")
         addStylesheet $ StaticR hscolour_css
         addScript $ StaticR hyphenate_js
@@ -171,7 +174,7 @@ snippet :: String -> IO String
 snippet filename = do
     raw <- U.readFile $ "snippets/" ++ filename ++ ".hs"
     let raw' = unlines $ go False $ lines raw
-    return $ "<pre><code>" ++ (unlines $ zipWith go' [1..] $ lines
+    return $ "<pre class='code-block'><code>" ++ (unlines $ zipWith go' [1..] $ lines
            $ CSS.hscolour False raw')
   where
     go _ [] = []
@@ -180,11 +183,12 @@ snippet filename = do
     go False (_:rest) = go False rest
     go True (x:rest) = x : go True rest
     go' _ "</pre>" = "</code></pre>"
-    go' i s = showI i ++ ' ' : removePre s
-    showI i
-        | i < 10 = ' ' : ' ' : show i
-        | i < 100 = ' ' : show i
-        | otherwise = show i
+    go' i s = concat
+        [ "<span class='line-number'>"
+        , show i
+        , "</span>"
+        , removePre s
+        ]
     removePre s = fromMaybe s $ stripPrefix "<pre>" s
 
 examples :: [(String, String)]

@@ -17,3 +17,14 @@
 .image img
     display: block
     padding-bottom: 4px
+.line-number
+    display: inline-block
+    width: 20px
+    text-align: right
+    margin-right: 5px
+.show-lines, .hide-lines
+    color: #00f
+    text-decoration: none
+    font-size: 80%
+.code-block
+    margin-top: 0

@@ -1,0 +1,13 @@
+$(function(){
+    $(".code-block").before("<div><a href='#' class='hide-lines'>Hide line numbers</a></div>");
+    $("a.hide-lines").live("click", function(){
+        $(this).parent().next().find("span.line-number").hide();
+        $(this).removeClass("hide-lines").addClass("show-lines").text("Show line numbers");
+        return false;
+    });
+    $("a.show-lines").live("click", function(){
+        $(this).parent().next().find("span.line-number").show();
+        $(this).removeClass("show-lines").addClass("hide-lines").text("Hide line numbers");
+        return false;
+    });
+});

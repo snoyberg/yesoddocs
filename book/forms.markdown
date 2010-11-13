@@ -84,9 +84,6 @@ To make life easier for you, Yesod defines an IsString instance for FormFieldSet
             , ffsName = Just "single-word"
             } (fmap singleWord mparams)
 
-<div class="image"><img src="/static/book/forms/random2-valid.png" title="Valid entry">Valid entry</div>
-<div class="image"><img src="/static/book/forms/random2-invalid.png" title="Invalid entry">Invalid entry</div>
-
 <p class="advanced">You may have noticed that the minimum and maximum number input fields have a type="number" attribute. This is an example of Yesod including HTML 5 support by default. On some browsers (Chrome, for instance) this field gets rendered with up/down errors to control to value, plus it prevents non-numeric input. On browsers without any specific support, it gets rendered as a plain type="text" input. [diveintohtml5 has a chapter on forms](http://diveintohtml5.org/forms.html).</p>
 
 ## Custom fields
@@ -134,6 +131,9 @@ Lines 35 and 36 set up the String "value" attribute for the minimum and maximum 
 Next we create a FieldInfo value. The one really confusing piece is the value of fiIdent: why did I choose minId and not maxId? The value of fiIdent gets used when constructing the final HTML, as the value of the "for" attribute on the label tag. By setting the value to minId, it means that when a user clicks on the label, the browser will shift focus to the minimum field, which is probably what we want.
 
 The values for fiInput and fiErrors are, once again, tedious but straight-forward. We can now put both of our input fields together, and if we created any FormFailure above, we display it in the fiErrors. Line 52 returns our 3-tuple of form result, FieldInfo and encoding type.
+
+<div class="image"><img src="/static/book/forms/random2-valid.png" title="Valid entry">Valid entry</div>
+<div class="image"><img src="/static/book/forms/random2-invalid.png" title="Invalid entry">Invalid entry</div>
 
 ## Automatic Javascript goodness
 

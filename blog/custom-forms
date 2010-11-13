@@ -60,7 +60,7 @@ Yesod 0.6 will be adding a new datatype, GFormMonad, to complement the GForm dat
         (age, ageField) <- intField "Age" Nothing
         return (Person <$> name <*> age, [$hamlet|
         Hi, my name is ^fiInput.nameField^ and I am ^fiInput.ageField^ years old.
-        |]
+        |])
 
 This is *almost* identical to what we wrote as our ideal code above, but not quite. The name variable above has a datatype of <code>FormResult String</code>. In other words, when using GFormMonad, you have to deal with the possibility of validation errors directly. Fortunately, you are still free to use the Applicative instance of FormResult, as we did here.
 

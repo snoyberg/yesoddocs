@@ -1,3 +1,33 @@
+# Introduction
+
+Yesod is built upon the [hamlet package](http://hackage.haskell.org/package/hamlet), which provides three templating systems: Hamlet (HTML), Cassius (CSS) and Julius (Javascript). These systems are all available for use outside the realm of Yesod. In this chapter, we will be demonstrating their usage in a standalone context.
+
+Hamlet in particular has a number of features that won't be covered in this chapter. Instead, there is a [Hamlet reference chapter](/book/hamlet/) in the appendix which covers all functionality. This chapter should get you familiar with the syntax, usage and basic features.
+
+# Type Safety
+
+One of the biggest features of Yesod is its pervasive type safety. This was the original impetus for the creation of Hamlet. As such, all variable interpolation gets checked at compile time. Hamlet supports three forms of interpolation:
+
+* Any instance of the ToHtml typeclass. This includes String and Html. This is also where Hamlet shows great <abbr title="Cross Site Scripting">XSS</abbr> attack defense: whenever interpolating a String, Hamlet automatically escapes all HTML entities. This is called dollar-sign interpolation.
+
+* Type-safe URLs. We mentioned in [the basics chapter](/book/basics/) that each URL can be represented as a Haskell value, and then we use a render function to convert those values into strings. Hamlet allows you to interpolate those type-safe URLs directly. This is called at-sign interpolation.
+
+* Other Hamlet templates. This is great for creating a chunk of code that will be reused in other templates. This is called caret interpolation.
+
+Cassius provides support for the first two forms of interpolation, but instead of the ToHtml typeclass, there is the ToCss typeclass. Caret interpolation does not make as much sense with CSS. Julius provides support for all three; however, instead of dollar-sign interpolation, Julius uses the percent sign. This is to make it more natural to deal with the jQuery Javascript library, which has a special meaning for the dollar sign.
+
+<p class="advanced">Cassius used to provide support for caret interpolation via something called mixins. However, this required a lot of complexity in the implementation and usage, and was not used very often. It may reappear at some point in the future.</p>
+
+In all three languages, when you want to print an interpolation character, you enter it twice. For example, in Hamlet:
+
+    The price of this item is $$4.50.
+
+# Quasi-quotation
+
+One way to 
+
+<hr>
+
 <div class="advanced">
 
 Just a little heads-up on some of the examples below: in order to simplify the examples below, we're going to assume the OverloadedStrings language extension. If you rather not use this extension, you'll need to make some minor modifications, such as replacing:

@@ -157,7 +157,7 @@ getChapterR chapter = do
         addJulius $(juliusFile "chapter")
         addCassius $(cassiusFile "chapter")
         addStylesheet $ StaticR hscolour_css
-        addScript $ StaticR hyphenate_js
+        -- addScript $ StaticR hyphenate_js
   where
     getPrev (x:yc@(Chapter y y' _):rest)
         | y == chapter = Just x

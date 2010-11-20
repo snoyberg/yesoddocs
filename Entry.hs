@@ -4,12 +4,8 @@ import qualified Data.ByteString as S
 import Data.ByteString.UTF8 (toString)
 import System.Directory
 import System.IO
-import Data.Serialize
-import Control.Arrow
 import Data.List
-import Data.Function
 import Control.Monad
-import Control.Applicative
 import Data.Time
 import System.Locale
 import Text.Hamlet

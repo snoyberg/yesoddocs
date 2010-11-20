@@ -28,6 +28,8 @@ data YesodDocs = YesodDocs
     , getBook :: Book
     }
 
+type Handler = GHandler YesodDocs YesodDocs
+
 mkYesod "YesodDocs" [$parseRoutes|
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
@@ -56,8 +58,9 @@ mkYesod "YesodDocs" [$parseRoutes|
 /blog/#String EntryR GET
 |]
 
+navLinks :: [(String, Either String YesodDocsRoute)]
 navLinks =
-    [ ("Home" :: String, Right HomeR)
+    [ ("Home", Right HomeR)
     , ("Blog", Right BlogR)
     , ("Yesod in 5 Minutes", Right FiveMinutesR)
     , ("Book", Right BookR)
@@ -85,18 +88,21 @@ instance YesodJquery YesodDocs where
     urlJqueryUiJs _ = Left $ StaticR jquery_ui_js
     urlJqueryUiCss  _ = Left $ StaticR jquery_ui_css
 
+getHomeR :: Handler RepHtml
 getHomeR = defaultLayout $ do
-            setTitle "Yesod Web Framework for Haskell"
-            addHamlet $(hamletFile "root")
-            addHtmlHead [$hamlet|
+    setTitle "Yesod Web Framework for Haskell"
+    addHamlet $(hamletFile "root")
+    addHtmlHead [$hamlet|
 %meta!name=description!value="Yesod Web Framework for Haskell. Create RESTful web apps with type safety."
 |]
-            addCassius $(cassiusFile "root")
+    addCassius $(cassiusFile "root")
 
+getFiveMinutesR :: Handler RepHtml
 getFiveMinutesR = defaultLayout $ do
     setTitle "Yesod in Five Minutes"
     addHamlet $(hamletFile "five-minutes")
 
+getBookR :: Handler RepHtml
 getBookR = defaultLayout $ do
     setTitle "Yesod Web Framework Book"
     book <- liftHandler $ fmap getBook getYesod
@@ -105,7 +111,7 @@ getBookR = defaultLayout $ do
     addHamlet $(hamletFile "book")
     addCassius $(cassiusFile "book")
 
-getChapterR :: String -> GHandler YesodDocs YesodDocs RepHtml
+getChapterR :: String -> Handler RepHtml
 getChapterR slug = do
     book <- fmap getBook getYesod
     chapter <-
@@ -157,7 +163,7 @@ snippet filename = do
     go' _ "</pre>" = "</code></pre>"
     go' i s = concat
         [ "<span class='line-number'>"
-        , show i
+        , show (i :: Int)
         , "</span>"
         , removePre s
         ]
@@ -174,6 +180,7 @@ examples =
     , ("i18n", "Internationalization")
     ]
 
+getExamplesR :: Handler RepHtml
 getExamplesR = do
     y <- getYesod
     defaultLayout $ do
@@ -186,14 +193,17 @@ getExamplesR = do
         addHamlet $(hamletFile "examples")
         addStylesheet $ StaticR hscolour_css
 
+colorize :: String -> String -> Bool -> String -- FIXME use kate instead!
 colorize title raw isLit = hscolour CSS defaultColourPrefs True False title isLit raw
 
+getExampleR :: String -> Handler RepHtml
 getExampleR name = do
     title <- maybe notFound return $ lookup name examples
     raw <- liftIO $ U.readFile $ "yesod/tutorial/" ++ name ++ ".lhs"
     let html = colorize title raw True
     return $ RepHtml $ toContent html
 
+getScreencastsR :: Handler RepHtml
 getScreencastsR = do
     raw <- liftIO $ U.readFile "screencasts.html"
     y <- getYesod
@@ -213,10 +223,10 @@ data Article = Article
     , articleDescription :: String
     }
 
-getArticlesR =
-    defaultLayout $ do
-        setTitle "Yesod Articles"
-        addHamlet $(hamletFile "articles")
+getArticlesR :: Handler RepHtml
+getArticlesR = defaultLayout $ do
+    setTitle "Yesod Articles"
+    addHamlet $(hamletFile "articles")
   where
     articles =
         [ Article
@@ -251,6 +261,7 @@ getArticlesR =
             ""
         ]
 
+getSynWrqR :: Handler RepHtml
 getSynWrqR = do
     let title = "web-routes-quasi Synopsis"
     raw <- liftIO $ U.readFile "synopsis/web-routes-quasi.markdown"
@@ -260,6 +271,7 @@ getSynWrqR = do
         setTitle title
         addHamlet $(hamletFile "synopsis")
 
+synLhs :: String -> String -> Handler RepHtml
 synLhs file title' = do
     let title = title' ++ " Synopsis"
     raw <- liftIO $ U.readFile $ "synopsis/" ++ file ++ ".lhs"
@@ -269,14 +281,18 @@ synLhs file title' = do
         addStylesheet $ StaticR hscolour_css
         addHamlet $(hamletFile "synopsis")
 
+getSynPerR :: Handler RepHtml
 getSynPerR = synLhs "persistent" "Persistent"
+
+getSynHamR :: Handler RepHtml
 getSynHamR = synLhs "hamlet" "Hamlet"
 
+getBlogR :: Handler ()
 getBlogR = do
     y <- getYesod
     redirect RedirectTemporary $ EntryR $ entrySlug $ head $ getEntries y
-    return ()
 
+getEntryR :: String -> Handler RepHtml
 getEntryR slug = do
     let isCurrent x = x == slug
     y <- getYesod
@@ -297,28 +313,32 @@ getEntryR slug = do
     mkNavbar :: [Entry] -> [(String, [Entry])]
     mkNavbar = map (entryYearMonth . head &&& id) . groupBy ((==) `on` entryYearMonth)
 
+getFaviconR :: Handler ()
 getFaviconR = sendFile "image/x-icon" "favicon.ico" >> return ()
 
+getRobotsR :: Handler RepPlain
 getRobotsR = robots SitemapR
 
+getSitemapR :: Handler RepXml
 getSitemapR = do
     y <- getYesod
-    sitemap $ home : screencasts : examples : book
+    sitemap $ home : screencasts : examples' : book
             : map go1 (concatMap partChapters $ bookParts $ getBook y)
             ++ map go2 (getEntries y)
   where
     date = UTCTime (read "2010-09-01") $ secondsToDiffTime 0
     home = SitemapUrl HomeR date Daily 1.0
     screencasts = SitemapUrl ScreencastsR date Daily 0.9
-    examples = SitemapUrl ExamplesR date Daily 0.9
+    examples' = SitemapUrl ExamplesR date Daily 0.9
     book = SitemapUrl BookR date Daily 0.9
-    go1 (Chapter { chapterSlug = name, chapterTitle = title}) =
+    go1 (Chapter { chapterSlug = name }) =
         SitemapUrl (ChapterR $ T.unpack name) date Weekly 0.8
     go2 e = SitemapUrl
                 (EntryR $ entrySlug e)
                 (UTCTime (entryDay e) $ secondsToDiffTime 0)
                 Monthly 0.5
 
+getFeedR :: Handler RepAtom
 getFeedR = do
     y <- getYesod
     let uday = entryDay $ head $ getEntries y
@@ -337,6 +357,7 @@ getFeedR = do
         , atomEntryContent = entryContent e
         }
 
+withYesodDocs :: (Application -> IO a) -> IO a
 withYesodDocs f = do
     entries <- loadEntries
     let static = fileLookupDir "static" typeByExt
@@ -372,7 +393,7 @@ $forall sectionBlocks.section b
     showTitle 3 t = [$hamlet|%h3 $t$|]
     showTitle 4 t = [$hamlet|%h4 $t$|]
     showTitle 5 t = [$hamlet|%h5 $t$|]
-    showTitle 6 t = [$hamlet|%h6 $t$|]
+    showTitle _ t = [$hamlet|%h6 $t$|]
     nextLevel = level + 1
 sectionBlockToHtml _ (Right b) = blockToHtml b
 

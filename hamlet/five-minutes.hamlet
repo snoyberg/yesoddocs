@@ -20,8 +20,13 @@
             %code yesod
             \ and answer the questions.
         %li
-            Change into the project directory and start your new application by running $
-            %code runhaskell simple-server.hs
+            Change into the project directory.
+        %li Automatically install all extra support libraries and build your appliation with $
+            %code cabal install
+        %li
+            Start up your development server by running $
+            %code ./dist/build/devel-server/devel-server
+            \. (On Windows, use backslashes.)
         %li
             See your application at $
             %a!href="http://localhost:3000/" http://localhost:3000

@@ -16,6 +16,7 @@ import Control.Exception (Exception, SomeException, throwIO)
 import Control.Monad (unless)
 import Data.Char (isSpace)
 import Control.Monad.IO.Class (MonadIO (liftIO))
+import Text.Hamlet (ToHtml (..), string)
 
 data Book = Book
     { bookTitle :: Text
@@ -29,14 +30,23 @@ data Part = Part
     }
     deriving Show
 
+data ChapterStatus = Outline | Incomplete | Unproofed | Proofread | Finished
+    deriving (Show, Read)
+instance ToHtml ChapterStatus where toHtml = string . show
+
 data Chapter = Chapter
-    { chapterTitle :: Text
+    { chapterSlug :: Text
+    , chapterTitle :: Text
+    , chapterStatus :: ChapterStatus
     , chapterIntro :: [Block]
     , chapterSections :: [Section]
     }
     deriving Show
 
-data Section = Section Text [Block] -- FIXME allow subsections
+data Section = Section
+    { sectionTitle :: Text
+    , sectionBlocks :: [Block] -- FIXME allow subsections
+    }
     deriving Show
 
 data Block = Paragraph [Inline]
@@ -145,6 +155,26 @@ tags t i =
                 go $ front . (:) y
             else return $ front []
 
+tagAttr :: MonadIO m
+        => Text
+        -> ([Attribute] -> Iteratee Event m a)
+        -> Iteratee Event m a
+tagAttr t i = do
+    whitespace
+    attrs <- expect (show t ++ " tag with attributes") $ \e ->
+                case e of
+                    EventBeginElement name' attrs
+                        | name == name' -> Just attrs
+                    _ -> Nothing
+    x <- i attrs
+    whitespace
+    require end
+    return x
+  where
+    name = Name t Nothing Nothing
+    begin = EventBeginElement name []
+    end = EventEndElement name
+
 tag :: MonadIO m => Text -> Iteratee Event m a -> Iteratee Event m a
 tag t i = do
     whitespace
@@ -222,11 +252,25 @@ parseChapter' [Attribute name href]
 parseChapter' _ = throwError $ XmlException "Expected one href attr for chapter"
 
 parseChapter :: MonadIO m => Iteratee Event m Chapter
-parseChapter = tag "chapter" $ do
+parseChapter = tagAttr "chapter" $ \attrs -> do
+    slug <- getAttribute "id" attrs
+    status <- getAttribute "status" attrs >>= readStatus
     title <- textTag "title"
     intro <- tag "intro" $ many parseBlock
     sections <- tags "section" parseSection
-    return $ Chapter title intro sections
+    return $ Chapter slug title status intro sections
+  where
+    readStatus t =
+        case reads $ T.unpack t of
+            [] -> throwError $ XmlException $ "Invalid status: " ++ show t
+            (s, _):_ -> return s
+
+getAttribute t as =
+    case lookup t' $ map (\(Attribute x y) -> (x, y)) as of
+        Nothing -> throwError $ XmlException $ "Missing attribute: " ++ show t
+        Just v -> fmap T.concat $ mapM toText v
+  where
+    t' = Name t Nothing Nothing
 
 parseSection :: MonadIO m => Iteratee Event m Section
 parseSection = do

@@ -4,5 +4,34 @@
     <part>
         <title>Basics</title>
         <chapter href="book/introduction.xml"/>
+        <!--
+    [ Chapter "introduction" "Introduction" Unproofed
+    , Chapter "haskell" "Introduction to Haskell" Incomplete
+    , Chapter "basics" "Basics" Unproofed
+    , Chapter "templates" "Templates" Outline
+    , Chapter "widgets" "Widgets" Unproofed
+    , Chapter "yesod-typeclass" "Yesod Typeclass" Unproofed
+    , Chapter "handler" "Routing and Handlers" Outline
+    , Chapter "forms" "Basic Forms" Outline
+    , Chapter "sessions" "Sessions" Outline
+    , Chapter "persistent" "Persistent" Outline
+    , Chapter "rest" "RESTful Content" Unproofed
+    , Chapter "auth" "Authentication and Authorization" Outline
+    , Chapter "scaffold" "Scaffolding and the Site Template" Outline
+    , Chapter "advanced-forms" "Advanced Forms" Outline
+    , Chapter "email" "Sending Email" Outline
+    , Chapter "deploying" "Deploying your Webapp" Unproofed
+    , Chapter "request" "Request Datatype" Outline
+    , Chapter "i18n" "Internationalization" Outline
+    , Chapter "subsite" "Creating a Subsite" Outline
+    , Chapter "web-client" "Web Client Code" Outline
+    , Chapter "low-level" "Low Level Tricks" Outline
+    - subsites
+    - enumerator package, pull in three blog posts
+    , Chapter "enumerator" "Enumerator Package" Outline
+    , Chapter "hamlet" "Hamlet" Unproofed
+    , Chapter "wai" "Web Application Interface" Unproofed
+    , Chapter "web-routes-quasi" "web-routes-quasi" Outline
+    -->
     </part>
 </book>

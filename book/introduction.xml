@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<chapter>
+<chapter id="introduction" status="Unproofed">
     <title>Introduction</title>
     <intro>
         <p>Since web programming began, people haved been trying to make the development process a more pleasant one. As a community, we have continually pushed new techniques to try and solve some of the lingering difficulties of security threats, the stateless nature of HTTP, the multiple languages (HTML, CSS, Javascript) necessary to create a powerful web application, and more.</p>

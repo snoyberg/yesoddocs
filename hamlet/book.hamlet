@@ -12,6 +12,6 @@
     %ol
         $forall chapters c
             %li
-                %a!href=@ChapterR.chapterSlug.c@
+                %a!href=@ChapterR.unpack.chapterSlug.c@
                     $chapterTitle.c$
                 %span.status $chapterStatus.c$

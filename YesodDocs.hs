@@ -8,7 +8,7 @@ import Yesod.Helpers.Sitemap
 import Yesod.Helpers.AtomFeed
 import Yesod.Form.Jquery
 import Settings
-import Text.Pandoc
+import Text.Pandoc (readMarkdown, defaultParserState, writeHtmlString, defaultWriterOptions)
 import Language.Haskell.HsColour hiding (string)
 import Language.Haskell.HsColour.Colourise (defaultColourPrefs)
 import qualified Language.Haskell.HsColour.CSS as CSS
@@ -19,11 +19,13 @@ import Data.Maybe (fromMaybe)
 import Data.Function (on)
 import qualified System.IO.UTF8 as U
 import Data.Time
-import Text.Hamlet (ToHtml (..))
+import Book
+import qualified Data.Text.Lazy as T
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
     , getEntries :: [Entry]
+    , getBook :: Book
     }
 
 mkYesod "YesodDocs" [$parseRoutes|
@@ -95,60 +97,28 @@ getFiveMinutesR = defaultLayout $ do
     setTitle "Yesod in Five Minutes"
     addHamlet $(hamletFile "five-minutes")
 
-data Chapter = Chapter
-    { chapterSlug :: String
-    , chapterTitle :: String
-    , chapterStatus :: ChapterStatus
-    }
-data ChapterStatus = Outline | Incomplete | Unproofed | Proofread | Finished
-    deriving Show
-instance ToHtml ChapterStatus where toHtml = string . show
-chapters =
-    [ Chapter "introduction" "Introduction" Unproofed
-    , Chapter "haskell" "Introduction to Haskell" Incomplete
-    , Chapter "basics" "Basics" Unproofed
-    , Chapter "templates" "Templates" Outline
-    , Chapter "widgets" "Widgets" Unproofed
-    , Chapter "yesod-typeclass" "Yesod Typeclass" Unproofed
-    , Chapter "handler" "Routing and Handlers" Outline
-    , Chapter "forms" "Basic Forms" Outline
-    , Chapter "sessions" "Sessions" Outline
-    , Chapter "persistent" "Persistent" Outline
-    , Chapter "rest" "RESTful Content" Unproofed
-    , Chapter "auth" "Authentication and Authorization" Outline
-    , Chapter "scaffold" "Scaffolding and the Site Template" Outline
-    , Chapter "advanced-forms" "Advanced Forms" Outline
-    , Chapter "email" "Sending Email" Outline
-    , Chapter "deploying" "Deploying your Webapp" Unproofed
-    , Chapter "request" "Request Datatype" Outline
-    , Chapter "i18n" "Internationalization" Outline
-    , Chapter "subsite" "Creating a Subsite" Outline
-    , Chapter "web-client" "Web Client Code" Outline
-    , Chapter "low-level" "Low Level Tricks" Outline
-    -- subsites
-    -- enumerator package, pull in three blog posts
-    , Chapter "enumerator" "Enumerator Package" Outline
-    , Chapter "hamlet" "Hamlet" Unproofed
-    , Chapter "wai" "Web Application Interface" Unproofed
-    , Chapter "web-routes-quasi" "web-routes-quasi" Outline
-    ]
-
 getBookR = defaultLayout $ do
     setTitle "Yesod Web Framework Book"
+    book <- liftHandler $ fmap getBook getYesod
+    let unpack = T.unpack
+    let chapters = concatMap partChapters $ bookParts book
     addHamlet $(hamletFile "book")
     addCassius $(cassiusFile "book")
 
-getChapterR chapter = do
-    title <- case filter (\x -> chapterSlug x == chapter) chapters of
-                [] -> notFound
-                x:_ -> return $ chapterTitle x
-    raw <- liftIO $ U.readFile $ "book/" ++ chapter ++ ".markdown"
-    raw' <- liftIO $ mapM go $ lines raw
-    let pandoc = readMarkdown defaultParserState $ unlines raw'
-    let html = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
-    let previous = getPrev chapters
-    let next = getNext chapters
+getChapterR :: String -> GHandler YesodDocs YesodDocs RepHtml
+getChapterR slug = do
+    book <- fmap getBook getYesod
+    chapter <-
+        case filter (\x -> chapterSlug x == T.pack slug)
+                $ concatMap partChapters $ bookParts book of
+            [] -> notFound
+            x:_ -> return x
+    let previous = Nothing -- FIXME getPrev chapters
+    let next = Nothing -- FIXME getNext chapters
     y <- getYesod
+    let title = T.unpack $ chapterTitle chapter
+    let unpack = T.unpack
+    let html = chapterToHtml chapter
     defaultLayout $ do
         setTitle $ string $ "Yesod Book: " ++ title
         addScriptEither $ urlJqueryJs y
@@ -159,6 +129,7 @@ getChapterR chapter = do
         addStylesheet $ StaticR hscolour_css
         -- addScript $ StaticR hyphenate_js
   where
+  {-
     getPrev (x:yc@(Chapter y y' _):rest)
         | y == chapter = Just x
         | otherwise = getPrev $ yc : rest
@@ -167,6 +138,7 @@ getChapterR chapter = do
         | x == chapter = Just y
         | otherwise = getNext $ y : rest
     getNext _ = Nothing
+    -}
     go ('~':filename) = snippet filename
     go x = return x
 
@@ -332,15 +304,16 @@ getRobotsR = robots SitemapR
 getSitemapR = do
     y <- getYesod
     sitemap $ home : screencasts : examples : book
-            : map go1 chapters
-           ++ map go2 (getEntries y)
+            : map go1 (concatMap partChapters $ bookParts $ getBook y)
+            ++ map go2 (getEntries y)
   where
     date = UTCTime (read "2010-09-01") $ secondsToDiffTime 0
     home = SitemapUrl HomeR date Daily 1.0
     screencasts = SitemapUrl ScreencastsR date Daily 0.9
     examples = SitemapUrl ExamplesR date Daily 0.9
     book = SitemapUrl BookR date Daily 0.9
-    go1 (Chapter name title _) = SitemapUrl (ChapterR name) date Weekly 0.8
+    go1 (Chapter { chapterSlug = name, chapterTitle = title}) =
+        SitemapUrl (ChapterR $ T.unpack name) date Weekly 0.8
     go2 e = SitemapUrl
                 (EntryR $ entrySlug e)
                 (UTCTime (entryDay e) $ secondsToDiffTime 0)
@@ -367,5 +340,47 @@ getFeedR = do
 withYesodDocs f = do
     entries <- loadEntries
     let static = fileLookupDir "static" typeByExt
-    app <- toWaiApp $ YesodDocs static entries
+    book <- loadBook
+    app <- toWaiApp $ YesodDocs static entries book
     f app
+
+chapterToHtml :: Chapter -> Html
+chapterToHtml (Chapter { chapterIntro = intro, chapterSections = sections }) = [$hamlet|
+$forall intro b
+    $blockToHtml.b$
+$forall sections s
+    %h2 $sectionTitle.s$
+    $forall sectionBlocks.s b
+        $blockToHtml.b$
+|]
+
+blockToHtml :: Block -> Html
+blockToHtml (Paragraph is) = [$hamlet|
+%p
+    $forall is i
+        $inlineToHtml.i$
+|]
+blockToHtml (UList items) = [$hamlet|
+%ul
+    $forall items i
+        $listItemToHtml.i$
+|]
+
+listItemToHtml :: ListItem -> Html
+listItemToHtml (ListItem is) = [$hamlet|
+%li
+    $forall is i
+        $inlineToHtml.i$
+|]
+
+inlineToHtml :: Inline -> Html
+inlineToHtml (Inline t) = [$hamlet|$t$|]
+inlineToHtml (Emphasis is) = [$hamlet|
+%i
+    $forall is i
+        $inlineToHtml.i$
+|]
+inlineToHtml (Term t) = [$hamlet|%b $t$|]
+inlineToHtml (Hackage t) = [$hamlet|
+%a!href="http://hackage.haskell.org/package/$t$" $t$
+|]

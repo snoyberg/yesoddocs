@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="haskell" status="Incomplete">
+    <title>Introduction to Haskell</title>
+    <intro>
+        <p>Haskell is a powerful, fast, type-safe, functional programming language. This book takes as an assumption that you are already familiar with most of the basics of Haskell. There are two wonderful books for learning Haskell, both of which are available for reading online:</p>
+
+        <ul>
+            <li><xref href="http://learnyouahaskell.com/">Learn You a Haskell for Great Good!</xref></li>
+            <li><xref href="http://book.realworldhaskell.org/read/">Real World Haskell</xref></li>
+        </ul>
+        <p>The remainder of this chapter is intended to be a brief introduction to Haskell, mainly focusing on syntax so that readers can follow the example code.</p>
+        <p>I have not yet decided whether having a chapter like this is a good idea. I would like Yesod to be accessible to users without a Haskell background, but on the other hand giving such a brief introduction to such a powerful language may simply lead to a misunderstanding of what's happening.</p>
+        <p>For now, finishing this chapter is a low priority. If you are reading this, and would really like this chapter to be completed, please let me know (direct email, or the comments below).</p>
+        <p>This chapter should give you a bare minimum introduction to Haskell to feel comfortable with the rest of the code in this book. As is often the case with web programming, you can suffice with a subset of the language to get started, and pick up more as you go along. Obviously, the more you know the better. If you already know Haskell, do yourself a favor and skip to the next chapter.</p>
+    </intro>
+    <section>
+        <title>Data types</title>
+        <p>Haskell has a concept of <term>algebraic data types</term>. I think examples will illustrate better than anything:</p>
+
+        <codeblock>data Color = Red | Green | Blue</codeblock>
+
+        <p>Here we create a new <term>data type</term> called Color, which has three <term>constructors</term>: Red, Green and Blue. Notice how all of these start with a capital letter: that's a rule in Haskel. In this case, the constructors are all <term>nullary</term>meaning they take no arguments. Another possibility could be:</p>
+
+        <codeblock>data Person = Person String Int</codeblock>
+
+        <p>Here there is a single constructor, Person, that takes two arguments: a String and an Int. These might represent a name and an age. If we wanted to be more explicit about what they represent, we could use record syntax:</p>
+
+        <codeblock>data Person = Person { name :: String, age :: Int }</codeblock>
+
+        <p>Record syntax creates some functions to more easily access the values in a datatype and allows you to construct values using record syntax, ie:</p>
+
+        <codeblock>let michael = Person { name = "Michael", age = 25 }
+let hisName = name michael</codeblock>
+
+        <p>That second line used function application, which we'll see in a little bit. Also notice that the variable and function names are all lowercase; once again, this is a rule in Haskell.</p>
+
+        <p>You are able to combine different features of the above data type declarations, eg:</p>
+
+        <codeblock>data Animal = Cat { catName :: String } | Dog String</codeblock>
+
+        <section>
+            <title>Pattern Matching</title>
+
+            <p>One of the great features in Haskell is pattern matching. For example:</p>
+
+            <codeblock>case color of
+    Red -> print "The color is Red"
+    Green -> print "The color is Green"
+    Blue -> print "The color is Blue"</codeblock>
+
+            <p>With warnings turned on, the compiler can check to make sure your code accounts for every possible value in your datatype. This is one small example of Haskell's type system making your life easier.</p>
+        </section>
+    </section>
+    <section>
+        <title>Functions</title>
+        <p>FIXME</p>
+    </section>
+    <section>
+        <title>Language Pragmas</title>
+        <p>FIXME</p>
+    </section>
+    <section>
+        <title>Quasi-quotation</title>
+        <p>FIXME</p>
+    </section>
+    <section>
+        <title>Type families</title>
+        <p>FIXME</p>
+    </section>
+</chapter>

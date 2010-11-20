@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="basics" status="Unproofed">
+    <title>Basics</title>
+    <intro/>
+    <section>
+        <title>Getting Yesod</title>
+        <p>The rest of this book will assume you have Yesod installed. You'll need to:</p>
+        <ul>
+            <li>Install the <xref href="http://hackage.haskell.org/platform/">Haskell Platform</xref></li>
+            <li>Run <code>cabal update</code></li>
+            <li>Run <code>cabal install yesod</code></li>
+        </ul>
+
+        <p>You will also likely want to run <code>cabal install yesod-auth</code>.</p>
+    </section>
+    <section>
+        <title>Library versus Framework</title>
+        <p>I'm going to be a bit bold and say the defining line between a library and a framework is that a framework tells you how to lay out your code into a file/folder structure. You may not agree with this definition, but it's useful to explain how this book will begin.</p>
+        <p>The Yesod Web Framework comes with a tool that automatically generates a full site template with a bunch of bells and whistles. This is the recommended way to get started on a new Yesod application. This added convenience, however, hides away some of the important details going on behind the scenes.</p>
+        <p>So to start off, we're going to be treating Yesod as a library. Having to explicitly write all the code is a good exercise to get started. <xref href="/book/scaffold/">Later on</xref>, we'll introduce the scaffolding tool and describe the standard layout of a Yesod project.</p>
+    </section>
+    <section>
+        <title>Hello World</title>
+        <p>Let's get this book started properly: a simple web page that says Hello World:</p>
+        <snippet name="basics-helloworld"/>
+        <p>If you save that code in <code>helloworld.hs</code> and run it with <code>runhaskell helloworld.hs</code>, you'll get a web server running on port 3000. If you point your browser to <xref href="http://localhost:3000">http://localhost:3000</xref>, you'll get the following HTML:</p>
+
+        <codeblock>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Hello World!&lt;/body&gt;&lt;/html&gt;</codeblock>
+    </section>
+    <section>
+        <title>Routing</title>
+        <p>Like most modern web frameworks, Yesod follows a <xref href="http://en.wikipedia.org/wiki/Front_Controller_pattern">front controller pattern</xref>. This means that every request to a Yesod application enters at the same point and is routed from there. As a contrast, in systems like PHP and ASP you often times create a number of different files, and the web server automatically directs requests to the relevant file.</p>
+        <p>Lines 4 through 6 set up this routing system. We see our only <term>resource</term> defined on line 5. We'll give full details of the syntax later, but this line creates a resource named HomeR, which accepts GET requests at the root (/) of our application.</p>
+        <p>Yesod sees this resource declaration, and determines to call the getHomeR <term>handler function</term> whenever it receives a request for HomeR. The function name follows the simple pattern of request method, in lowercase, followed by the resource name.</p>
+    </section>
+    <section>
+        <title>Handler function</title>
+        <p>Most of the code you write in Yesod lives in handler functions. This is where you process user input, perform database queries and create responses. In our simple example, we create a response using the defaultLayout function. By default, this is a simply HTML wrapper that creates a doctype, html, head and body tags. <!-- FIXME don't use xref --><xref href="/book/yesod-typeclass/">As we'll see later</xref>, this function can be overridden to do much more.</p>
+
+        <p>That funny <code>[$hamlet|Hello World!|]</code> is a <term>quasi-quotation</term>. It allows us to embed arbitrary text in our Haskell code, process it with a specific function and have that generate Haskell code, all at compile time. In our case, we feed the string "Hello World!" to the hamlet quasi-quoter.</p>
+
+        <p>Hamlet is the default HTML templating engine in Yesod. Together with its siblings Cassius and Julius, you can create HTML, CSS and Javascript in a fully type-safe and compile-time-checked manner. We'll see much more about this <xref href="/book/widgets/">when we discuss widgets</xref>.</p>
+    </section>
+    <section>
+        <title>The Foundation</title>
+        <p>The word "HelloWorld" shows up on lines 3, 4, 7 and 9, yet the datatype doesn't seem to actually do anything important. In fact, this seemingly irrelevant piece of code is central to how Yesod works. Each Yesod application has a single datatype, referred to as its <term>foundation</term>.</p>
+        <p>Line 3 of our example defines this simple datatype. Line 4 does something a bit more interesting: it associates the routing rule we define on line 5 with this datatype. Each foundation <i>must</i> be an instance of the Yesod typeclass; we do this on line 7. (We'll get into much more detail on the Yesod typeclass and the approot method in <xref href="/book/yesod-typeclass/">the next chapter</xref>.</p>
+        <advanced><p>By the way, the word Yesod (יסוד) means <i>foundation</i> in Hebrew.</p></advanced>
+    </section>
+    <section>
+        <title>Running</title>
+        <p>Once again we mention HelloWorld in our main function. Our foundation contains all the information we need to route and respond to requests in our application, now we just need to convert it into something that can run. A great function for this in Yesod is basicHandler, which runs a simple web server on the port specified (here, it's 3000).</p>
+        <advanced><p>Technically speaking, basicHandler does a little bit more than that. It checks to see if there are any CGI environment variables present. If so, it runs as CGI. Otherwise, as a standalone server.</p></advanced>
+        <p>One of the great features of Yesod is that you aren't tied down to a single deployment strategy. Yesod is built on top of the Web Application Interface (WAI), allowing it to run on FastCGI, SCGI, the Snap web server, or even as a desktop application using the Webkit library. We'll discuss some of these options in the <xref href="/book/deplying/">deployment chapter</xref>. And at the end of this chapter, will explain the <xref href="#wai-handler-devel">development server</xref>.</p>
+    </section>
+    <section>
+        <title>Resources and type-safe URLs</title>
+        <p>In our hello world, we defined just a single resource (HomeR). A web application is usually much more exciting with more than one page on it. Let's take a look:</p>
+        <snippet name="basics-links"/>
+        <p>Overall, this is the same. Our foundation is now Links instead of HelloWorld, and in addition to the HomeR resource, we've added Page1R and Page2R. As such, we've also added two more handler functions: getPage1R and getPage2R.</p>
+        <p>The only truly new feature is inside the hamlet quasi-quotation on lines 10-12. We'll delve into syntax later, but we can see that:</p>
+        <codeblock>%a!href=@Page1R@ Go to page 1!</codeblock>
+        <p>creates a link to the Page1R resource. The important thing to note here is that Page1R is a data constructor. By making each resource a data constructor, we have a feature called <term>type-safe URLs</term>. Instead of splicing together strings to create URLs, we simply create a plain old Haskell value. By wrapping a type-safe URL in at-signs (@) in Hamlet, Yesod automatically renders those values to textual URLs before sending things off to the user.</p>
+    </section>
+    <!-- FIXME stick an ID on this -->
+    <section>
+        <title>Development server</title>
+        <p>One of the advantages interpreted languages have over compiled languages is fast prototyping: you save changes to a file and hit refresh. If we want to make any changes to our Yesod apps above, we'll need to call runhaskell from scratch, which can be a bit tedious.</p>
+        <p>Fortunately, there's a nice solution to this: <hackage>wai-handler-devel</hackage> embeds a Haskell interpreter and automatically reloads code changes for you. This can be a great way to develop your Yesod projects, and when you're ready to to move to production, you can compile against a more efficient backend. The Yesod site template comes built in with a script to do this for you.</p>
+        <p>It's a little bit more involved to set up your code to be used by wai-handler-devel, so our examples will just use basicHandler. But as a simple example, try saving the following as HelloWorld.hs:</p>
+        <snippet name="basics-devel"/>
+        <p>Make sure you have wai-handler-devel installed:</p>
+
+        <codeblock>cabal install alex
+cabal install happy
+cabal install wai-handler-devel</codeblock>
+
+        <p>And then run your code with:</p>
+
+        <codeblock>wai-handler-devel 3000 HelloWorld withHelloWorld</codeblock>
+
+        <p>This will run a development server on port 3000, using module HelloWorld and the function withHelloWorld. Try making changes to the HelloWorld.hs file and reloading: they should show up automatically. In order to shut down the server, type "q" and hit enter on the command line.</p>
+    </section>
+    <summary>
+        <p>Every Yesod application is built around a foundation datatype. We associate some resources with said datatype and define some handler functions, and Yesod handles all of the routing. These resources are also data constructors, which lets us have type-safe URLs.</p>
+        <p>By being built on top of WAI, Yesod applications can run with a number of different backends. basicHandler is an easy way to get started, as it's included with Yesod. For rapid development, wai-handler-devel is a good choice. And when you're ready to move to production, there are high-performance options like FastCGI and Snap.</p>
+    </summary>
+</chapter>

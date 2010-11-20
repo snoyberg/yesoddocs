@@ -345,14 +345,36 @@ withYesodDocs f = do
     f app
 
 chapterToHtml :: Chapter -> Html
-chapterToHtml (Chapter { chapterIntro = intro, chapterSections = sections }) = [$hamlet|
+chapterToHtml (Chapter { chapterIntro = intro, chapterSections = sections
+                       , chapterSummary = msummary }) = [$hamlet|
 $forall intro b
     $blockToHtml.b$
 $forall sections s
     %h2 $sectionTitle.s$
     $forall sectionBlocks.s b
+        $(sectionBlockToHtml.firstLevel).b$
+$maybe msummary summary
+    %h2 Summary
+    $forall summary b
         $blockToHtml.b$
 |]
+  where
+    firstLevel = 3
+
+sectionBlockToHtml :: Int -> Either Section Block -> Html
+sectionBlockToHtml level (Left section) = [$hamlet|
+$(showTitle.level).sectionTitle.section$
+$forall sectionBlocks.section b
+    $(sectionBlockToHtml.nextLevel).b$
+|]
+  where
+    showTitle :: Int -> T.Text -> Html
+    showTitle 3 t = [$hamlet|%h3 $t$|]
+    showTitle 4 t = [$hamlet|%h4 $t$|]
+    showTitle 5 t = [$hamlet|%h5 $t$|]
+    showTitle 6 t = [$hamlet|%h6 $t$|]
+    nextLevel = level + 1
+sectionBlockToHtml _ (Right b) = blockToHtml b
 
 blockToHtml :: Block -> Html
 blockToHtml (Paragraph is) = [$hamlet|
@@ -364,6 +386,19 @@ blockToHtml (UList items) = [$hamlet|
 %ul
     $forall items i
         $listItemToHtml.i$
+|]
+blockToHtml (CodeBlock c) = [$hamlet|
+%code
+    %pre $c$
+|]
+blockToHtml (Snippet s) = [$hamlet|
+%code
+    %pre $s$
+|]
+blockToHtml (Advanced bs) = [$hamlet|
+.advanced
+    $forall bs b
+        $blockToHtml.b$
 |]
 
 listItemToHtml :: ListItem -> Html
@@ -384,3 +419,5 @@ inlineToHtml (Term t) = [$hamlet|%b $t$|]
 inlineToHtml (Hackage t) = [$hamlet|
 %a!href="http://hackage.haskell.org/package/$t$" $t$
 |]
+inlineToHtml (Xref href inner) = [$hamlet|%a!href=$href$ $inner$|]
+inlineToHtml (Code inner) = [$hamlet|%code $inner$|]

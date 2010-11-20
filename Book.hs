@@ -13,7 +13,6 @@ import Data.Enumerator (Iteratee, throwError, ($$), joinI, run)
 import Data.Enumerator.IO
 import Data.Typeable (Typeable)
 import Control.Exception (Exception, SomeException, throwIO)
-import Control.Monad (unless)
 import Data.Char (isSpace)
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import Text.Hamlet (ToHtml (..), string)
@@ -40,23 +39,29 @@ data Chapter = Chapter
     , chapterStatus :: ChapterStatus
     , chapterIntro :: [Block]
     , chapterSections :: [Section]
+    , chapterSummary :: Maybe [Block]
     }
     deriving Show
 
 data Section = Section
     { sectionTitle :: Text
-    , sectionBlocks :: [Block] -- FIXME allow subsections
+    , sectionBlocks :: [Either Section Block] -- FIXME allow subsections
     }
     deriving Show
 
 data Block = Paragraph [Inline]
            | UList [ListItem]
+           | CodeBlock Text
+           | Snippet Text
+           | Advanced [Block]
     deriving Show
 
 data Inline = Inline Text
             | Emphasis [Inline]
             | Term Text
             | Hackage Text
+            | Xref { xrefHref :: Text, xrefInner :: Text }
+            | Code Text
     deriving Show
 
 data ListItem = ListItem [Inline] -- FIXME block or inline
@@ -65,6 +70,7 @@ data ListItem = ListItem [Inline] -- FIXME block or inline
 main :: IO ()
 main = parseFile "book.xml" parseBook >>= print
 
+loadBook :: IO Book
 loadBook = do
     x <- parseFile "book.xml" parseBook
     case x of
@@ -172,7 +178,6 @@ tagAttr t i = do
     return x
   where
     name = Name t Nothing Nothing
-    begin = EventBeginElement name []
     end = EventEndElement name
 
 tag :: MonadIO m => Text -> Iteratee Event m a -> Iteratee Event m a
@@ -186,6 +191,26 @@ tag t i = do
   where
     name = Name t Nothing Nothing
     begin = EventBeginElement name []
+    end = EventEndElement name
+
+mtagAttrs :: MonadIO m
+          => Text
+          -> ([Attribute] -> Iteratee Event m a)
+          -> Iteratee Event m (Maybe a)
+mtagAttrs t i = do
+    whitespace
+    x <- E.peek
+    case x of
+        Just (EventBeginElement name' attrs)
+            | name == name' -> do
+                E.drop 1
+                y <- i attrs
+                whitespace
+                require end
+                return $ Just y
+        _ -> return Nothing
+  where
+    name = Name t Nothing Nothing
     end = EventEndElement name
 
 mtag :: MonadIO m => Text -> Iteratee Event m a -> Iteratee Event m (Maybe a)
@@ -258,13 +283,15 @@ parseChapter = tagAttr "chapter" $ \attrs -> do
     title <- textTag "title"
     intro <- tag "intro" $ many parseBlock
     sections <- tags "section" parseSection
-    return $ Chapter slug title status intro sections
+    summary <- mtag "summary" $ many parseBlock
+    return $ Chapter slug title status intro sections summary
   where
     readStatus t =
         case reads $ T.unpack t of
             [] -> throwError $ XmlException $ "Invalid status: " ++ show t
             (s, _):_ -> return s
 
+getAttribute :: MonadIO m => Text -> [Attribute] -> Iteratee Event m Text
 getAttribute t as =
     case lookup t' $ map (\(Attribute x y) -> (x, y)) as of
         Nothing -> throwError $ XmlException $ "Missing attribute: " ++ show t
@@ -275,7 +302,7 @@ getAttribute t as =
 parseSection :: MonadIO m => Iteratee Event m Section
 parseSection = do
     title <- textTag "title"
-    blocks <- many parseBlock
+    blocks <- many parseBlockSection
     return $ Section title blocks
 
 many :: Monad m => Iteratee Event m (Maybe a) -> Iteratee Event m [a]
@@ -288,11 +315,29 @@ many i =
             Nothing -> return $ front []
             Just y -> go $ front . (:) y
 
+parseBlockSection :: MonadIO m => Iteratee Event m (Maybe (Either Section Block))
+parseBlockSection = choose
+    [ mtag "section" $ fmap Left $ parseSection
+    , (fmap . fmap) Right parseBlock
+    ]
+
 parseBlock :: MonadIO m => Iteratee Event m (Maybe Block)
 parseBlock = choose
     [ mtag "p" $ fmap Paragraph $ many parseInline
     , mtag "ul" $ fmap UList $ many parseListItem
+    , mtag "codeblock" $ fmap CodeBlock takeText
+    , mtagAttrs "snippet" parseSnippet
+    , mtag "advanced" $ fmap Advanced $ many parseBlock
     ]
+
+parseSnippet :: MonadIO m => [Attribute] -> Iteratee Event m Block
+parseSnippet attrs = do
+    name <- getAttribute "name" attrs
+    return $ Snippet $ T.concat
+        [ "Normally I would include snippet "
+        , name
+        , " here. FIXME!"
+        ]
 
 parseInline :: MonadIO m => Iteratee Event m (Maybe Inline)
 parseInline = choose
@@ -300,7 +345,15 @@ parseInline = choose
     , mtag "i" $ fmap Emphasis $ many parseInline
     , mtag "term" $ fmap Term takeText
     , mtag "hackage" $ fmap Hackage takeText
+    , mtagAttrs "xref" parseXref
+    , mtag "code" $ fmap Code takeText
     ]
+
+parseXref :: MonadIO m => [Attribute] -> Iteratee Event m Inline
+parseXref attrs = do
+    href <- getAttribute "href" attrs
+    inner <- takeText
+    return $ Xref href inner
 
 parseListItem :: MonadIO m => Iteratee Event m (Maybe ListItem)
 parseListItem = mtag "li" $ fmap ListItem $ many parseInline

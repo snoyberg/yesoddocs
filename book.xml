@@ -4,10 +4,9 @@
     <part>
         <title>Basics</title>
         <chapter href="book/introduction.xml"/>
+        <chapter href="book/haskell.xml"/>
+        <chapter href="book/basics.xml"/>
         <!--
-    [ Chapter "introduction" "Introduction" Unproofed
-    , Chapter "haskell" "Introduction to Haskell" Incomplete
-    , Chapter "basics" "Basics" Unproofed
     , Chapter "templates" "Templates" Outline
     , Chapter "widgets" "Widgets" Unproofed
     , Chapter "yesod-typeclass" "Yesod Typeclass" Unproofed
@@ -18,7 +17,9 @@
     , Chapter "rest" "RESTful Content" Unproofed
     , Chapter "auth" "Authentication and Authorization" Outline
     , Chapter "scaffold" "Scaffolding and the Site Template" Outline
-    , Chapter "advanced-forms" "Advanced Forms" Outline
+    -->
+        <chapter href="book/advanced-forms.xml"/>
+    <!--
     , Chapter "email" "Sending Email" Outline
     , Chapter "deploying" "Deploying your Webapp" Unproofed
     , Chapter "request" "Request Datatype" Outline

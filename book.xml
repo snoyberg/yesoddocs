@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<book title="Yesod Web Framework">
-    <part title="Basics">
+<book>
+    <title>Yesod Web Framework</title>
+    <part>
+        <title>Basics</title>
         <chapter href="book/introduction.xml"/>
     </part>
 </book>

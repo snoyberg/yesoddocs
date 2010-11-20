@@ -131,7 +131,7 @@ In addition, you can apply functions within variable interpolation. For example:
 You can even have deeper chains:
 
     let person = ("Michael", 25)
-    let template = [$hamlet|$fst.person$ is $show.snd.age$ years old.|]
+    let template = [$hamlet|$fst.person$ is $show.snd.person$ years old.|]
 
 <p class="advanced">There's also a way to allow applying a function to multiple values by using parantheses. However, this is not recommended for regular use, and will not be discussed further.</p>
 
@@ -188,7 +188,7 @@ Notice the question mark after the at-sign.
 Now that we know about variables, we can mention one more important feature: conditional attributes. The most common use case is setting the "checked" and "selected" attributes for checkboxes and lists. An example would be:
 
     let isBlue = False
-    let isGreen = False
+    let isGreen = True
     let isRed = False
     [$hamlet|
         $select!name=color

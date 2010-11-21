@@ -1,8 +1,8 @@
 %header
     %h1 Yesod Book: $title$
 %article
-    .hyphenate
-        ^html^
+    #status Chapter status: $show.chapterStatus.chapter$
+    ^html^
     %p
         %a!href=@BookR@ Table of Contents
         $maybe previous p

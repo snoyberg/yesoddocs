@@ -21,6 +21,8 @@ import qualified System.IO.UTF8 as U
 import Data.Time
 import Book
 import qualified Data.Text.Lazy as T
+import qualified Text.Highlighting.Kate as Kate
+import Text.XHtml.Strict (showHtmlFragment)
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
@@ -130,6 +132,7 @@ getChapterR slug = do
         addScriptEither $ urlJqueryJs y
         addHamlet $(hamletFile "chapter")
         addCassius $(cassiusFile "book")
+        addStylesheet $ StaticR hk_kate_css
         addJulius $(juliusFile "chapter")
         addCassius $(cassiusFile "chapter")
         addStylesheet $ StaticR hscolour_css
@@ -421,9 +424,10 @@ blockToHtml (CodeBlock c) = [$hamlet|
     %pre $c$
 |]
 blockToHtml (Snippet s) = [$hamlet|
-%code
-    %pre $s$
+$preEscapedString.showHtmlFragment.html$
 |]
+  where
+    html = Kate.formatAsXHtml [Kate.OptNumberLines] "haskell" s
 blockToHtml (Advanced bs) = [$hamlet|
 .advanced
     $forall bs b

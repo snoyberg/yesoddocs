@@ -16,6 +16,8 @@ import Control.Exception (Exception, SomeException, throwIO)
 import Data.Char (isSpace)
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import Text.Hamlet (ToHtml (..), string)
+import qualified Text.Highlighting.Kate as Kate
+import qualified System.IO.UTF8 as U
 
 data Book = Book
     { bookTitle :: Text
@@ -53,7 +55,7 @@ data Section = Section
 data Block = Paragraph [Inline]
            | UList [ListItem]
            | CodeBlock Text
-           | Snippet Text
+           | Snippet [Kate.SourceLine]
            | Advanced [Block]
            | Note [Inline]
     deriving Show
@@ -354,11 +356,22 @@ parseBlock = choose
 parseSnippet :: MonadIO m => [Attribute] -> Iteratee Event m Block
 parseSnippet attrs = do
     name <- getAttribute "name" attrs
-    return $ Snippet $ T.concat
-        [ "Normally I would include snippet "
-        , name
-        , " here. FIXME!"
-        ]
+    raw <- liftIO $ U.readFile $ "snippets/" ++ T.unpack name ++ ".hs"
+    let raw' = unlines $ go False $ lines raw
+    case Kate.highlightAs "haskell" raw' of
+        Left e -> throwError $ XmlException $ concat
+            [ "Could not parse code snippet "
+            , T.unpack name
+            , ": "
+            , e
+            ]
+        Right lines' -> return $ Snippet lines'
+  where
+    go _ [] = []
+    go False ("-- START":rest) = go True rest
+    go True ("-- STOP":rest) = go False rest
+    go False (_:rest) = go False rest
+    go True (x:rest) = x : go True rest
 
 parseInline :: MonadIO m => Iteratee Event m (Maybe Inline)
 parseInline = choose

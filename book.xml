@@ -10,8 +10,8 @@
         <chapter href="book/widgets.xml"/>
         <chapter href="book/yesod-typeclass.xml"/>
         <chapter href="book/handler.xml"/>
+        <chapter href="book/forms.xml"/>
         <!--
-    , Chapter "forms" "Basic Forms" Outline
     , Chapter "sessions" "Sessions" Outline
     , Chapter "persistent" "Persistent" Outline
     , Chapter "rest" "RESTful Content" Unproofed

@@ -419,6 +419,11 @@ blockToHtml (UList items) = [$hamlet|
     $forall items i
         ^listItemToHtml.i^
 |]
+blockToHtml (OList items) = [$hamlet|
+%ol
+    $forall items i
+        ^listItemToHtml.i^
+|]
 blockToHtml (CodeBlock c) = [$hamlet|
 %code
     %pre $c$
@@ -432,6 +437,11 @@ blockToHtml (Advanced bs) = [$hamlet|
 .advanced
     $forall bs b
         ^blockToHtml.b^
+|]
+blockToHtml (Image { imageSrc = src, imageTitle = title }) = [$hamlet|
+.image
+    %img!src="/static/book/$src$"!alt=$title$!title=$title$
+    $title$
 |]
 
 listItemToHtml :: ListItem -> Hamlet YesodDocsRoute

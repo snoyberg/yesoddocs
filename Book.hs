@@ -54,10 +54,12 @@ data Section = Section
 
 data Block = Paragraph [Inline]
            | UList [ListItem]
+           | OList [ListItem]
            | CodeBlock Text
            | Snippet [Kate.SourceLine]
            | Advanced [Block]
            | Note [Inline]
+           | Image { imageSrc :: Text, imageTitle :: Text }
     deriving Show
 
 data Inline = Inline Text
@@ -347,11 +349,19 @@ parseBlock :: MonadIO m => Iteratee Event m (Maybe Block)
 parseBlock = choose
     [ mtag "p" $ fmap Paragraph $ many parseInline
     , mtag "ul" $ fmap UList $ many parseListItem
+    , mtag "ol" $ fmap OList $ many parseListItem
     , mtag "codeblock" $ fmap CodeBlock takeText
     , mtagAttrs "snippet" parseSnippet
     , mtag "advanced" $ fmap Advanced $ many parseBlock
     , mtag "note" $ fmap Note $ many parseInline
+    , mtagAttrs "image" parseImage
     ]
+
+parseImage :: MonadIO m => [Attribute] -> Iteratee Event m Block
+parseImage attrs = do
+    src <- getAttribute "src" attrs
+    title <- getAttribute "title" attrs
+    return $ Image src title
 
 parseSnippet :: MonadIO m => [Attribute] -> Iteratee Event m Block
 parseSnippet attrs = do

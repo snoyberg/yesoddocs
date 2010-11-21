@@ -114,13 +114,13 @@ getBookR = defaultLayout $ do
 getChapterR :: String -> Handler RepHtml
 getChapterR slug = do
     book <- fmap getBook getYesod
+    let chapters = concatMap partChapters $ bookParts book
     chapter <-
-        case filter (\x -> chapterSlug x == T.pack slug)
-                $ concatMap partChapters $ bookParts book of
+        case filter (\x -> chapterSlug x == T.pack slug) chapters of
             [] -> notFound
             x:_ -> return x
-    let previous = Nothing -- FIXME getPrev chapters
-    let next = Nothing -- FIXME getNext chapters
+    let previous = getPrev chapters
+    let next = getNext chapters
     y <- getYesod
     let title = T.unpack $ chapterTitle chapter
     let unpack = T.unpack
@@ -135,16 +135,15 @@ getChapterR slug = do
         addStylesheet $ StaticR hscolour_css
         -- addScript $ StaticR hyphenate_js
   where
-  {-
-    getPrev (x:yc@(Chapter y y' _):rest)
-        | y == chapter = Just x
+    slug' = T.pack slug
+    getPrev (x:yc@(Chapter { chapterSlug = y }):rest)
+        | y == slug' = Just x
         | otherwise = getPrev $ yc : rest
     getPrev _ = Nothing
-    getNext ((Chapter x _ _):y:rest)
-        | x == chapter = Just y
+    getNext ((Chapter { chapterSlug = x }):y:rest)
+        | x == slug' = Just y
         | otherwise = getNext $ y : rest
     getNext _ = Nothing
-    -}
     go ('~':filename) = snippet filename
     go x = return x
 

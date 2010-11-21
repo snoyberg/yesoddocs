@@ -81,11 +81,8 @@ data Inline = Inline Text
                 }
     deriving Show
 
-data ListItem = ListItem [Inline] -- FIXME block or inline
+data ListItem = ListItem { unListItem :: [Inline] } -- FIXME block or inline
     deriving Show
-
-main :: IO ()
-main = parseFile "book.xml" parseBook >>= print
 
 loadBook :: IO Book
 loadBook = do

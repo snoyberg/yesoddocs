@@ -9,8 +9,8 @@
         <chapter href="book/templates.xml"/>
         <chapter href="book/widgets.xml"/>
         <chapter href="book/yesod-typeclass.xml"/>
+        <chapter href="book/handler.xml"/>
         <!--
-    , Chapter "handler" "Routing and Handlers" Outline
     , Chapter "forms" "Basic Forms" Outline
     , Chapter "sessions" "Sessions" Outline
     , Chapter "persistent" "Persistent" Outline

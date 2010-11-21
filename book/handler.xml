@@ -1,29 +1,36 @@
-# Introduction
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="handler" status="Outline">
+    <title>Routing and Handlers</title>
+    <intro>
+        <p>If we look at Yesod as a Model-View-Controller framework, routing and handlers make up the controller. For contrast, let's describe two other routing approaches used in other web development environments:</p>
+        <ul>
+            <li>Dispatch based on file name. This is how PHP and ASP work, for example.</li>
+            <li>Have a centralized routing function that parses routes based on regular expressions. Django and Rails follow this approach.</li>
+        </ul>
+        <p>Yesod is closer in principle to the latter technique. Even so, there are significant differences. Instead of using regular expressions, Yesod matches on pieces of a route. Instead of having a one-way route-to-handler mapping, Yesod has an intermediate data type (called the route datatype, or a type-safe URL) and creates two-way conversion functions.</p>
+        <p>Coding this more advanced system manually is tedious and error prone. Therefore, Yesod relies heavily on Template Haskell and Quasi-Quotation to automatically generate this code for you. This chapter will explain the syntax of the routing declarations, give you a glimpse of what code is generated for you, and explain the interaction between routing and handler functions.</p>
+    </intro>
+    <section>
+        <title>Route Syntax</title>
+        <section>
+            <title>Pieces</title>
 
-If we look at Yesod as a Model-View-Controller framework, routing and handlers make up the controller. For contrast, let's describe two other routing approaches used in other web development environments:
+            <p>The first thing Yesod does when it gets a request (well, maybe not the <i>first</i>) is split up the requested path into pieces. The pieces are simply tokenized at all forward slashes. So:</p>
 
-* Dispatch based on file name. This is how PHP and ASP work, for example.
+            <codeblock>toPieces "/" = []
+toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
 
-* Have a centralized routing function that parses routes based on regular expressions. Django and Rails follow this approach.
+            <p>You may notice that there are some funny things going on with trailing slashes, or double slashes ("/foo//bar//"), or a few other things. Yesod believes in having <term>canonical URLs</term>; if someone requests a URL missing a trailing slashes, or with a double slash, they get an automatic redirect to the canonical version. This follows the RESTful principle of one URL for one resource, and can help with your search rankings.</p>
 
-Yesod is closer in principle to the latter technique. Even so, there are significant differences. Instead of using regular expressions, Yesod matches on pieces of a route. Instead of having a one-way route-to-handler mapping, Yesod has an intermediate data type (called the route datatype, or a type-safe URL) and creates two-way conversion functions.
+            <p>What this means for you is that you needn't concern yourself with the exact structure of your URLs: you can safely think about pieces of a path, and Yesod automatically handles intercalating the slashes and escaping problematic characters.</p>
 
-Coding this more advanced system manually is tedious and error prone. Therefore, Yesod relies heavily on Template Haskell and Quasi-Quotation to automatically generate this code for you. This chapter will explain the syntax of the routing declarations, give you a glimpse of what code is generated for you, and explain the interaction between routing and handler functions.
-
-# Route Syntax
-
-## Pieces
-
-The first thing Yesod does when it gets a request (well, maybe not the **first**) is split up the requested path into pieces. The pieces are simply tokenized at all forward slashes. So:
-
-    toPieces "/" = []
-    toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]
-
-You may notice that there are some funny things going on with trailing slashes, or double slashes ("/foo//bar//"), or a few other things. Yesod believes in having **canonical URLs**; if someone requests a URL missing a trailing slashes, or with a double slash, they get an automatic redirect to the canonical version. This follows the RESTful principle of one URL for one resource, and can help with your search rankings.
-
-What this means for you is that you needn't concern yourself with the exact structure of your URLs: you can safely think about pieces of a path, and Yesod automatically handles intercalating the slashes and escaping problematic characters.
-
-If, by the way, you want more fine-tuned control of how paths are split into pieces and joined together again, you'll want to look at the splitPath and joinPath methods in the Yesod typeclass.
+            <p>If, by the way, you want more fine-tuned control of how paths are split into pieces and joined together again, you'll want to look at the splitPath and joinPath methods in the Yesod typeclass.</p>
+        </section>
+    </section>
+    <section>
+        <title>TODO</title>
+        <p>The rest of this chapter still needs to be cleaned up. Below is the old content.</p>
+        <codeblock><![CDATA[
 
 
 
@@ -271,3 +278,7 @@ The site template created by the scaffolding tool automatically sets up the call
 A defining feature of Yesod is type-safe URLs. A common deterrent to creating such a robust system is the boilerplate and clumsiness of creating a datatype, parse, render and dispatch functions that are all consistent. By using code generation, Yesod makes this powerful feature easily accessible.
 
 We have not yet fully covered the concept of subsites referenced in this chapter; the full concept will take a chapter of its own. For the moment, hopefully you'll be able to get started using some of the subsites built into Yesod.
+]]>
+        </codeblock>
+    </section>
+</chapter>

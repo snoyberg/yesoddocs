@@ -60,6 +60,8 @@ data Block = Paragraph [Inline]
            | Advanced [Block]
            | Note [Inline]
            | Image { imageSrc :: Text, imageTitle :: Text }
+           | Defs [(Text, [Inline])]
+           | Markdown Text
     deriving Show
 
 data Inline = Inline Text
@@ -355,7 +357,15 @@ parseBlock = choose
     , mtag "advanced" $ fmap Advanced $ many parseBlock
     , mtag "note" $ fmap Note $ many parseInline
     , mtagAttrs "image" parseImage
+    , mtag "defs" $ fmap Defs $ many $ mtagAttrs "def" parseDef
+    , mtag "markdown" $ fmap Markdown takeText -- FIXME this must be killed with fire
     ]
+
+parseDef :: MonadIO m => [Attribute] -> Iteratee Event m (Text, [Inline])
+parseDef attrs = do
+    term <- getAttribute "term" attrs
+    content <- many parseInline
+    return (term, content)
 
 parseImage :: MonadIO m => [Attribute] -> Iteratee Event m Block
 parseImage attrs = do

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="scaffold" status="Outline">
+    <title>Scaffolding and the Site Template</title>
+    <intro>
+        <ul>
+            <li>How to scaffold: yesod executable</li>
+            <li>File structure layout</li>
+            <li>Some special features for static files (addStaticContent, urlRenderOverride)</li>
+        </ul>
+    </intro>
+</chapter>

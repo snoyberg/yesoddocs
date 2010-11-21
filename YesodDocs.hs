@@ -443,6 +443,20 @@ blockToHtml (Image { imageSrc = src, imageTitle = title }) = [$hamlet|
     %img!src="/static/book/$src$"!alt=$title$!title=$title$
     $title$
 |]
+blockToHtml (Defs ds) = [$hamlet|
+%table!border=1
+    $forall ds d
+        %tr
+            %th $fst.d$
+            %td
+                $forall snd.d i
+                    ^inlineToHtml.i^
+|]
+blockToHtml (Markdown text) =
+    [$hamlet|$content$|]
+  where
+    pandoc = readMarkdown defaultParserState $ T.unpack text
+    content = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
 
 listItemToHtml :: ListItem -> Hamlet YesodDocsRoute
 listItemToHtml (ListItem is) = [$hamlet|

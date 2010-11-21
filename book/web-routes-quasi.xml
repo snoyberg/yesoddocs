@@ -1,3 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="hamlet" status="Outline">
+    <title>web-routes-quasi</title>
+    <intro>
+        <markdown><![CDATA[
 This chapter has not yet been written properly. Instead, it's a conglomeration of the old content from the web-routes-quasi section. It will be cleaned up as the book is written.
 
 [The web-routes-quasi synopsis](/synopsis/web-routes-quasi/) gives an overview of how the library is used.
@@ -90,3 +95,6 @@ You would need to provide functions with the following type signatures:
     getAuthArgs :: MyArgs -> AuthArgs
     handlePage :: PageName -> Handler
     getStatic :: [String] -> Handler
+    ]]></markdown>
+    </intro>
+</chapter>

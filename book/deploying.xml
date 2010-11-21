@@ -1,3 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="deploying" status="Unproofed">
+    <title>Deploying your Webapp</title>
+    <intro></intro>
+    <section>
+        <title></title>
+        <markdown><![CDATA[
 <blockquote><b>Dammit, I'm a programmer, not a sysadmin!</b></blockquote>
 
 You've now written the most perfect web application ever. It makes angels sing and babies laugh. Now comes the most dreaded part of the process: deployment. You must somehow take your pure code and throw it out into the unholy realm of the Interwebs. What ever shall you do?
@@ -309,3 +316,6 @@ Next comes the nginx config file. Please note that I have *not* mastered nginx c
     }
 
 Things of note: the "daemon off" line says not to fork into the background; all of those fastcgi_param lines allow you flexibility in the variables provided to your application; "listen 3000" says what port the HTTP server will listen on; and fastcgi_pass says how to talk to the fastcgi application. That "location" line says where to attach the FastCGI app.
+]]></markdown>
+</section>
+</chapter>

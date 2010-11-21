@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="auth" status="Outline">
+    <title>Authentication and Authorization</title>
+    <intro>
+        <p>This chapter is just an outline. It will contain the sections:</p>
+        <ul>
+            <li>Authentication</li>
+            <li>Authorization</li>
+            <li>Auth stuff (isAuthorized, isWriteRequest, authRoute)</li>
+        </ul>
+
+        <note>Logout does not invalidate session.</note>
+    </intro>
+</chapter>

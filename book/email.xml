@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="email" status="Outline">
+    <title>Sending Email</title>
+    <intro>
+        <p>Sorry, no information yet. This will mostly be about the <hackage>mime-mail</hackage> package.</p>
+    </intro>
+</chapter>

@@ -30,7 +30,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
     <section>
         <title>TODO</title>
         <p>The rest of this chapter still needs to be cleaned up. Below is the old content.</p>
-        <codeblock><![CDATA[
+        <markdown><![CDATA[
 
 
 
@@ -279,6 +279,6 @@ A defining feature of Yesod is type-safe URLs. A common deterrent to creating su
 
 We have not yet fully covered the concept of subsites referenced in this chapter; the full concept will take a chapter of its own. For the moment, hopefully you'll be able to get started using some of the subsites built into Yesod.
 ]]>
-        </codeblock>
+        </markdown>
     </section>
 </chapter>

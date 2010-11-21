@@ -1,3 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="enumerator" status="Outline">
+    <title>Enumerator Package</title>
+    <intro>
+        <markdown><![CDATA[
 Note: I've crudely copied content in here from [three](http://docs.yesodweb.com/blog/enumerators-tutorial-part-1/) [blog](http://docs.yesodweb.com/blog/enumerators-tutorial-part-2/) [posts](http://docs.yesodweb.com/blog/enumerators-tutorial-part-3/) I wrote. The content may require some refining still for book format.
 
 # Part 1: Iteratees
@@ -691,3 +696,6 @@ Whatever the case may be, the raw response body is then fed into decompress. If 
 * You can always compose multiple enumeratees together, such as in http-enumerator.
 
 This concludes the three parts of the tutorial that I'd planned. If people had particular questions or topics they wanted me to cover, just leave a comment or send me an email.
+]]></markdown>
+    </intro>
+</chapter>

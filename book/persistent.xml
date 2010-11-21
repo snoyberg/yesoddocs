@@ -1,29 +1,33 @@
-# Introduction
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="persistent" status="Outline">
+    <title>Persistent</title>
+    <intro>
+        <p>Forms deal with the boundary between the user and the application. Another boundary we need to deal with is between the application and the storage layer. Whether it be a SQL database, a YAML file, or a binary blob, odds are your storage layer isn't going to give you Haskell datatypes.</p>
+        <p>Persistent is the storage layer of choice for Yesod. It follows the guiding principles of type safety and concise, declarative syntax. Some other nice features are:</p>
+        <ul>
+            <li>Database-agnostic. While the most highly supported backends are Postgresql and SQLite, there is preliminary support for MongoDB and Redis.</li>
+            <li>By being non-relational in nature, we simultaneously are able to support a wider number of storage layers and are not constrained by some of the performance bottlenecks incurred through joins.</li>
+            <li>A major source of frustration in dealing with SQL databases is changes to the schema. Persistent can automatically perform database migrations.</li>
+        </ul>
+    </intro>
+    <section>
+        <title>FIXME Outline</title>
 
-Forms deal with the boundary between the user and the application. Another boundary we need to deal with is between the application and the storage layer. Whether it be a SQL database, a YAML file, or a binary blob, odds are your storage layer isn't going to give you Haskell datatypes.
-
-Persistent is the storage layer of choice for Yesod. It follows the guiding principles of type safety and concise, declarative syntax. Some other nice features are:
-
-* Database-agnostic. While the most highly supported backends are Postgresql and SQLite, there is preliminary support for MongoDB and Redis.
-
-* By being non-relational in nature, we simultaneously are able to support a wider number of storage layers and are not constrained by some of the performance bottlenecks incurred through joins.
-
-* A major source of frustration in dealing with SQL databases is changes to the schema. Persistent can automatically perform database migrations.
-
-# FIXME Outline
-
-* "The boundary issue" and how we solve it
-* Type families
-* Update, sort, filter
-* Uniqueness
-* Handling relations
-* mkToForm
-* Migration (SQL only)
-* insert, insertBy
-* replace, update
-* get, getBy
-* selectList
-* Advanced: select enumerator interface
+        <ul>
+            <li>"The boundary issue" and how we solve it</li>
+            <li>Type families</li>
+            <li>Update, sort, filter</li>
+            <li>Uniqueness</li>
+            <li>Handling relations</li>
+            <li>mkToForm</li>
+            <li>Migration (SQL only)</li>
+            <li>insert, insertBy</li>
+            <li>replace, update</li>
+            <li>get, getBy</li>
+            <li>selectList</li>
+            <li>Advanced: select enumerator interface</li>
+        </ul>
+        <markdown><![CDATA[
 
 <hr>
 
@@ -233,3 +237,6 @@ Alternatively, you could do the following (which will sort things a little diffe
         case author of
             Nothing -> error $ "Missing author id: " ++ show (entryAuthor entry)
             Just a -> return (authorName a, entryTitle entry)
+            ]]></markdown>
+    </section>
+</chapter>

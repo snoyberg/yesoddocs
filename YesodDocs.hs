@@ -365,31 +365,34 @@ withYesodDocs f = do
     app <- toWaiApp $ YesodDocs static entries book
     f app
 
-chapterToHtml :: Chapter -> Html
+chapterToHtml :: Chapter -> Hamlet YesodDocsRoute
 chapterToHtml (Chapter { chapterIntro = intro, chapterSections = sections
                        , chapterSummary = msummary }) = [$hamlet|
 $forall intro b
-    $blockToHtml.b$
+    ^blockToHtml.b^
 $forall sections s
-    %h2 $sectionTitle.s$
+    $maybe sectionId.s i
+        %h2#$i$ $sectionTitle.s$
+    $nothing
+        %h2 $sectionTitle.s$
     $forall sectionBlocks.s b
-        $(sectionBlockToHtml.firstLevel).b$
+        ^(sectionBlockToHtml.firstLevel).b^
 $maybe msummary summary
     %h2 Summary
     $forall summary b
-        $blockToHtml.b$
+        ^blockToHtml.b^
 |]
   where
     firstLevel = 3
 
-sectionBlockToHtml :: Int -> Either Section Block -> Html
+sectionBlockToHtml :: Int -> Either Section Block -> Hamlet YesodDocsRoute
 sectionBlockToHtml level (Left section) = [$hamlet|
-$(showTitle.level).sectionTitle.section$
+^(showTitle.level).sectionTitle.section^
 $forall sectionBlocks.section b
-    $(sectionBlockToHtml.nextLevel).b$
+    ^(sectionBlockToHtml.nextLevel).b^
 |]
   where
-    showTitle :: Int -> T.Text -> Html
+    showTitle :: Int -> T.Text -> Hamlet YesodDocsRoute
     showTitle 3 t = [$hamlet|%h3 $t$|]
     showTitle 4 t = [$hamlet|%h4 $t$|]
     showTitle 5 t = [$hamlet|%h5 $t$|]
@@ -397,16 +400,16 @@ $forall sectionBlocks.section b
     nextLevel = level + 1
 sectionBlockToHtml _ (Right b) = blockToHtml b
 
-blockToHtml :: Block -> Html
+blockToHtml :: Block -> Hamlet YesodDocsRoute
 blockToHtml (Paragraph is) = [$hamlet|
 %p
     $forall is i
-        $inlineToHtml.i$
+        ^inlineToHtml.i^
 |]
 blockToHtml (UList items) = [$hamlet|
 %ul
     $forall items i
-        $listItemToHtml.i$
+        ^listItemToHtml.i^
 |]
 blockToHtml (CodeBlock c) = [$hamlet|
 %code
@@ -419,22 +422,22 @@ blockToHtml (Snippet s) = [$hamlet|
 blockToHtml (Advanced bs) = [$hamlet|
 .advanced
     $forall bs b
-        $blockToHtml.b$
+        ^blockToHtml.b^
 |]
 
-listItemToHtml :: ListItem -> Html
+listItemToHtml :: ListItem -> Hamlet YesodDocsRoute
 listItemToHtml (ListItem is) = [$hamlet|
 %li
     $forall is i
-        $inlineToHtml.i$
+        ^inlineToHtml.i^
 |]
 
-inlineToHtml :: Inline -> Html
+inlineToHtml :: Inline -> Hamlet YesodDocsRoute
 inlineToHtml (Inline t) = [$hamlet|$t$|]
 inlineToHtml (Emphasis is) = [$hamlet|
 %i
     $forall is i
-        $inlineToHtml.i$
+        ^inlineToHtml.i^
 |]
 inlineToHtml (Term t) = [$hamlet|%b $t$|]
 inlineToHtml (Hackage t) = [$hamlet|
@@ -442,3 +445,12 @@ inlineToHtml (Hackage t) = [$hamlet|
 |]
 inlineToHtml (Xref href inner) = [$hamlet|%a!href=$href$ $inner$|]
 inlineToHtml (Code inner) = [$hamlet|%code $inner$|]
+inlineToHtml (Link chapter msection inner) = [$hamlet|
+%a!href="@ChapterR.unpack.chapter@$section$" $inner$
+|]
+  where
+    section =
+        case msection of
+            Nothing -> ""
+            Just section -> [$hamlet|\#$section$|] :: Html
+    unpack = T.unpack

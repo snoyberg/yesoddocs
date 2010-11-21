@@ -44,7 +44,8 @@ data Chapter = Chapter
     deriving Show
 
 data Section = Section
-    { sectionTitle :: Text
+    { sectionId :: Maybe Text
+    , sectionTitle :: Text
     , sectionBlocks :: [Either Section Block] -- FIXME allow subsections
     }
     deriving Show
@@ -62,6 +63,11 @@ data Inline = Inline Text
             | Hackage Text
             | Xref { xrefHref :: Text, xrefInner :: Text }
             | Code Text
+            | Link
+                { linkChapter :: Text
+                , linkSection :: Maybe Text
+                , linkInner :: Text
+                }
     deriving Show
 
 data ListItem = ListItem [Inline] -- FIXME block or inline
@@ -282,7 +288,7 @@ parseChapter = tagAttr "chapter" $ \attrs -> do
     status <- getAttribute "status" attrs >>= readStatus
     title <- textTag "title"
     intro <- tag "intro" $ many parseBlock
-    sections <- tags "section" parseSection
+    sections <- tagsAttr "section" parseSection
     summary <- mtag "summary" $ many parseBlock
     return $ Chapter slug title status intro sections summary
   where
@@ -290,6 +296,14 @@ parseChapter = tagAttr "chapter" $ \attrs -> do
         case reads $ T.unpack t of
             [] -> throwError $ XmlException $ "Invalid status: " ++ show t
             (s, _):_ -> return s
+
+mgetAttribute :: MonadIO m => Text -> [Attribute] -> Iteratee Event m (Maybe Text)
+mgetAttribute t as =
+    case lookup t' $ map (\(Attribute x y) -> (x, y)) as of
+        Nothing -> return Nothing
+        Just v -> fmap (Just . T.concat) $ mapM toText v
+  where
+    t' = Name t Nothing Nothing
 
 getAttribute :: MonadIO m => Text -> [Attribute] -> Iteratee Event m Text
 getAttribute t as =
@@ -299,11 +313,12 @@ getAttribute t as =
   where
     t' = Name t Nothing Nothing
 
-parseSection :: MonadIO m => Iteratee Event m Section
-parseSection = do
+parseSection :: MonadIO m => [Attribute] -> Iteratee Event m Section
+parseSection attrs = do
+    id' <- mgetAttribute "id" attrs
     title <- textTag "title"
     blocks <- many parseBlockSection
-    return $ Section title blocks
+    return $ Section id' title blocks
 
 many :: Monad m => Iteratee Event m (Maybe a) -> Iteratee Event m [a]
 many i =
@@ -317,7 +332,7 @@ many i =
 
 parseBlockSection :: MonadIO m => Iteratee Event m (Maybe (Either Section Block))
 parseBlockSection = choose
-    [ mtag "section" $ fmap Left $ parseSection
+    [ (fmap . fmap) Left $ mtagAttrs "section" $ parseSection
     , (fmap . fmap) Right parseBlock
     ]
 
@@ -347,6 +362,7 @@ parseInline = choose
     , mtag "hackage" $ fmap Hackage takeText
     , mtagAttrs "xref" parseXref
     , mtag "code" $ fmap Code takeText
+    , mtagAttrs "link" parseLink
     ]
 
 parseXref :: MonadIO m => [Attribute] -> Iteratee Event m Inline
@@ -354,6 +370,13 @@ parseXref attrs = do
     href <- getAttribute "href" attrs
     inner <- takeText
     return $ Xref href inner
+
+parseLink :: MonadIO m => [Attribute] -> Iteratee Event m Inline
+parseLink attrs = do
+    chapter <- getAttribute "chapter" attrs
+    section <- mgetAttribute "section" attrs
+    inner <- takeText
+    return $ Link chapter section inner
 
 parseListItem :: MonadIO m => Iteratee Event m (Maybe ListItem)
 parseListItem = mtag "li" $ fmap ListItem $ many parseInline

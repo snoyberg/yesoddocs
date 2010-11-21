@@ -6,8 +6,8 @@
         <chapter href="book/introduction.xml"/>
         <chapter href="book/haskell.xml"/>
         <chapter href="book/basics.xml"/>
+        <chapter href="book/templates.xml"/>
         <!--
-    , Chapter "templates" "Templates" Outline
     , Chapter "widgets" "Widgets" Unproofed
     , Chapter "yesod-typeclass" "Yesod Typeclass" Unproofed
     , Chapter "handler" "Routing and Handlers" Outline

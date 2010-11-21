@@ -406,6 +406,12 @@ blockToHtml (Paragraph is) = [$hamlet|
     $forall is i
         ^inlineToHtml.i^
 |]
+blockToHtml (Note is) = [$hamlet|
+%p.note
+    Note: $
+    $forall is i
+        ^inlineToHtml.i^
+|]
 blockToHtml (UList items) = [$hamlet|
 %ul
     $forall items i
@@ -452,5 +458,8 @@ inlineToHtml (Link chapter msection inner) = [$hamlet|
     section =
         case msection of
             Nothing -> ""
-            Just section -> [$hamlet|\#$section$|] :: Html
+            Just section' -> [$hamlet|\#$section'$|] :: Html
     unpack = T.unpack
+inlineToHtml (Abbr title inner) = [$hamlet|
+%abbr!title=$title$ $inner$
+|]

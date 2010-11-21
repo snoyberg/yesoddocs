@@ -55,6 +55,7 @@ data Block = Paragraph [Inline]
            | CodeBlock Text
            | Snippet Text
            | Advanced [Block]
+           | Note [Inline]
     deriving Show
 
 data Inline = Inline Text
@@ -67,6 +68,10 @@ data Inline = Inline Text
                 { linkChapter :: Text
                 , linkSection :: Maybe Text
                 , linkInner :: Text
+                }
+            | Abbr
+                { abbrTitle :: Text
+                , abbrInner :: Text
                 }
     deriving Show
 
@@ -343,6 +348,7 @@ parseBlock = choose
     , mtag "codeblock" $ fmap CodeBlock takeText
     , mtagAttrs "snippet" parseSnippet
     , mtag "advanced" $ fmap Advanced $ many parseBlock
+    , mtag "note" $ fmap Note $ many parseInline
     ]
 
 parseSnippet :: MonadIO m => [Attribute] -> Iteratee Event m Block
@@ -363,6 +369,7 @@ parseInline = choose
     , mtagAttrs "xref" parseXref
     , mtag "code" $ fmap Code takeText
     , mtagAttrs "link" parseLink
+    , mtagAttrs "abbr" parseAbbr
     ]
 
 parseXref :: MonadIO m => [Attribute] -> Iteratee Event m Inline
@@ -377,6 +384,12 @@ parseLink attrs = do
     section <- mgetAttribute "section" attrs
     inner <- takeText
     return $ Link chapter section inner
+
+parseAbbr :: MonadIO m => [Attribute] -> Iteratee Event m Inline
+parseAbbr attrs = do
+    title <- getAttribute "title" attrs
+    inner <- takeText
+    return $ Abbr title inner
 
 parseListItem :: MonadIO m => Iteratee Event m (Maybe ListItem)
 parseListItem = mtag "li" $ fmap ListItem $ many parseInline

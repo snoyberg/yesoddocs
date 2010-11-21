@@ -28,3 +28,5 @@
     font-size: 80%
 .code-block
     margin-top: 0
+.note
+    font-weight: bold

@@ -15,17 +15,151 @@
         <section>
             <title>Pieces</title>
 
-            <p>The first thing Yesod does when it gets a request (well, maybe not the <i>first</i>) is split up the requested path into pieces. The pieces are simply tokenized at all forward slashes. So:</p>
+            <p>The first thing Yesod does when it gets a request (well, maybe
+                not the <i>first</i>) is split up the requested path into
+                pieces. The pieces are simply tokenized at all forward slashes.
+                So:</p>
 
             <codeblock>toPieces "/" = []
 toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
 
-            <p>You may notice that there are some funny things going on with trailing slashes, or double slashes ("/foo//bar//"), or a few other things. Yesod believes in having <term>canonical URLs</term>; if someone requests a URL missing a trailing slashes, or with a double slash, they get an automatic redirect to the canonical version. This follows the RESTful principle of one URL for one resource, and can help with your search rankings.</p>
+            <p>You may notice that there are some funny things going on with
+                trailing slashes, or double slashes ("/foo//bar//"), or a few
+                other things. Yesod believes in having <term>canonical
+                    URLs</term>; if someone requests a URL missing a trailing
+                slash, or with a double slash, they automatically get a
+                redirect to the canonical version. This follows the RESTful
+                principle of one URL for one resource, and can help with your
+                search rankings.</p>
 
-            <p>What this means for you is that you needn't concern yourself with the exact structure of your URLs: you can safely think about pieces of a path, and Yesod automatically handles intercalating the slashes and escaping problematic characters.</p>
+            <p>What this means for you is that you needn't concern yourself
+                with the exact structure of your URLs: you can safely think
+                about pieces of a path, and Yesod automatically handles
+                intercalating the slashes and escaping problematic
+                characters.</p>
 
-            <p>If, by the way, you want more fine-tuned control of how paths are split into pieces and joined together again, you'll want to look at the splitPath and joinPath methods in the Yesod typeclass.</p>
+            <p>If, by the way, you want more fine-tuned control of how paths
+                are split into pieces and joined together again, you'll want to
+                look at the splitPath and joinPath methods in the <link
+                    chapter="yesod-typeclass" section="split-join-path">Yesod
+                    typeclass</link>.</p>
+            <section>
+                <title>Types of Pieces</title>
+                <p>When you are declaring your routes, you have three types of pieces at your disposal:</p>
+                <defs>
+                    <def term="Static">This is a plain string that must be matched against precisely in the URL.</def>
+                    <def term="Dynamic single">This is a single piece (ie, between two forward slashes), but can be a user-submitted value. This is the primary method of receiving extra user input on a page request. These pieces begin with a hash (#) and are followed by a data type. The datatype must be an instance of <code>SinglePiece</code>.</def>
+                    <def term="Dynamic multi">The same as before, but can receive multiple pieces of the URL. This must always be the last piece in a resource pattern. It is specified by an asterisk (*) followed by a datatype, which must be an instance of <code>MultiPiece</code>. Multi pieces are not as common as the other two, though they are very important for implementing features like static trees representing are file structure or wikis with arbitrary hierarchies.</def>
+                </defs>
+                <p>Let us take a look at some standard kinds of resource patterns you may want to write. Starting simply, the root of an application will just be <code>/</code>. Similarly, you may want to place your FAQ at <code>/page/faq</code>.</p>
+                <p>Now let's say you are going to write a Fibonacci website. You may construct your URLs like <code>/fib/#Int</code>. But there's a slight problem with this: we do not want to allow negative numbers or zero to be passed into our application. Fortunately, the type system can protected us:</p>
+                <snippet name="handler-fibs"/>
+                <p>On line 1 we define a simple newtype wrapper around Int to protect ourselves from invalid input. We can see that SinglePiece is a typeclass with two methods. <code>toSinglePiece</code> does nothing more than convert to a <code>String</code>. <code>fromSinglePiece</code> <i>attempts</i> to convert a <code>String</code> to our datatype, giving an error message when this conversion is impossible. By using this datatype, we can ensure that our handler function is only ever given natural numbers, allowing us to once again use the type system to battle the boundary issue.</p>
+                <advanced><p>In case you are wondering, that parse error messages returned by <code>fromSinglePiece</code> are not ever shown by Yesod. This all has to do with some decisions made in the design of <hackage>web-routes</hackage>. However, all of that is outside of the scope of this book.</p></advanced>
+                <p>Defining a MultiPiece is just as simple. Let's say we want to have a Wiki with at least two levels of hierarchy; we might define a datatype such as:</p>
+                <snippet name="handler-wiki"/>
+            </section>
         </section>
+        <section>
+            <title>Resource name</title>
+
+            <p>Each resource pattern also has a name associated with it. That
+                name will become the constructor for the <term>type safe
+                    URL</term> datatype associated with your application.
+                Therefore, it has to start with a capital letter. By
+                convention, these resource names all end with a capital R.
+                There is nothing forcing you to do this, it is just
+                common practice.</p>
+
+            <p>The exact definition of our constructor depends upon the
+                resource pattern it is attached to. Whatever datatypes are
+                included in single and multi pieces of the pattern become
+                arguments to the datatype. This gives us a 1-to-1
+                correspondence between our type safe URL values and valid URLs
+                in our application.</p>
+
+            <advanced><p>This doesn't necessarily mean that <i>every</i> value
+                    is a working page, just that it is is a potentially valid
+                    URL. As an example, that value <code>PersonR
+                        "Michael"</code> may not resolve to a valid page if
+                    there is no Michael in the database.</p></advanced>
+
+            <p>Let's get some real examples going here. If you had the resource
+                patterns <code>/person/#String</code> named
+                <code>PersonR</code>, <code>/year/#Int</code> named
+                <code>YearR</code> and <code>/page/faq</code> named
+                <code>FaqR</code>, you would end up with a route data type
+                roughly looking like:</p>
+
+            <codeblock>data MyRoute = PersonR String
+             | YearR Int
+             | FaqR</codeblock>
+
+             <p>If a user requests the relative URL of
+                 <code>/year/2009/</code>, Yesod will convert it into the value
+                 <code>YearR 2009</code>. <code>/person/Michael/</code> becomes
+                 <code>PersonR "Michael"</code> and <code>/page/faq/</code>
+                 becomes <code>FaqR</code>. On the other hand,
+                 <code>/year/two-thousand-nine/</code>,
+                 <code>/person/michael/snoyman/</code> and
+                 <code>/page/FAQ/</code> would all result in 404 errors without
+                 ever seeing your code.</p>
+
+             <advanced><p>Throughout the above discussion, I used the terms type-safe URLs and routes datatype interchangeably. Don't be confused, they are the exact same thing. They just sound better in different contexts.</p></advanced>
+         </section>
+         <section>
+             <title>Handler specification</title>
+
+             <p>The last piece of the puzzle when declaring your resources is how they will be handled. There are three options in Yesod:</p>
+             <ul>
+                 <li>You have a single handler function which should be used for all request methods.</li>
+                 <li>You want to write a separate handler function for each request method you will support. All other request method will generated a 405 Bad Method response.</li>
+                 <li>You want to pass off to a <term>subsite</term>.</li>
+             </ul>
+
+             <p>The first two are very easily specified. A single handler
+                 function will be a line with just a resource pattern and the
+                 resource name, such as <code>/page/faq FaqR</code>. In this
+                 case, the handler function must be named
+                 <code>handleFaqR</code>.</p>
+
+             <p>A separate handler for each request method will be the same,
+                 plus a list of request methods. The request methods must be
+                 ALL CAPITAL LETTERS. For example, <code>/person/#String
+                     PersonR GET POST DELETE</code>. In this case, you would
+                 need to define the three handler functions
+                 <code>getPersonR</code>, <code>postPersonR</code> and
+                 <code>deletePersonR</code>.</p>
+
+             <p>Subsites are a very useful- and complicated- topic in Yesod. We
+                 will <link chapter="subsite">cover writing subsites
+                     later</link>, but using them is not too difficult. The
+                 most commonly used subsite is the static subsite, which serves
+                 static files for your application. In order to serve static
+                 files from <code>/static</code>, you would need a resource
+                 line like:</p>
+
+             <codeblock>/static StaticR Static getStatic</codeblock>
+
+             <p>In this line, <code>/static</code> just says where in your URL
+                 structure to serve the static files from. There is nothing
+                 magical about the word static, you could easily replace it
+                 with <code>/my/non-dynamic/files</code>. The one restriction
+                 is that you can only use static pieces when using a
+                 subsite.</p>
+
+             <p>The next word, StaticR gives the resource name. The next two
+                 words are what specify that we are using a subsite.
+                 <code>Static</code> is the name of the <term>subsite
+                     foundation datatype</term>, and <code>getStatic</code> is
+                 a function that gets a <code>Static</code> value from a value
+                 of your main application's foundation datatype.</p>
+
+             <p>Let's not get too caught up in the details of subsites now. We
+                 will look more closely at the static subsite in the <link
+                     chapter="scaffold">scaffolded site chapter</link>.</p>
+
+         </section>
     </section>
     <section>
         <title>TODO</title>
@@ -38,8 +172,6 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
 
 # FIXME Refactor
 
-* Explain routing syntax, naming scheme for handler functions
-* Touch on subsites
 * ChooseRep return value -- more in the REST chapter
 * Accessing variables in site argument (config file example)
 * Mention Request datatype

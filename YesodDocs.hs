@@ -389,16 +389,20 @@ $maybe msummary summary
 
 sectionBlockToHtml :: Int -> Either Section Block -> Hamlet YesodDocsRoute
 sectionBlockToHtml level (Left section) = [$hamlet|
-^(showTitle.level).sectionTitle.section^
+^((showTitle.(sectionId.section)).level).sectionTitle.section^
 $forall sectionBlocks.section b
     ^(sectionBlockToHtml.nextLevel).b^
 |]
   where
-    showTitle :: Int -> T.Text -> Hamlet YesodDocsRoute
-    showTitle 3 t = [$hamlet|%h3 $t$|]
-    showTitle 4 t = [$hamlet|%h4 $t$|]
-    showTitle 5 t = [$hamlet|%h5 $t$|]
-    showTitle _ t = [$hamlet|%h6 $t$|]
+    showTitle :: Maybe T.Text -> Int -> T.Text -> Hamlet YesodDocsRoute
+    showTitle Nothing 3 t = [$hamlet|%h3 $t$|]
+    showTitle Nothing 4 t = [$hamlet|%h4 $t$|]
+    showTitle Nothing 5 t = [$hamlet|%h5 $t$|]
+    showTitle Nothing _ t = [$hamlet|%h6 $t$|]
+    showTitle (Just i) 3 t = [$hamlet|%h3#$i$ $t$|]
+    showTitle (Just i) 4 t = [$hamlet|%h4#$i$ $t$|]
+    showTitle (Just i) 5 t = [$hamlet|%h5#$i$ $t$|]
+    showTitle (Just i) _ t = [$hamlet|%h6#$i$ $t$|]
     nextLevel = level + 1
 sectionBlockToHtml _ (Right b) = blockToHtml b
 

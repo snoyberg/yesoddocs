@@ -8,7 +8,7 @@ import Yesod.Form.Nic
 import Database.Persist.Sqlite
 import Database.Persist.TH
 import Data.Time (Day)
-import MkToForm
+import MkToForm2
 
 jqueryDayField' :: YesodJquery m => FormFieldSettings -> FormletField s m Day
 jqueryDayField' = jqueryDayField def

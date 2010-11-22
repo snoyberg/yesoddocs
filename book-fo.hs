@@ -31,7 +31,7 @@ main = do
     $forall bookParts.book p
         %page-sequence!master-reference=cover
             %flow!flow-name=xsl-region-body!text-align=center
-                %block!font-size=36pt!text-align=center
+                %block!font-size=36pt!text-align=center!break-before=odd-page
                     $partTitle.p$
         $forall partChapters.p c
             %page-sequence!master-reference=body
@@ -49,7 +49,7 @@ main = do
                     %block
                         %leader!leader-pattern=rule!leader-length="100%"!rule-style=solid!rule-thickness="0.5pt"
                 %flow!flow-name=xsl-region-body!text-align=justify
-                    %block!border-bottom="1px solid black"!font-size="20pt"
+                    %block!border-bottom="1px solid black"!font-size="20pt"!break-before=odd-page
                         $chapterTitle.c$
                     $forall chapterIntro.c b
                         ^block.b^

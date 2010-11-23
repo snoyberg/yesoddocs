@@ -345,7 +345,7 @@ getFeedR = do
     y <- getYesod
     let uday = entryDay $ head $ getEntries y
     atomFeed AtomFeed
-        { atomTitle = "Yesob Web Framework"
+        { atomTitle = "Yesod Web Framework"
         , atomLinkSelf = FeedR
         , atomLinkHome = HomeR
         , atomUpdated = UTCTime uday $ secondsToDiffTime 0

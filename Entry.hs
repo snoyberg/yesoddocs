@@ -25,8 +25,10 @@ loadEntry slug = do
                     title <- toString `fmap` S.hGetLine h
                     return (EFMarkdown, title)
                 _ -> return (EFHtml, firstLine)
-        date' <- S.hGetLine h
-        let date = read $ toString date' :: Day
+        date' <- fmap toString $ S.hGetLine h
+        date <- case reads date' of
+                    (d, _):_ -> return d
+                    _ -> error $ "Invalid date for " ++ slug ++ ": " ++ date'
         contents <- S.hGetContents h
         let html =
                 case format of

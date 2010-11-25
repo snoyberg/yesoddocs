@@ -55,7 +55,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
                 <p>Now let's say you are going to write a Fibonacci website. You may construct your URLs like <code>/fib/#Int</code>. But there's a slight problem with this: we do not want to allow negative numbers or zero to be passed into our application. Fortunately, the type system can protected us:</p>
                 <snippet name="handler-fibs"/>
                 <p>On line 1 we define a simple newtype wrapper around Int to protect ourselves from invalid input. We can see that SinglePiece is a typeclass with two methods. <code>toSinglePiece</code> does nothing more than convert to a <code>String</code>. <code>fromSinglePiece</code> <i>attempts</i> to convert a <code>String</code> to our datatype, giving an error message when this conversion is impossible. By using this datatype, we can ensure that our handler function is only ever given natural numbers, allowing us to once again use the type system to battle the boundary issue.</p>
-                <advanced><p>In case you are wondering, that parse error messages returned by <code>fromSinglePiece</code> are not ever shown by Yesod. This all has to do with some decisions made in the design of <hackage>web-routes</hackage>. However, all of that is outside of the scope of this book.</p></advanced>
+                <advanced><p>In case you are wondering, the parse error messages returned by <code>fromSinglePiece</code> are not ever shown by Yesod. This all has to do with some decisions made in the design of <hackage>web-routes</hackage>. However, all of that is outside of the scope of this book.</p></advanced>
                 <p>Defining a MultiPiece is just as simple. Let's say we want to have a Wiki with at least two levels of hierarchy; we might define a datatype such as:</p>
                 <snippet name="handler-wiki"/>
             </section>
@@ -160,6 +160,69 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
                      chapter="scaffold">scaffolded site chapter</link>.</p>
 
          </section>
+    </section>
+    <section>
+        <title>Dispatch</title>
+        <p>Once you have specified your routes, Yesod will take care of all the pesky details of dispatch for you. You just need to make sure to provide the appropriate <term>handler functions</term>. For subsite routes, you do not need to write any handler functions, but you do for the other two. We mentioned the naming rules above (MyHandlerR GET -&gt; getMyHandlerR, MyOtherHandlerR -&gt; handleMyOtherHandlerR). Now we need the type signature.</p>
+        <section>
+            <title>Return Type</title>
+            <p>Let's look at a simple handler function:</p>
+            <snippet name="handler-simple"/>
+            <p>Look at the type signature of getHomeR. Unfortunately, there is a lot of complexity here to dig through. We will cover the GHandler monad in <link chapter="handler" section="ghandler">more detail later</link>. Next come <code>subsite</code> and <code>Simple</code>. This is where we need to start heading down the rabbit hole...</p>
+            <p>The same way your application has a <term>foundation</term> datatype and associated <term>type-safe URL</term> datatype, so does every subsite. As an example, the Static subsite's foundation datatype has information on how to look up a requested file. The Authentication subsite has a URL datatype that provides login, logout and various other actions.</p>
+            <p>The GHandler monad needs information on both the current subsite and current master site. Most of the time, <i>these are the same</i>! When you are writing your typical handler functions, you only have a single foundation going on. So in the code snippet above, the type signature for getHomeR could also have been <code>GHandler Simple Simple RepHtml</code> without any problems.</p>
+            <p>For now, just accept it as a strange quirk that you need to deal with this extra type parameter. If you want, you can make your typing a little bit shorter by including <code>type Handler = GHandler MyApp MyApp</code> at the beginning of your code (the <link chapter="scaffold">scaffolded site</link> does this for you). And when we get to the <link chapter="subsite">subsite chapter</link> we will explore why these awkwardness is a necessity.</p>
+            <section>
+                <title>ChooseRep</title>
+
+                <p>That just leaves us one thing: <code>RepHtml</code>. When we
+                    <link chapter="rest" section="representations">discuss
+                        representations</link> we will explore the <i>why</i> of
+                    things more; for now, we are just interested in the
+                    <i>how</i>.</p>
+
+                <p>As you might guess, RepHtml is a datatype for HTML responses.
+                    But as you also may guess, web sites need to return responses
+                    besides HTML. CSS, Javascript, images, XML are all necessities
+                    of a website. Therefore, the return  value of a handler
+                    function can be any instance of <code>HasReps</code>.</p>
+
+                <p>HasReps is a powerful concept that allows Yesod to automatically
+                    choose the correct representation of your data based on the
+                    client request. For now, we will focus just on simple instances
+                    such as RepHtml, which only provide one representation.</p>
+
+            </section>
+        </section>
+
+        <section>
+            <title>Arguments</title>
+
+            <p>But not every route is as simple as the HomeR we just defined.
+                Take for instance our PersonR route from earlier. The name of
+                the person needs to be passed to the handler function. This
+                translation is very straight-forward, and hopefully intuitive.
+                For example:</p>
+
+            <snippet name="handler-args"/>
+
+            <p>The arguments have the types of the dynamic pieces for each route, in the order specified. Also, notice how we are able to use both <code>RepHtml</code> and <code>RepPlain</code>.</p>
+
+        </section>
+
+    </section>
+    <section id="ghandler">
+        <title>The GHandler Monad</title>
+        <p>The vast majority of code you write in Yesod sites in the GHandler monad. If you are approaching this from an <abbr title="Model-View-Controller">MVC</abbr> background, your GHandler code is the Controller. Some important points to know about GHandler:</p>
+        <ul>
+            <li>It is an instance of <code>MonadIO</code>, so you can run any IO action in your handlers with <code>liftIO</code>. By the way, <code>liftIO</code> is exported by the <code>Yesod</code> module for your convenience.</li>
+            <li>GHandler is really a <term>monad transformer stack</term> providing a number of different components.</li>
+            <li>A Reader component provides access to immutable information about a request and the environment: the foundation value, request headers and much more.</li>
+            <li>A Writer component allows you to add extra response headers.</li>
+            <li>A State component deals with session variables, allowing them to be both read, written and deleted. Sessions are discussed in <link chapter="sessions">their own chapter</link>.</li>
+            <li>An Error component deals with short-circuiting.</li>
+        </ul>
+        <p>FIXME: Continue writing here.</p>
     </section>
     <section>
         <title>TODO</title>

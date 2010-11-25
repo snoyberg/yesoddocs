@@ -19,7 +19,7 @@
         <p>To a certain extent, this fits in very well with Haskell philosophy: a GET request is similar to a pure function, which cannot have side effects. Of course, in practice, your GET functions will probably perform IO, such as reading information from a database, logging user actions, and so on.</p>
         <p>See the <link chapter="handler">routing and handlers chapter</link> chapter for more information on the syntax of defining handler functions for each request method.</p>
     </section>
-    <section>
+    <section id="representations">
         <title>Representations</title>
         <p>Let's say we have a Haskell datatype and value:</p>
         <codeblock>data Person = Person { name :: String, age :: Int }

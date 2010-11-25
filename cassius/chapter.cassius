@@ -30,3 +30,5 @@
     margin-top: 0
 .note
     font-weight: bold
+#status
+    color: #999

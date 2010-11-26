@@ -7,12 +7,12 @@
         <p>Unfortunately, using Haskell isn't enough. The web, by its very nature, is <i>not</i> type safe. Even the simplest case of distinguishing between an integer and string is impossible: all data on the web is transfered as raw bytes, evading our best efforts of type safety. Every app writer is left with the task of validating that all input is valid. I call this problem <term>the boundary issue</term>: as much as your application is type safe on the inside, every boundary with the outside world still needs to be sanitized.</p>
     </intro>
 
-    <section>
+    <section id="type-safety">
         <title>Type Safety</title>
         <p>This is where Yesod comes in. By using high-level declarative techniques, you can specify the exact input types you are expecting. And the process works the other way as well: using a process of type-safe URLs, you can make sure that the data you send out is also guaranteed to be well formed.</p>
         <p>The boundary issue is not just a problem when dealing with the client: the same problem exists when persisting and loading data. Once again, Yesod saves you on the boundary by performing the marshaling of data for you. You can specify your entities in a high-level definition and remain blissfully ignorant of the details.</p>
     </section>
-    <section>
+    <section id="concise">
         <title>Concise</title>
         <p>Yesod is of course not the first project to strive for goals like these. It does, however, have a powerful weapon in its arsenal: quasi-quotation. Quasi-quotation allows the embedding of an arbitrary syntax within your source code, which will then be converted to Haskell. This grants us a number of benefits:</p>
         <ul>
@@ -21,17 +21,17 @@
             <li>We don't need any XML, INI, or YAML config files.</li>
         </ul>
     </section>
-    <section>
+    <section id="performance">
         <title>Performance</title>
         <p>Haskell's main compiler, the GHC, has amazing performance characteristics, and is improving all the time. This choice of language by itself gives Yesod a large performance advantage over other offerings. But that's not enough: we need an architecture designed for performance.</p>
         <p>The usage of quasi-quotation is a minor example of this: by allowing HTML, CSS and JavaScript to be analyzed at compile time, Yesod both avoids costly disk I/O at runtime and can optimize the rendering of this code. But the architectural decisions go deeper: we use advanced techniques such as enumerators in the underlying libraries to make sure our code runs in constant memory, without exhausting precious file handles and other resources. By offering high-level abstractions, you can get highly compressed and properly cached CSS and JavaScript.</p>
     </section>
-    <section>
+    <section id="modular">
         <title>Modular</title>
         <p>Yesod has spawned the creation of over a dozen packages, all of which are usable in a context outside of Yesod itself. One of the goals of the project is to contribute back to the community as much as possible; as such, even if you are not planning on using Yesod in your next project, a large portion of this book may still be relevant for your needs.</p>
         <p>Of course, these libraries have all been designed to integrate well together. Using the Yesod Framework should give you a strong feeling of consistency throughout the various APIs.</p>
     </section>
-    <section>
+    <section id="solid">
         <title>A solid foundation</title>
         <p>I remember once seeing a PHP framework advertising support for UTF-8. In the Haskell world, we usually have the opposite problem: there are a number of packages providing powerful and well-designed support for the problem. The Haskell community is constantly pushing the boundaries finding the cleanest, most efficient solutions to problems.</p>
         <p>The downside of such a powerful ecosystem is the complexity of choice. By using Yesod, you will already have most of the tools chosen for you, and you can be guaranteed they work together. Of course, you always have the option of pulling in your own solution.</p>

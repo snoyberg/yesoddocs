@@ -18,6 +18,7 @@ import Control.Monad.IO.Class (MonadIO (liftIO))
 import Text.Hamlet (ToHtml (..), string)
 import qualified Text.Highlighting.Kate as Kate
 import qualified System.IO.UTF8 as U
+import Data.List (group, sort)
 
 data Book = Book
     { bookTitle :: Text
@@ -46,7 +47,7 @@ data Chapter = Chapter
     deriving Show
 
 data Section = Section
-    { sectionId :: Maybe Text
+    { sectionId :: Text
     , sectionTitle :: Text
     , sectionBlocks :: [Either Section Block] -- FIXME allow subsections
     }
@@ -297,6 +298,7 @@ parseChapter = tagAttr "chapter" $ \attrs -> do
     title <- textTag "title"
     intro <- tag "intro" $ many parseBlock
     sections <- tagsAttr "section" parseSection
+    checkUniqueIds slug sections
     summary <- mtag "summary" $ many parseBlock
     return $ Chapter slug title status intro sections summary
   where
@@ -304,6 +306,13 @@ parseChapter = tagAttr "chapter" $ \attrs -> do
         case reads $ T.unpack t of
             [] -> throwError $ XmlException $ "Invalid status: " ++ show t
             (s, _):_ -> return s
+    checkUniqueIds slug =
+        go slug . map head . filter (\x -> length x > 1) . group . sort . concatMap getIds
+    go _ [] = return ()
+    go slug x = throwError $ XmlException $ "Chapter " ++ T.unpack slug ++ ", duplicated IDs: " ++ unwords (map T.unpack x)
+    getIds (Section id' _ blocks) = id' : concatMap getIds' blocks
+    getIds' (Left s) = getIds s
+    getIds' (Right _) = [] -- FIXME paragraph ids
 
 mgetAttribute :: MonadIO m => Text -> [Attribute] -> Iteratee Event m (Maybe Text)
 mgetAttribute t as =
@@ -323,7 +332,7 @@ getAttribute t as =
 
 parseSection :: MonadIO m => [Attribute] -> Iteratee Event m Section
 parseSection attrs = do
-    id' <- mgetAttribute "id" attrs
+    id' <- getAttribute "id" attrs
     title <- textTag "title"
     blocks <- many parseBlockSection
     return $ Section id' title blocks

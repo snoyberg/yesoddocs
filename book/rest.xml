@@ -5,7 +5,7 @@
         <p>One of the stories from the early days of the web is how search engines wiped out entire websites. When dynamic web sites were still a new concept, developers didn't appreciate the difference between a GET and POST request. As a result, they created pages- accessed with the GET method- that would delete pages. When search engines started crawling these sites, they could wipe out all the content.</p>
         <p>If these web developers had followed the HTTP spec properly, this would not have happened. A GET request is supposed to cause no side effects (you know, like wiping out a site). Recently, there has been a move in web development called Representational State Transfer, also known as REST. This chapter describes the RESTful features in Yesod and how you can use them to create more robust web applications.</p>
     </intro>
-    <section>
+    <section id="request-methods">
         <title>Request methods</title>
         <p>In many web frameworks, you write one handler function per resource. In Yesod, the default is to have a separate handler function for each <term>request method</term>. The two most common request methods you will deal with in creating web sites are GET and POST. These are the most well-supported methods in HTML, since they are the only ones supported by web forms. However, when creating RESTful APIs, the other methods are very useful.</p>
         <p>Technically speaking, you can create whichever request methods you like, but it is strongly recommended to stick to the ones spelled out in the HTTP spec. The most common of these are:</p>
@@ -65,7 +65,7 @@ instance HasReps RepHtml where
     chooseRep (RepHtml content) _ = return ("text/html", content)</codeblock>
 
         <p>What's interesting here is that we ignore entirely the list of expected content types. A number of the built in representations (RepHtml, RepPlain, RepJson, RepXml) in fact only support a single representation, and therefore what the client wants is irrelevant.</p>
-        <section>
+        <section id="rephtmljson">
             <title>RepHtmlJson</title>
             <p>An example to the contrary is RepHtmlJson, which provides either an HTML or JSON representation. This instance helps greatly in programming AJAX applications that degrade nicely. Here is an example that returns either HTML or JSON data, depnding on what the client wants.</p>
             <snippet name="rest-rephtmljson"/>
@@ -74,11 +74,11 @@ instance HasReps RepHtml where
             <p>We can of course extend this to work with XML, Atom feeds, or even binary representations of the data. A fun exercise could be writing a web application that serves data simply using the default Show instances of datatypes, and then writing a web client that parses the results using the default Read instances.</p>
         </section>
     </section>
-    <section>
+    <section id="atom">
         <title>Atom feeds</title>
         <p>You can check out the Atom module, which has some helper datatypes and functions for generating Atom feeds. This section will be expanded in the future with a working example.</p>
     </section>
-    <section>
+    <section id="request-headers">
         <title>Other request headers</title>
         <p>TODO: talk about how we determine gzip encoding, languages, etc.</p>
     </section>

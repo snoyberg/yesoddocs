@@ -10,9 +10,9 @@
         <p>Yesod is closer in principle to the latter technique. Even so, there are significant differences. Instead of using regular expressions, Yesod matches on pieces of a route. Instead of having a one-way route-to-handler mapping, Yesod has an intermediate data type (called the route datatype, or a type-safe URL) and creates two-way conversion functions.</p>
         <p>Coding this more advanced system manually is tedious and error prone. Therefore, Yesod relies heavily on Template Haskell and Quasi-Quotation to automatically generate this code for you. This chapter will explain the syntax of the routing declarations, give you a glimpse of what code is generated for you, and explain the interaction between routing and handler functions.</p>
     </intro>
-    <section>
+    <section id="route-syntax">
         <title>Route Syntax</title>
-        <section>
+        <section id="pieces">
             <title>Pieces</title>
 
             <p>The first thing Yesod does when it gets a request (well, maybe
@@ -43,7 +43,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
                 look at the splitPath and joinPath methods in the <link
                     chapter="yesod-typeclass" section="split-join-path">Yesod
                     typeclass</link>.</p>
-            <section>
+            <section id="types-of-pieces">
                 <title>Types of Pieces</title>
                 <p>When you are declaring your routes, you have three types of pieces at your disposal:</p>
                 <defs>
@@ -60,7 +60,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
                 <snippet name="handler-wiki"/>
             </section>
         </section>
-        <section>
+        <section id="resource-name">
             <title>Resource name</title>
 
             <p>Each resource pattern also has a name associated with it. That
@@ -107,7 +107,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
 
              <advanced><p>Throughout the above discussion, I used the terms type-safe URLs and routes datatype interchangeably. Don't be confused, they are the exact same thing. They just sound better in different contexts.</p></advanced>
          </section>
-         <section>
+         <section id="handler-spec">
              <title>Handler specification</title>
 
              <p>The last piece of the puzzle when declaring your resources is how they will be handled. There are three options in Yesod:</p>
@@ -161,10 +161,10 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
 
          </section>
     </section>
-    <section>
+    <section id="dispatch">
         <title>Dispatch</title>
         <p>Once you have specified your routes, Yesod will take care of all the pesky details of dispatch for you. You just need to make sure to provide the appropriate <term>handler functions</term>. For subsite routes, you do not need to write any handler functions, but you do for the other two. We mentioned the naming rules above (MyHandlerR GET -&gt; getMyHandlerR, MyOtherHandlerR -&gt; handleMyOtherHandlerR). Now we need the type signature.</p>
-        <section>
+        <section id="dispatch-return-type">
             <title>Return Type</title>
             <p>Let's look at a simple handler function:</p>
             <snippet name="handler-simple"/>
@@ -172,7 +172,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
             <p>The same way your application has a <term>foundation</term> datatype and associated <term>type-safe URL</term> datatype, so does every subsite. As an example, the Static subsite's foundation datatype has information on how to look up a requested file. The Authentication subsite has a URL datatype that provides login, logout and various other actions.</p>
             <p>The GHandler monad needs information on both the current subsite and current master site. Most of the time, <i>these are the same</i>! When you are writing your typical handler functions, you only have a single foundation going on. So in the code snippet above, the type signature for getHomeR could also have been <code>GHandler Simple Simple RepHtml</code> without any problems.</p>
             <p>For now, just accept it as a strange quirk that you need to deal with this extra type parameter. If you want, you can make your typing a little bit shorter by including <code>type Handler = GHandler MyApp MyApp</code> at the beginning of your code (the <link chapter="scaffold">scaffolded site</link> does this for you). And when we get to the <link chapter="subsite">subsite chapter</link> we will explore why these awkwardness is a necessity.</p>
-            <section>
+            <section id="chooserep">
                 <title>ChooseRep</title>
 
                 <p>That just leaves us one thing: <code>RepHtml</code>. When we
@@ -195,7 +195,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
             </section>
         </section>
 
-        <section>
+        <section id="arguments">
             <title>Arguments</title>
 
             <p>But not every route is as simple as the HomeR we just defined.

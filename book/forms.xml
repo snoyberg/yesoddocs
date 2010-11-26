@@ -12,7 +12,7 @@
         </ul>
         <p>The form system used in Yesod is built around many of the concepts in formlets; if you are familiar with that work, it will give you a head start here. In this chapter, we'll start with some real-life examples of using forms, and then get into the low-level details of how they work so you can abuse their full power.</p>
     </intro>
-    <section>
+    <section id="random-bananas">
         <title>Random bananas</title>
         <p>Let's start off with a silly example: we want to create a website that generates a random number of some object. It needs to know the minimum number of objects, the maximum number of objects, the name of a single object and the name of a plural object (eg, book and books, mouse and mice).</p>
         <snippet name="forms-random1"/>
@@ -31,7 +31,7 @@
 
         <image src="forms/random1-initial.png" title="Initial state of form"/>
         <image src="forms/random1-filled.png" title="After submitting the form"/>
-        <section>
+        <section id="something-missing">
             <title>Something not there to be noticed</title>
             <p>Did you notice that at no point did I specify the name attribute for any of those fields? There's actually a bit of magic at play here, so let's unravel it. First: Yesod can automatically provide unique names to forms, and by default it does that. Let's have a look at the generated code (newlines and tabbing added for convenience; Hamlet always spits out condensed code):</p>
 
@@ -72,7 +72,7 @@
 
             <advanced><p>You may have noticed that the minimum and maximum number input fields have a type="number" attribute. This is an example of Yesod including HTML 5 support by default. On some browsers (Chrome, for instance) this field gets rendered with up/down errors to control to value, plus it prevents non-numeric input. On browsers without any specific support, it gets rendered as a plain type="text" input. <xref href="http://diveintohtml5.org/forms.html">diveintohtml5 has a chapter on forms</xref>.</p></advanced>
         </section>
-        <section>
+        <section id="custom-fields">
             <title>Custom fields</title>
             <p>Yesod comes built in with a large number of fields, for dates, numbers, booleans, lists, etc. It also provides "maybe" variants for most of these, allowing blank values. However, occassionally you really will want to write your own, custom field. Plus, writing a custom field is a great way to see the internals, so let's hop to.</p>
             <p>There's two slightly clumsy things about our previous example: it doesn't give a validation error when the minimum number is greater than the maximum, and it would be nice to show both numbers on the same row in the table. Let's go ahead and fix both issues.</p>
@@ -105,7 +105,7 @@
             <image src="forms/random2-valid.png" title="Valid entry"/>
             <image src="forms/random2-invalid.png" title="Invalid entry"/>
         </section>
-        <section>
+        <section id="auto-javascript">
             <title>Automatic Javascript goodness</title>
             <p>After seeing that last example, you may be questioning whether forms are really worth it. Overall, I think that creating a new field is about as difficult as writing all of the code "from scratch", without the forms library. But once you have the fields, using them is *much* simpler than the raw approach. And most of the time, the built in fields are sufficient.</p>
             <p>Just to leave you with a good taste in your mouth, let's see an example where the combination of forms and widgets can give you beautiful forms very easily.</p>

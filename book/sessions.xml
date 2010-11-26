@@ -4,7 +4,7 @@
     <intro>
         <p>This is currently just a dump from a blog post I wrote; it needs to be cleaned up. One extra piece of important information: sessions are tied to a user's IP address, so they are less prone to session hijacking. This may cause problems if the user is behind a proxy; to disable IP address tying, use the sessionIpAddress method in the Yesod typeclass.</p>
     </intro>
-    <section>
+    <section id="fixme">
         <title>TODO</title>
         <p>FIXME: mention encryptKey and clientSessionDuration</p>
         <markdown><![CDATA[

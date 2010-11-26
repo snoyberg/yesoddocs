@@ -5,7 +5,7 @@
         <p>One of the challenges in web development is that we have to coordinate three different client-side technologies: HTML, CSS and Javascript. Worse still, we have to place these components in different locations on the page: CSS in a style tag in the head, Javascript in a script tag in the head, and HTML in the body. And never mind if you want to put your CSS and Javascript in separate files!</p>
         <p>In practice, this works out fairly nicely when building a single page, becuase we can separate our structure (HTML), styling (CSS) and logic (Javascript). But when we want to build modular pieces of code that can be easily composed, it can be a headache to coordinate all three pieces separately. Widgets are Yesod's solution to the problem. They also help with the issue of including libraries, such as jQuery, one time only.</p>
     </intro>
-    <section>
+    <section id="expanding-hello-world">
         <title>Expanding Hello World</title>
         <p>In the <link chapter="basics">basics chapter</link>, our Hello World example produced some very basic HTML:</p>
 
@@ -28,7 +28,7 @@
 
         <p>But the better approach would be to declare this information in a separate CSS section, either a style tag or an external stylesheet.</p>
     </section>
-    <section>
+    <section id="polymorphic-hamlet">
         <title>Polymorphic Hamlet</title>
         <p>The hamlet quasi-quoter is special in that its result can be polymorphic. So line 3 of the previous example could read:</p>
         <codeblock>addWidget [$hamlet|%p!style="color:red" Hello World!|]</codeblock>
@@ -65,7 +65,7 @@ addHtml   :: Html      -> Widget ()</codeblock>
             <p>Oh, and what's the difference between Hamlet and Html? Html is a fully formed chunk of HTML data. Hamlet is a <i>function</i> which takes a URL renderer and returns an Html. This is how we implement type-safe URLs in Yesod: by passing around URL rendering functions.</p>
         </advanced>
     </section>
-    <section>
+    <section id="cassius">
         <title>Cassius</title>
         <p>While Hamlet is a whitespace-sensitive templating language for HTML, Cassius is for CSS. (Don't worry, we'll get to Julius for Javascript soon.) We could rewrite the example above as:</p>
         <snippet name="widgets-cassius"/>
@@ -114,13 +114,13 @@ addHtml   :: Html      -> Widget ()</codeblock>
 
         <p>Notice how all of the CSS declarations get placed into the same style tag, while the HTML all gets placed in the body tag appropriately. This was a simple example of using widgets; in fact, in real code, this footer would just be included as part of your template. But these humble foundations allow very complex pages to be built up easily.</p>
     </section>
-    <section>
+    <section id="julius">
         <title>Julius</title>
 
         <p>Just for completeness, let's see a little example with Javascript.</p>
         <snippet name="widgets-julius"/>
     </section>
-    <section>
+    <section id="external-file-dependencies">
         <title>External File Dependencies</title>
         <p>Enough chit-chat, let's build a real web page, complete with ridiculous Javascript and overused UI components. We'll use jQuery and jQuery UI.</p>
         <snippet name="widgets-jquery"/>
@@ -152,7 +152,7 @@ $(function(){
             <li>The code is structured so that external script tags come before inline scripts. In many cases (such as ours), this is a necessity, since the inline Javascript references the external library.</li>
         </ul>
     </section>
-    <section>
+    <section id="widget-vs-hamlet">
         <title>When a Widget is not a Hamlet</title>
         <p>Let's take that last example and do something slightly different. Instead of simply concatenating the two widgets (colorChanger and buttons) together, we want to display that in a table (I know, <i>soooo</i> old fashioned). It turns out we can use caret-interpolation from Hamlet like so:</p>
         <snippet name="widgets-caret"/>

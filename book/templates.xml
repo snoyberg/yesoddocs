@@ -5,7 +5,7 @@
         <p>Yesod is built upon the <hackage>hamlet</hackage> package, which provides three templating systems: Hamlet (HTML), Cassius (CSS) and Julius (Javascript). These systems are all available for use outside the realm of Yesod. In this chapter, we will be demonstrating their usage in a standalone context.</p>
         <p>Hamlet in particular has a number of features that won't be covered in this chapter. Instead, there is a <link chapter="hamlet">Hamlet reference chapter</link> in the appendix which covers all functionality. This chapter should get you familiar with the syntax, usage and basic features.</p>
     </intro>
-    <section>
+    <section id="type-safety">
         <title>Type Safety</title>
         <p>One of the biggest features of Yesod is its pervasive type safety. This was the original impetus for the creation of Hamlet. As such, all variable interpolation gets checked at compile time. Hamlet supports three forms of interpolation:</p>
         <ul>
@@ -18,8 +18,9 @@
         <p>In all three languages, when you want to print an interpolation character, you enter it twice. For example, in Hamlet:</p>
         <codeblock>The price of this item is $$4.50.</codeblock>
     </section>
-    <section>
-        <title>Quasi-quotation</title><p>FIXME</p>
+    <section id="quasi-quotation">
+        <title>Quasi-quotation</title>
+        <p>FIXME</p>
         <advanced>
             <p>Just a little heads-up on some of the examples below: in order to simplify the examples below, we're going to assume the OverloadedStrings language extension. If you rather not use this extension, you'll need to make some minor modifications, such as replacing:</p>
             <codeblock>setTitle "Home Page"</codeblock>
@@ -55,7 +56,7 @@ hamletToRepHtml [$hamlet|
 %a!href=@NameR.michael@ See Michael's page
 |]</codeblock>
     </section>
-    <section>
+    <section id="defaultLayout">
         <title>Using defaultLayout</title>
 
         <p>The examples above are missing most of the common pieces of an HTML page: a html head, title and body tags, as well as a doctype. It would not only be tedious to have to include all of that stuff for every page, but would also introduce a lot of repetition of code and make it difficult to have a uniform layout for our pages. Let's see how to use defaultLayout as a drop-in replacement for hamletToRepHtml:</p>
@@ -79,7 +80,7 @@ hamletToRepHtml [$hamlet|
 &lt;/html&gt;</codeblock>
 
     </section>
-    <section>
+    <section id="cassius">
         <title>Cassius</title>
 
         <p>We can also add CSS declarations right along with defaultLayout:</p>
@@ -100,14 +101,14 @@ hamletToRepHtml [$hamlet|
         color: green
     |]</codeblock>
     </section>
-    <section>
+    <section id="julius">
         <title>Julius</title>
         <p>And just so that Javascript doesn't feel left out, we have Julius. Julius is basically a straight pass-through: it provides no syntax help. It just allows you to do variable interpolation, so our names example might become:</p>
         <codeblock>getNamesR name = defaultLayout $ do
     addJulius [$julius|alert("Hello %name%");|]</codeblock>
         <p>Notice that we use percent signs instead of dollar signs for Julius; since jQuery uses dollar signs extensively, it would be very tedious to need to escape dollar signs constantly.</p>
     </section>
-    <section>
+    <section id="external-templates">
         <title>External template files</title>
         <p>Quasi-quoting your templates can be convenient, as no extra files are needed, your template is close to your code, and recompilation happens automatically whenever your template changes. On the other hand, this also clutters your Haskell code with templates and requires a recompile for any change in the template. Hamlet provides two sets of functions for including an external template:</p>
 

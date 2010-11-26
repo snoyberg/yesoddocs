@@ -13,7 +13,7 @@
         <p>For now, finishing this chapter is a low priority. If you are reading this, and would really like this chapter to be completed, please let me know (direct email, or the comments below).</p>
         <p>This chapter should give you a bare minimum introduction to Haskell to feel comfortable with the rest of the code in this book. As is often the case with web programming, you can suffice with a subset of the language to get started, and pick up more as you go along. Obviously, the more you know the better. If you already know Haskell, do yourself a favor and skip to the next chapter.</p>
     </intro>
-    <section>
+    <section id="data-types">
         <title>Data types</title>
         <p>Haskell has a concept of <term>algebraic data types</term>. I think examples will illustrate better than anything:</p>
 
@@ -38,7 +38,7 @@ let hisName = name michael</codeblock>
 
         <codeblock>data Animal = Cat { catName :: String } | Dog String</codeblock>
 
-        <section>
+        <section id="pattern-matching">
             <title>Pattern Matching</title>
 
             <p>One of the great features in Haskell is pattern matching. For example:</p>
@@ -51,19 +51,19 @@ let hisName = name michael</codeblock>
             <p>With warnings turned on, the compiler can check to make sure your code accounts for every possible value in your datatype. This is one small example of Haskell's type system making your life easier.</p>
         </section>
     </section>
-    <section>
+    <section id="functions">
         <title>Functions</title>
         <p>FIXME</p>
     </section>
-    <section>
+    <section id="language-pragmas">
         <title>Language Pragmas</title>
         <p>FIXME</p>
     </section>
-    <section>
+    <section id="quasi-quotation">
         <title>Quasi-quotation</title>
         <p>FIXME</p>
     </section>
-    <section>
+    <section id="type-families">
         <title>Type families</title>
         <p>FIXME</p>
     </section>

@@ -10,7 +10,7 @@
             <li>A major source of frustration in dealing with SQL databases is changes to the schema. Persistent can automatically perform database migrations.</li>
         </ul>
     </intro>
-    <section>
+    <section id="fixme">
         <title>FIXME Outline</title>
 
         <ul>

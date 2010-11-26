@@ -373,10 +373,7 @@ chapterToHtml (Chapter { chapterIntro = intro, chapterSections = sections
 $forall intro b
     ^blockToHtml.b^
 $forall sections s
-    $maybe sectionId.s i
-        %h2#$i$ $sectionTitle.s$
-    $nothing
-        %h2 $sectionTitle.s$
+    %h2#$sectionId.s$ $sectionTitle.s$
     $forall sectionBlocks.s b
         ^(sectionBlockToHtml.firstLevel).b^
 $maybe msummary summary
@@ -389,20 +386,17 @@ $maybe msummary summary
 
 sectionBlockToHtml :: Int -> Either Section Block -> Hamlet YesodDocsRoute
 sectionBlockToHtml level (Left section) = [$hamlet|
-^((showTitle.(sectionId.section)).level).sectionTitle.section^
-$forall sectionBlocks.section b
-    ^(sectionBlockToHtml.nextLevel).b^
+!class=section$show.level$
+    ^((showTitle.(sectionId.section)).level).sectionTitle.section^
+    $forall sectionBlocks.section b
+        ^(sectionBlockToHtml.nextLevel).b^
 |]
   where
-    showTitle :: Maybe T.Text -> Int -> T.Text -> Hamlet YesodDocsRoute
-    showTitle Nothing 3 t = [$hamlet|%h3 $t$|]
-    showTitle Nothing 4 t = [$hamlet|%h4 $t$|]
-    showTitle Nothing 5 t = [$hamlet|%h5 $t$|]
-    showTitle Nothing _ t = [$hamlet|%h6 $t$|]
-    showTitle (Just i) 3 t = [$hamlet|%h3#$i$ $t$|]
-    showTitle (Just i) 4 t = [$hamlet|%h4#$i$ $t$|]
-    showTitle (Just i) 5 t = [$hamlet|%h5#$i$ $t$|]
-    showTitle (Just i) _ t = [$hamlet|%h6#$i$ $t$|]
+    showTitle :: T.Text -> Int -> T.Text -> Hamlet YesodDocsRoute
+    showTitle i 3 t = [$hamlet|%h3#$i$ $t$|]
+    showTitle i 4 t = [$hamlet|%h4#$i$ $t$|]
+    showTitle i 5 t = [$hamlet|%h5#$i$ $t$|]
+    showTitle i _ t = [$hamlet|%h6#$i$ $t$|]
     nextLevel = level + 1
 sectionBlockToHtml _ (Right b) = blockToHtml b
 

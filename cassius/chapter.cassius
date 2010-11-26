@@ -1,3 +1,8 @@
+html
+    background: #f8f8f8
+article
+    background: #fff
+    padding: 3em 1em
 #disqus_thread
     margin: 0 20px
 .advanced
@@ -42,7 +47,6 @@
 
 .section3, .section4, .section5, .section6
     margin-left: 1em
-    border-left: 1px solid #999
     padding: 3px 0 3px 1em
 
 .comment-count

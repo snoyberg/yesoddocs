@@ -7,3 +7,6 @@ snippets/tmp
 *.hi
 *.o
 simple-server
+book-fo
+book.fo
+book.pdf

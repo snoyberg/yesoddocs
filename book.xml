@@ -22,7 +22,6 @@
         <chapter href="book/advanced-forms.xml"/>
         <chapter href="book/email.xml"/>
         <chapter href="book/deploying.xml"/>
-        <chapter href="book/request.xml"/>
         <chapter href="book/i18n.xml"/>
         <chapter href="book/subsite.xml"/>
         <chapter href="book/web-client.xml"/>

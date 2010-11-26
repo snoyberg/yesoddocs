@@ -23,6 +23,7 @@ import Book
 import qualified Data.Text.Lazy as T
 import qualified Text.Highlighting.Kate as Kate
 import Text.XHtml.Strict (showHtmlFragment)
+import Data.Either (lefts)
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
@@ -370,19 +371,39 @@ withYesodDocs f = do
 chapterToHtml :: Chapter -> Hamlet YesodDocsRoute
 chapterToHtml (Chapter { chapterIntro = intro, chapterSections = sections
                        , chapterSummary = msummary }) = [$hamlet|
-$forall intro b
-    ^blockToHtml.b^
+#toc
+    %ul
+        %li
+            %a!href="#introduction" Introduction
+        $forall sections s
+            ^sectionToc.s^
+        $maybe msummary _
+            %li
+                %a!href="#summary" Summary
+#introduction
+    $forall intro b
+        ^blockToHtml.b^
 $forall sections s
     %h2#$sectionId.s$ $sectionTitle.s$
     $forall sectionBlocks.s b
         ^(sectionBlockToHtml.firstLevel).b^
 $maybe msummary summary
-    %h2 Summary
+    %h2#summary Summary
     $forall summary b
         ^blockToHtml.b^
 |]
   where
     firstLevel = 3
+
+sectionToc :: Section -> Hamlet YesodDocsRoute
+sectionToc s = [$hamlet|
+%li
+    %a!href="#$sectionId.s$" $sectionTitle.s$
+    $if not.null.lefts.sectionBlocks.s
+        %ul
+            $forall lefts.sectionBlocks.s s
+                ^sectionToc.s^
+|]
 
 sectionBlockToHtml :: Int -> Either Section Block -> Hamlet YesodDocsRoute
 sectionBlockToHtml level (Left section) = [$hamlet|

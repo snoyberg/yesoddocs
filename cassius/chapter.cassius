@@ -32,3 +32,10 @@
     font-weight: bold
 #status
     color: #999
+#toc
+    margin-left: 4em
+    background-color: #eee
+    border: 1px solid #333
+    padding: 0.2em
+    font-size: 80%
+    width: 30em

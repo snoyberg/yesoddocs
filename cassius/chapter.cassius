@@ -39,3 +39,8 @@
     padding: 0.2em
     font-size: 80%
     width: 30em
+
+.section3, .section4, .section5, .section6
+    margin-left: 1em
+    border-left: 1px solid #999
+    padding: 3px 0 3px 1em

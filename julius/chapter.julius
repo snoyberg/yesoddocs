@@ -10,4 +10,7 @@ $(function(){
         $(this).removeClass("show-lines").addClass("hide-lines").text("Hide line numbers");
         return false;
     });
+    $("span.comment-count").addClass("link").click(function(){
+        $(this).parent().next().toggleClass("hidden");
+    }).parent().next().addClass("hidden");
 });

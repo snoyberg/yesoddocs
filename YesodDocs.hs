@@ -21,14 +21,18 @@ import qualified System.IO.UTF8 as U
 import Data.Time
 import Book
 import qualified Data.Text.Lazy as T
+import Data.Text.Lazy (Text)
 import qualified Text.Highlighting.Kate as Kate
 import Text.XHtml.Strict (showHtmlFragment)
 import Data.Either (lefts)
+import Control.Concurrent.STM
+import Comments
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
     , getEntries :: [Entry]
     , getBook :: Book
+    , comments :: TVar Comments
     }
 
 type Handler = GHandler YesodDocs YesodDocs
@@ -59,6 +63,8 @@ mkYesod "YesodDocs" [$parseRoutes|
 
 /blog BlogR GET
 /blog/#String EntryR GET
+
+/comment/#String/#Text CommentR POST
 |]
 
 navLinks :: [(String, Either String YesodDocsRoute)]
@@ -127,7 +133,10 @@ getChapterR slug = do
     y <- getYesod
     let title = T.unpack $ chapterTitle chapter
     let unpack = T.unpack
-    let html = chapterToHtml chapter
+    tcs <- fmap comments getYesod
+    cs' <- liftIO $ atomically $ readTVar tcs
+    let cs = fromMaybe [] $ lookup slug cs'
+    let html = chapterToHtml cs chapter
     defaultLayout $ do
         setTitle $ string $ "Yesod Book: " ++ title
         addScriptEither $ urlJqueryJs y
@@ -365,11 +374,13 @@ withYesodDocs f = do
     entries <- loadEntries
     let static = fileLookupDir "static" typeByExt
     book <- loadBook
-    app <- toWaiApp $ YesodDocs static entries book
+    cs <- loadComments
+    tcomments <- newTVarIO cs
+    app <- toWaiApp $ YesodDocs static entries book tcomments
     f app
 
-chapterToHtml :: Chapter -> Hamlet YesodDocsRoute
-chapterToHtml (Chapter { chapterIntro = intro, chapterSections = sections
+chapterToHtml :: [(Text, [Comment])] -> Chapter -> Hamlet YesodDocsRoute
+chapterToHtml cs c@(Chapter { chapterIntro = intro, chapterSections = sections
                        , chapterSummary = msummary }) = [$hamlet|
 #toc
     %ul
@@ -382,15 +393,15 @@ chapterToHtml (Chapter { chapterIntro = intro, chapterSections = sections
                 %a!href="#summary" Summary
 #introduction
     $forall intro b
-        ^blockToHtml.b^
+        ^((blockToHtml.c).cs).b^
 $forall sections s
     %h2#$sectionId.s$ $sectionTitle.s$
     $forall sectionBlocks.s b
-        ^(sectionBlockToHtml.firstLevel).b^
+        ^(((sectionBlockToHtml.c).cs).firstLevel).b^
 $maybe msummary summary
     %h2#summary Summary
     $forall summary b
-        ^blockToHtml.b^
+        ^((blockToHtml.c).cs).b^
 |]
   where
     firstLevel = 3
@@ -405,12 +416,13 @@ sectionToc s = [$hamlet|
                 ^sectionToc.s^
 |]
 
-sectionBlockToHtml :: Int -> Either Section Block -> Hamlet YesodDocsRoute
-sectionBlockToHtml level (Left section) = [$hamlet|
+sectionBlockToHtml :: Chapter -> [(Text, [Comment])]
+                   -> Int -> Either Section Block -> Hamlet YesodDocsRoute
+sectionBlockToHtml chap cs level (Left section) = [$hamlet|
 !class=section$show.level$
     ^((showTitle.(sectionId.section)).level).sectionTitle.section^
     $forall sectionBlocks.section b
-        ^(sectionBlockToHtml.nextLevel).b^
+        ^(((sectionBlockToHtml.chap).cs).nextLevel).b^
 |]
   where
     showTitle :: T.Text -> Int -> T.Text -> Hamlet YesodDocsRoute
@@ -419,50 +431,71 @@ sectionBlockToHtml level (Left section) = [$hamlet|
     showTitle i 5 t = [$hamlet|%h5#$i$ $t$|]
     showTitle i _ t = [$hamlet|%h6#$i$ $t$|]
     nextLevel = level + 1
-sectionBlockToHtml _ (Right b) = blockToHtml b
+sectionBlockToHtml chap cs _ (Right b) = blockToHtml chap cs b
 
-blockToHtml :: Block -> Hamlet YesodDocsRoute -- FIXME put one of those paragraph symbol links here
-blockToHtml (Paragraph pid is) = [$hamlet|
+blockToHtml :: Chapter -> [(Text, [Comment])] -> Block -> Hamlet YesodDocsRoute -- FIXME put one of those paragraph symbol links here
+blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|
 %p#$pid$
     $forall is i
         ^inlineToHtml.i^
+    %span.comment-count $csCount'$
+.comments
+    $forall cs c
+        .comment
+            %span.name $commentName.c$
+            %span.datetime $show.utctDay.commentTime.c$
+            .content $commentContent.c$
+    %form!method=post!action=@(CommentR.unpack.chapterSlug.chap).pid@
+        %b Add a comment
+        Name: $
+        %input.name!type=text!name=name
+        %textarea!name=content
+        %input!type=submit!value="Add comment"
 |]
-blockToHtml (Note is) = [$hamlet|
+  where
+    unpack = T.unpack
+    cs = fromMaybe [] $ lookup pid chapCs
+    csCount = length cs
+    csCount'
+        | csCount == 0 = "No comments"
+        | csCount == 1 = "1 comment"
+        | otherwise = show csCount ++ " comments"
+blockToHtml _ _ (Note is) = [$hamlet|
 %p.note
     Note: $
     $forall is i
         ^inlineToHtml.i^
 |]
-blockToHtml (UList items) = [$hamlet|
+blockToHtml _ _ (UList items) = [$hamlet|
 %ul
     $forall items i
         ^listItemToHtml.i^
 |]
-blockToHtml (OList items) = [$hamlet|
+blockToHtml _ _ (OList items) = [$hamlet|
 %ol
     $forall items i
         ^listItemToHtml.i^
 |]
-blockToHtml (CodeBlock c) = [$hamlet|
+blockToHtml _ _ (CodeBlock c) = [$hamlet|
 %code
     %pre $c$
 |]
-blockToHtml (Snippet s) = [$hamlet|
+blockToHtml _ _ (Snippet s) = [$hamlet|
 $preEscapedString.showHtmlFragment.html$
 |]
   where
     html = Kate.formatAsXHtml [Kate.OptNumberLines] "haskell" s
-blockToHtml (Advanced bs) = [$hamlet|
+blockToHtml chap cs (Advanced bs) = [$hamlet|
 .advanced
     $forall bs b
-        ^blockToHtml.b^
+        ^((blockToHtml.chap).cs).b^
 |]
-blockToHtml (Image { imageSrc = src, imageTitle = title }) = [$hamlet|
+blockToHtml _ _ (Image { imageSrc = src, imageTitle = title }) = [$hamlet|
 .image
     %img!src="/static/book/$src$"!alt=$title$!title=$title$
     $title$
 |]
-blockToHtml (Defs ds) = [$hamlet|
+blockToHtml _ _ (Defs ds) = [$hamlet|
 %table!border=1
     $forall ds d
         %tr
@@ -471,7 +504,7 @@ blockToHtml (Defs ds) = [$hamlet|
                 $forall snd.d i
                     ^inlineToHtml.i^
 |]
-blockToHtml (Markdown text) =
+blockToHtml _ _ (Markdown text) =
     [$hamlet|$content$|]
   where
     pandoc = readMarkdown defaultParserState $ T.unpack text
@@ -509,3 +542,28 @@ inlineToHtml (Link chapter msection inner) = [$hamlet|
 inlineToHtml (Abbr title inner) = [$hamlet|
 %abbr!title=$title$ $inner$
 |]
+
+postCommentR :: String -> Text -> Handler ()
+postCommentR slug pid = do
+    name <- runFormPost' $ stringInput "name" -- FIXME textInput
+    content <- runFormPost' $ stringInput "content" -- FIXME textareaInput
+    now <- liftIO getCurrentTime
+    let cm = Comment (T.pack name) (Textarea content) now
+    tcs <- fmap comments getYesod
+    cs <- liftIO $ atomically $ do
+        cs <- readTVar tcs
+        let cs' = addComment cm cs
+        writeTVar tcs cs'
+        return cs'
+    liftIO $ saveComments cs
+    setMessage "Your comment has been submitted"
+    redirect RedirectTemporary $ ChapterR slug -- FIXME redirect to that paragraph?
+  where
+    addComment cm ((slug', cs):rest)
+        | slug == slug' = (slug', addComment' cm cs) : rest
+        | otherwise = (slug', cs) : addComment cm rest
+    addComment cm [] = [(slug, addComment' cm [])]
+    addComment' cm ((pid', cs):rest)
+        | pid == pid' = (pid', cs ++ [cm]) : rest
+        | otherwise = (pid', cs) : addComment' cm rest
+    addComment' cm [] = [(pid, [cm])]

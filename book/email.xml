@@ -2,6 +2,6 @@
 <chapter id="email" status="Outline">
     <title>Sending Email</title>
     <intro>
-        <p>Sorry, no information yet. This will mostly be about the <hackage>mime-mail</hackage> package.</p>
+        <p id="no-info">Sorry, no information yet. This will mostly be about the <hackage>mime-mail</hackage> package.</p>
     </intro>
 </chapter>

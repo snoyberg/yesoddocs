@@ -2,7 +2,7 @@
 <chapter id="web-client" status="Outline">
     <title>Web Client Code</title>
     <intro>
-        <p>This chapter is not yet written. It covers writing applications which access web services. We will cover:</p>
+        <p id="i1">This chapter is not yet written. It covers writing applications which access web services. We will cover:</p>
         <ul>
             <li>http-enumerator</li>
             <li>gravatar</li>

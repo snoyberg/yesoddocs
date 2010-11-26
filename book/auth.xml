@@ -2,7 +2,7 @@
 <chapter id="auth" status="Outline">
     <title>Authentication and Authorization</title>
     <intro>
-        <p>This chapter is just an outline. It will contain the sections:</p>
+        <p id="outline">This chapter is just an outline. It will contain the sections:</p>
         <ul>
             <li>Authentication</li>
             <li>Authorization</li>

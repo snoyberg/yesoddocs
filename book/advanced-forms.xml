@@ -2,7 +2,7 @@
 <chapter id="advanced-forms" status="Outline">
     <title>Advanced Forms</title>
     <intro>
-        <p>This chapter is just an outline. It will contain the sections:</p>
+        <p id="outline">This chapter is just an outline. It will contain the sections:</p>
         <ul>
             <li>GFormMonad</li>
             <li>Inner workings of GForm</li>
@@ -11,8 +11,8 @@
             <li>Multiple rows (still have to figure out how to program that!)</li>
         </ul>
 
-        <p>Include information from <xref href="http://docs.yesodweb.com/blog/custom-forms/">blog post</xref>.</p>
+        <p id="blog-post">Include information from <xref href="http://docs.yesodweb.com/blog/custom-forms/">blog post</xref>.</p>
 
-        <p><xref href="http://www.haskell.org/pipermail/web-devel/2010/000507.html">http://www.haskell.org/pipermail/web-devel/2010/000507.html</xref></p>
+        <p id="mail-link"><xref href="http://www.haskell.org/pipermail/web-devel/2010/000507.html">http://www.haskell.org/pipermail/web-devel/2010/000507.html</xref></p>
     </intro>
 </chapter>

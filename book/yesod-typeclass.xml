@@ -2,81 +2,81 @@
 <chapter id="yesod-typeclass" status="Unproofed">
     <title>Yesod Typeclass</title>
     <intro>
-        <p>Every one of our Yesod applications requires an instance of the Yesod typeclass. So far, we've only seen the approot method, with the cryptic definition <code>approot _ = ""</code>. In this chapter, we'll explore the meaning of the approot method, along with many other methods in the Yesod typeclass.</p>
-        <p>The Yesod typeclass gives us a central place for defining settings for our application. Excluding the approot method, everything else has a default definition which is usually the right thing. But in order to build a powerful, customized application, you'll usually end up overriding at least a few of these methods.</p>
+        <p id="i1">Every one of our Yesod applications requires an instance of the Yesod typeclass. So far, we've only seen the approot method, with the cryptic definition <code>approot _ = ""</code>. In this chapter, we'll explore the meaning of the approot method, along with many other methods in the Yesod typeclass.</p>
+        <p id="i2">The Yesod typeclass gives us a central place for defining settings for our application. Excluding the approot method, everything else has a default definition which is usually the right thing. But in order to build a powerful, customized application, you'll usually end up overriding at least a few of these methods.</p>
     </intro>
     <section id="rendering-parsing-urls">
         <title>Rendering and Parsing URLs</title>
-        <p>We've already mentioned how Yesod is able to automatically render type-safe URLs into a textual URL that can be inserted into an HTML page. Let's say we have a route definition that looks like:</p>
+        <p id="rpu1">We've already mentioned how Yesod is able to automatically render type-safe URLs into a textual URL that can be inserted into an HTML page. Let's say we have a route definition that looks like:</p>
 
         <codeblock>mkYesod "MyApp" [$parseRoutes|
 /some/path SomePathR GET
 |]</codeblock>
 
-        <p>If we place SomePathR into a hamlet template, how does Yesod render it? Yesod always tries to construct <i>absolute</i> URLs. This is especially useful once we start creating XML sitemaps and Atom feeds, or sending emails. But in order to construct an absolute URL, we need to get domain name of the application.</p>
-        <p>You might think to just get that information from the user's request, but we still need to deal with ports. And even if we get the port number from the request, are we using HTTP or HTTPS? And even if you know <i>that</i>, such an approach would break one of our RESTful principles: depending on how the user submitted a request would generate different URLs. For example, we would generate different URLs depending if the user connected to "example.com" or "www.example.com".</p>
-        <p>And finally, Yesod doesn't make any assumption about <i>where</i> you host your application. For example, I may have a mostly static site (http://static.example.com/), but I'd like to stick a Yesod-powered Wiki at /wiki/. There is no reliable way for an application to determine what subpath it is being hosted from. So instead of doing all of this guesswork, Yesod needs you to tell us the <term>application root</term>.</p>
-        <p>So using the wiki example, you would write your Yesod instance as:</p>
+        <p id="rpu2">If we place SomePathR into a hamlet template, how does Yesod render it? Yesod always tries to construct <i>absolute</i> URLs. This is especially useful once we start creating XML sitemaps and Atom feeds, or sending emails. But in order to construct an absolute URL, we need to get domain name of the application.</p>
+        <p id="rpu3">You might think to just get that information from the user's request, but we still need to deal with ports. And even if we get the port number from the request, are we using HTTP or HTTPS? And even if you know <i>that</i>, such an approach would break one of our RESTful principles: depending on how the user submitted a request would generate different URLs. For example, we would generate different URLs depending if the user connected to "example.com" or "www.example.com".</p>
+        <p id="rpu4">And finally, Yesod doesn't make any assumption about <i>where</i> you host your application. For example, I may have a mostly static site (http://static.example.com/), but I'd like to stick a Yesod-powered Wiki at /wiki/. There is no reliable way for an application to determine what subpath it is being hosted from. So instead of doing all of this guesswork, Yesod needs you to tell us the <term>application root</term>.</p>
+        <p id="rpu5">So using the wiki example, you would write your Yesod instance as:</p>
 
         <codeblock>instance Yesod MyWiki where approot _ = "http://static.example.com/wiki"</codeblock>
 
-        <p>Notice that there is no trailing slash there. Next, when Yesod wants to construct a URL for SomePathR, it determines that the relative path for SomePathR is "/some/path/", appends that to your approot and creates "http://static.example.com/wiki/some/path/".</p>
+        <p id="rpu6">Notice that there is no trailing slash there. Next, when Yesod wants to construct a URL for SomePathR, it determines that the relative path for SomePathR is "/some/path/", appends that to your approot and creates "http://static.example.com/wiki/some/path/".</p>
 
-        <p>This also explains our cryptic <code>approot _ = ""</code>: for our examples in the book, we're always serving from the root of the domain (in our case, localhost). By using an empty string, SomePathR renders to "/some/path/", which works just fine. In real life applications, however, you should use a real application root.</p>
+        <p id="rpu7">This also explains our cryptic <code>approot _ = ""</code>: for our examples in the book, we're always serving from the root of the domain (in our case, localhost). By using an empty string, SomePathR renders to "/some/path/", which works just fine. In real life applications, however, you should use a real application root.</p>
 
-        <p>And by the way, the site template generated by the scaffolding tool automatically uses conditional compilation to switch between development and production builds, so you can easily test on one domain- like localhost- and serve from a different domain.</p>
+        <p id="rpu8">And by the way, the site template generated by the scaffolding tool automatically uses conditional compilation to switch between development and production builds, so you can easily test on one domain- like localhost- and serve from a different domain.</p>
 
-        <advanced><p>You may be wondering why we say <code>approot _ = ...</code> instead of <code>approot = ...</code>. The reason is a technicality of type classes in Haskell: without some argument to the approot function, we'd have no way of knowing which instance of Yesod to use for getting the application root.</p></advanced>
+        <advanced><p id="rpu9">You may be wondering why we say <code>approot _ = ...</code> instead of <code>approot = ...</code>. The reason is a technicality of type classes in Haskell: without some argument to the approot function, we'd have no way of knowing which instance of Yesod to use for getting the application root.</p></advanced>
         <section id="split-join-path">
             <title>Splitting and Joining</title>
-            <p>Let's look a little bit more closely at our example above. In our routes declaration, we said "/some/path" (sans trailing slash), while our generated URL includes a trailing slash ("/some/path/"). When we declare routes, all of the slashes are stripped out and we are left with a list of Strings, eg ["some", "path"]. We have a pair of methods in the Yesod typeclass the deals with how the URLs are actually displayed to users:</p>
+            <p id="rpu10">Let's look a little bit more closely at our example above. In our routes declaration, we said "/some/path" (sans trailing slash), while our generated URL includes a trailing slash ("/some/path/"). When we declare routes, all of the slashes are stripped out and we are left with a list of Strings, eg ["some", "path"]. We have a pair of methods in the Yesod typeclass the deals with how the URLs are actually displayed to users:</p>
             <ul>
                 <li>joinPath takes the application root, a list of path pieces and a list of query string parameters, returning a fully rendered URL.</li>
                 <li>splitPath takes a <i>relative</i> path, and either returns a new URL to redirect to, or a list of pieces. By relative, I mean everything after the application root. Redirection is used to ensure we have a single, canonical URL.</li>
             </ul>
-            <p>These two functions actually need to do a lot of work. There's percent encoding/decoding, query string generation, non-ASCII character handling, and generating canonical URLs. You can override these functions, but be warned that if they are not consistent, you can have problems. For example, if you write a joinPath the omits a trailing slash, and a splitPath that requires a trailing slash, every single time someone clicks on a link they'll get a 301 redirect to get to the correct URL.</p>
-            <p>The default implementation of these methods creates URLs that follow these rules:</p>
+            <p id="rpu11">These two functions actually need to do a lot of work. There's percent encoding/decoding, query string generation, non-ASCII character handling, and generating canonical URLs. You can override these functions, but be warned that if they are not consistent, you can have problems. For example, if you write a joinPath the omits a trailing slash, and a splitPath that requires a trailing slash, every single time someone clicks on a link they'll get a 301 redirect to get to the correct URL.</p>
+            <p id="rpu12">The default implementation of these methods creates URLs that follow these rules:</p>
             <ul>
                 <li>No double slashes. This also means it's impossible to get empty path pieces.</li>
                 <li>If the last path piece has a period (.) in it, then there cannot be a trailing slash.</li>
                 <li>Otherwise, there <i>must</i> be a trailing slash.</li>
             </ul>
-            <p>These rules may sound arbitrary, but they are useful for generally creating nice-looking URLs. The period rule makes it seem that filenames do not end with a trailing slash, while non-files do. Obviously, with dynamically generated content the divide between file and non-file can be arbitrary.</p>
-            <p>But let's say you need to create URLs without any trailing slashes, ever. You could try out the following:</p>
+            <p id="rpu13">These rules may sound arbitrary, but they are useful for generally creating nice-looking URLs. The period rule makes it seem that filenames do not end with a trailing slash, while non-files do. Obviously, with dynamically generated content the divide between file and non-file can be arbitrary.</p>
+            <p id="rpu14">But let's say you need to create URLs without any trailing slashes, ever. You could try out the following:</p>
             <snippet name="typeclass-noslash"/>
-            <p>We use some functions from the web-routes package, which handle a lot of the heavy lifting of UTF8 and percent encoding. Our joinPath function is fairly simple: it uses encodePathInfo to render a list of pieces and a query string to a relative URL, and then prepends the application root (plus a slash separator).</p>
-            <p>splitPath breaks our path into pieces using decodePathInfo, then <i>reconstructs</i> a URL using joinPath. If the new path matches the original path, then the user requested the canonical URL and everything is fine. Otherwise, we need to redirect to the newly constructed path.</p>
+            <p id="rpu15">We use some functions from the web-routes package, which handle a lot of the heavy lifting of UTF8 and percent encoding. Our joinPath function is fairly simple: it uses encodePathInfo to render a list of pieces and a query string to a relative URL, and then prepends the application root (plus a slash separator).</p>
+            <p id="rpu16">splitPath breaks our path into pieces using decodePathInfo, then <i>reconstructs</i> a URL using joinPath. If the new path matches the original path, then the user requested the canonical URL and everything is fine. Otherwise, we need to redirect to the newly constructed path.</p>
         </section>
     </section>
     <section id="defaultLayout">
         <title>defaultLayout</title>
-        <p>Most websites like to apply some general template to all of their pages. defaultLayout is the recommended approach for this. While you could just as easily define your own function and call that instead, when you override defaultLayout all of the Yesod-generated pages (error pages, authentication pages) automatically get this style.</p>
-        <p>Overriding is very straight-forward: we use <code>widgetToPageContent</code> to convert a Widget to a title, head tags and body tags, and then use hamletToRepHtml to convert a Hamlet template into a RepHtml. We can even use widget functions like addCassius from within defaultLayout. A simple example should make this all clear:</p>
+        <p id="dl1">Most websites like to apply some general template to all of their pages. defaultLayout is the recommended approach for this. While you could just as easily define your own function and call that instead, when you override defaultLayout all of the Yesod-generated pages (error pages, authentication pages) automatically get this style.</p>
+        <p id="dl2">Overriding is very straight-forward: we use <code>widgetToPageContent</code> to convert a Widget to a title, head tags and body tags, and then use hamletToRepHtml to convert a Hamlet template into a RepHtml. We can even use widget functions like addCassius from within defaultLayout. A simple example should make this all clear:</p>
         <snippet name="typeclass-layout"/>
         <section id="getMessage">
             <title>getMessage</title>
-            <p>Even though we haven't covered sessions yet, I'd like to mention getMessage here. A common pattern in web development is needed to set a message in one handler and display it in another. For example, if a user POSTs a form, you may want to redirect them to another page along with a "Form submission complete" message.</p>
-            <p>To facilitate this, Yesod comes built in with a pair of functions: setMessage sets a message in the user session, and getMessage retrieves the message (and clears it, so it doesn't appear a second time). It's recommended that you put the result of getMessage into your defaultLayout. For example:</p>
+            <p id="gm1">Even though we haven't covered sessions yet, I'd like to mention getMessage here. A common pattern in web development is needed to set a message in one handler and display it in another. For example, if a user POSTs a form, you may want to redirect them to another page along with a "Form submission complete" message.</p>
+            <p id="gm2">To facilitate this, Yesod comes built in with a pair of functions: setMessage sets a message in the user session, and getMessage retrieves the message (and clears it, so it doesn't appear a second time). It's recommended that you put the result of getMessage into your defaultLayout. For example:</p>
             <snippet name="typeclass-getmessage"/>
-            <p>We'll cover getMessage/setMessage in more detail when we <link chapter="sessions">discuss sessions</link>.</p>
+            <p id="gm3">We'll cover getMessage/setMessage in more detail when we <link chapter="sessions">discuss sessions</link>.</p>
         </section>
     </section>
     <section id="custom-error-pages">
         <title>Custom error pages</title>
-        <p>One of the marks of a professional web site is a properly designed error page. Yesod gets you a long way there by automatically using your defaultLayout for displaying error pages. But sometimes, you'll want to go even further. For this, you'll want to override the errorHandler method:</p>
+        <p id="cep1">One of the marks of a professional web site is a properly designed error page. Yesod gets you a long way there by automatically using your defaultLayout for displaying error pages. But sometimes, you'll want to go even further. For this, you'll want to override the errorHandler method:</p>
         <snippet name="typeclass-errorhandler"/>
-        <p>Here we specify a custom 404 error page. We can also use the defaultErrorHandler when we don't want to write a custom handler for each error type. Due to type constraints, we need to start off our methods with "fmap chooseRep", but otherwise you can write a typical handler function.</p>
-        <p>In fact, you could even use such special responses like redirects:</p>
+        <p id="cep2">Here we specify a custom 404 error page. We can also use the defaultErrorHandler when we don't want to write a custom handler for each error type. Due to type constraints, we need to start off our methods with "fmap chooseRep", but otherwise you can write a typical handler function.</p>
+        <p id="cep3">In fact, you could even use such special responses like redirects:</p>
         <snippet name="typeclass-errorhandler-redirect"/>
         <note>Even though you <i>can</i> do this, I don't actually recommend such practices. A 404 should be a 404.</note>
     </section>
     <section id="onRequest">
         <title>onRequest</title>
-        <p>The last method we'll discuss here is onRequest. As it sounds, it gets called every time there is a request. Using it very straight-forward:</p>
+        <p id="or1">The last method we'll discuss here is onRequest. As it sounds, it gets called every time there is a request. Using it very straight-forward:</p>
         <snippet name="typeclass-onrequest"/>
     </section>
     <summary>
-        <p>The Yesod typeclass has a number of overrideable methods that allow you to configure your application. Besides approot, they are all optional. By using built-in Yesod constructs like defaultLayout and getMessage, you'll get a consistent look-and-feel throughout your site, including pages automatically generated by Yesod such as error pages and authentication.</p>
-        <p>We haven't covered all the methods in the Yesod typeclass in this chapter. Some of them relate to topics we have not yet covered (such as authentication), and will be discussed in those chapters. For a full listing of methods available, you should always consult the Haddock documentation.</p>
+        <p id="s1">The Yesod typeclass has a number of overrideable methods that allow you to configure your application. Besides approot, they are all optional. By using built-in Yesod constructs like defaultLayout and getMessage, you'll get a consistent look-and-feel throughout your site, including pages automatically generated by Yesod such as error pages and authentication.</p>
+        <p id="s2">We haven't covered all the methods in the Yesod typeclass in this chapter. Some of them relate to topics we have not yet covered (such as authentication), and will be discussed in those chapters. For a full listing of methods available, you should always consult the Haddock documentation.</p>
     </summary>
 </chapter>

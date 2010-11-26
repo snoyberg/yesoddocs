@@ -2,11 +2,11 @@
 <chapter id="sessions" status="Outline">
     <title>Sessions</title>
     <intro>
-        <p>This is currently just a dump from a blog post I wrote; it needs to be cleaned up. One extra piece of important information: sessions are tied to a user's IP address, so they are less prone to session hijacking. This may cause problems if the user is behind a proxy; to disable IP address tying, use the sessionIpAddress method in the Yesod typeclass.</p>
+        <p id="i1">This is currently just a dump from a blog post I wrote; it needs to be cleaned up. One extra piece of important information: sessions are tied to a user's IP address, so they are less prone to session hijacking. This may cause problems if the user is behind a proxy; to disable IP address tying, use the sessionIpAddress method in the Yesod typeclass.</p>
     </intro>
     <section id="fixme">
         <title>TODO</title>
-        <p>FIXME: mention encryptKey and clientSessionDuration</p>
+        <p id="i2">FIXME: mention encryptKey and clientSessionDuration</p>
         <markdown><![CDATA[
 <p>This post discusses the session API as present in Yesod 0.4. This version has not been released yet, but you can <a href="http://docs.yesodweb.com/haddock/yesod/">see the Haddocks online</a>. The API is not much different from previous versions, but the names have changed a bit.</p>
 <h3>Sessions</h3>

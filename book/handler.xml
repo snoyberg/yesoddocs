@@ -2,20 +2,20 @@
 <chapter id="handler" status="Unproofed">
     <title>Routing and Handlers</title>
     <intro>
-        <p>If we look at Yesod as a Model-View-Controller framework, routing and handlers make up the controller. For contrast, let's describe two other routing approaches used in other web development environments:</p>
+        <p id="intro1">If we look at Yesod as a Model-View-Controller framework, routing and handlers make up the controller. For contrast, let's describe two other routing approaches used in other web development environments:</p>
         <ul>
             <li>Dispatch based on file name. This is how PHP and ASP work, for example.</li>
             <li>Have a centralized routing function that parses routes based on regular expressions. Django and Rails follow this approach.</li>
         </ul>
-        <p>Yesod is closer in principle to the latter technique. Even so, there are significant differences. Instead of using regular expressions, Yesod matches on pieces of a route. Instead of having a one-way route-to-handler mapping, Yesod has an intermediate data type (called the route datatype, or a type-safe URL) and creates two-way conversion functions.</p>
-        <p>Coding this more advanced system manually is tedious and error prone. Therefore, Yesod relies heavily on Template Haskell and Quasi-Quotation to automatically generate this code for you. This chapter will explain the syntax of the routing declarations, give you a glimpse of what code is generated for you, and explain the interaction between routing and handler functions.</p>
+        <p id="intro2">Yesod is closer in principle to the latter technique. Even so, there are significant differences. Instead of using regular expressions, Yesod matches on pieces of a route. Instead of having a one-way route-to-handler mapping, Yesod has an intermediate data type (called the route datatype, or a type-safe URL) and creates two-way conversion functions.</p>
+        <p id="intro3">Coding this more advanced system manually is tedious and error prone. Therefore, Yesod relies heavily on Template Haskell and Quasi-Quotation to automatically generate this code for you. This chapter will explain the syntax of the routing declarations, give you a glimpse of what code is generated for you, and explain the interaction between routing and handler functions.</p>
     </intro>
     <section id="route-syntax">
         <title>Route Syntax</title>
         <section id="pieces">
             <title>Pieces</title>
 
-            <p>The first thing Yesod does when it gets a request (well, maybe
+            <p id="pieces1">The first thing Yesod does when it gets a request (well, maybe
                 not the <i>first</i>) is split up the requested path into
                 pieces. The pieces are simply tokenized at all forward slashes.
                 So:</p>
@@ -23,7 +23,7 @@
             <codeblock>toPieces "/" = []
 toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
 
-            <p>You may notice that there are some funny things going on with
+            <p id="pieces2">You may notice that there are some funny things going on with
                 trailing slashes, or double slashes ("/foo//bar//"), or a few
                 other things. Yesod believes in having <term>canonical
                     URLs</term>; if someone requests a URL missing a trailing
@@ -32,38 +32,38 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
                 principle of one URL for one resource, and can help with your
                 search rankings.</p>
 
-            <p>What this means for you is that you needn't concern yourself
+            <p id="pieces3">What this means for you is that you needn't concern yourself
                 with the exact structure of your URLs: you can safely think
                 about pieces of a path, and Yesod automatically handles
                 intercalating the slashes and escaping problematic
                 characters.</p>
 
-            <p>If, by the way, you want more fine-tuned control of how paths
+            <p id="pieces4">If, by the way, you want more fine-tuned control of how paths
                 are split into pieces and joined together again, you'll want to
                 look at the splitPath and joinPath methods in the <link
                     chapter="yesod-typeclass" section="split-join-path">Yesod
                     typeclass</link>.</p>
             <section id="types-of-pieces">
                 <title>Types of Pieces</title>
-                <p>When you are declaring your routes, you have three types of pieces at your disposal:</p>
+                <p id="pieces5">When you are declaring your routes, you have three types of pieces at your disposal:</p>
                 <defs>
                     <def term="Static">This is a plain string that must be matched against precisely in the URL.</def>
                     <def term="Dynamic single">This is a single piece (ie, between two forward slashes), but can be a user-submitted value. This is the primary method of receiving extra user input on a page request. These pieces begin with a hash (#) and are followed by a data type. The datatype must be an instance of <code>SinglePiece</code>.</def>
                     <def term="Dynamic multi">The same as before, but can receive multiple pieces of the URL. This must always be the last piece in a resource pattern. It is specified by an asterisk (*) followed by a datatype, which must be an instance of <code>MultiPiece</code>. Multi pieces are not as common as the other two, though they are very important for implementing features like static trees representing are file structure or wikis with arbitrary hierarchies.</def>
                 </defs>
-                <p>Let us take a look at some standard kinds of resource patterns you may want to write. Starting simply, the root of an application will just be <code>/</code>. Similarly, you may want to place your FAQ at <code>/page/faq</code>.</p>
-                <p>Now let's say you are going to write a Fibonacci website. You may construct your URLs like <code>/fib/#Int</code>. But there's a slight problem with this: we do not want to allow negative numbers or zero to be passed into our application. Fortunately, the type system can protected us:</p>
+                <p id="pieces6">Let us take a look at some standard kinds of resource patterns you may want to write. Starting simply, the root of an application will just be <code>/</code>. Similarly, you may want to place your FAQ at <code>/page/faq</code>.</p>
+                <p id="pieces7">Now let's say you are going to write a Fibonacci website. You may construct your URLs like <code>/fib/#Int</code>. But there's a slight problem with this: we do not want to allow negative numbers or zero to be passed into our application. Fortunately, the type system can protected us:</p>
                 <snippet name="handler-fibs"/>
-                <p>On line 1 we define a simple newtype wrapper around Int to protect ourselves from invalid input. We can see that SinglePiece is a typeclass with two methods. <code>toSinglePiece</code> does nothing more than convert to a <code>String</code>. <code>fromSinglePiece</code> <i>attempts</i> to convert a <code>String</code> to our datatype, giving an error message when this conversion is impossible. By using this datatype, we can ensure that our handler function is only ever given natural numbers, allowing us to once again use the type system to battle the boundary issue.</p>
-                <advanced><p>In case you are wondering, the parse error messages returned by <code>fromSinglePiece</code> are not ever shown by Yesod. This all has to do with some decisions made in the design of <hackage>web-routes</hackage>. However, all of that is outside of the scope of this book.</p></advanced>
-                <p>Defining a MultiPiece is just as simple. Let's say we want to have a Wiki with at least two levels of hierarchy; we might define a datatype such as:</p>
+                <p id="pieces8">On line 1 we define a simple newtype wrapper around Int to protect ourselves from invalid input. We can see that SinglePiece is a typeclass with two methods. <code>toSinglePiece</code> does nothing more than convert to a <code>String</code>. <code>fromSinglePiece</code> <i>attempts</i> to convert a <code>String</code> to our datatype, giving an error message when this conversion is impossible. By using this datatype, we can ensure that our handler function is only ever given natural numbers, allowing us to once again use the type system to battle the boundary issue.</p>
+                <advanced><p id="pieces9">In case you are wondering, the parse error messages returned by <code>fromSinglePiece</code> are not ever shown by Yesod. This all has to do with some decisions made in the design of <hackage>web-routes</hackage>. However, all of that is outside of the scope of this book.</p></advanced>
+                <p id="pieces10">Defining a MultiPiece is just as simple. Let's say we want to have a Wiki with at least two levels of hierarchy; we might define a datatype such as:</p>
                 <snippet name="handler-wiki"/>
             </section>
         </section>
         <section id="resource-name">
             <title>Resource name</title>
 
-            <p>Each resource pattern also has a name associated with it. That
+            <p id="rn1">Each resource pattern also has a name associated with it. That
                 name will become the constructor for the <term>type safe
                     URL</term> datatype associated with your application.
                 Therefore, it has to start with a capital letter. By
@@ -71,20 +71,20 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
                 There is nothing forcing you to do this, it is just
                 common practice.</p>
 
-            <p>The exact definition of our constructor depends upon the
+            <p id="rn2">The exact definition of our constructor depends upon the
                 resource pattern it is attached to. Whatever datatypes are
                 included in single and multi pieces of the pattern become
                 arguments to the datatype. This gives us a 1-to-1
                 correspondence between our type safe URL values and valid URLs
                 in our application.</p>
 
-            <advanced><p>This doesn't necessarily mean that <i>every</i> value
+            <advanced><p id="rn3">This doesn't necessarily mean that <i>every</i> value
                     is a working page, just that it is is a potentially valid
                     URL. As an example, that value <code>PersonR
                         "Michael"</code> may not resolve to a valid page if
                     there is no Michael in the database.</p></advanced>
 
-            <p>Let's get some real examples going here. If you had the resource
+            <p id="rn4">Let's get some real examples going here. If you had the resource
                 patterns <code>/person/#String</code> named
                 <code>PersonR</code>, <code>/year/#Int</code> named
                 <code>YearR</code> and <code>/page/faq</code> named
@@ -95,7 +95,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
              | YearR Int
              | FaqR</codeblock>
 
-             <p>If a user requests the relative URL of
+             <p id="rn5">If a user requests the relative URL of
                  <code>/year/2009/</code>, Yesod will convert it into the value
                  <code>YearR 2009</code>. <code>/person/Michael/</code> becomes
                  <code>PersonR "Michael"</code> and <code>/page/faq/</code>
@@ -105,25 +105,25 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
                  <code>/page/FAQ/</code> would all result in 404 errors without
                  ever seeing your code.</p>
 
-             <advanced><p>Throughout the above discussion, I used the terms type-safe URLs and routes datatype interchangeably. Don't be confused, they are the exact same thing. They just sound better in different contexts.</p></advanced>
+             <advanced><p id="rn6">Throughout the above discussion, I used the terms type-safe URLs and routes datatype interchangeably. Don't be confused, they are the exact same thing. They just sound better in different contexts.</p></advanced>
          </section>
          <section id="handler-spec">
              <title>Handler specification</title>
 
-             <p>The last piece of the puzzle when declaring your resources is how they will be handled. There are three options in Yesod:</p>
+             <p id="rn7">The last piece of the puzzle when declaring your resources is how they will be handled. There are three options in Yesod:</p>
              <ul>
                  <li>You have a single handler function which should be used for all request methods.</li>
                  <li>You want to write a separate handler function for each request method you will support. All other request method will generated a 405 Bad Method response.</li>
                  <li>You want to pass off to a <term>subsite</term>.</li>
              </ul>
 
-             <p>The first two are very easily specified. A single handler
+             <p id="rn8">The first two are very easily specified. A single handler
                  function will be a line with just a resource pattern and the
                  resource name, such as <code>/page/faq FaqR</code>. In this
                  case, the handler function must be named
                  <code>handleFaqR</code>.</p>
 
-             <p>A separate handler for each request method will be the same,
+             <p id="rn9">A separate handler for each request method will be the same,
                  plus a list of request methods. The request methods must be
                  ALL CAPITAL LETTERS. For example, <code>/person/#String
                      PersonR GET POST DELETE</code>. In this case, you would
@@ -131,7 +131,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
                  <code>getPersonR</code>, <code>postPersonR</code> and
                  <code>deletePersonR</code>.</p>
 
-             <p>Subsites are a very useful- and complicated- topic in Yesod. We
+             <p id="rn10">Subsites are a very useful- and complicated- topic in Yesod. We
                  will <link chapter="subsite">cover writing subsites
                      later</link>, but using them is not too difficult. The
                  most commonly used subsite is the static subsite, which serves
@@ -141,21 +141,21 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
 
              <codeblock>/static StaticR Static getStatic</codeblock>
 
-             <p>In this line, <code>/static</code> just says where in your URL
+             <p id="rn11">In this line, <code>/static</code> just says where in your URL
                  structure to serve the static files from. There is nothing
                  magical about the word static, you could easily replace it
                  with <code>/my/non-dynamic/files</code>. The one restriction
                  is that you can only use static pieces when using a
                  subsite.</p>
 
-             <p>The next word, StaticR gives the resource name. The next two
+             <p id="rn12">The next word, StaticR gives the resource name. The next two
                  words are what specify that we are using a subsite.
                  <code>Static</code> is the name of the <term>subsite
                      foundation datatype</term>, and <code>getStatic</code> is
                  a function that gets a <code>Static</code> value from a value
                  of your main application's foundation datatype.</p>
 
-             <p>Let's not get too caught up in the details of subsites now. We
+             <p id="rn13">Let's not get too caught up in the details of subsites now. We
                  will look more closely at the static subsite in the <link
                      chapter="scaffold">scaffolded site chapter</link>.</p>
 
@@ -163,31 +163,31 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
     </section>
     <section id="dispatch">
         <title>Dispatch</title>
-        <p>Once you have specified your routes, Yesod will take care of all the pesky details of dispatch for you. You just need to make sure to provide the appropriate <term>handler functions</term>. For subsite routes, you do not need to write any handler functions, but you do for the other two. We mentioned the naming rules above (MyHandlerR GET -&gt; getMyHandlerR, MyOtherHandlerR -&gt; handleMyOtherHandlerR). Now we need the type signature.</p>
+        <p id="dispatch1">Once you have specified your routes, Yesod will take care of all the pesky details of dispatch for you. You just need to make sure to provide the appropriate <term>handler functions</term>. For subsite routes, you do not need to write any handler functions, but you do for the other two. We mentioned the naming rules above (MyHandlerR GET -&gt; getMyHandlerR, MyOtherHandlerR -&gt; handleMyOtherHandlerR). Now we need the type signature.</p>
         <section id="dispatch-return-type">
             <title>Return Type</title>
-            <p>Let's look at a simple handler function:</p>
+            <p id="dispatch2">Let's look at a simple handler function:</p>
             <snippet name="handler-simple"/>
-            <p>Look at the type signature of getHomeR. Unfortunately, there is a lot of complexity here to dig through. We will cover the GHandler monad in <link chapter="handler" section="ghandler">more detail later</link>. Next come <code>subsite</code> and <code>Simple</code>. This is where we need to start heading down the rabbit hole...</p>
-            <p>The same way your application has a <term>foundation</term> datatype and associated <term>type-safe URL</term> datatype, so does every subsite. As an example, the Static subsite's foundation datatype has information on how to look up a requested file. The Authentication subsite has a URL datatype that provides login, logout and various other actions.</p>
-            <p>The GHandler monad needs information on both the current subsite and current master site. Most of the time, <i>these are the same</i>! When you are writing your typical handler functions, you only have a single foundation going on. So in the code snippet above, the type signature for getHomeR could also have been <code>GHandler Simple Simple RepHtml</code> without any problems.</p>
-            <p>For now, just accept it as a strange quirk that you need to deal with this extra type parameter. If you want, you can make your typing a little bit shorter by including <code>type Handler = GHandler MyApp MyApp</code> at the beginning of your code (the <link chapter="scaffold">scaffolded site</link> does this for you). And when we get to the <link chapter="subsite">subsite chapter</link> we will explore why these awkwardness is a necessity.</p>
+            <p id="dispatch3">Look at the type signature of getHomeR. Unfortunately, there is a lot of complexity here to dig through. We will cover the GHandler monad in <link chapter="handler" section="ghandler">more detail later</link>. Next come <code>subsite</code> and <code>Simple</code>. This is where we need to start heading down the rabbit hole...</p>
+            <p id="dispatch4">The same way your application has a <term>foundation</term> datatype and associated <term>type-safe URL</term> datatype, so does every subsite. As an example, the Static subsite's foundation datatype has information on how to look up a requested file. The Authentication subsite has a URL datatype that provides login, logout and various other actions.</p>
+            <p id="dispatch5">The GHandler monad needs information on both the current subsite and current master site. Most of the time, <i>these are the same</i>! When you are writing your typical handler functions, you only have a single foundation going on. So in the code snippet above, the type signature for getHomeR could also have been <code>GHandler Simple Simple RepHtml</code> without any problems.</p>
+            <p id="dispatch6">For now, just accept it as a strange quirk that you need to deal with this extra type parameter. If you want, you can make your typing a little bit shorter by including <code>type Handler = GHandler MyApp MyApp</code> at the beginning of your code (the <link chapter="scaffold">scaffolded site</link> does this for you). And when we get to the <link chapter="subsite">subsite chapter</link> we will explore why these awkwardness is a necessity.</p>
             <section id="chooserep">
                 <title>ChooseRep</title>
 
-                <p>That just leaves us one thing: <code>RepHtml</code>. When we
+                <p id="chooserep1">That just leaves us one thing: <code>RepHtml</code>. When we
                     <link chapter="rest" section="representations">discuss
                         representations</link> we will explore the <i>why</i> of
                     things more; for now, we are just interested in the
                     <i>how</i>.</p>
 
-                <p>As you might guess, RepHtml is a datatype for HTML responses.
+                <p id="chooserep2">As you might guess, RepHtml is a datatype for HTML responses.
                     But as you also may guess, web sites need to return responses
                     besides HTML. CSS, Javascript, images, XML are all necessities
                     of a website. Therefore, the return  value of a handler
                     function can be any instance of <code>HasReps</code>.</p>
 
-                <p>HasReps is a powerful concept that allows Yesod to automatically
+                <p id="chooserep3">HasReps is a powerful concept that allows Yesod to automatically
                     choose the correct representation of your data based on the
                     client request. For now, we will focus just on simple instances
                     such as RepHtml, which only provide one representation.</p>
@@ -198,7 +198,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
         <section id="arguments">
             <title>Arguments</title>
 
-            <p>But not every route is as simple as the HomeR we just defined.
+            <p id="arguments1">But not every route is as simple as the HomeR we just defined.
                 Take for instance our PersonR route from earlier. The name of
                 the person needs to be passed to the handler function. This
                 translation is very straight-forward, and hopefully intuitive.
@@ -206,14 +206,14 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
 
             <snippet name="handler-args"/>
 
-            <p>The arguments have the types of the dynamic pieces for each route, in the order specified. Also, notice how we are able to use both <code>RepHtml</code> and <code>RepPlain</code>.</p>
+            <p id="arguments2">The arguments have the types of the dynamic pieces for each route, in the order specified. Also, notice how we are able to use both <code>RepHtml</code> and <code>RepPlain</code>.</p>
 
         </section>
 
     </section>
     <section id="ghandler">
         <title>The GHandler Monad</title>
-        <p>The vast majority of code you write in Yesod sites in the GHandler monad. If you are approaching this from an <abbr title="Model-View-Controller">MVC</abbr> background, your GHandler code is the Controller. Some important points to know about GHandler:</p>
+        <p id="ghandler1">The vast majority of code you write in Yesod sites in the GHandler monad. If you are approaching this from an <abbr title="Model-View-Controller">MVC</abbr> background, your GHandler code is the Controller. Some important points to know about GHandler:</p>
         <ul>
             <li>It is an instance of <code>MonadIO</code>, so you can run any IO action in your handlers with <code>liftIO</code>. By the way, <code>liftIO</code> is exported by the <code>Yesod</code> module for your convenience.</li>
             <li>GHandler is really a <term>monad transformer stack</term> providing a number of different components.</li>
@@ -222,10 +222,10 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
             <li>A State component deals with session variables, allowing them to be both read, written and deleted. Sessions are discussed in <link chapter="sessions">their own chapter</link>.</li>
             <li>An Error component deals with <term>short-circuiting</term>. Despite the name, these are not necessarily errors: you can use this for sending static files and redirecting in addition to sending error responses.</li>
         </ul>
-            <p>The remainder of this chapter will give a brief introduction to some of the most common functions living in the GHandler monad. I am specifically <i>not</i> covering any of the session functions; that will be addressed in the <link chapter="sesssions">sessions chapter</link>.</p>
+            <p id="ghandler2">The remainder of this chapter will give a brief introduction to some of the most common functions living in the GHandler monad. I am specifically <i>not</i> covering any of the session functions; that will be addressed in the <link chapter="sesssions">sessions chapter</link>.</p>
         <section id="application-info">
             <title>Application Information</title>
-            <p>There are a number of functions that return information about your application as a whole, and give no information about individual requests. Some of these are:</p>
+            <p id="ghandler3">There are a number of functions that return information about your application as a whole, and give no information about individual requests. Some of these are:</p>
             <defs>
                 <def term="getYesod">Returns your applicaton foundation value. If you store configuration values in your foundation, you will probably end up using this function a lot.</def>
                 <def term="getYesodSub">Get the subsite foundation value. Unless you are working in a subsite, this will return the same value as <code>getYesod</code>.</def>
@@ -235,13 +235,13 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
         </section>
         <section id="request-info">
             <title>Request Information</title>
-            <p>The most common information you will want to get about the current request is the requested path, the query string parameters and POSTed form data. The first of those is dealt with in the routing, as described above. The other two are best dealt with using the <link chapter="forms">forms module</link>.</p>
-            <p>That said, you will sometimes need to get the data in a more raw format. For this purpose, Yesod exposes the <code>Request</code> datatype along with the <code>getRequest</code> function to retrieve it. This gives you access to the full list of GET and POST parameters, cookies, and preferred languages. There are some convenient functions to make these lookups easier, such as <code>lookupGetParam</code>, <code>lookupPostParam</code>, <code>lookupCookie</code> and <code>languages</code>.</p>
-            <p>If you need even more raw data, like request headers, you can use <code>waiRequest</code> to access the <link chapter="wai">WAI</link> request value.</p>
+            <p id="ghandler4">The most common information you will want to get about the current request is the requested path, the query string parameters and POSTed form data. The first of those is dealt with in the routing, as described above. The other two are best dealt with using the <link chapter="forms">forms module</link>.</p>
+            <p id="ghandler5">That said, you will sometimes need to get the data in a more raw format. For this purpose, Yesod exposes the <code>Request</code> datatype along with the <code>getRequest</code> function to retrieve it. This gives you access to the full list of GET and POST parameters, cookies, and preferred languages. There are some convenient functions to make these lookups easier, such as <code>lookupGetParam</code>, <code>lookupPostParam</code>, <code>lookupCookie</code> and <code>languages</code>.</p>
+            <p id="ghandler6">If you need even more raw data, like request headers, you can use <code>waiRequest</code> to access the <link chapter="wai">WAI</link> request value.</p>
         </section>
         <section id="short-circuiting">
             <title>Short Circuiting</title>
-            <p>The following functions immediately end execution of a handler function and return a result to the user.</p>
+            <p id="ghandler7">The following functions immediately end execution of a handler function and return a result to the user.</p>
             <defs>
                 <def term="redirect">Sends a redirect response to the user. You can specify whether you want a 301, 302 or 303 status code. This function takes a type-safe URL as a destination. There are also <code>redirectString</code> and <code>redirecParams</code> variants.</def>
                 <def term="notFound">Return a 404 response. This can be useful if a user requests a database value that doesn't exist.</def>
@@ -266,7 +266,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz"]</codeblock>
         </section>
     </section>
     <summary>
-        <p>Routing and dispatch is arguably the core of Yesod: it is from here that our type-safe URLs are defined, and the majority of our code is written within the GHandler monad. This chapter covered some of the most important and central concepts of Yesod, so it is important that you properly digest it.</p>
-        <p>This chapter also hinted at a number of more complex Yesod topics that we will be covering later. But you should be able to write some very sophisticated web applications with just the knowledge you have learned up until here.</p>
+        <p id="summary1">Routing and dispatch is arguably the core of Yesod: it is from here that our type-safe URLs are defined, and the majority of our code is written within the GHandler monad. This chapter covered some of the most important and central concepts of Yesod, so it is important that you properly digest it.</p>
+        <p id="summary2">This chapter also hinted at a number of more complex Yesod topics that we will be covering later. But you should be able to write some very sophisticated web applications with just the knowledge you have learned up until here.</p>
     </summary>
 </chapter>

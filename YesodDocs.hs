@@ -421,9 +421,9 @@ sectionBlockToHtml level (Left section) = [$hamlet|
     nextLevel = level + 1
 sectionBlockToHtml _ (Right b) = blockToHtml b
 
-blockToHtml :: Block -> Hamlet YesodDocsRoute
-blockToHtml (Paragraph is) = [$hamlet|
-%p
+blockToHtml :: Block -> Hamlet YesodDocsRoute -- FIXME put one of those paragraph symbol links here
+blockToHtml (Paragraph pid is) = [$hamlet|
+%p#$pid$
     $forall is i
         ^inlineToHtml.i^
 |]

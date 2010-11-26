@@ -49,11 +49,11 @@ data Chapter = Chapter
 data Section = Section
     { sectionId :: Text
     , sectionTitle :: Text
-    , sectionBlocks :: [Either Section Block] -- FIXME allow subsections
+    , sectionBlocks :: [Either Section Block]
     }
     deriving Show
 
-data Block = Paragraph [Inline]
+data Block = Paragraph { paraId :: Text, paraContents :: [Inline] }
            | UList [ListItem]
            | OList [ListItem]
            | CodeBlock Text
@@ -312,7 +312,8 @@ parseChapter = tagAttr "chapter" $ \attrs -> do
     go slug x = throwError $ XmlException $ "Chapter " ++ T.unpack slug ++ ", duplicated IDs: " ++ unwords (map T.unpack x)
     getIds (Section id' _ blocks) = id' : concatMap getIds' blocks
     getIds' (Left s) = getIds s
-    getIds' (Right _) = [] -- FIXME paragraph ids
+    getIds' (Right (Paragraph id' _)) = [id']
+    getIds' (Right _) = []
 
 mgetAttribute :: MonadIO m => Text -> [Attribute] -> Iteratee Event m (Maybe Text)
 mgetAttribute t as =
@@ -355,7 +356,10 @@ parseBlockSection = choose
 
 parseBlock :: MonadIO m => Iteratee Event m (Maybe Block)
 parseBlock = choose
-    [ mtag "p" $ fmap Paragraph $ many parseInline
+    [ mtagAttrs "p" $ \attrs -> do
+        id' <- getAttribute "id" attrs
+        ins <- many parseInline
+        return $ Paragraph id' ins
     , mtag "ul" $ fmap UList $ many parseListItem
     , mtag "ol" $ fmap OList $ many parseListItem
     , mtag "codeblock" $ fmap CodeBlock takeText
@@ -382,7 +386,7 @@ parseImage attrs = do
 parseSnippet :: MonadIO m => [Attribute] -> Iteratee Event m Block
 parseSnippet attrs = do
     name <- getAttribute "name" attrs
-    raw <- liftIO $ U.readFile $ "snippets/" ++ T.unpack name ++ ".hs"
+    raw <- liftIO $ U.readFile $ "snippets/" ++ T.unpack name ++ ".hs" -- FIXME use text
     let raw' = unlines $ go False $ lines raw
     case Kate.highlightAs "haskell" raw' of
         Left e -> throwError $ XmlException $ concat

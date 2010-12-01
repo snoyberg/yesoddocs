@@ -34,3 +34,4 @@
             Learn more about Yesod by $
             %a!href=@BookR@ reading the book
             \.
+    %p.note Note: The scaffolded site you create with the <code>yesod</code> executable depends upon some libraries which the main yesod package does not require. These include hjsmin, persistent-sqlite, mime-mail and yesod-auth. You must either run <code>cabal install</code> in your scaffolded folder to install these automatically, or install them manually.

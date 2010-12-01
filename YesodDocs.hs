@@ -109,6 +109,7 @@ getHomeR = defaultLayout $ do
 getFiveMinutesR :: Handler RepHtml
 getFiveMinutesR = defaultLayout $ do
     setTitle "Yesod in Five Minutes"
+    addCassius $(cassiusFile "five-minutes")
     addHamlet $(hamletFile "five-minutes")
 
 getBookR :: Handler RepHtml

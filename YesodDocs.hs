@@ -25,7 +25,8 @@ import Data.Text.Lazy (Text)
 import qualified Text.Highlighting.Kate as Kate
 import Text.XHtml.Strict (showHtmlFragment)
 import Data.Either (lefts)
-import Control.Concurrent.STM
+import Control.Concurrent.AdvSTM
+import Control.Concurrent.AdvSTM.TVar
 import Comments
 
 data YesodDocs = YesodDocs
@@ -551,12 +552,11 @@ postCommentR slug pid = do
     now <- liftIO getCurrentTime
     let cm = Comment (T.pack name) (Textarea content) now
     tcs <- fmap comments getYesod
-    cs <- liftIO $ atomically $ do
+    liftIO $ atomically $ do
         cs <- readTVar tcs
         let cs' = addComment cm cs
         writeTVar tcs cs'
-        return cs'
-    liftIO $ saveComments cs
+        onCommit $ saveComments cs'
     setMessage "Your comment has been submitted"
     redirect RedirectTemporary $ ChapterR slug -- FIXME redirect to that paragraph?
   where

@@ -14,4 +14,5 @@ $(function(){
         $(this).parent().next().toggleClass("hidden");
     }).parent().next().addClass("hidden");
     $(location.hash).next().removeClass("hidden");
+    $("form").append("<input type='hidden' name='code' value='xjkjk'/>");
 });

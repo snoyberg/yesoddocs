@@ -556,6 +556,7 @@ postCommentR :: String -> Text -> Handler ()
 postCommentR slug pid = do
     name <- runFormPost' $ stringInput "name" -- FIXME textInput
     content <- runFormPost' $ stringInput "content" -- FIXME textareaInput
+    x <- runFormPost' $ stringInput "code"
     now <- liftIO getCurrentTime
     let cm = Comment (T.pack name) (Textarea content) now
     tcs <- fmap comments getYesod

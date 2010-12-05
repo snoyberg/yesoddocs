@@ -3,7 +3,6 @@
     %head
         %title $pageTitle.pc$
         %meta!charset=utf-8
-        %link!rel=alternate!type="application/atom+xml"!href=@FeedR@
         ^pageHead.pc^
     %body
         #topbar

@@ -28,6 +28,8 @@ import Data.Either (lefts)
 import Control.Concurrent.AdvSTM
 import Control.Concurrent.AdvSTM.TVar
 import Comments
+import Data.List (sortBy)
+import Text.Hamlet (toHtml)
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
@@ -66,6 +68,8 @@ mkYesod "YesodDocs" [$parseRoutes|
 /blog/#String EntryR GET
 
 /comment/#String/#Text CommentR POST
+/feed/comments CommentsFeedR GET
+/comment/#String OneCommentR GET
 |]
 
 navLinks :: [(String, Either String YesodDocsRoute)]
@@ -92,6 +96,7 @@ instance Yesod YesodDocs where
         pc <- widgetToPageContent $ do
             widget
             addCassius $(cassiusFile "default-layout")
+            atomLink FeedR "Yesod Blog"
         hamletToRepHtml $(hamletFile "default-layout")
 instance YesodJquery YesodDocs where
     urlJqueryJs _ = Left $ StaticR jquery_js
@@ -119,6 +124,7 @@ getBookR = defaultLayout $ do
     book <- liftHandler $ fmap getBook getYesod
     let unpack = T.unpack
     let chapters = concatMap partChapters $ bookParts book
+    atomLink CommentsFeedR "Book Comments"
     addHamlet $(hamletFile "book")
     addCassius $(cassiusFile "book")
 
@@ -142,6 +148,7 @@ getChapterR slug = do
     defaultLayout $ do
         setTitle $ string $ "Yesod Book: " ++ title
         addScriptEither $ urlJqueryJs y
+        atomLink CommentsFeedR "Book Comments"
         addHamlet $(hamletFile "chapter")
         addCassius $(cassiusFile "book")
         addStylesheet $ StaticR hk_kate_css
@@ -568,3 +575,51 @@ postCommentR slug pid = do
         | pid == pid' = (pid', cs ++ [cm]) : rest
         | otherwise = (pid', cs) : addComment' cm rest
     addComment' cm [] = [(pid, [cm])]
+
+getOneCommentR :: String -> Handler ()
+getOneCommentR timeS = do
+    time <-
+        case reads $ map utos timeS of
+            [] -> notFound
+            (t, _):_ -> return t
+    tcs <- fmap comments getYesod
+    cs' <- liftIO $ atomically $ readTVar tcs
+    mapM_ (go time) cs'
+  where
+    utos '_' = ' '
+    utos 'c' = ':'
+    utos c   = c
+    go time (chapter, paras) =
+        mapM_ (go' time) paras
+      where
+        go' time (para, cs)
+            | time `elem` map commentTime cs = do
+                r <- getUrlRender
+                let dest = r (ChapterR chapter) ++ '#' : T.unpack para
+                redirectString RedirectPermanent dest
+            | otherwise = return ()
+
+getCommentsFeedR :: Handler RepAtom
+getCommentsFeedR = do
+    cacheSeconds 300
+    tcs <- fmap comments getYesod
+    cs' <- liftIO $ atomically $ readTVar tcs
+    let cs = sortBy (\x y -> commentTime y `compare` commentTime x)
+           $ concatMap (concatMap snd) $ map snd cs'
+    atomFeed AtomFeed
+        { atomTitle = "Comments on the Yesod Web Framework book"
+        , atomLinkSelf = CommentsFeedR
+        , atomLinkHome = BookR
+        , atomUpdated = commentTime $ head cs
+        , atomEntries = map go $ take 10 cs
+        }
+  where
+    go c = AtomFeedEntry
+        { atomEntryLink = OneCommentR $ map stou $ show $ commentTime c
+        , atomEntryUpdated = commentTime c
+        , atomEntryTitle = "Comment by " ++ T.unpack (commentName c)
+        , atomEntryContent = toHtml $ commentContent c
+        }
+    stou ' ' = '_'
+    stou ':' = 'c'
+    stou c   = c

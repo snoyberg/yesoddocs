@@ -43,7 +43,7 @@ addHamlet :: Hamlet    -> Widget ()
 addHtml   :: Html      -> Widget ()</codeblock>
 
         <p id="ph5">addWidget is actually just <code>id</code> in disguise; it can be useful for forcing a specific type, and you'll see below that it can make your widget code look more consistent. You may be wondering why we need all three of these. Sometimes, it is easier to get a hold of a Hamlet or Html value than a Widget. In most usage, however, you can just stick with addWidget.</p>
-        <p id="ph6">My point in explaining this now is so make clear that</p>
+        <p id="ph6">My point in explaining this now is to make it clear that</p>
 
         <codeblock>defaultLayout [$hamlet|...|]</codeblock>
 

@@ -95,7 +95,7 @@ hamletToRepHtml [$hamlet|
         <p id="c2">Cassius, like Hamlet, uses a whitespace sensitive formatting. It also allows variable interpolation like Hamlet, allowing you to avoid typos in class names like this:</p>
         <codeblock>getHomeR = defaultLayout $ do
     let myClass = "some-missspelled-class-name"
-    addHamlet [$hamlet|%h1.myClass Hello World|]
+    addHamlet [$hamlet|%h1.$myClass$ Hello World|]
     addCassius [$cassius|
     h1.$myClass$
         color: green

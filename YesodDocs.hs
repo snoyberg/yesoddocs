@@ -566,7 +566,8 @@ postCommentR slug pid = do
         writeTVar tcs cs'
         onCommit $ saveComments cs'
     setMessage "Your comment has been submitted"
-    redirect RedirectTemporary $ ChapterR slug -- FIXME redirect to that paragraph?
+    r <- getUrlRender
+    redirectString RedirectTemporary $ r (ChapterR slug) ++ '#' : T.unpack pid
   where
     addComment cm ((slug', cs):rest)
         | slug == slug' = (slug', addComment' cm cs) : rest

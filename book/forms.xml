@@ -78,7 +78,7 @@
             <p id="custom2">There's two slightly clumsy things about our previous example: it doesn't give a validation error when the minimum number is greater than the maximum, and it would be nice to show both numbers on the same row in the table. Let's go ahead and fix both issues.</p>
             <p id="custom3">Just a forewarning: this code looks complicated, but it's really more tedious than anything else. The point of the Yesod form library is to alleviate the monotonous tasks involved in web forms. Unfortunately, that tedious work still has to happen <i>somewhere</i>.</p>
             <snippet name="forms-random2"/>
-            <p id="custom4">One line 2 we can see the relevant change to the Params datatype. Technically speaking, we could have left the datatype the same as before, but that would have made the body of the paramsFormlet function more complicated; I leave that as an exercise to the reader.</p>
+            <p id="custom4">On line 2 we can see the relevant change to the Params datatype. Technically speaking, we could have left the datatype the same as before, but that would have made the body of the paramsFormlet function more complicated; I leave that as an exercise to the reader.</p>
             <p id="custom5">On line 9, we now call the rangeField function (which we are about to define). This function does not take a FormFieldSettings argument; instead, the label, ids and names are all explicitly defined in the rangeField function itself.</p>
             <p id="custom6">Lines 13-15 give three equivalent type signatures for rangeField. Let's point out a few important pieces:</p>
             <ul>

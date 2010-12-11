@@ -8,7 +8,7 @@ License-file:        LICENSE
 Author:              Michael Snoyman
 Maintainer:          michael@snoyman.com
 Stability:           Experimental
-Category:            Web
+Category:            Web, Yesod
 Build-type:          Simple
 Cabal-version:       >=1.6
 extra-source-files:  static/yesod/ajax/script.js,

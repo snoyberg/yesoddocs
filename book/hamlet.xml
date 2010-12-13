@@ -138,7 +138,19 @@ You can even have deeper chains:
     let person = ("Michael", 25)
     let template = [$hamlet|$fst.person$ is $show.snd.person$ years old.|]
 
-<p class="advanced">There's also a way to allow applying a function to multiple values by using parantheses. However, this is not recommended for regular use, and will not be discussed further.</p>
+<div class="advanced">
+
+You can also use paranthesis to achieve more complicated function applications. For example,
+
+    (foo.bar).baz
+
+works out to the Haskell code
+
+    (foo bar) baz
+
+Just be careful using this syntax, as it is not supported by debug templates.
+
+</div>
 
 ### HTML Escaping
 

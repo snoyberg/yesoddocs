@@ -1,6 +1,6 @@
 !markdown
 Early December Update
-2010-12-10
+2010-12-09
 It's been a while since I've given an update on what's going on in the Yesod world. There have been a few minor releases of packages, but most of the work has been in the planning realm. I'm contemplating a number of semi-major changes to infrustructure, at many different levels. I'll put down my thoughts here to hopefully spark some discussion. Don't be surprised to see some of these issues raised on the [web-devel list](http://www.haskell.org/mailman/listinfo/web-devel) or the [web development special interest group](http://www.haskellers.com/teams/4/).
 
 ## But first, a word from our sponsors: the founders page

@@ -14,7 +14,7 @@ module Book
 
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as T
-import XmlParse
+import Text.XML.Enumerator.Parse
 import Data.XML.Types
 import Data.Enumerator (Iteratee, throwError)
 import Control.Monad.IO.Class (MonadIO (liftIO))

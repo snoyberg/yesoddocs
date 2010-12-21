@@ -1,0 +1,10 @@
+#what
+    margin: 0 2%
+    width: 45%
+    float: left
+#who
+    width: 45%
+    margin-left: 52%
+    margin-right: 2%
+.clear
+    clear: both

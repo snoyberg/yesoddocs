@@ -67,6 +67,8 @@ mkYesod "YesodDocs" [$parseRoutes|
 /blog BlogR GET
 /blog/#String EntryR GET
 
+/about AboutR GET
+
 /comment/#String/#Text CommentR POST
 /feed/comments CommentsFeedR GET
 /comment/#String OneCommentR GET
@@ -76,6 +78,7 @@ navLinks :: [(String, Either String YesodDocsRoute)]
 navLinks =
     [ ("Home", Right HomeR)
     , ("Blog", Right BlogR)
+    , ("About", Right AboutR)
     , ("Yesod in 5 Minutes", Right FiveMinutesR)
     , ("Book", Right BookR)
     , ("Screencasts", Right ScreencastsR)
@@ -117,6 +120,12 @@ getFiveMinutesR = defaultLayout $ do
     setTitle "Yesod in Five Minutes"
     addCassius $(cassiusFile "five-minutes")
     addHamlet $(hamletFile "five-minutes")
+
+getAboutR :: Handler RepHtml
+getAboutR = defaultLayout $ do
+    setTitle "Aboute Yesod"
+    addCassius $(cassiusFile "about")
+    addHamlet $(hamletFile "about")
 
 getBookR :: Handler RepHtml
 getBookR = defaultLayout $ do

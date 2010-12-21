@@ -219,6 +219,3 @@ parseAbbr title = do
 
 parseListItem :: MonadIO m => Iteratee SEvent m (Maybe ListItem)
 parseListItem = tag'' "li" $ ListItem <$> many parseInline
-
-instance IsString Name where
-    fromString s = Name (T.pack s) Nothing Nothing

@@ -229,7 +229,7 @@ colorize title raw isLit = hscolour CSS defaultColourPrefs True False title isLi
 getExampleR :: String -> Handler RepHtml
 getExampleR name = do
     title <- maybe notFound return $ lookup name examples
-    raw <- liftIO $ U.readFile $ "yesod/tutorial/" ++ name ++ ".lhs"
+    raw <- liftIO $ U.readFile $ "yesod-examples/src/" ++ name ++ ".lhs"
     let html = colorize title raw True
     return $ RepHtml $ toContent html
 
@@ -294,7 +294,7 @@ getArticlesR = defaultLayout $ do
 getSynWrqR :: Handler RepHtml
 getSynWrqR = do
     let title = "web-routes-quasi Synopsis"
-    raw <- liftIO $ U.readFile "synopsis/web-routes-quasi.markdown"
+    raw <- liftIO $ U.readFile "yesod-examples/synopsis/web-routes-quasi.markdown"
     let pandoc = readMarkdown defaultParserState raw
     let content = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
     defaultLayout $ do
@@ -304,7 +304,7 @@ getSynWrqR = do
 synLhs :: String -> String -> Handler RepHtml
 synLhs file title' = do
     let title = title' ++ " Synopsis"
-    raw <- liftIO $ U.readFile $ "synopsis/" ++ file ++ ".lhs"
+    raw <- liftIO $ U.readFile $ "yesod-examples/synopsis/" ++ file ++ ".lhs"
     let content = preEscapedString $ colorize title raw True
     defaultLayout $ do
         setTitle $ string title

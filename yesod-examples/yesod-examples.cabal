@@ -15,42 +15,42 @@ extra-source-files:  static/yesod/ajax/script.js,
                      static/yesod/ajax/style.css
 
 Executable blog
-  Main-is:             yesod/tutorial/blog.lhs
+  Main-is:             src/blog.lhs
   Build-depends:       base >= 4 && < 5,
                        yesod >= 0.6 && < 0.7
 
 Executable ajax
-  Main-is:             yesod/tutorial/ajax.lhs
+  Main-is:             src/ajax.lhs
 
 Executable file-echo
-  Main-is:             yesod/tutorial/file-echo.lhs
+  Main-is:             src/file-echo.lhs
 
 Executable pretty-yaml
-  Main-is:             yesod/tutorial/pretty-yaml.lhs
+  Main-is:             src/pretty-yaml.lhs
   Build-depends:       data-object-yaml >= 0.3.0 && < 0.4,
                        data-object >= 0.3.1 && < 0.4,
                        bytestring >= 0.9 && < 0.10
 
 Executable i18n
-  Main-is:             yesod/tutorial/i18n.lhs
+  Main-is:             src/i18n.lhs
 
 Executable session
-  Main-is:             yesod/tutorial/session.lhs
+  Main-is:             src/session.lhs
 
 Executable widgets
-  Main-is:             yesod/tutorial/widgets.lhs
+  Main-is:             src/widgets.lhs
 
 Executable generalized-hamlet
-  Main-is:             yesod/tutorial/generalized-hamlet.lhs
+  Main-is:             src/generalized-hamlet.lhs
 
 Executable form
-  Main-is:             yesod/tutorial/form.lhs
+  Main-is:             src/form.lhs
 
 Executable mkToForm
   Main-is:             mkToForm.hs
   Build-depends:       time,
                        persistent >= 0.3 && < 0.4
-  hs-source-dirs:      yesod/tutorial
+  hs-source-dirs:      src
   other-modules:       MkToForm2
 
 Executable persistent-synopsis

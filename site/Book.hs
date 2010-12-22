@@ -91,7 +91,7 @@ data ListItem = ListItem { unListItem :: [Inline] } -- FIXME block or inline
     deriving Show
 
 loadBook :: IO Book
-loadBook = parseFile_ "book.xml" (const Nothing) parseBook
+loadBook = parseFile_ "book/book.xml" (const Nothing) parseBook
 
 parseBook :: MonadIO m => Iteratee SEvent m Book
 parseBook = force "Missing book" $ tag'' "book" $ do
@@ -110,7 +110,7 @@ parsePart = do
 
 parseChapter' :: MonadIO m => Text -> Iteratee SEvent m Chapter
 parseChapter' href' = do
-    x <- liftIO $ parseFile (T.unpack href') (const Nothing) parseChapter
+    x <- liftIO $ parseFile ("book/" ++ T.unpack href') (const Nothing) parseChapter
     case x of
         Left e -> throwError e
         Right c -> return c

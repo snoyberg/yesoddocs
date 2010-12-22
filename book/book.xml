@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book>
+    <title>Yesod Web Framework</title>
+    <part>
+        <title>Basics</title>
+        <chapter href="introduction.xml"/>
+        <chapter href="haskell.xml"/>
+        <chapter href="basics.xml"/>
+        <chapter href="templates.xml"/>
+        <chapter href="widgets.xml"/>
+        <chapter href="yesod-typeclass.xml"/>
+        <chapter href="handler.xml"/>
+        <chapter href="forms.xml"/>
+        <chapter href="sessions.xml"/>
+        <chapter href="persistent.xml"/>
+    </part>
+    <part>
+        <title>Advanced</title>
+        <chapter href="rest.xml"/>
+        <chapter href="auth.xml"/>
+        <chapter href="scaffold.xml"/>
+        <chapter href="advanced-forms.xml"/>
+        <chapter href="email.xml"/>
+        <chapter href="deploying.xml"/>
+        <chapter href="i18n.xml"/>
+        <chapter href="subsite.xml"/>
+        <chapter href="web-client.xml"/>
+        <chapter href="low-level.xml"/>
+    </part>
+    <part>
+        <title>Appendices</title>
+        <chapter href="enumerator.xml"/>
+        <chapter href="hamlet.xml"/>
+        <chapter href="wai.xml"/>
+        <chapter href="web-routes-quasi.xml"/>
+    </part>
+</book>

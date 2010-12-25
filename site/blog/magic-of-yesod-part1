@@ -64,7 +64,7 @@ Hopefully that should be enough of an introduction to TH to understand the rest 
 
 These are the least magical of all. There are three versions of functions for each language: a quasi-quoter, a TH function and a TH debug function. Let's start with the simplest of these: the Julius quasi-quoter. It does the following steps:
 
-1) Given the String input, parse it into raw text, escaped operators (%%, @@ and ^^) and into interpolations (%myVar%, @myUrl@, ^myJulius^).
+1) Given the String input, parse it into raw text, escaped operators (%%, @@ and ^^) and into interpolations (%myVar%, @myUrl@, \^myJulius\^).
 
 2) For the interpolations, convert them into references to Haskell values. For example, the interpolation %(foo.bar).baz% would be converted into <code>(foo bar) baz</code>.
 

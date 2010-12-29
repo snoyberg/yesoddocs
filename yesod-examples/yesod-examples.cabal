@@ -1,5 +1,5 @@
 Name:                yesod-examples
-Version:             0.6.0.2
+Version:             0.6.1
 Synopsis:            Example programs using the Yesod Web Framework.
 Description:         These are the same examples and tutorials found on the documentation site.
 Homepage:            http://docs.yesodweb.com/
@@ -12,7 +12,8 @@ Category:            Web, Yesod
 Build-type:          Simple
 Cabal-version:       >=1.6
 extra-source-files:  static/yesod/ajax/script.js,
-                     static/yesod/ajax/style.css
+                     static/yesod/ajax/style.css,
+                     static/chat.js
 
 Executable blog
   Main-is:             src/blog.lhs
@@ -61,6 +62,10 @@ Executable persistent-synopsis
 Executable hamlet-synopsis
   Main-is:             synopsis/hamlet.lhs
   Build-depends:       hamlet
+
+Executable chat
+  Main-is:             src/chat.hs
+  Build-depends:       stm
 
 source-repository head
   type:     git

@@ -16,6 +16,6 @@
                 %img!src=@StaticR.video_png@
                 Watch the Screencasts
         %li
-            %a!href=@ExamplesR@
+            %a!href=@AboutR@
                 %img!src=@StaticR.code_png@
-                See some Code
+                About Yesod

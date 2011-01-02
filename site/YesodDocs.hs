@@ -83,7 +83,6 @@ navLinks =
     , ("Book", Right BookR)
     , ("Screencasts", Right ScreencastsR)
     , ("Examples", Right ExamplesR)
-    , ("Articles", Right ArticlesR)
     , ("Wiki", Left "http://wiki.yesodweb.com/")
     ]
 
@@ -246,50 +245,8 @@ getScreencastsR = do
         addCassius $(cassiusFile "screencasts")
         addHamlet $ const $ preEscapedString raw
 
-data Article = Article
-    { articleUrl :: String
-    , articleTitle :: String
-    , articleDate :: String
-    , articleDescription :: String
-    }
-
-getArticlesR :: Handler RepHtml
-getArticlesR = defaultLayout $ do
-    setTitle "Yesod Articles"
-    addHamlet $(hamletFile "articles")
-  where
-    articles =
-        [ Article
-            "http://docs.yesodweb.com/blog/custom-forms/"
-            "Custom Forms and the Form Monad"
-            "October 20, 2010"
-            "Explains a new way of creating forms introduced in Yesod 0.6."
-        , Article
-            "http://braincrater.wordpress.com/2010/07/22/ajax-chat-app-using-yesod/"
-            "Ajax Push"
-            "July 22, 2010"
-            "An extension of the basic chat example to use Ajax push."
-        , Article
-            "http://www.snoyman.com/blog/entry/handler-monad/"
-            "The Handler Monad"
-            "June 15, 2010"
-            "Slightly out-of-date, as we've migrated back to a form of either monad transformer."
-        , Article
-            "http://www.snoyman.com/blog/entry/sessions/"
-            "Sessions, messages and ultimate destination"
-            "July 16, 2010"
-            "Covers sessions and two of the built-in uses of them."
-        , Article
-            "http://www.snoyman.com/blog/entry/fringe-benefits-typesafe-urls/"
-            "Fringe benefits of type-safe URLs"
-            "June 24, 2010"
-            "Covers breadcrumbs, dedicated static file servers and authorization."
-        , Article
-            "http://www.snoyman.com/blog/entry/restful-content/"
-            "RESTful Content"
-            "June 18, 2010"
-            ""
-        ]
+getArticlesR :: Handler ()
+getArticlesR = redirect RedirectPermanent $ ChapterR "blog-posts"
 
 getSynWrqR :: Handler RepHtml
 getSynWrqR = do

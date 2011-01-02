@@ -33,5 +33,6 @@
         <chapter href="hamlet.xml"/>
         <chapter href="wai.xml"/>
         <chapter href="web-routes-quasi.xml"/>
+        <chapter href="blog-posts.xml"/>
     </part>
 </book>

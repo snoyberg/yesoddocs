@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="blog-posts" status="Outline">
+    <title>Blog posts that should be chapters</title>
+    <intro>
+        <p id="i1">Following is a list of blog posts that should ultimately have their content merged in with the rest of the book. Unfortunately, I just haven't had time to do it you.</p>
+        <ul>
+            <li><xref href="http://docs.yesodweb.com/blog/magic-of-yesod-part2/">The Magic of Yesod, part 2</xref> <i>December 25, 2010</i> Continues the previous blog post, covering the static subsite, parseRoutes and mkYesod</li>
+            <li><xref href="http://docs.yesodweb.com/blog/magic-of-yesod-part1/">The Magic of Yesod, part 1</xref> <i>December 23, 2010</i> Explains the basics of Template Haskell and Quasi-Quotation, and how it ties in with Hamlet, Cassius and Julius</li>
+            <li><xref href="http://docs.yesodweb.com/blog/custom-forms/">Custom Forms and the Form Monad</xref> <i>October 20, 2010</i> Explains a new way of creating forms introduced in Yesod 0.6.</li>
+            <li><xref href="http://braincrater.wordpress.com/2010/07/22/ajax-chat-app-using-yesod/">Ajax Push</xref> <i>July 22, 2010</i> An extension of the basic chat example to use Ajax push.</li>
+            <li><xref href="http://www.snoyman.com/blog/entry/handler-monad/">Slightly out-of-date, as we've migrated back to a form of either monad transformer.</xref> <i>July 15, 2010</i> Slightly out-of-date, as we've migrated back to a form of either monad transformer.</li>
+            <li><xref href="http://www.snoyman.com/blog/entry/sessions/">Sessions, messages and ultimate destination</xref> <i>July 16, 2010</i> Covers sessions and two of the built-in uses of them.</li>
+            <li><xref href="http://www.snoyman.com/blog/entry/fringe-benefits-typesafe-urls/">Fringe benefits of type-safe URLs</xref> <i>June 24, 2010</i> Covers breadcrumbs, dedicated static file servers and authorization.</li>
+            <li><xref href="http://www.snoyman.com/blog/entry/restful-content/">RESTful Content</xref> <i>June 18, 2010</i></li>
+        </ul>
+    </intro>
+</chapter>

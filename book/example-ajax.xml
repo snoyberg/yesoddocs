@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="example-ajax" status="Outline">
+    <title>Example: Ajax</title>
+    <intro>
+        <example name="ajax"/>
+    </intro>
+</chapter>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="example-blog" status="Outline">
+    <title>Example: Blog</title>
+    <intro>
+        <example name="blog"/>
+    </intro>
+</chapter>

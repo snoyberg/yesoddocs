@@ -56,7 +56,6 @@ mkYesod "YesodDocs" [$parseRoutes|
 /book/#String ChapterR GET
 
 /examples ExamplesR GET
-/examples/#String ExampleR GET
 
 /screencasts ScreencastsR GET
 
@@ -82,7 +81,6 @@ navLinks =
     , ("Yesod in 5 Minutes", Right FiveMinutesR)
     , ("Book", Right BookR)
     , ("Screencasts", Right ScreencastsR)
-    , ("Examples", Right ExamplesR)
     , ("Wiki", Left "http://wiki.yesodweb.com/")
     ]
 
@@ -198,39 +196,17 @@ snippet filename = do
         ]
     removePre s = fromMaybe s $ stripPrefix "<pre>" s
 
-examples :: [(String, String)]
-examples =
-    [ ("blog", "Blog")
-    , ("ajax", "Ajax")
-    , ("form", "Form")
-    , ("widgets", "Widgets")
-    , ("generalized-hamlet", "Generalized Hamlet")
-    , ("pretty-yaml", "Pretty YAML")
-    , ("i18n", "Internationalization")
-    ]
-
 getExamplesR :: Handler RepHtml
-getExamplesR = do
-    y <- getYesod
-    defaultLayout $ do
-        setTitle "Yesod Code Examples"
-        addScriptEither $ urlJqueryJs y
-        addScriptEither $ urlJqueryUiJs y
-        addStylesheetEither $ urlJqueryUiCss y
-        addJulius $(juliusFile "examples")
-        addCassius $(cassiusFile "examples")
-        addHamlet $(hamletFile "examples")
-        addStylesheet $ StaticR hscolour_css
+getExamplesR = defaultLayout [$hamlet|
+%h1 We've Moved!
+%p
+    The examples have now been merged into the $
+    %a!href=@BookR@ Yesod book
+    \. Each example is its own chapter in the Examples part. Enjoy!
+|]
 
 colorize :: String -> String -> Bool -> String -- FIXME use kate instead!
 colorize title raw isLit = hscolour CSS defaultColourPrefs True False title isLit raw
-
-getExampleR :: String -> Handler RepHtml
-getExampleR name = do
-    title <- maybe notFound return $ lookup name examples
-    raw <- liftIO $ U.readFile $ "yesod-examples/src/" ++ name ++ ".lhs"
-    let html = colorize title raw True
-    return $ RepHtml $ toContent html
 
 getScreencastsR :: Handler RepHtml
 getScreencastsR = do
@@ -357,15 +333,16 @@ withYesodDocs f = do
 chapterToHtml :: [(Text, [Comment])] -> Chapter -> Hamlet YesodDocsRoute
 chapterToHtml cs c@(Chapter { chapterIntro = intro, chapterSections = sections
                        , chapterSummary = msummary }) = [$hamlet|
-#toc
-    %ul
-        %li
-            %a!href="#introduction" Introduction
-        $forall sections s
-            ^sectionToc.s^
-        $maybe msummary _
+$if not.null.sections
+    #toc
+        %ul
             %li
-                %a!href="#summary" Summary
+                %a!href="#introduction" Introduction
+            $forall sections s
+                ^sectionToc.s^
+            $maybe msummary _
+                %li
+                    %a!href="#summary" Summary
 #introduction
     $forall intro b
         ^((blockToHtml.c).cs).b^
@@ -484,6 +461,8 @@ blockToHtml _ _ (Markdown text) =
   where
     pandoc = readMarkdown defaultParserState $ T.unpack text
     content = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
+blockToHtml _ _ (Example text) =
+    const $ preEscapedString $ colorize "" (T.unpack text) True
 
 listItemToHtml :: ListItem -> Hamlet YesodDocsRoute
 listItemToHtml (ListItem is) = [$hamlet|

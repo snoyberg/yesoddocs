@@ -35,4 +35,14 @@
         <chapter href="web-routes-quasi.xml"/>
         <chapter href="blog-posts.xml"/>
     </part>
+    <part>
+        <title>Examples</title>
+        <chapter href="example-blog.xml"/>
+        <chapter href="example-ajax.xml"/>
+        <chapter href="example-form.xml"/>
+        <chapter href="example-widgets.xml"/>
+        <chapter href="example-generalized-hamlet.xml"/>
+        <chapter href="example-pretty-yaml.xml"/>
+        <chapter href="example-i18n.xml"/>
+    </part>
 </book>

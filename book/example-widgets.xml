@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="example-widgets" status="Outline">
+    <title>Example: Widgets</title>
+    <intro>
+        <example name="widgets"/>
+    </intro>
+</chapter>

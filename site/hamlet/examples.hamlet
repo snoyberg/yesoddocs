@@ -1,9 +1,0 @@
-%header
-    %h1 Yesod Web Framework Examples
-    %p Note: all of these examples have been tested to work with Yesod version 0.6.0.
-%article
-    #accordion
-        $forall examples e
-            %h3 $snd.e$
-            %div
-                %a.ajax!href=@ExampleR.fst.e@ $snd.e$

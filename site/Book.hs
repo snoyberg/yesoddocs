@@ -14,15 +14,14 @@ module Book
 
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as T
+import qualified Data.Text.Lazy.IO as TIO
 import Text.XML.Enumerator.Parse
-import Data.XML.Types
 import Data.Enumerator (Iteratee, throwError)
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import Text.Hamlet (ToHtml (..), string)
 import qualified Text.Highlighting.Kate as Kate
 import qualified System.IO.UTF8 as U
 import Data.List (group, sort)
-import Data.String
 import Control.Applicative ((<$>), (<*>))
 
 data Book = Book
@@ -68,6 +67,7 @@ data Block = Paragraph { paraId :: Text, paraContents :: [Inline] }
            | Image { imageSrc :: Text, imageTitle :: Text }
            | Defs [(Text, [Inline])]
            | Markdown Text
+           | Example Text
     deriving Show
 
 data Inline = Inline Text
@@ -164,7 +164,14 @@ parseBlock = choose
     , tag' "image" (Image <$> requireAttr "src" <*> requireAttr "title") return
     , tag'' "defs" $ fmap Defs $ many $ tag' "def" (requireAttr "term") parseDef
     , tag'' "markdown" $ fmap Markdown content' -- FIXME this must be killed with fire
+    , tag' "example" (requireAttr "name") parseExample
     ]
+
+parseExample :: MonadIO m => Text -> Iteratee SEvent m Block
+parseExample name =
+    liftIO $ fmap Example $ TIO.readFile fp
+  where
+    fp = "yesod-examples/src/" ++ T.unpack name ++ ".lhs"
 
 parseDef :: MonadIO m => Text -> Iteratee SEvent m (Text, [Inline])
 parseDef term = do

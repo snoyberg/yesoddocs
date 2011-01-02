@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="example-i18n" status="Outline">
+    <title>Example: Internationalization</title>
+    <intro>
+        <example name="i18n"/>
+    </intro>
+</chapter>

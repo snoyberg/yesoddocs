@@ -9,7 +9,7 @@ This new release introduces a large change in philosophy: previous versions only
 
 * blaze-builder: I'm also a fan of Simon Meier and Jasper Van der Jeugt's blaze-builder package. This essentially lets you construct optimally sized ByteStrings with a minimum of buffer copying. Switching to this can provide the WAI with huge performance advantages.
 
-* network: You might be surprised that this wasn't a dependency in the first place. It is included now so that remoteHost is represented by a SockAddr instead of a ByteString, which means less DNS lookups in general.
+* network: You might be surprised that this wasn't a dependency in the first place. It is included now so that remoteHost is represented by a SockAddr instead of a ByteString, which means less DNS lookups in general. Thanks to Aur Saraf for the recommendation.
 
 There is also a large change in how a Response works. In particular, you are now able to generate the status and response headers from within the response enumerator, which allows us to create things such as proxying web sites. A proper example of this is below. If people are interested in more details of the API changes, let me know in the comments and I'll write up a post about it.
 

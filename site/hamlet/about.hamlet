@@ -42,6 +42,8 @@
             %a!href="http://github.com/ajdunlap" Alexander Dunlap
         %li
             %a!href="http://www.haskellers.com/user/meteficha/" Felipe Lessa
+        %li
+            %a!href="http://pbrisbin.com/" Patrick Brisbin
     %h1 Contact
     %p Besides directly contacting any of the developers mentioned above, we have the following other modes of communication:
     %ul

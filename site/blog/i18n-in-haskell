@@ -7,12 +7,12 @@ Yesod does in theory have i18n support. There is a function for getting a list o
 
 In theory, I think multi-lingual support needs to be added at the *template* level, in Yesod's case, Hamlet. However, we first need to figure out the right approach to I18N for Haskell in general. Consider what I'm about to present a straw man: I want to hear why this is such a bad idea.
 
-Let's start by making a bold assertion: gettext is a huge, ugly hack. Sure, it works fine for static strings like "Hello World". Of course, there's no compile-time checks to make sure you didn't accidently use "Hello world" (lower-case w) or "Hello World!". But that's not even the big hack: imagine I want to output something as simple a "<count> <object>(s)". gettext has trouble with this because:
+Let's start by making a bold assertion: gettext is a huge, ugly hack. Sure, it works fine for static strings like "Hello World". Of course, there's no compile-time checks to make sure you didn't accidently use "Hello world" (lower-case w) or "Hello World!". But that's not even the big hack: imagine I want to output something as simple a "\<count\> \<object\>(s)". gettext has trouble with this because:
 
 * We need to be able to pluralize things.
 * Believe it or not, not every language puts their numbers before their objects. (In Hebrew, for instance, you can say the equivalent of "house one" or "two houses".)
 
-I'm sure others with more gettext experience than I can explain both how to work around these issues, and how there are even *worse* hacks involved. Frankly, that's not our issue here. Let's see how we can leverage the strengths of Haskell for this. I present my strawman:
+I'm sure others with more gettext experience than I can explain both how to work around these issues, and how there are even *worse* hacks involved. Frankly, that's not our issue here. Let's see how we can leverage the strengths of Haskell for this. I present my strawman (explanation below):
 
 <script src="https://gist.github.com/778712.js?file=i18n.hs"></script>
 

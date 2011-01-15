@@ -120,7 +120,7 @@ getFiveMinutesR = defaultLayout $ do
 
 getAboutR :: Handler RepHtml
 getAboutR = defaultLayout $ do
-    setTitle "Aboute Yesod"
+    setTitle "About Yesod"
     addCassius $(cassiusFile "about")
     addHamlet $(hamletFile "about")
 

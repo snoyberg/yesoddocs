@@ -1,6 +1,6 @@
 !markdown
 data-object-yaml package
-2010-01-15
+2011-01-15
 I got an email recently asking for some documentation on the [data-object-yaml](http://hackage.haskell.org/package/data-object-yaml). It's a fairly straight-forward package, with one or two surprises lurking inside, so I think a blog post ought to do it justice. If anyone has questions, just ask it in a comment and I'll try to address it.
 
 As a bit of background, this package is built on a few other packages I wrote. yaml is a low-level wrapper around the C libyaml library, with an enumerator interface. data-object is a package defining a data type:

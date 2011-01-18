@@ -12,7 +12,7 @@ Warp was previously part of wai-extra and called SimpleServer. However, after so
 
 These benchmarks compare the current snap-server 0.3 from Hackage, compiled with the libev backend, against the Warp 0.3 release, as well as a pre-release Yesod 0.7 running on Warp. The difference between Warp and Yesod gives you an idea of the relative cost of Yesod's extra features (such as routing): as you might expect, this difference is relatively large on a small benchmark like PONG, and relatively small on a large benchmark like big-table.
 
-All of the code for these benchmarks is [available on github](http://github.com/snoyberg/benchmarks). I asked Gregory and Doug from Snap to look over our results: though they did not get as steep a difference as our results show, Warp still came out ahead: 90k vs 30k. It seems the difference is Doug benchmarked on a 8-core system, while Matt ran our benchmarks on a 4-core system. Snap seems to be better at scaling to >4 cores than Warp. This likely has something to do with Snap's usage of libev, though I can't be certain.
+All of the code for these benchmarks is [available on github](http://github.com/snoyberg/benchmarks). I asked Gregory and Doug from Snap to look over our results: though they did not get as steep a difference as our results show, Warp still came out ahead: 90k vs 30k. It seems the difference is Doug benchmarked on a 8-core system, while Matt ran our benchmarks on a 4-core system. Snap seems to be better at scaling to >4 cores than Warp, though *why* this difference exists warrants further investigation.
 
 What I think is even more impressive than the benchmark numbers is the size of the code itself: all of Warp fits in [a single 318 SLOC file](https://github.com/snoyberg/warp/blob/master/Network/Wai/Handler/Warp.hs). However, it is built on the shoulders of giants:
 
@@ -136,6 +136,6 @@ Next, we pipe this monstrosity- together with the headers- through builderToByte
 
 Well, that's the whole web server. I think that over all it's still fairly high-level. Some of the lower-level bits (takeHeaders, for instance) can be factored out into some helper libraries so that other packages can also take advantage of these highly optimized iteratees.
 
-I've hoped for a long time that as a community we can start to rally around WAI so we have more easy interoperation in our web code. I hope that Warp demonstrates that not only is WAI nice theoretically, it also provides an incredibly efficient interface for creating fast web servers, and therefore fast applications.
+I've hoped for a long time that as a community we can start to rally around WAI so the community's different web frameworks can work together to create great middleware, servers, and interfaces. I hope that Warp demonstrates that not only is WAI nice theoretically, it also provides an incredibly efficient interface for creating fast web servers, and therefore fast applications.
 
 If anyone has questions about the Warp code, or how to use WAI from an application side, let me know. I would love to get more frameworks to be able to take advantage of Warp and all the other tools that go along with WAI.

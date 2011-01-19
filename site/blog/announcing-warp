@@ -20,7 +20,7 @@ What I think is even more impressive than the benchmark numbers is the size of t
 
 * In order to avoid multiple buffer copies while still minimizing system call overhead, we use [blaze-builder](http://hackage.haskell.org/package/blaze-builder) extensively. Kudos to Simon and Jasper.
 
-* And finally, our entire IO is built on top of John's [enumerator](http://hackage.haskell.org/package/blaze-builder) package. In fact, I attribute the small code base almost entirely to the usage of enumerator here.
+* And finally, our entire IO is built on top of John's [enumerator](http://hackage.haskell.org/package/enumerator) package. In fact, I attribute the small code base almost entirely to the usage of enumerator here.
 
 I think that the code base is small enough that we can have an adequate walk-through here. This might also serve as an example of using enumerator and blaze-builder together to produce fast code.
 

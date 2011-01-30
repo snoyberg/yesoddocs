@@ -6,7 +6,7 @@ article
 #disqus_thread
     margin: 0 20px
 .advanced
-    background: #eee
+    background: #E5EEF9
     margin-left: 1em
     padding: 0 0.5em
 .hyphenate

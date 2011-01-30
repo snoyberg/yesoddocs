@@ -75,8 +75,7 @@ mkYesod "YesodDocs" [$parseRoutes|
 
 navLinks :: [(String, Either String YesodDocsRoute)]
 navLinks =
-    [ ("Home", Right HomeR)
-    , ("Blog", Right BlogR)
+    [ ("Blog", Right BlogR)
     , ("About", Right AboutR)
     , ("Yesod in 5 Minutes", Right FiveMinutesR)
     , ("Book", Right BookR)
@@ -94,9 +93,9 @@ instance Yesod YesodDocs where
         let render (Left s) = s
             render (Right u) = render' u
         pc <- widgetToPageContent $ do
-            widget
             addCassius $(cassiusFile "default-layout")
             atomLink FeedR "Yesod Blog"
+            widget
         hamletToRepHtml $(hamletFile "default-layout")
 instance YesodJquery YesodDocs where
     urlJqueryJs _ = Left $ StaticR jquery_js

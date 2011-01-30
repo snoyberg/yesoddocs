@@ -34,6 +34,7 @@
         <chapter href="wai.xml"/>
         <chapter href="web-routes-quasi.xml"/>
         <chapter href="blog-posts.xml"/>
+        <chapter href="faq.xml"/>
     </part>
     <part>
         <title>Examples</title>

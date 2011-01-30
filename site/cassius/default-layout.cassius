@@ -1,9 +1,11 @@
 body
     font-family: sans-serif
     margin: 0
+    background: #A3B5BA
 
 header
     text-align: center
+    color: #353948
 
 article
     width: 760px
@@ -20,22 +22,39 @@ footer p
 
 #topbar ul
     list-style: none;
-    padding: 5px 0 5px 30px
-    background: #eee url(/static/logo-small.png) no-repeat 5px center
+    padding: 5px 0 5px 50px
+    background: #3C4569 url(/static/logo-white.png) no-repeat 15px center
     margin: 0
-    border-bottom: 1px solid #000
+    border-bottom: 2px solid #fff
+    line-height: 42px
+    color: #fff
 
 #topbar li
     display: inline
     padding-right: 10px
 
 #topbar a, #topbar a:visited
-    color: #009
+    color: #fff
     text-decoration: none
 
+#topbar span
+    border-bottom: 3px solid #B84848
+
 #topbar a:hover
-    color: #909
+    color: #B84848
+
+a.yesod
+    font-size: 1.2em
 
 abbr
     border-bottom: 1px dotted #666
     cursor: help
+
+#pagecontent
+    width: 960px
+    margin: 1em auto
+    padding: 0.5em 0
+    background: #fff
+    border-radius: 8px
+    -moz-border-radius: 8px
+    -webkit-border-radius: 8px

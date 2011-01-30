@@ -1,10 +1,13 @@
+#pagecontent
+    width: 95%
 #archive
     float: left
     width: 200px
-    background: #eee
+    background: #E5EEF9
     margin: 10px 0
-    border: 1px solid #000
-    border-left: 0
+    border: 1px solid #3C4569
+    border-radius: 4px
+    margin-left: -1px
 #archive h2
     text-align: center
     margin: 0

@@ -35,6 +35,7 @@
         <chapter href="web-routes-quasi.xml"/>
         <chapter href="blog-posts.xml"/>
         <chapter href="faq.xml"/>
+        <chapter href="migrate6to7.xml"/>
     </part>
     <part>
         <title>Examples</title>

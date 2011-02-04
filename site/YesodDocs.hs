@@ -105,11 +105,16 @@ instance YesodJquery YesodDocs where
 getHomeR :: Handler RepHtml
 getHomeR = defaultLayout $ do
     setTitle "Yesod Web Framework for Haskell"
+    let faqR = ChapterR "faq"
     addHamlet $(hamletFile "root")
     addHtmlHead [$hamlet|
 %meta!name=description!value="Yesod Web Framework for Haskell. Create RESTful web apps with type safety."
 |]
     addCassius $(cassiusFile "root")
+    y <- liftHandler getYesod
+    addScriptEither $ urlJqueryJs y
+    addScriptRemote "http://cloud.github.com/downloads/malsup/cycle/jquery.cycle.all.latest.js"
+    addJulius $(juliusFile "root")
 
 getFiveMinutesR :: Handler RepHtml
 getFiveMinutesR = defaultLayout $ do

@@ -44,3 +44,27 @@ nav a:hover
 
 h1, h2
     margin: 5px 0
+
+#slideshow img
+    float: left
+    margin: 5px
+
+#pagecontent
+    min-height: 400px
+
+#slideshow li
+    list-style: none
+    font-size: 1.4em
+    width: 700px
+    margin: 20px 130px
+    background: #E5EEF9
+    padding: 10px
+    border-radius: 4px
+    -moz-border-radius: 4px
+    -webkit-border-radius: 4px
+    min-height: 200px
+    border: 1px solid #B84848
+
+#after-slideshow
+    clear: both
+    margin: 1em

@@ -44,20 +44,4 @@
             %a!href="http://www.haskellers.com/user/meteficha/" Felipe Lessa
         %li
             %a!href="http://pbrisbin.com/" Patrick Brisbin
-    %h1 Contact
-    %p Besides directly contacting any of the developers mentioned above, we have the following other modes of communication:
-    %ul
-        %li
-            %a!href="https://github.com/snoyberg/yesod/issues" Issue Tracker
-            \ If you want to report a bug, we use the Github issue tracker. In general, you should just use the Yesod repository issue tracker instead of the issue tracker for each individual repo, as it is easier for the developers to keep track of open issues that way.
-        %li
-            %a!href="http://www.haskell.org/mailman/listinfo/web-devel" web-devel mailing list
-            \ Most public Yesod discussions take place over here. Feel free to post any discussions or questions.
-        %li
-            %a!href="http://www.haskellers.com/teams/4/" Haskellers web development Special Interest Group
-            \ Not as popular as the web-devel mailing list, but also a good place to bring things up. If you want to use it, don't forget to subscribe to the $
-            %a!href="http://www.haskellers.com/feed/team/4/" Atom news feed
-        %li
-            %a!href="http://wiki.yesodweb.com/" Yesod Wiki
-            \ This is a great place to post ideas for collaboration and tutorials.
 .clear

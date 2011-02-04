@@ -7,14 +7,13 @@
     %body
         #topbar
             %ul
-                %li
-                    %a.yesod!href="/" Yesod Web Framework
                 $forall navLinks l
                     %li
                         $if isCurrent.snd.l
                             %span $fst.l$
                         $else
                             %a!href=$render.snd.l$ $fst.l$
+            %a.yesod!href="/" Yesod Web Framework
         #pagecontent
             ^pageBody.pc^
         %footer

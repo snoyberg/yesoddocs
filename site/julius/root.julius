@@ -1,6 +1,18 @@
 $(function(){
-    $("#slideshow").cycle({
-        timeout: 7000,
-        fx: "shuffle"
+    var html = [];
+    html.push("<div id='slidetabs'>");
+    $.each($("#slideshow > div"), function(){
+        html.push("<a href='#'></a>");
+    });
+    html.push("</div>");
+    $("#slideshow").after(html.join(""));
+
+    $("#slidetabs").tabs("#slideshow > div", {
+        effect: 'fade',
+	    fadeOutSpeed: "slow",
+        rotate: true
+    }).slideshow({
+        autoplay: true,
+        interval: 5000
     });
 });

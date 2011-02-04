@@ -113,7 +113,7 @@ getHomeR = defaultLayout $ do
     addCassius $(cassiusFile "root")
     y <- liftHandler getYesod
     addScriptEither $ urlJqueryJs y
-    addScriptRemote "http://cloud.github.com/downloads/malsup/cycle/jquery.cycle.all.latest.js"
+    addScriptRemote "http://cdn.jquerytools.org/1.2.0/full/jquery.tools.min.js"
     addJulius $(juliusFile "root")
 
 getFiveMinutesR :: Handler RepHtml

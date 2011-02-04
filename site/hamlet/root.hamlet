@@ -1,22 +1,23 @@
-%ul#slideshow
-    %li
+#slideshow
+    %div
         %img!src=@StaticR.logo_red_png@
         Yesod is a Haskell web framework promoting type-safe, RESTful web application development. It is built from the ground up on principles which allow the creation of efficient execution. It provides all the tools you need to quickly create fast, safe web applications.
-    %li
+    %div
         %img!src=@StaticR.warp_png@
         Yesod is built on the WAI, an interface which allows multiple backends. While we provide FastCGI, SCGI and development servers, our premiere production platform is Warp, a fast, light-weight web server designed from the ground up for incredible performance. See how we compare in <a href="http://wiki.yesodweb.com/Benchmarks">our benchmarks</a>.
-    %li
+    %div
         %img!src=@StaticR.hamlet_png@
         We believe in leveraging Haskell type safety to its fullest extent. Our family of templating languages allow you to create HTML, CSS and Javascript without worries of XSS attacks. And with type-safe URLs, say goodbye to 404s as well.
-    %li
-        Web development has long been tied to SQL. With Persistent, we do not deny this heritage, but instead give a high-level wrapper around your SQL database to make sure your data is type-safe and save you from SQL injection attacks.
-        %br
-        At the same time, we do not want to stagnate: Persistent was designed with NoSQL databases in mind. We have a prototype MongoDB backend available, and have begun work on Redis support.
-        %br
-        This combination lets you rely on the tried-and-true SQL databases you know and love, and simultaneously experiment with the up-and-coming NoSQL databases, all with minimal code impact.
-    %li Yesod is a full-featured web application framework. It has support for authentication/authorization, i18n, third-party logins, forms with CSRF protection, JSON output, news feeds, and much more.
-    %li Yesod is completely modular: feel free to swap any of its components out with tools you like better, or just cherry pick the pieces you want into your framework of choice. But each component is designed to integrate well with all the others- and a framework as a whole- to provide a consistent, pragmatic web development experience.
-    %li Documentation is key. In addition to API documentation, this site provides you with screencasts, examples, FAQ, and most importantly, a book. While there is already a lot of content, we are constantly striving to add more, and to improve the quality of what is already there. If you have any recommendations, please use our inline commenting system.
+    %div!style="font-size:1.2em"
+        %p!style="margin-top:0" Web development has long been tied to SQL. With Persistent, we do not deny this heritage, but instead give a high-level wrapper around your SQL database to make sure your data is type-safe and save you from SQL injection attacks.
+        %p At the same time, we do not want to stagnate: Persistent was designed with NoSQL databases in mind. We have a prototype MongoDB backend available, and have begun work on Redis support.
+        %p This combination lets you rely on the tried-and-true SQL databases you know and love, and simultaneously experiment with the up-and-coming NoSQL databases, all with minimal code impact.
+    %div
+        Yesod is a full-featured web application framework. It has support for authentication/authorization, i18n, third-party logins, forms with CSRF protection, JSON output, news feeds, and much more.
+    %div
+        Yesod is completely modular: feel free to swap any of its components out with tools you like better, or just cherry pick the pieces you want into your framework of choice. But each component is designed to integrate well with all the others- and a framework as a whole- to provide a consistent, pragmatic web development experience.
+    %div
+        Documentation is key. In addition to API documentation, this site provides you with screencasts, examples, FAQ, and most importantly, a book. While there is already a lot of content, we are constantly striving to add more, and to improve the quality of what is already there. If you have any recommendations, please use our inline commenting system.
 #after-slideshow
     %p
         If you are new to Yesod, you should start off with the $

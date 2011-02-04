@@ -20,7 +20,7 @@ footer
 footer p
     margin: 0
 
-#topbar ul
+#topbar
     list-style: none;
     padding: 5px 0 5px 50px
     background: #3C4569 url(/static/logo-white.png) no-repeat 15px center
@@ -28,6 +28,10 @@ footer p
     border-bottom: 2px solid #fff
     line-height: 42px
     color: #fff
+
+#topbar ul
+    float: right
+    margin-top: 0
 
 #topbar li
     display: inline

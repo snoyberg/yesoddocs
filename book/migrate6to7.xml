@@ -158,4 +158,12 @@ urlRenderOverride _ _ = Nothing</codeblock>
             <title>String to ByteString</title>
             <p id="stobs1">In a few places (redirectString, mime-type) I've replaced Strings with ByteStrings. I'm not 100% certain this was the right choice, but it <i>is</i> more correct in the sense that these values are sent verbatim across the wire. A simple Data.ByteString.Char8.pack will get you the old behavior.</p>
         </section>
+        <section id="develserver">
+            <title>devel-server.hs</title>
+            <p id="develserver1">The code for devel-server.hs is now much simpler. Assuming your foundation datatype is MyApp, just use:</p>
+            <codeblock>import Yesod (develServer)
+
+main :: IO ()
+main = develServer 3000 "Controller" "withMyApp"</codeblock>
+        </section>
     </chapter>

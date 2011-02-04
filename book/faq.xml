@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="faq" status="Unproofed">
+    <title>Frequently Asked Questions</title>
+    <intro>
+        <p id="i1">Perhaps it's not common to put a FAQ in a book, but it seems that there are a number of questions that come up regularly enough. Hopefully this will help.</p>
+        <p id="i2">If you can think of any questions you would like added, please write a comment to this page.</p>
+    </intro>
+    <section id="q1">
+
+        <title>Why does the scaffolded site use cassiusFileDebug and
+            juliusFileDebug, but does not use hamletFileDebug?</title>
+
+        <p id="q1a">For efficiency and type safety, the template lanugages used
+            in Yesod are compile-time interpreted. This is great for
+            production, but can slow down development. As a workaround, this
+            languages provide a "debug" version of their run functions which
+            does some initial compile-time parsing to determine which variables
+            to use, and then reads the template at runtime to pick up any
+            changes.</p>
+
+        <p id="q1b">The scaffolded site specifically avoids
+            <code>hamletFileDebug</code> for two reasons</p>
+
+        <ul>
+
+            <li>It does not handle Hamlet's polymorphism. A Hamlet template can
+                be converted to a type of Html, Hamlet or Widget, while
+                hamletFileDebug only works with Hamlet. In theory, this could
+                be fixed.</li>
+
+            <li>hamletFileDebug does not work at all when you add new variables
+                to the template. This is a problem that cannot be fixed.</li>
+
+        </ul>
+
+        <p id="q1c">The first issue does not affect Cassius and Julius since
+            they do not have any polymorphism. The second one is not as big a
+            deal for Cassius and Julius: it's simply not as common to
+            interpolate variables in your CSS and Javascript. I personally
+            found that hamletFileDebug only worked for me half the time.</p>
+
+        <p id="q1d">Instead, a more robust solution is to use wai-handler-devel
+            (also included in the scaffolded site). This will automatically
+            reinterpret your app after a change to your Haskell or Hamlet
+            template files. This is usually very fast for small sites, but gets
+            slow for large sites.  Hopefully in the near future,
+            wai-handler-devel will switch from using the hint package to the
+            plugins package, which will help alleviate that burden.</p>
+    </section>
+</chapter>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="migrate6to7" status="Unproofed">
+    <title>Migration Guide: 0.6 to 0.7</title>
+    <intro>
+        <p id="i1">The following is a migration guide from Yesod 0.6.* to Yesod 0.7.0. These
+            are notes I took while performing the migration on the Haskellers.com website.
+            It may not be completely exhaustive, but it should be a good start.</p>
+
+        <p id="i2">If you run into issues which are not addressed here, please
+            add a comment on this paragraph so that I can update the article
+            and others can see what's missing.</p>
+    </intro>
+    <section id="no-warnings">
+        <title>No Warnings</title>
+        <p id="nw1">Before you get started, I recommend you get your current
+            code to compile without any warnings. That way, as you begin
+            migrating, you'll know that any new warnings are caused by the
+            migration process itself. In fact, you may even want to turn on
+            <code>-Wall -Werror</code> in your cabal file.</p> </section>
+    <section id="install-yesod">
+        <title>Install yesod</title>
+        <p id="iy1">In theory, this will simply require running <code>cabal
+                update &amp;&amp; cabal install yesod</code>. In practice,
+            cabal may not be able to figure everything out for you. If you run
+            into <xref
+                href="http://cdsmith.wordpress.com/2011/01/16/haskells-own-dll-hell/">DLL
+                hell</xref>, the simplest solution currently is to just delete
+            your .ghc folder.</p>
+
+    </section>
+    <section id="cabal">
+        <title>Update cabal file</title>
+        <p id="c1">Almost all underlying packages for Yesod have been upgraded,
+            including WAI, Hamlet, etc. Make sure to include newer versions.
+            For the most part, if you depend on the yesod package itself, you
+            can leave off version bounds on underlying packages. However, cabal
+            may not always do the right thing.</p>
+        <p id="c2">Some specific notes:</p>
+        <ul>
+            <li>Obviously, make sure your version bounds on the yesod package allow 0.7.0. I recommend <code>&gt;= 0.7 &amp;&amp; &lt; 0.8</code></li>
+            <li>wai-extra no longer provides SimpleServer. Instead, you should use Warp.</li>
+            <li>Make sure to add a -threaded GHC option when compiling all executables, even devel-server.</li>
+        </ul>
+        <p id="c3">Make sure to run <code>cabal install</code> to automatically
+            install any dependencies. If you run into DLL hell here, then
+            (surprise) an easy solution is to wipe out .ghc and run <code>cabal
+                install</code> again.</p>
+    </section>
+    <section id="hamlet">
+        <title>Update your Hamlet templates</title>
+        <p id="h1">Hamlet 0.7 introduces major syntax changes to all three
+            template languages (Hamlet, Cassius and Julius). It also includes a
+            utility that will automatically convert your files to the new
+            syntax. The following commands will overwrite your current <!-- FIXME make this bold, why won't it work? bug in xml-enumerator methinks -->
+                files, so make sure you've backed up/committed first:</p>
+        <codeblock>hamlet6to7 *.hs
+hamlet6to7 Handler/*.hs
+hamlet6to7 hamlet/*.hamlet
+hamlet6to7 cassius/*.cassius
+hamlet6to7 julius/*.julius</codeblock>
+          <p id="h2">Unfortunately the tool gives a lot of false positives about mismatches in Hamlet. My best advice is to look at the diffs: this will simultaneously give you good confidence that the conversion worked correctly and get you familiar with the new syntax.</p>
+      </section>
+      <section id="cabal-install">
+          <title>cabal install</title>
+          <p id="ci1">Even though your code won't build yet, this will be a
+              good way to see if you've set up your cabal file correctly. One
+              common error you'll encounter is that many of the modules that
+              used to be in the yesod package are now included in separate
+              packages, such as Yesod.Helpers.Static now living in
+              yesod-static. Make sure to add in any missing packages to your
+              cabal file. Some likely offenders will be:</p>
+          <ul>
+              <li>warp</li>
+              <li>yesod-form</li>
+              <li>yesod-newsfeed</li>
+              <li>yesod-static</li>
+              <li>Possibly need to move some dependencies (like ToHtml typeclass) from hamlet to blaze-html</li>
+              <li>Control.Monad.Invert is no longer used; instead, use relevant modules from the monad-peel package (most likely Control.Exception.Peel).</li>
+          </ul>
+      </section>
+      <section id="instances">
+          <title>Show, Read and Eq for Html</title>
+
+          <p id="in1">Hamlet is now using blaze-html's Html datatype. While I
+              think this is a good move overall, one downside is that
+              blaze-html does not provide Show, Read and Eq instances of Html.
+              When you include an Html value in a Persistent model, it won't be
+              able to create those instances by default. If you get error
+              messages, just add a single "deriving" line at the bottom. For
+              example:</p>
+
+          <codeblock>Person
+  name String
+  bio Html
+</codeblock>
+          <p id="in2">becomes</p>
+
+  <codeblock>Person
+  name String
+  bio Html
+  deriving
+</codeblock>
+        </section>
+        <section id="peel">
+            <title>MonadInvertIO to MonadPeelIO</title>
+            <p id="p1">Nuff said :)</p>
+        </section>
+        <section id="urlRenderOverride">
+            <title>urlRenderOverride</title>
+            <p id="uro1">The previous scaffolded version of urlRenderOverride no longer works. Use this one instead:</p>
+  <codeblock>urlRenderOverride a (StaticR s) =
+    Just $ uncurry (joinPath a Settings.staticroot) $ renderRoute s
+urlRenderOverride _ _ = Nothing</codeblock>
+        </section>
+        <section id="runDB">
+            <title>runDB: need liftIOHandler</title>
+            <p id="rdb1">For the impatient: stick <code>liftIOHandler</code> at the beginning of runDB like so: <code>runDB db = liftIOHandler $ fmap connPool getYesod &gt;&gt;= Settings.runConnectionPool db</code></p>
+
+            <p id="rdb2">For everyone else: WAI 0.2 contained the request body as an Enumerator in the Request datatype, and an Application was <code>Request -&gt; IO Response</code>. In WAI 0.3, an Application is <code>Request -&gt; Iteratee ByteString IO Response</code>. Long story short: all code in your Handler function now lives on top of an Iteratee monad so that it can access the request body.</p>
+
+            <p id="rdb3">This works great most of the time. The only downside is when you need to deal with exceptions. It's impossible to define a MonadPeelIO instance for Iteratee. Therefore, in Yesod 0.7, we have a new datatype called GGHandler, which is just a generalization of GHandler to allow an arbitrary inner monad.</p>
+
+            <p id="rdb4">GHandler defaults to having an Iteratee on the inside. But when you need a MonadPeelIO (like we do in Persistent), you need to have an IO on the inside. Eventually though, you'll need to convert your <code>GGHandler IO</code> to a <code>GHandler</code>. That's what <code>liftIOHandler</code> does.</p>
+        </section>
+        <section id="mime-mail-part">
+            <title>mime-mail Part constructor</title>
+            <p id="mmp1">mime-mail introduced a new record to the Part constructor- called partHeaders- that did not exist before. To get the same behavior as before, just pass in an empty list. This is especially relevant for users of yesod-auth's email plugin.</p>
+        </section>
+        <section id="newsfeed">
+            <title>Feed, formerly known as AtomFeed</title>
+
+            <p id="newsfeed1">Patrick Brisbin has become a co-maintainer on the yesod-newsfeed
+                package, and added a feature I'm sure many people will
+                appreciate: RSS feed support. The best part is that it uses the
+                same datatype as the Atom feeds, so with just a few changes you
+                can have both versions of newsfeed:</p>
+
+            <ul>
+                <li>Change AtomFeed to Feed</li>
+                <li>Change AtomFeedEntry to FeedEntry</li>
+                <li>Change records like atomTitle to feedTitle</li>
+                <li>Add two new records: feedDescription and feedLanguage</li>
+                <li>Change RepAtom to RepAtomRss</li>
+                <li>Change atomFeed to newsFeed</li>
+                <li>Change imported module to Yesod.Helpers.Feed</li>
+            </ul>
+        </section>
+        <section id="static">
+            <title>fileLookupDir no more</title>
+            <p id="static1">The standard line for getting static file serving previously was
+    <code>s = fileLookupDir Settings.staticdir typeByExt</code>. In Yesod 0.7, we're migrating to the much more powerful yesod-app-static package. The replacement for the above line is <code>s = static Settings.staticdir</code>.</p>
+        </section>
+        <section id="mptc">
+            <title>MultiParamTypeClasses</title>
+            <p id="mptc1">A major new feature is the simplification of the dispatch code. While this almost entirely is transparent to the user, one user-visible changes is the unification of YesodSite and YesodSubSite into YesodDispatch. As a result, your Controller.hs file will now need MultiParamTypeClasses turned on.</p>
+        </section>
+        <section id="stobs">
+            <title>String to ByteString</title>
+            <p id="stobs1">In a few places (redirectString, mime-type) I've replaced Strings with ByteStrings. I'm not 100% certain this was the right choice, but it <i>is</i> more correct in the sense that these values are sent verbatim across the wire. A simple Data.ByteString.Char8.pack will get you the old behavior.</p>
+        </section>
+    </chapter>

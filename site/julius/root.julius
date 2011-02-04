@@ -1,0 +1,6 @@
+$(function(){
+    $("#slideshow").cycle({
+        timeout: 7000,
+        fx: "shuffle"
+    });
+});

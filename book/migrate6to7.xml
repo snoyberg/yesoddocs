@@ -25,7 +25,7 @@
             into <xref
                 href="http://cdsmith.wordpress.com/2011/01/16/haskells-own-dll-hell/">DLL
                 hell</xref>, the simplest solution currently is to just delete
-            your .ghc folder.</p>
+            your .ghc folder. Please note that you need to have the <hackage>happy</hackage> and <hackage>alex</hackage> packages installed to install <hackage>yesod</hackage>.</p>
 
     </section>
     <section id="cabal">

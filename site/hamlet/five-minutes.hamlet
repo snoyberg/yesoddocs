@@ -10,7 +10,7 @@
             %code cabal update
         %li
             Install Yesod by running $
-            %code cabal install yesod
+            %code cabal install happy && cabal install alex && cabal install yesod
         %li
             %i Optional: $
             get the examples from this site by running $

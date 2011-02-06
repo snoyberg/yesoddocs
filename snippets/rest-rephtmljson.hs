@@ -1,4 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 data R = R
 mkYesod "R" [$parseRoutes|
@@ -21,19 +22,20 @@ $(function(){
 });
 |]
     let names = words "Larry Moe Curly"
-    addHamlet [$hamlet|
-#results
-    Your results will be placed here if you have Javascript enabled.
-%ul
-    $forall names name
-        %li
-            %a!href=@NameR.name@ $name$
+    addHamlet [$hamlet|\
+<div id="results">
+    \Your results will be placed here if you have Javascript enabled.
+<ul>
+    $forall name <- names
+        <li>
+            <a href="@{NameR name}">#{name}
 |]
 getNameR name = do
     let widget = do
             setTitle $ string name
-            addHamlet [$hamlet|Looks like you have Javascript off. Name: $name$|]
+            addHamlet [$hamlet|\Looks like you have Javascript off. Name: #{name}
+|]
     let json = jsonMap [("name", jsonScalar name)]
     defaultLayoutJson widget json
 -- STOP
-main = basicHandler 4000 R
+main = warpDebug 4000 R

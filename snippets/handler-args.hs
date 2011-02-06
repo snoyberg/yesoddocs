@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 data Args = Args
 -- START
@@ -11,7 +12,8 @@ mkYesod "Args" [$parseRoutes|
 |]
 
 getPersonR :: String -> Handler RepHtml
-getPersonR name = defaultLayout [$hamlet|%h1 Hello $name$!|]
+getPersonR name = defaultLayout [$hamlet|<h1>Hello #{name}!
+|]
 
 handleDateR :: Integer -> String -> Int -> Handler RepPlain -- text/plain
 handleDateR year month day =
@@ -22,4 +24,4 @@ getWikiR :: [String] -> Handler RepPlain
 getWikiR = return . RepPlain . toContent . unwords
 -- STOP
 instance Yesod Args where approot _ = ""
-main = basicHandler 3000 Args
+main = warpDebug 3000 Args

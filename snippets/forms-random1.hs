@@ -1,4 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 import System.Random
 import Control.Applicative
@@ -35,15 +36,15 @@ getRootR = do
                 number <- liftIO $ randomRIO (min, max)
                 let word = if number == 1 then single else plural
                 return $ "You got " ++ show number ++ " " ++ word
-    defaultLayout [$hamlet|
-%p $output$
-%form!enctype=$enctype$
-    %table
-        ^form^
-        %tr
-            %td!colspan=2
-                %input!type=submit!value="Randomize!"
+    defaultLayout [$hamlet|\
+<p>#{output}
+<form enctype="#{enctype}">
+    <table>
+        \^{form}
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Randomize!">
 |]
 -- STOP
 
-main = basicHandler 3001 Rand
+main = warpDebug 3001 Rand

@@ -1,4 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 import Yesod.Form.Jquery
 import Yesod.Form.Nic
@@ -34,24 +35,23 @@ getRootR = do
                     FormSuccess x -> Just x
                     _ -> Nothing
     defaultLayout $ do
-        addCassius [$cassius|
-#about-me
+        addCassius [$cassius|#about-me
     width: 400px
     height: 300px
 |]
-        [$hamlet|
-$maybe msurvey survey
-    %h3 Previous Entries
-    $maybe birthday.survey bday
-        %p Born on $show.bday$
-    %p Favorite color: $favoriteColor.survey$
-    $aboutMe.survey$
-%form!enctype=$enctype$
-    %table
-        ^form^
-        %tr
-            %td!colspan=2
-                %input!type=submit
+        [$hamlet|\
+$maybe survey <- msurvey
+    <h3>Previous Entries
+    $maybe bday <- birthday survey
+        <p>Born on #{show bday}
+    <p>Favorite color: #{favoriteColor survey}
+    \#{aboutMe survey}
+<form enctype="#{enctype}">
+    <table>
+        \^{form}
+        <tr>
+            <td colspan="2">
+                <input type="submit">
 |]
 -- STOP
 
@@ -61,4 +61,4 @@ getColorsR = do
   where
     colors = words "red orange yellow green blue purple black brown"
 
-main = basicHandler 3001 Js
+main = warpDebug 3001 Js

@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 data Fibs = Fibs
 -- START
@@ -22,4 +23,4 @@ instance Yesod Fibs where approot _ = ""
 fibs = 1 : 1 : zipWith (+) fibs (tail fibs)
 getFibsR :: Natural -> GHandler Fibs Fibs RepPlain
 getFibsR (Natural i) = return $ RepPlain $ toContent $ show $ fibs !! (i - 1)
-main = basicHandler 3000 Fibs
+main = warpDebug 3000 Fibs

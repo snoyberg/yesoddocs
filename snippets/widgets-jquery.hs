@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 data HelloWorld = HelloWorld
 mkYesod "HelloWorld" [$parseRoutes|
@@ -7,8 +8,7 @@ mkYesod "HelloWorld" [$parseRoutes|
 instance Yesod HelloWorld where approot _ = ""
 -- START
 colorChanger = do
-    addCassius [$cassius|
-#color-text
+    addCassius [$cassius|#color-text
     color: red
 #color-text.green
     color: green
@@ -21,7 +21,8 @@ $(function(){
     });
 });
 |]
-    addHamlet [$hamlet|#color-text This text changes colors. Just click on it!|]
+    addHamlet [$hamlet|<div id="color-text">This text changes colors. Just click on it!
+|]
 
 buttons = do
     addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
@@ -34,8 +35,8 @@ $(function(){
     });
 });
 |]
-    addHamlet [$hamlet|
-%button This is a button. I dare you to click it.
+    addHamlet [$hamlet|\
+<button>This is a button. I dare you to click it.
 |]
 
 getHomeR = defaultLayout $ do
@@ -43,4 +44,4 @@ getHomeR = defaultLayout $ do
     colorChanger
     buttons
 -- STOP
-main = basicHandler 3000 HelloWorld
+main = warpDebug 3000 HelloWorld

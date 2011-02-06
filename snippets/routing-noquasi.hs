@@ -1,4 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 -- START
 import Yesod
 import Web.Routes.Quasi.Parse
@@ -9,8 +10,10 @@ mkYesod "NoQuasi"
                        , SinglePiece "String"
                        ] ["GET"]
     ]
-getHomeR = defaultLayout $ addHamlet [$hamlet|Hello|]
-getNameR name = defaultLayout $ addHamlet [$hamlet|Hello $name$|]
+getHomeR = defaultLayout $ addHamlet [$hamlet|\Hello
+|]
+getNameR name = defaultLayout $ addHamlet [$hamlet|\Hello #{name}
+|]
 -- STOP
 instance Yesod NoQuasi where approot _ = ""
-main = basicHandler 3001 NoQuasi
+main = warpDebug 3001 NoQuasi

@@ -4,7 +4,7 @@
     #status Chapter status: $show.chapterStatus.chapter$
     %p
         %b NOTE: $
-        The content for the book has not yet been updated for Yesod version 0.7. This is a top priority and will be done shortly. Look for a blog post when the transition is complete.
+        While all of the snippets and code examples in this book have been updated to Yesod 0.7, the content has not. This is a top priority and will be done shortly. Look for a blog post when the transition is complete.
     ^html^
     %p
         %a!href=@BookR@ Table of Contents

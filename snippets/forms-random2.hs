@@ -1,4 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 import Yesod.Form.Core
 import System.Random
@@ -53,11 +54,11 @@ rangeField initial = GForm $ do
             { fiLabel = "Number range"
             , fiTooltip = ""
             , fiIdent = minId -- for attribute of the label
-            , fiInput = [$hamlet|
-Between $
-%input#$minId$!name=$minName$!type=number!value=$minValue$
-\ and $
-%input#$maxId$!name=$maxName$!type=number!value=$maxValue$
+            , fiInput = [$hamlet|\
+\Between 
+<input id="#{minId}" name="#{minName}" type="number" value="#{minValue}">
+\ and 
+<input id="#{maxId}" name="#{maxName}" type="number" value="#{maxValue}">
 |]
             , fiErrors =
                 case res of
@@ -80,20 +81,19 @@ getRootR = do
                 let word = if number == 1 then single else plural
                 return $ "You got " ++ show number ++ " " ++ word
     defaultLayout $ do
-        addCassius [$cassius|
-input[type=number]
+        addCassius [$cassius|input[type=number]
     width: 50px
 .errors
     color: red
 |]
-        [$hamlet|
-%p $output$
-%form!enctype=$enctype$
-    %table
-        ^form^
-        %tr
-            %td!colspan=2
-                %input!type=submit!value="Randomize!"
+        [$hamlet|\
+<p>#{output}
+<form enctype="#{enctype}">
+    <table>
+        \^{form}
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Randomize!">
 |]
 
-main = basicHandler 3001 Rand
+main = warpDebug 3001 Rand

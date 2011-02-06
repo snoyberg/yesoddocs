@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 -- START
 import Web.Routes.Base (encodePathInfo, decodePathInfo)
@@ -13,6 +14,7 @@ mkYesod "NoSlash" [$parseRoutes|
 -- START
 instance Yesod NoSlash where
     approot _ = "http://www.example.com/foo/bar"
+    {- FIXME This is now default behavior since Yesod 0.7. We need to rewrite this section of the book.
     joinPath _ root pieces query = root ++ '/' : encodePathInfo pieces query
     splitPath foundation orig =
         if orig == new then Right pieces else Left newComplete
@@ -20,15 +22,16 @@ instance Yesod NoSlash where
         pieces = filter (not . null) $ decodePathInfo $ S8.unpack orig
         new = S8.pack $ joinPath foundation "" pieces []
         newComplete = S8.pack $ joinPath foundation (approot foundation) pieces []
+    -}
 -- STOP
-getRootR = defaultLayout [$hamlet|
-%p
-    %a!href=@RootR@ @RootR@
-%p
-    %a!href=@SomePathR@ @SomePathR@
-%p
-    %a!href=@OneMorePathR@ @OneMorePathR@
+getRootR = defaultLayout [$hamlet|\
+<p>
+    <a href="@{RootR}">@{RootR}
+<p>
+    <a href="@{SomePathR}">@{SomePathR}
+<p>
+    <a href="@{OneMorePathR}">@{OneMorePathR}
 |]
 getSomePathR = getRootR
 getOneMorePathR = getRootR
-main = basicHandler 4000 NoSlash
+main = warpDebug 4000 NoSlash

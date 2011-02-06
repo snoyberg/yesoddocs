@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 data HelloWorld = HelloWorld
 mkYesod "HelloWorld" [$parseRoutes|
@@ -9,6 +10,7 @@ instance Yesod HelloWorld where approot _ = ""
 getHomeR = defaultLayout $ do
     setTitle "Hello World"
     addJulius [$julius|alert("This is Javascript");|]
-    addWidget [$hamlet|%p Hello World!|]
+    addWidget [$hamlet|<p>Hello World!
+|]
 -- STOP
-main = basicHandler 3000 HelloWorld
+main = warpDebug 3000 HelloWorld

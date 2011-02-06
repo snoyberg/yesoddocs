@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 data HelloWorld = HelloWorld
 mkYesod "HelloWorld" [$parseRoutes|
@@ -10,4 +11,4 @@ getHomeR = defaultLayout $ do
     setTitle "Hello World"
     [$hamlet|Hello World!|]
 -- STOP
-main = basicHandler 3000 HelloWorld
+main = warpDebug 3000 HelloWorld

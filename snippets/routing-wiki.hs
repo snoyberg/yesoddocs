@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, StandaloneDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 data Wiki = Wiki
 -- START
@@ -18,4 +19,4 @@ deriving instance Eq WikiPage
 deriving instance Show WikiPage
 instance Yesod Wiki where approot _ = ""
 getWikiR (WikiPage s) = return $ RepPlain $ toContent $ show s
-main = basicHandler 3000 Wiki
+main = warpDebug 3000 Wiki

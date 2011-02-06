@@ -1,5 +1,5 @@
 -- START
-{-# LANGUAGE TypeFamilies, QuasiQuotes #-}
+{-# LANGUAGE TypeFamilies, QuasiQuotes, MultiParamTypeClasses #-}
 import Yesod
 import Yesod.Helpers.Static
 
@@ -12,5 +12,5 @@ mkYesod "StaticExample" [$parseRoutes|
 / StaticR Static getStatic
 |]
 instance Yesod StaticExample where approot _ = ""
-main = basicHandler 3000 $ StaticExample $ fileLookupDir "static" typeByExt
+main = warpDebug 3000 $ StaticExample $ static "static"
 -- STOP

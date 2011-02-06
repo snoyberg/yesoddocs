@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 data HelloWorld = HelloWorld
 mkYesod "HelloWorld" [$parseRoutes|
@@ -12,6 +13,7 @@ getHomeR = defaultLayout $ do
 p
     color: red
 |]
-    addWidget [$hamlet|%p Hello World!|]
+    addWidget [$hamlet|<p>Hello World!
+|]
 -- STOP
-main = basicHandler 3000 HelloWorld
+main = warpDebug 3000 HelloWorld

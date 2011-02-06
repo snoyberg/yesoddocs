@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 data Layout = Layout
 mkYesod "Layout" [$parseRoutes|
@@ -11,18 +12,20 @@ instance Yesod Layout where
     defaultLayout contents = do
         PageContent title headTags bodyTags <- widgetToPageContent contents
         mmsg <- getMessage
-        hamletToRepHtml [$hamlet|
-!!!
-%html
-    %head
-        %title $title$
-        ^headTags^
-    %body
-        $maybe mmsg msg
-            #message $msg$
-        ^bodyTags^
+        hamletToRepHtml [$hamlet|\
+\<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>#{title}
+        \^{headTags}
+    <body>
+        $maybe msg <- mmsg
+            <div id="message">#{msg}
+        \^{bodyTags}
 |]
 -- STOP
-getRootR = defaultLayout [$hamlet|%a!href=@MsgR@ message|]
+getRootR = defaultLayout [$hamlet|<a href="@{MsgR}">message
+|]
 getMsgR = setMessage (string "foo") >> redirect RedirectTemporary RootR >> return ()
-main = basicHandler 4000 Layout
+main = warpDebug 4000 Layout

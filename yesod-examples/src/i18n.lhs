@@ -1,6 +1,7 @@
 > {-# LANGUAGE QuasiQuotes #-}
 > {-# LANGUAGE TemplateHaskell #-}
 > {-# LANGUAGE TypeFamilies #-}
+> {-# LANGUAGE MultiParamTypeClasses #-}
 
 > import Yesod
 > import Data.Monoid (mempty)
@@ -28,12 +29,12 @@
 >     defaultLayout $ do
 >       setTitle $ string "I18N Homepage"
 >       addHamlet [$hamlet|
-> %h1 $hello$
-> %p In other languages:
-> %ul
->     $forall choices choice
->         %li
->             %a!href=@SetLangR.fst.choice@ $snd.choice$
+> <h1>#{hello}
+> <p>In other languages:
+> <ul>
+>     $forall choice <- choices
+>         <li>
+>             <a href="@{SetLangR (fst choice)}">#{snd choice}
 > |]
 
 > chooseHello :: [String] -> String
@@ -48,4 +49,4 @@
 >     redirect RedirectTemporary HomepageR
 
 > main :: IO ()
-> main = basicHandler 3000 I18N
+> main = warpDebug 3000 I18N

@@ -1,4 +1,4 @@
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses #-}
 > import Yesod
 > import Control.Applicative ((<$>), (<*>))
 > 
@@ -28,4 +28,4 @@
 > instance Yesod Session where
 >     approot _ = ""
 >     clientSessionDuration _ = 1
-> main = basicHandler 3000 Session
+> main = warpDebug 3000 Session

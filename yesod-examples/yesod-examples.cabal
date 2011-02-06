@@ -22,6 +22,7 @@ Executable blog
 
 Executable ajax
   Main-is:             src/ajax.lhs
+  Build-depends:       yesod-static
 
 Executable file-echo
   Main-is:             src/file-echo.lhs
@@ -40,19 +41,13 @@ Executable session
 
 Executable widgets
   Main-is:             src/widgets.lhs
+  Build-depends:       yesod-form
 
 Executable generalized-hamlet
   Main-is:             src/generalized-hamlet.lhs
 
 Executable form
   Main-is:             src/form.lhs
-
-Executable mkToForm
-  Main-is:             mkToForm.hs
-  Build-depends:       time,
-                       persistent >= 0.4 && < 0.5
-  hs-source-dirs:      src
-  other-modules:       MkToForm2
 
 Executable persistent-synopsis
   Main-is:             synopsis/persistent.lhs

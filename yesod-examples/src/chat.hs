@@ -1,10 +1,10 @@
 {-# LANGUAGE TemplateHaskell, QuasiQuotes, TypeFamilies #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Main where
 
 import Yesod
-import Yesod.Handler
 import Yesod.Helpers.Static
 
 import Control.Concurrent.STM
@@ -38,17 +38,19 @@ instance Yesod Chat where
   approot _ = ""
   defaultLayout widget = do
     content <- widgetToPageContent widget
-    hamletToRepHtml [$hamlet|
-    !!!
-    %html
-        %head
-            %title $pageTitle.content$
-            %script!src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
-            %script!src=@StaticR.chat_js@
-            ^pageHead.content^
-        %body
-            ^pageBody.content^
-    |]
+    hamletToRepHtml [$hamlet|\
+    \<!DOCTYPE html>
+
+    <html>
+        <head>
+            <title>#{pageTitle content}
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js">
+            <script src="@{StaticR chat_js}">
+            \^{pageHead content}
+        <body>
+            \^{pageBody content}
+    \
+|]
 
 getHomeR :: Handler Chat RepHtml
 getHomeR = do
@@ -64,16 +66,17 @@ getHomeR = do
     return c
   defaultLayout $ do
     setTitle "Chat Page"
-    addWidget [$hamlet|
-!!!
-%h1 Chat Example
-%form
-    %textarea!cols=80!rows=20!name=chat
-    %p
-        %input!type=text!size=15!name=name#name
-        %input!type=text!size=60!name=send#send
-        %input!type=submit!value=Send
-%script var clientNumber = $show client$
+    addWidget [$hamlet|\
+\<!DOCTYPE html>
+
+<h1>Chat Example
+<form>
+    <textarea cols="80" rows="20" name="chat">
+    <p>
+        <input type="text" size="15" name="name" id="name">
+        <input type="text" size="60" name="send" id="send">
+        <input type="submit" value="Send">
+<script>var clientNumber = #{show client}
 |]
 
 getCheckR :: Handler Chat RepJson
@@ -117,5 +120,4 @@ main :: IO ()
 main = do
   clients <- newTVarIO []
   next <- newTVarIO 0
-  let static = fileLookupDir "static" typeByExt
-  basicHandler 3000 $ Chat clients next static
+  warpDebug 3000 $ Chat clients next $ static "static"

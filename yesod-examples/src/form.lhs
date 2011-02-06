@@ -1,7 +1,7 @@
 <p>Forms can be a tedious part of web development since they require synchronization of code in many different areas: the HTML form declaration, parsing of the form and reconstructing a datatype from the raw values. The Yesod form library simplifies things greatly. We'll start off with a basic application.</p>
 
 
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings, MultiParamTypeClasses #-}
 > import Yesod
 > import Control.Applicative
 > data FormExample = FormExample
@@ -36,13 +36,13 @@ We use an applicative approach and stay mostly declarative. The "fmap name p" bi
 <p>extractBody returns the HTML of a widget and "passes" all of the other declarations (the CSS, Javascript, etc) up to the parent widget. The rest of this is just standard Hamlet code and our main function.</p>
 
 >         addHamlet [$hamlet|
-> %p Last result: $show.res$
-> %form!enctype=$enctype$
->     %table
->         ^form^
->         %tr
->             %td!colspan=2
->                 %input!type=submit
+> <p>Last result: #{show res}
+> <form enctype="#{enctype}">
+>     <table>
+>         \^{form}
+>         <tr>
+>             <td colspan="2">
+>                 <input type="submit">
 > |]
 > 
-> main = basicHandler 3000 FormExample
+> main = warpDebug 3000 FormExample

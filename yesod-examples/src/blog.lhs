@@ -2,7 +2,7 @@
 
 <p>This file is literate Haskell, so we'll start off with our language pragmas and import statements. Basically every Yesod application will start off like this:</p>
 
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses #-}
 > import Yesod
 
 Next, we'll define the blog entry information. Usually, we would want to store the data in a database and allow users to modify them, but we'll simplify for the moment.
@@ -70,18 +70,19 @@ And now the template itself:
 > entryTemplate :: TemplateArgs -> Hamlet (Route Blog)
 > entryTemplate args = [$hamlet|
 >   !!!
->   %html
->       %head
->           %title $templateTitle.args$
->       %body
->           %h1 Yesod Sample Blog
->           %h2 $templateTitle.args$
->           %ul#nav
->               $forall templateNavbar.args nav
->                   %li
->                       %a!href=@navUrl.nav@ $navTitle.nav$
->           #content
->               $templateContent.args$
+> 
+>   <html>
+>       <head>
+>           <title>#{templateTitle args}
+>       <body>
+>           <h1>Yesod Sample Blog
+>           <h2>#{templateTitle args}
+>           <ul id="nav">
+>               $forall nav <- templateNavbar args
+>                   <li>
+>                       <a href="@{navUrl nav}">#{navTitle nav}
+>           <div id="content">
+>               \#{templateContent args}
 >   |]
 
 Hopefully, that is fairly easy to follow; if not, please review the Hamlet documentation. Just remember that dollar signs mean Html variables, and at signs mean URLs.
@@ -113,4 +114,4 @@ All that's left now is the main function. Yesod is built on top of WAI, so you c
 > main :: IO ()
 > main = do
 >   entries <- loadEntries
->   basicHandler 3000 $ Blog entries
+>   warpDebug 3000 $ Blog entries

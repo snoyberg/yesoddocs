@@ -18,30 +18,31 @@ renderUrls Homepage _ = "/"
 renderUrls (PersonPage name) _ = '/' : name
 
 footer :: Hamlet url
-footer = [$hamlet|
-#footer Thank you, come again
+footer = [$hamlet|\
+<div id="footer">Thank you, come again
 |]
 
 template :: Person -> Hamlet PersonUrls
 template person = [$hamlet|
 !!!
-%html
-    %head
-        %title Hamlet Demo
-    %body
-        %h1 Information on $string.name.person$
-        %p $string.name.person$ is $string.age.person$ years old.
-        %h2
-            $if isMarried.person
-                Married
+
+<html>
+    <head>
+        <title>Hamlet Demo
+    <body>
+        <h1>Information on #{string (name person)}
+        <p>#{string (name person)} is #{string (age person)} years old.
+        <h2>
+            $if isMarried person
+                \Married
             $else
-                Not married
-        %ul
-            $forall children.person child
-                %li $string.child$
-        %p
-            %a!href=@page.person@ See the page.
-        ^footer^
+                \Not married
+        <ul>
+            $forall child <- children person
+                <li>#{string child}
+        <p>
+            <a href="@{page person}">See the page.
+        \^{footer}
 |]
 
 main :: IO ()

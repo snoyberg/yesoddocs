@@ -1,6 +1,5 @@
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings, MultiParamTypeClasses #-}
 > import Yesod
-> import Yesod.Widget
 > import Yesod.Helpers.Static
 > import Yesod.Form.Jquery
 > import Yesod.Form.Nic
@@ -18,11 +17,11 @@
 > instance YesodJquery HW
 > instance YesodNic HW
 > wrapper h = [$hamlet|
-> #wrapper ^h^
-> %footer Brought to you by Yesod Widgets&trade;
+> <#wrapper>^{h}
+> <footer>Brought to you by Yesod Widgets&trade;
 > |]
 > getRootR = defaultLayout $ wrapper $ do
->     i <- newIdent
+>     i <- lift newIdent
 >     setTitle $ string "Hello Widgets"
 >     addCassius [$cassius|
 >   #$i$
@@ -65,19 +64,19 @@
 >     width: 300px
 >     height: 150px|]
 >         addWidget [$hamlet|
-> %form!method=post!enctype=$enctype$
->     %table
->         ^form^
->         %tr
->             %td!colspan=2
->                 $nonce$
->                 %input!type=submit
->     $maybe mhtml html
->         $html$
+> <form method="post" enctype="#{enctype}">
+>     <table>
+>         \^{form}
+>         <tr>
+>             <td colspan="2">
+>                 \#{nonce}
+>                 <input type="submit">
+>     $maybe html <- mhtml
+>         \#{html}
 > |]
 >         setTitle $ string "Form"
 > 
-> main = basicHandler 3000 $ HW $ fileLookupDir "static" typeByExt
+> main = warpDebug 3000 $ HW $ static "static"
 > 
 > getAutoCompleteR :: Handler RepJson
 > getAutoCompleteR = do

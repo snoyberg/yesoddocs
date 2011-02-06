@@ -11,7 +11,7 @@ Yesod has instances for:
 This example uses all three. You are of course free in your own code to make
 your own instances.
 
-> {-# LANGUAGE QuasiQuotes, TypeFamilies #-}
+> {-# LANGUAGE QuasiQuotes, TypeFamilies, MultiParamTypeClasses #-}
 > import Yesod
 > data NewHamlet = NewHamlet
 > mkYesod "NewHamlet" [$parseRoutes|/ RootR GET|]
@@ -19,13 +19,13 @@ your own instances.
 > type Widget = GWidget NewHamlet NewHamlet
 > 
 > myHtml :: Html
-> myHtml = [$hamlet|%p Just don't use any URLs in here!|]
+> myHtml = [$hamlet|<p>Just don't use any URLs in here!|]
 >
 > myInnerWidget :: Widget ()
 > myInnerWidget = do
 >     addHamlet [$hamlet|
->   #inner Inner widget
->   $myHtml$
+>   <div #inner>Inner widget
+>   #{myHtml}
 > |]
 >     addCassius [$cassius|
 >#inner
@@ -33,20 +33,20 @@ your own instances.
 > 
 > myPlainTemplate :: Hamlet NewHamletRoute
 > myPlainTemplate = [$hamlet|
-> %p
->     %a!href=@RootR@ Link to home
+> <p
+>     <a href=@{RootR}>Link to home
 > |]
 > 
 > myWidget :: Widget ()
 > myWidget = [$hamlet|
->     %h1 Embed another widget
->     ^myInnerWidget^
->     %h1 Embed a Hamlet
->     ^addHamlet.myPlainTemplate^
+>     <h1>Embed another widget
+>     \^{myInnerWidget}
+>     <h1>Embed a Hamlet
+>     \^{addHamlet myPlainTemplate}
 > |]
 > 
 > getRootR :: GHandler NewHamlet NewHamlet RepHtml
 > getRootR = defaultLayout myWidget
 > 
 > main :: IO ()
-> main = basicHandler 3000 NewHamlet
+> main = warpDebug 3000 NewHamlet

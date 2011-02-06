@@ -156,7 +156,7 @@ urlRenderOverride _ _ = Nothing</codeblock>
         </section>
         <section id="stobs">
             <title>String to ByteString</title>
-            <p id="stobs1">In a few places (redirectString, mime-type) I've replaced Strings with ByteStrings. I'm not 100% certain this was the right choice, but it <i>is</i> more correct in the sense that these values are sent verbatim across the wire. A simple Data.ByteString.Char8.pack will get you the old behavior.</p>
+            <p id="stobs1">In a few places (redirectString, mime-type, sendFile) I've replaced Strings with ByteStrings. I'm not 100% certain this was the right choice, but it <i>is</i> more correct in the sense that these values are sent verbatim across the wire. A simple Data.ByteString.Char8.pack will get you the old behavior.</p>
         </section>
         <section id="develserver">
             <title>devel-server.hs</title>
@@ -165,5 +165,9 @@ urlRenderOverride _ _ = Nothing</codeblock>
 
 main :: IO ()
 main = develServer 3000 "Controller" "withMyApp"</codeblock>
+        </section>
+        <section id="lift">
+            <title>lift, not liftHandler</title>
+            <p id="lift1">Thanks to Антон Чешков for pointing this one out: the <code>liftHandler</code> function has been removed. Instead, you can now use the standard <code>Control.Monad.Trans.Class.lift</code> function. Additionally, since the <code>newIdent</code> function has moved from the <code>Widget</code> to <code>Handler</code> monads, any calls you have now to newIdent will need to be <code>lift</code>ed.</p>
         </section>
     </chapter>

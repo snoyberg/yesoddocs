@@ -86,6 +86,9 @@ navLinks =
 instance Yesod YesodDocs where
     approot _ = ""
     defaultLayout widget = do
+        addGoogleFont "Cantarell"
+        addGoogleFont "Inconsolata"
+        addGoogleFont "Droid+Serif"
         curr <- getCurrentRoute
         tm <- getRouteToMaster
         let isCurrent x = fmap (Right . tm) curr == Just x
@@ -97,6 +100,9 @@ instance Yesod YesodDocs where
             atomLink FeedR "Yesod Blog"
             widget
         hamletToRepHtml $(hamletFile "default-layout")
+      where
+        addGoogleFont s = addStylesheetRemote $ "http://fonts.googleapis.com/css?family=" ++ s
+
 instance YesodJquery YesodDocs where
     urlJqueryJs _ = Left $ StaticR jquery_js
     urlJqueryUiJs _ = Left $ StaticR jquery_ui_js

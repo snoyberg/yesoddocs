@@ -1,7 +1,13 @@
 body
-    font-family: sans-serif
+    font-family: Cantarell, verdana, sans-serif
     margin: 0
     background: #A3B5BA
+
+h1, h2, h3, h4, h5, h6
+    font-family: Droid Serif, Georgia, serif
+
+code
+    font-family: Inconsolata, monospaced
 
 header
     text-align: center

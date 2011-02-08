@@ -57,7 +57,6 @@ data Entry = Entry
     , entryYearMonth :: String
     , entryContent :: Html
     }
-    deriving Show
 
 notHidden :: String -> Bool
 notHidden ('.':_) = False

@@ -18,7 +18,7 @@ import qualified Data.Text.Lazy.IO as TIO
 import Text.XML.Enumerator.Parse
 import Data.Enumerator (Iteratee, throwError)
 import Control.Monad.IO.Class (MonadIO (liftIO))
-import Text.Hamlet (ToHtml (..), string)
+import Text.Blaze (ToHtml (..), string)
 import qualified Text.Highlighting.Kate as Kate
 import qualified System.IO.UTF8 as U
 import Data.List (group, sort)

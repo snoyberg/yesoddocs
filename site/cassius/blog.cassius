@@ -21,75 +21,54 @@
 #archive ul
     padding-left: 10px
     list-style: none
-
 #archive a.current, #archive a:visited.current
     color: #900
     pointer: default
-
 #content
     margin-left: 200px
     padding: 0 20px
-
 #content h1, #content h2, #content h3.date
     margin: 3px 0
-
 #content h3.date
     font-style: italic
-
 #nav a.selected
     cursor: default
     color: #900
-
 .treeview, .treeview ul
-	padding: 0
-	margin: 0
-	list-style: none
-
-
+    padding: 0
+    margin: 0
+    list-style: none
 .treeview ul
-	margin-top: 4px
-
-
+    margin-top: 4px
 .treeview .hitarea
-	background: url(@StaticR.treeview_default_gif@) -64px -25px no-repeat
-	height: 16px
-	width: 16px
-	margin-left: -16px
-	float: left
-	cursor: pointer
-
+    background: url(@{StaticR treeview_default_gif}) -64px -25px no-repeat
+    height: 16px
+    width: 16px
+    margin-left: -16px
+    float: left
+    cursor: pointer
 * html .hitarea
-	display: inline
-	float: none
-
+    display: inline
+    float: none
 .treeview li
-	margin: 0
-	padding: 3px 0pt 3px 16px
-
+    margin: 0
+    padding: 3px 0pt 3px 16px
 .treeview .hover
     color: red
     cursor: pointer;
-
 .treeview li
-    background: url(@StaticR.treeview_default_line_gif@) 0 0 no-repeat
-
+    background: url(@{StaticR treeview_default_line_gif}) 0 0 no-repeat
 .treeview li.collapsable, .treeview li.expandable
     background-position: 0 -176px
-
 .treeview .expandable-hitarea
     background-position: -80px -3px
-
 .treeview li.last
     background-position: 0 -1766px
-
 .treeview li.lastCollapsable, .treeview li.lastExpandable
-    background-image: url(@StaticR.treeview_default_gif@)
-
+    background-image: url(@{StaticR treeview_default_gif})
 .treeview li.lastCollapsable
     background-position: 0 -111px
-
 .treeview li.lastExpandable
     background-position: -32px -67px
-
 .treeview div.lastCollapsable-hitarea, .treeview div.lastExpandable-hitarea
     background-position: 0

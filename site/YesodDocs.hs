@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, OverloadedStrings #-}
+{-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, OverloadedStrings, MultiParamTypeClasses #-}
 
 module YesodDocs where
 
@@ -29,7 +29,8 @@ import Control.Concurrent.AdvSTM
 import Control.Concurrent.AdvSTM.TVar
 import Comments
 import Data.List (sortBy)
-import Text.Hamlet (toHtml)
+import Text.Blaze (toHtml)
+import qualified Data.ByteString.Char8 as S8
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
@@ -86,9 +87,6 @@ navLinks =
 instance Yesod YesodDocs where
     approot _ = ""
     defaultLayout widget = do
-        addGoogleFont "Cantarell"
-        addGoogleFont "Inconsolata"
-        addGoogleFont "Droid+Serif"
         curr <- getCurrentRoute
         tm <- getRouteToMaster
         let isCurrent x = fmap (Right . tm) curr == Just x
@@ -96,6 +94,9 @@ instance Yesod YesodDocs where
         let render (Left s) = s
             render (Right u) = render' u
         pc <- widgetToPageContent $ do
+            addGoogleFont "Cantarell"
+            addGoogleFont "Inconsolata"
+            addGoogleFont "Droid+Serif"
             addCassius $(cassiusFile "default-layout")
             atomLink FeedR "Yesod Blog"
             widget
@@ -113,11 +114,11 @@ getHomeR = defaultLayout $ do
     setTitle "Yesod Web Framework for Haskell"
     let faqR = ChapterR "faq"
     addHamlet $(hamletFile "root")
-    addHtmlHead [$hamlet|
-%meta!name=description!value="Yesod Web Framework for Haskell. Create RESTful web apps with type safety."
+    addHtmlHead [$hamlet|\
+<meta name="description" value="Yesod Web Framework for Haskell. Create RESTful web apps with type safety.">
 |]
     addCassius $(cassiusFile "root")
-    y <- liftHandler getYesod
+    y <- lift getYesod
     addScriptEither $ urlJqueryJs y
     addScriptRemote "http://cdn.jquerytools.org/1.2.0/full/jquery.tools.min.js"
     addJulius $(juliusFile "root")
@@ -137,7 +138,7 @@ getAboutR = defaultLayout $ do
 getBookR :: Handler RepHtml
 getBookR = defaultLayout $ do
     setTitle "Yesod Web Framework Book"
-    book <- liftHandler $ fmap getBook getYesod
+    book <- lift $ fmap getBook getYesod
     let unpack = T.unpack
     let chapters = concatMap partChapters $ bookParts book
     atomLink CommentsFeedR "Book Comments"
@@ -207,11 +208,11 @@ snippet filename = do
     removePre s = fromMaybe s $ stripPrefix "<pre>" s
 
 getExamplesR :: Handler RepHtml
-getExamplesR = defaultLayout [$hamlet|
-%h1 We've Moved!
-%p
-    The examples have now been merged into the $
-    %a!href=@BookR@ Yesod book
+getExamplesR = defaultLayout [$hamlet|\
+<h1>We've Moved!
+<p>
+    \The examples have now been merged into the 
+    <a href="@{BookR}">Yesod book
     \. Each example is its own chapter in the Examples part. Enjoy!
 |]
 
@@ -315,104 +316,110 @@ getFeedR :: Handler RepAtom
 getFeedR = do
     y <- getYesod
     let uday = entryDay $ head $ getEntries y
-    atomFeed AtomFeed
-        { atomTitle = "Yesod Web Framework"
-        , atomLinkSelf = FeedR
-        , atomLinkHome = HomeR
-        , atomUpdated = UTCTime uday $ secondsToDiffTime 0
-        , atomEntries = map go $ take 10 $ getEntries y
+    atomFeed Feed
+        { feedTitle = "Yesod Web Framework"
+        , feedLinkSelf = FeedR
+        , feedLinkHome = HomeR
+        , feedUpdated = UTCTime uday $ secondsToDiffTime 0
+        , feedEntries = map go $ take 10 $ getEntries y
+        , feedLanguage = "en"
+        , feedDescription = "Yesod Web Framework"
         }
   where
-    go e = AtomFeedEntry
-        { atomEntryLink = EntryR $ entrySlug e
-        , atomEntryUpdated = UTCTime (entryDay e) $ secondsToDiffTime 0
-        , atomEntryTitle = entryTitle e
-        , atomEntryContent = entryContent e
+    go e = FeedEntry
+        { feedEntryLink = EntryR $ entrySlug e
+        , feedEntryUpdated = UTCTime (entryDay e) $ secondsToDiffTime 0
+        , feedEntryTitle = entryTitle e
+        , feedEntryContent = entryContent e
         }
 
 withYesodDocs :: (Application -> IO a) -> IO a
 withYesodDocs f = do
     entries <- loadEntries
-    let static = fileLookupDir "static" typeByExt
+    let s = static "static"
     book <- loadBook
     cs <- loadComments
     tcomments <- newTVarIO cs
-    app <- toWaiApp $ YesodDocs static entries book tcomments
+    app <- toWaiApp $ YesodDocs s entries book tcomments
     f app
 
 chapterToHtml :: [(Text, [Comment])] -> Chapter -> Hamlet YesodDocsRoute
 chapterToHtml cs c@(Chapter { chapterIntro = intro, chapterSections = sections
-                       , chapterSummary = msummary }) = [$hamlet|
-$if not.null.sections
-    #toc
-        %ul
-            %li
-                %a!href="#introduction" Introduction
-            $forall sections s
-                ^sectionToc.s^
-            $maybe msummary _
-                %li
-                    %a!href="#summary" Summary
-#introduction
-    $forall intro b
-        ^((blockToHtml.c).cs).b^
-$forall sections s
-    %h2#$sectionId.s$ $sectionTitle.s$
-    $forall sectionBlocks.s b
-        ^(((sectionBlockToHtml.c).cs).firstLevel).b^
-$maybe msummary summary
-    %h2#summary Summary
-    $forall summary b
-        ^((blockToHtml.c).cs).b^
+                       , chapterSummary = msummary }) = [$hamlet|\
+$if not (null sections)
+    <div id="toc">
+        <ul>
+            <li>
+                <a href="#introduction">Introduction
+            $forall s <- sections
+                \^{sectionToc s}
+            $maybe _ <- msummary
+                <li>
+                    <a href="#summary">Summary
+<div id="introduction">
+    $forall b <- intro
+        \^{blockToHtml c cs b}
+$forall s <- sections
+    <h2 id="#{sectionId s}">#{sectionTitle s}
+    $forall b <- sectionBlocks s
+        \^{sectionBlockToHtml c cs firstLevel b}
+$maybe summary <- msummary
+    <h2 id="summary">Summary
+    $forall b <- summary
+        \^{blockToHtml c cs b}
 |]
   where
     firstLevel = 3
 
 sectionToc :: Section -> Hamlet YesodDocsRoute
-sectionToc s = [$hamlet|
-%li
-    %a!href="#$sectionId.s$" $sectionTitle.s$
-    $if not.null.lefts.sectionBlocks.s
-        %ul
-            $forall lefts.sectionBlocks.s s
-                ^sectionToc.s^
+sectionToc s = [$hamlet|\
+<li>
+    <a href="##{sectionId s}">#{sectionTitle s}
+    $if not (null (lefts (sectionBlocks s)))
+        <ul>
+            $forall s <- lefts (sectionBlocks s)
+                \^{sectionToc s}
 |]
 
 sectionBlockToHtml :: Chapter -> [(Text, [Comment])]
                    -> Int -> Either Section Block -> Hamlet YesodDocsRoute
-sectionBlockToHtml chap cs level (Left section) = [$hamlet|
-!class=section$show.level$
-    ^((showTitle.(sectionId.section)).level).sectionTitle.section^
-    $forall sectionBlocks.section b
-        ^(((sectionBlockToHtml.chap).cs).nextLevel).b^
+sectionBlockToHtml chap cs level (Left section) = [$hamlet|\
+<div class="section#{show level}">
+    \^{showTitle (sectionId section) level (sectionTitle section)}
+    $forall b <- sectionBlocks section
+        \^{sectionBlockToHtml chap cs nextLevel b}
 |]
   where
     showTitle :: T.Text -> Int -> T.Text -> Hamlet YesodDocsRoute
-    showTitle i 3 t = [$hamlet|%h3#$i$ $t$|]
-    showTitle i 4 t = [$hamlet|%h4#$i$ $t$|]
-    showTitle i 5 t = [$hamlet|%h5#$i$ $t$|]
-    showTitle i _ t = [$hamlet|%h6#$i$ $t$|]
+    showTitle i 3 t = [$hamlet|<h3 id="#{i}">#{t}
+|]
+    showTitle i 4 t = [$hamlet|<h4 id="#{i}">#{t}
+|]
+    showTitle i 5 t = [$hamlet|<h5 id="#{i}">#{t}
+|]
+    showTitle i _ t = [$hamlet|<h6 id="#{i}">#{t}
+|]
     nextLevel = level + 1
 sectionBlockToHtml chap cs _ (Right b) = blockToHtml chap cs b
 
 blockToHtml :: Chapter -> [(Text, [Comment])] -> Block -> Hamlet YesodDocsRoute -- FIXME put one of those paragraph symbol links here
-blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|
-%p#$pid$
-    $forall is i
-        ^inlineToHtml.i^
-    %span.comment-count $csCount'$
-.comments
-    $forall cs c
-        .comment
-            %span.name $commentName.c$
-            %span.datetime $show.utctDay.commentTime.c$
-            .content $commentContent.c$
-    %form!method=post!action=@(CommentR.unpack.chapterSlug.chap).pid@
-        %b Add a comment
-        Name: $
-        %input.name!type=text!name=name
-        %textarea!name=content
-        %input!type=submit!value="Add comment"
+blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|\
+<p id="#{pid}">
+    $forall i <- is
+        \^{inlineToHtml i}
+    <span .comment-count>#{csCount'}
+<div .comments>
+    $forall c <- cs
+        <div .comment>
+            <span .name>#{commentName c}
+            <span .datetime>#{show (utctDay (commentTime c))}
+            <div .content>#{commentContent c}
+    <form method="post" action="@{CommentR (unpack (chapterSlug chap)) pid}">
+        <b>Add a comment
+        \Name: 
+        <input type="text" name="name" .name>
+        <textarea name="content">
+        <input type="submit" value="Add comment">
 |]
   where
     unpack = T.unpack
@@ -422,52 +429,53 @@ blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|
         | csCount == 0 = "No comments"
         | csCount == 1 = "1 comment"
         | otherwise = show csCount ++ " comments"
-blockToHtml _ _ (Note is) = [$hamlet|
-%p.note
-    Note: $
-    $forall is i
-        ^inlineToHtml.i^
+blockToHtml _ _ (Note is) = [$hamlet|\
+<p .note>
+    \Note: 
+    $forall i <- is
+        \^{inlineToHtml i}
 |]
-blockToHtml _ _ (UList items) = [$hamlet|
-%ul
-    $forall items i
-        ^listItemToHtml.i^
+blockToHtml _ _ (UList items) = [$hamlet|\
+<ul>
+    $forall i <- items
+        \^{listItemToHtml i}
 |]
-blockToHtml _ _ (OList items) = [$hamlet|
-%ol
-    $forall items i
-        ^listItemToHtml.i^
+blockToHtml _ _ (OList items) = [$hamlet|\
+<ol>
+    $forall i <- items
+        \^{listItemToHtml i}
 |]
-blockToHtml _ _ (CodeBlock c) = [$hamlet|
-%code
-    %pre $c$
+blockToHtml _ _ (CodeBlock c) = [$hamlet|\
+<code>
+    <pre>#{c}
 |]
-blockToHtml _ _ (Snippet s) = [$hamlet|
-$preEscapedString.showHtmlFragment.html$
+blockToHtml _ _ (Snippet s) = [$hamlet|\
+\#{preEscapedString (showHtmlFragment html)}
 |]
   where
     html = Kate.formatAsXHtml [Kate.OptNumberLines] "haskell" s
-blockToHtml chap cs (Advanced bs) = [$hamlet|
-.advanced
-    $forall bs b
-        ^((blockToHtml.chap).cs).b^
+blockToHtml chap cs (Advanced bs) = [$hamlet|\
+<div .advanced>
+    $forall b <- bs
+        \^{blockToHtml chap cs b}
 |]
-blockToHtml _ _ (Image { imageSrc = src, imageTitle = title }) = [$hamlet|
-.image
-    %img!src="/static/book/$src$"!alt=$title$!title=$title$
-    $title$
+blockToHtml _ _ (Image { imageSrc = src, imageTitle = title }) = [$hamlet|\
+<div .image>
+    <img src="/static/book/#{src}" alt="#{title}" title="#{title}">
+    \#{title}
 |]
-blockToHtml _ _ (Defs ds) = [$hamlet|
-%table!border=1
-    $forall ds d
-        %tr
-            %th $fst.d$
-            %td
-                $forall snd.d i
-                    ^inlineToHtml.i^
+blockToHtml _ _ (Defs ds) = [$hamlet|\
+<table border="1">
+    $forall d <- ds
+        <tr>
+            <th>#{fst d}
+            <td>
+                $forall i <- snd d
+                    \^{inlineToHtml i}
 |]
 blockToHtml _ _ (Markdown text) =
-    [$hamlet|$content$|]
+    [$hamlet|\#{content}
+|]
   where
     pandoc = readMarkdown defaultParserState $ T.unpack text
     content = preEscapedString $ writeHtmlString defaultWriterOptions pandoc
@@ -475,43 +483,48 @@ blockToHtml _ _ (Example text) =
     const $ preEscapedString $ colorize "" (T.unpack text) True
 
 listItemToHtml :: ListItem -> Hamlet YesodDocsRoute
-listItemToHtml (ListItem is) = [$hamlet|
-%li
-    $forall is i
-        ^inlineToHtml.i^
+listItemToHtml (ListItem is) = [$hamlet|\
+<li>
+    $forall i <- is
+        \^{inlineToHtml i}
 |]
 
 inlineToHtml :: Inline -> Hamlet YesodDocsRoute
-inlineToHtml (Inline t) = [$hamlet|$t$|]
-inlineToHtml (Emphasis is) = [$hamlet|
-%i
-    $forall is i
-        ^inlineToHtml.i^
+inlineToHtml (Inline t) = [$hamlet|\#{t}
 |]
-inlineToHtml (Term t) = [$hamlet|%b $t$|]
-inlineToHtml (Hackage t) = [$hamlet|
-%a!href="http://hackage.haskell.org/package/$t$" $t$
+inlineToHtml (Emphasis is) = [$hamlet|\
+<i>
+    $forall i <- is
+        \^{inlineToHtml i}
 |]
-inlineToHtml (Xref href inner) = [$hamlet|%a!href=$href$ $inner$|]
-inlineToHtml (Code inner) = [$hamlet|%code $inner$|]
-inlineToHtml (Link chapter msection inner) = [$hamlet|
-%a!href="@ChapterR.unpack.chapter@$section$" $inner$
+inlineToHtml (Term t) = [$hamlet|<b>#{t}
+|]
+inlineToHtml (Hackage t) = [$hamlet|\
+<a href="http://hackage.haskell.org/package/#{t}">#{t}
+|]
+inlineToHtml (Xref href inner) = [$hamlet|<a href="#{href}">#{inner}
+|]
+inlineToHtml (Code inner) = [$hamlet|<code>#{inner}
+|]
+inlineToHtml (Link chapter msection inner) = [$hamlet|\
+<a href="@{ChapterR (unpack chapter)}#{section}">#{inner}
 |]
   where
     section =
         case msection of
             Nothing -> ""
-            Just section' -> [$hamlet|\#$section'$|] :: Html
+            Just section' -> [$hamlet|\##{section'}
+|] :: Html
     unpack = T.unpack
-inlineToHtml (Abbr title inner) = [$hamlet|
-%abbr!title=$title$ $inner$
+inlineToHtml (Abbr title inner) = [$hamlet|\
+<abbr title="#{title}">#{inner}
 |]
 
 postCommentR :: String -> Text -> Handler ()
 postCommentR slug pid = do
     name <- runFormPost' $ stringInput "name" -- FIXME textInput
     content <- runFormPost' $ stringInput "content" -- FIXME textareaInput
-    x <- runFormPost' $ stringInput "code"
+    _ <- runFormPost' $ stringInput "code"
     now <- liftIO getCurrentTime
     let cm = Comment (T.pack name) (Textarea content) now
     tcs <- fmap comments getYesod
@@ -522,7 +535,7 @@ postCommentR slug pid = do
         onCommit $ saveComments cs'
     setMessage "Your comment has been submitted"
     r <- getUrlRender
-    redirectString RedirectTemporary $ r (ChapterR slug) ++ '#' : T.unpack pid
+    redirectString RedirectTemporary $ S8.pack $ r (ChapterR slug) ++ '#' : T.unpack pid
   where
     addComment cm ((slug', cs):rest)
         | slug == slug' = (slug', addComment' cm cs) : rest
@@ -549,11 +562,11 @@ getOneCommentR timeS = do
     go time (chapter, paras) =
         mapM_ (go' time) paras
       where
-        go' time (para, cs)
-            | time `elem` map commentTime cs = do
+        go' time' (para, cs)
+            | time' `elem` map commentTime cs = do
                 r <- getUrlRender
                 let dest = r (ChapterR chapter) ++ '#' : T.unpack para
-                redirectString RedirectPermanent dest
+                redirectString RedirectPermanent $ S8.pack dest
             | otherwise = return ()
 
 getCommentsFeedR :: Handler RepAtom
@@ -563,19 +576,21 @@ getCommentsFeedR = do
     cs' <- liftIO $ atomically $ readTVar tcs
     let cs = sortBy (\x y -> commentTime y `compare` commentTime x)
            $ concatMap (concatMap snd) $ map snd cs'
-    atomFeed AtomFeed
-        { atomTitle = "Comments on the Yesod Web Framework book"
-        , atomLinkSelf = CommentsFeedR
-        , atomLinkHome = BookR
-        , atomUpdated = commentTime $ head cs
-        , atomEntries = map go $ take 10 cs
+    atomFeed Feed
+        { feedTitle = "Comments on the Yesod Web Framework book"
+        , feedLinkSelf = CommentsFeedR
+        , feedLinkHome = BookR
+        , feedUpdated = commentTime $ head cs
+        , feedEntries = map go $ take 10 cs
+        , feedLanguage = "en"
+        , feedDescription = "Comments on the Yesod Web Framework book"
         }
   where
-    go c = AtomFeedEntry
-        { atomEntryLink = OneCommentR $ map stou $ show $ commentTime c
-        , atomEntryUpdated = commentTime c
-        , atomEntryTitle = "Comment by " ++ T.unpack (commentName c)
-        , atomEntryContent = toHtml $ commentContent c
+    go c = FeedEntry
+        { feedEntryLink = OneCommentR $ map stou $ show $ commentTime c
+        , feedEntryUpdated = commentTime c
+        , feedEntryTitle = "Comment by " ++ T.unpack (commentName c)
+        , feedEntryContent = toHtml $ commentContent c
         }
     stou ' ' = '_'
     stou ':' = 'c'

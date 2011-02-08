@@ -20,7 +20,13 @@ executable         simple-server
         Buildable: False
     main-is:       simple-server.hs
     build-depends: base               >= 4          && < 5
+                 , warp               >= 0.3        && < 0.4
                  , yesod              >= 0.7        && < 0.8
+                 , yesod-static       >= 0.0        && < 0.1
+                 , yesod-form         >= 0.0        && < 0.1
+                 , yesod-newsfeed     >= 0.0        && < 0.1
+                 , yesod-sitemap      >= 0.0        && < 0.1
+                 , blaze-html         >= 0.4        && < 0.5
                  , wai-extra          >= 0.3        && < 0.4
                  , hamlet             >= 0.7        && < 0.8
                  , text               >= 0.11       && < 0.12

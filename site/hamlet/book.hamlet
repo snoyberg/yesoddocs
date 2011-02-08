@@ -1,19 +1,19 @@
-%header
-    %h1 Yesod Web Framework Book
-%article
-    %p
-        This book (currently a work in progress) gives a thorough introduction to the Yesod Web Framework and accompanying libraries. It is not yet complete, but work is going on daily to make it better. If you have any suggestions, you can $
-        %a!href="mailto:michael+yesodbook@@snoyman.com" email me
-        \ or simply send patches to the $
-        %a!href="http://github.com/snoyberg/yesoddocs/" Yesod documentation site github repo
+<header>
+    <h1>Yesod Web Framework Book
+<article>
+    <p>
+        \This book (currently a work in progress) gives a thorough introduction to the Yesod Web Framework and accompanying libraries. It is not yet complete, but work is going on daily to make it better. If you have any suggestions, you can 
+        <a href="mailto:michael+yesodbook@snoyman.com">email me
+        \ or simply send patches to the 
+        <a href="http://github.com/snoyberg/yesoddocs/">Yesod documentation site github repo
         \.
-    %p All syntax-highlighted code snippets are automatically tested against the most recent Yesod release (0.7.0) to ensure they are correct. Nonetheless, it <i>is</i> possible that the text may be lagging behind in some areas as Yesod evolves. Please leave a comment if something seems to be wrong.
-    
-    $forall bookParts.book part
-        %h3 $partTitle.part$
-        %ol
-            $forall partChapters.part c
-                %li
-                    %a!href=@ChapterR.unpack.chapterSlug.c@
-                        $chapterTitle.c$
-                    %span.status $chapterStatus.c$
+    <p>All syntax-highlighted code snippets are automatically tested against the most recent Yesod release (0.7.0) to ensure they are correct. Nonetheless, it <i>is</i> possible that the text may be lagging behind in some areas as Yesod evolves. Please leave a comment if something seems to be wrong.
+    \
+    $forall part <- bookParts book
+        <h3>#{partTitle part}
+        <ol>
+            $forall c <- partChapters part
+                <li>
+                    <a href="@{ChapterR (unpack (chapterSlug c))}">
+                        \#{chapterTitle c}
+                    <span .status>#{chapterStatus c}

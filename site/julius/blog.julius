@@ -1,2 +1,2 @@
-var currentSlug = "%entrySlug.entry%";
+var currentSlug = "#{entrySlug entry}";
 $(function(){$("#archive ul").treeview({persist:"location",collapsed:true,unique:true})});

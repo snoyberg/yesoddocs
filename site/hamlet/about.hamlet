@@ -1,47 +1,47 @@
-#what
-    %h1 What
-    %p Yesod is a full-featured web framework for Haskell with the goal of creating web applications which are
-    %ul
-        %li type-safe
-        %li secure
-        %li RESTful
-        %li fast
-    %p Our philosophy is to leverage the strengths of Haskell's strong type system wherever possible. Through this approach, we are able to create type-safe URLs, protect against XSS vulnerabilities, and avoid SQL injection attacks. In Yesod, the compiler is the first line of defense against bugs and security holes.
-    %p Yesod is built on a number of sophisticated techniques to provide fast performance. Enumerators provide constant memory usage and guaranteed resource collection; blaze-builder avoids unnecessary buffer copying. However, as much as possible, these techniques are kept under the hood so that a user can reap their benefits without getting his/her hands dirty. (But you can always pop the hood if you want.)
-    %p Instead of creating a single, monolithic package containing our entire framework, Yesod has spun off dozens of individual packages that can be used independently of each other. But all of these packages have been designed to integrate well with each other to make your Yesod coding as productive as possible.
-    %p
-        Benchmarks on Yesod are available from $
-        %a!href="http://wiki.yesodweb.com/Benchmarks" the Wiki benchmark page
-        .
-    %h1 Docs
-    %p
-        The main resource for learning Yesod is this website. If you're ready to sit down and learn, you should really $
-        %a!href=@BookR@ read the book
-        , which has lots of prose as well as examples and links to blog posts. For a gentler initiation, you can $
-        %a!href=@ScreencastsR@ watch the screencasts.
-        \ When you need more in-depth information about specific functions, you'll want to look at the Haddocks on Hackage. Start with the $
-        %a!href="http://hackage.haskell.org/package/yesod" Yesod docs
+<div id="what">
+    <h1>What
+    <p>Yesod is a full-featured web framework for Haskell with the goal of creating web applications which are
+    <ul>
+        <li>type-safe
+        <li>secure
+        <li>RESTful
+        <li>fast
+    <p>Our philosophy is to leverage the strengths of Haskell's strong type system wherever possible. Through this approach, we are able to create type-safe URLs, protect against XSS vulnerabilities, and avoid SQL injection attacks. In Yesod, the compiler is the first line of defense against bugs and security holes.
+    <p>Yesod is built on a number of sophisticated techniques to provide fast performance. Enumerators provide constant memory usage and guaranteed resource collection; blaze-builder avoids unnecessary buffer copying. However, as much as possible, these techniques are kept under the hood so that a user can reap their benefits without getting his/her hands dirty. (But you can always pop the hood if you want.)
+    <p>Instead of creating a single, monolithic package containing our entire framework, Yesod has spun off dozens of individual packages that can be used independently of each other. But all of these packages have been designed to integrate well with each other to make your Yesod coding as productive as possible.
+    <p>
+        \Benchmarks on Yesod are available from 
+        <a href="http://wiki.yesodweb.com/Benchmarks">the Wiki benchmark page
+        <div .>
+    <h1>Docs
+    <p>
+        \The main resource for learning Yesod is this website. If you're ready to sit down and learn, you should really 
+        <a href="@{BookR}">read the book
+        \, which has lots of prose as well as examples and links to blog posts. For a gentler initiation, you can 
+        <a href="@{ScreencastsR}">watch the screencasts.
+        \ When you need more in-depth information about specific functions, you'll want to look at the Haddocks on Hackage. Start with the 
+        <a href="http://hackage.haskell.org/package/yesod">Yesod docs
         \ and follow the links from there.
-    %p Note: Due to the nature of the Hackage server, sometimes the Haddocks for a specific version of Yesod don't compile. This does not necessarily mean that there is a bug in the code, it could be caused by a number of different problems. In that case, you can try looking at an older version of the package.
-#who
-    %h1 Who
-    %ul
-        %li
-            %a!href="http://www.haskellers.com/user/snoyberg/" Michael Snoyman
-        %li
-            %a!href="http://www.haskellers.com/user/mattbrown/" Matt Brown
-        %li
-            %a!href="http://www.haskellers.com/user/342/" Greg Weber
-    %p In addition to the core team, the following people have contributed add-ons and other community software around Yesod:
-    %ul
-        %li
-            %a!href="http://github.com/alanz" Alan Zimmerman
-        %li
-            %a!href="http://www.haskellers.com/user/simonmichael/" Simon Michael
-        %li
-            %a!href="http://github.com/ajdunlap" Alexander Dunlap
-        %li
-            %a!href="http://www.haskellers.com/user/meteficha/" Felipe Lessa
-        %li
-            %a!href="http://pbrisbin.com/" Patrick Brisbin
-.clear
+    <p>Note: Due to the nature of the Hackage server, sometimes the Haddocks for a specific version of Yesod don't compile. This does not necessarily mean that there is a bug in the code, it could be caused by a number of different problems. In that case, you can try looking at an older version of the package.
+<div id="who">
+    <h1>Who
+    <ul>
+        <li>
+            <a href="http://www.haskellers.com/user/snoyberg/">Michael Snoyman
+        <li>
+            <a href="http://www.haskellers.com/user/mattbrown/">Matt Brown
+        <li>
+            <a href="http://www.haskellers.com/user/342/">Greg Weber
+    <p>In addition to the core team, the following people have contributed add-ons and other community software around Yesod:
+    <ul>
+        <li>
+            <a href="http://github.com/alanz">Alan Zimmerman
+        <li>
+            <a href="http://www.haskellers.com/user/simonmichael/">Simon Michael
+        <li>
+            <a href="http://github.com/ajdunlap">Alexander Dunlap
+        <li>
+            <a href="http://www.haskellers.com/user/meteficha/">Felipe Lessa
+        <li>
+            <a href="http://pbrisbin.com/">Patrick Brisbin
+<div .clear>

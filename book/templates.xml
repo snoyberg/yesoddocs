@@ -1,115 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<chapter id="templates" status="Outline">
+<chapter id="templates" status="Unproofed">
     <title>Templates</title>
     <intro>
-        <p id="i1">Yesod is built upon the <hackage>hamlet</hackage> package, which provides three templating systems: Hamlet (HTML), Cassius (CSS) and Julius (Javascript). These systems are all available for use outside the realm of Yesod. In this chapter, we will be demonstrating their usage in a standalone context.</p>
-        <p id="i2">Hamlet in particular has a number of features that won't be covered in this chapter. Instead, there is a <link chapter="hamlet">Hamlet reference chapter</link> in the appendix which covers all functionality. This chapter should get you familiar with the syntax, usage and basic features.</p>
+        <p id="i1">Yesod is built upon the <hackage>hamlet</hackage> package, which provides three templating systems: Hamlet (HTML), Cassius (CSS) and Julius (Javascript). These systems are all available for use outside the realm of Yesod.</p>
+        <p id="i2">In this chapter, we will explore the syntax of these languages, how they can be combined to form complete documents, and where to actually put the content.</p>
+        <p id="i3">To start off, our examples will use the same quasi-quotation syntax as the <link chapter="basics">basics chapter</link>, and we will move on from there.</p>
+        <advanced>
+            <p id="i4">Just a little heads-up: in order to simplify the examples in this chapter, we're going to assume the OverloadedStrings language extension. If you rather not use this extension, you'll need to make some minor modifications, such as replacing:</p>
+            <codeblock>setTitle "Home Page"</codeblock>
+            <p id="i5">with</p>
+            <codeblock>setTitle $ string "Home Page"</codeblock>
+        </advanced>
     </intro>
     <section id="type-safety">
         <title>Type Safety</title>
         <p id="ts1">One of the biggest features of Yesod is its pervasive type safety. This was the original impetus for the creation of Hamlet. As such, all variable interpolations gets checked at compile time. Hamlet supports three forms of interpolation:</p>
         <ul>
-            <li>Any instance of the ToHtml typeclass. This includes String and Html. This is also where Hamlet shows great <abbr title="Cross Site Scripting">XSS</abbr> attack defense: whenever interpolating a String, Hamlet automatically escapes all HTML entities. This is called dollar-sign interpolation.</li>
-            <li>Type-safe URLs. We mentioned in <link chapter="basics">the basics chapter</link> that each URL can be represented as a Haskell value, and then we use a render function to convert those values into strings. Hamlet allows you to interpolate those type-safe URLs directly. This is called at-sign interpolation.</li>
-            <li>Other Hamlet templates. This is great for creating a chunk of code that will be reused in other templates. This is called caret interpolation.</li>
+            <li>Any instance of the ToHtml typeclass. This includes String and Html. This is also where Hamlet shows great <abbr title="Cross Site Scripting">XSS</abbr>-attack resilience: whenever interpolating a String, Hamlet automatically escapes all HTML entities. This is called <term>variable interpolation</term>.</li>
+            <li>Type-safe URLs. We mentioned in <link chapter="basics">the basics chapter</link> that each URL can be represented as a Haskell value, and then we use a render function to convert those values into strings. Hamlet allows you to interpolate those type-safe URLs directly. This is called <term>URL interpolation</term>.</li>
+            <li>Other Hamlet templates. This is great for creating a chunk of code that will be reused in other templates. This is called <term>embedding</term>.</li>
         </ul>
-        <p id="ts2">Cassius provides support for the first two forms of interpolation, but instead of the ToHtml typeclass, there is the ToCss typeclass. Caret interpolation does not make as much sense with CSS. Julius provides support for all three; however, instead of dollar-sign interpolation, Julius uses the percent sign. This is to make it more natural to deal with the jQuery Javascript library, which has a special meaning for the dollar sign.</p>
-        <advanced><p id="ts3">Cassius used to provide support for caret interpolation via something called mixins. However, this required a lot of complexity in the implementation and usage, and was not used very often. It may reappear at some point in the future.</p></advanced>
-        <p id="ts4">In all three languages, when you want to print an interpolation character, you enter it twice. For example, in Hamlet:</p>
-        <codeblock>The price of this item is $$4.50.</codeblock>
+        <p id="ts2">Cassius provides support for the first two forms of interpolation, but instead of the ToHtml typeclass, there is the ToCss typeclass. Embedding does not make as much sense with CSS. Julius provides support for all three.</p>
+        <advanced><p id="ts3">Cassius used to provide support for something similar to embedding, called mixins. This was removed due to implementation details regarding the whitespace syntax. There are plans for an alternate CSS templating language which will not be whitespace sensitive, which will hopefully reintroduce mixins, along with some other nice features.</p></advanced>
+        <p id="ts4">In order to perform an interpolation, you enter the interpolation character, followed by the variable inside braces. For example, <code>My name is #{name}</code>. The hash is used for variable interpolation, at-sign (@) for URL interpolation, and caret (^) for embedding.</p>
     </section>
-    <section id="quasi-quotation">
-        <title>Quasi-quotation</title>
-        <p id="qq1">FIXME</p>
-        <advanced>
-            <p id="qq2">Just a little heads-up on some of the examples below: in order to simplify the examples below, we're going to assume the OverloadedStrings language extension. If you rather not use this extension, you'll need to make some minor modifications, such as replacing:</p>
-            <codeblock>setTitle "Home Page"</codeblock>
-            <p id="qq3">with</p>
-            <codeblock>setTitle $ string "Home Page"</codeblock>
-        </advanced>
-        <p id="qq4">The templating system in Yesod is called Hamlet. This book contains a <link chapter="hamlet">full reference chapter</link> on it, so this chapter will be more about showing the usage of Hamlet. It will also show Hamlet's sister languages, Cassius and Julius, which produce CSS and Javascript, respectively.</p>
-        <snippet name="templates-helloworld"/>
-        <note>The rest of this chapter reflects a previous version of the book. The content still must be updated; I appologize for the confusion. Nonetheless, the material is accurate.</note>
+    <section id="basic-syntax">
+        <title>Basic syntax</title>
+        <p id="bs1">We have already seen some Hamlet in the <link chapter="basics">basics chapter</link>. Let's have a quick review of our Hello World example:</p>
+        <snippet name="basics-helloworld"/>
 
-        <p id="qq5">Excepting line 6, this is identical to the Hello World from the chapter. The <code>[$hamlet| and |]</code> stuff introduces some <term>quasi-quotation</term>, which allows us to embed an arbitrary string and have it converted to Haskell code. We'll see some other ways of using Hamlet as well.</p>
-        <p id="qq6"><code>hamletToRepHtml</code> does exactly what it sounds like; it converts a value of type Hamlet to a RepHtml. So this example is really the first time we're serving an HTML page from our application.</p>
-        <advanced>
-            <p id="qq7">So what's a value of type Hamlet? It's actually a little bit complicated:</p>
-            <codeblock>type Hamlet url = (url -> [(String, String)] -> String) -> Html</codeblock>
-            <p id="qq8">The datatype Html is simply a way of building up text values, based upon the incredibly fast blaze-builder library. That first argument is the tricky part: it's a <term>URL rendering function</term>. Given a type-safe URL and a list of query-string parameter pairs, it produces URL. For the most part, you can forget about the details, as Yesod automatically provides the correct parameters and Hamlet calls that rendering function for you.</p>
-        </advanced>
-        <p id="qq9">But that's a really boring HTML page: it's just the text "Hello World!" without any tags! Let's see something a little bit more interesting:</p>
+        <p id="bs2">Line 13 shows our Hamlet quasi-quotation, surrounded by <code>[$hamlet| and |]</code>. The Haskell compiler knows to parse the internal code, convert it to Haskell, and then compile that.</p>
+        <p id="bs3">But that's a really boring HTML page: it's just the text "Hello World!" without any tags! Let's see something a little bit more interesting:</p>
         <snippet name="templates-helloworld2"/>
-        <p id="qq10">Let's see how we could spice up the names example from the previous chapter:</p>
-        <snippet name="templates-names"/>
-        <p id="qq11">Notice that we include the name in the template by surrounding it with the dollar sign. A nifty feature is that if you include Strings in this manner, they are automatically HTML-entity escaped. That's right: you automatically avoid a large vector of XSS attacks.</p>
-        <p id="qq12">We also have at-sign (@) interpolation, which allows us to embed type-safe URLs:</p>
-
-        <codeblock>[$hamlet|
-%a!href=@HomeR@ Return to homepage
-|]</codeblock>
-
-        <p id="qq13">And you can also do basic function application, such as:</p>
-
-        <codeblock>let michael = "Michael"
-hamletToRepHtml [$hamlet|
-%a!href=@NameR.michael@ See Michael's page
-|]</codeblock>
+        <p id="bs4">Overall, Hamlet syntax looks fairly similar to HTML. However, there is one important difference: instead of closing tags manually, nesting is determined by indentation level. Similarly, Cassius is also whitespace-sensitive: </p>
+        <snippet name="templates-helloworld3"/>
+        <p id="bs5">On the other hand, Julius is mostly a pass-through format, allowing you to write your Javascript however you like:</p>
+        <snippet name="templates-helloworld4"/>
     </section>
-    <section id="defaultLayout">
-        <title>Using defaultLayout</title>
-
-        <p id="dl1">The examples above are missing most of the common pieces of an HTML page: a html head, title and body tags, as well as a doctype. It would not only be tedious to have to include all of that stuff for every page, but would also introduce a lot of repetition of code and make it difficult to have a uniform layout for our pages. Let's see how to use defaultLayout as a drop-in replacement for hamletToRepHtml:</p>
-
-        <codeblock>getHomeR = defaultLayout $ do
-    setTitle "Home Page"
-    addHamlet [$hamlet|%h1 Hello World|]</codeblock>
-
-        <advanced><p id="dl2">This example is actually using widgets, a concept we will cover in full in the <link chapter="widgets">widgets chapter</link>. For the moment, we'll just be treating the widget functions as magic without really explaining them.</p></advanced>
-
-        <p id="dl3">Assuming defaultLayout has not been overridden with a custom implementation, the resulting HTML would look like:</p>
-
-        <codeblock>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-    &lt;head&gt;
-        &lt;title&gt;Home Page&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;h1&gt;Hello World&lt;/h1&gt;
-    &lt;/body&gt;
-&lt;/html&gt;</codeblock>
-
+    <section id="tags">
+        <title>Tags</title>
+        <p id="t1">Besides the whitespace rules, Hamlet also provides a few more features to make your life a little bit easier.</p>
+        <snippet name="templates-tags"/>
+        <p id="t2">Let's start on line 2. In Hamlet, instead of writing <code>id="my-id"</code>, you can get away with <code>#my-id</code>. The same trick applies to classes: <code>.my-class</code>.</p>
+        <p id="t3">Next, compare line 2 with lines 4 and 6: line 2 does not complete the tag, it just leaves it open (no greater than sign), while lines 4 and 6 <b>do</b> complete it. In Hamlet, the greater than sign is optional. However, it <i>is</i> required if you want to put content on the same line as the tag.</p>
+        <p id="t4">The last thing to note is how we handle whitespace. On line 3, we want to force an extra space at the end of the line, so that there will be a space between the word has and the &lt;b&gt; tag. When we place the hash at the end of the line by itself, Hamlet ignores it entirely, and therefore only the space is kept. (If you really want to output a hash at the end of a line, simply put two, and Hamlet will ignore the second one.)</p>
+        <advanced>
+            <p id="t5">Technically speaking, the trailing hash isn't necessary: if you leave a space at the end of a line, Hamlet will notice it and use it. However, some text editors will silently trim trailing whitespace, and it can be confusing to readers of your code. Therefore, using the trailing hash is recommended.</p>
+        </advanced>
+        <p id="t6">The other trick is whitespace at the beginning of a line. Since Hamlet is nested using whitespace, adding extra spaces will only increase the nesting level. To fix this, on line 5, we start the line with a backslash. Once we have the backslash, the nesting level is determined, and any whitespace we see is interpreted literally. (Like the trailing hash, if you need to start a line with a backslash, just use two of them.)</p>
     </section>
-    <section id="cassius">
-        <title>Cassius</title>
-
-        <p id="c1">We can also add CSS declarations right along with defaultLayout:</p>
-
-        <codeblock>getHomeR = defaultLayout $ do
-    setTitle "Home Page"
-    addHamlet [$hamlet|%h1 Hello World|]
-    addCassius [$cassius|
-    h1
-        color: green
-    |]</codeblock>
-        <p id="c2">Cassius, like Hamlet, uses a whitespace sensitive formatting. It also allows variable interpolation like Hamlet, allowing you to avoid typos in class names like this:</p>
-        <codeblock>getHomeR = defaultLayout $ do
-    let myClass = "some-missspelled-class-name"
-    addHamlet [$hamlet|%h1.$myClass$ Hello World|]
-    addCassius [$cassius|
-    h1.$myClass$
-        color: green
-    |]</codeblock>
+    <section id="variables">
+        <title>Variables</title>
+        <p id="v1">There's nothing really special about the above examples: they just show some alternative syntax for HTML and CSS. The nice thing is to see how the templates are able to interact with a surrounding program. (For the moment, accept the addHamlet, addCassius and addJulius functions as magic; we will cover them when we discuss <link chapter="widgets">widgets</link>.)</p>
+        <snippet name="templates-variables"/>
+        <p id="v2">We see two variable interpolations on line 8. The first one looks a little bit funny, but the first hash is indicating that this is an ID. In other words, it is equivalent to <code>&lt;span id=#{nameId}&gt;</code>. The second interpolation simply outputs the name into the content of the page.</p>
+        <p id="v3">On line 11, we use a <term>type-safe URL</term>: Yesod will automatically render <code>HomeR</code> into a proper URL to that resource. On line 15, we reference the same nameId variable in our Cassius as we did earlier in Hamlet. This exposes a nice trick: instead of typing in identifiers in HTML and CSS directly, we can use Haskell variables. This gives two benefits:</p>
+        <ul>
+            <li>If you make a typo, the compiler will catch it.</li>
+            <li>Yesod can automatically generate unique identifiers (using the <code>newIdent</code> function) for you, and you can then use those to synchronize your Hamlet, Cassius and Julius code. This produces much more composable code, since you are guaranteed that names will not clash.</li>
+        </ul>
+        <p id="v4">Finally, line 20 simply let's you know that Julius can do this too.</p>
     </section>
-    <section id="julius">
-        <title>Julius</title>
-        <p id="j1">And just so that Javascript doesn't feel left out, we have Julius. Julius is basically a straight pass-through: it provides no syntax help. It just allows you to do variable interpolation, so our names example might become:</p>
-        <codeblock>getNamesR name = defaultLayout $ do
-    addJulius [$julius|alert("Hello %name%");|]</codeblock>
-        <p id="j2">Notice that we use percent signs instead of dollar signs for Julius; since jQuery uses dollar signs extensively, it would be very tedious to need to escape dollar signs constantly.</p>
+    <section id="functions">
+        <title>Function Application</title>
+        <p id="f1">You can do much more than just reference variables with interpolation: you can do complete function applications. Some examples are in order:</p>
+        <snippet name="templates-functions"/>
+        <p id="f2">The key lines are 22, 27 and 31. You can see that:</p>
+        <ul>
+            <li>You can include string and numeric literals in interpolations.</li>
+            <li>You can apply functions and constructors to values.</li>
+            <li>Binding order works the same as in Haskell.</li>
+            <li>You can use the dollar sign ($) operator like you can in Haskell to control binding order.</li>
+            <li>You can also use parantheses.</li>
+        </ul>
+        <p id="f3">The syntax for the contents of an interpolation are identical amongst Hamlet, Cassius and Julius, and do not depend on the type of interpolation (variable, URL or embedding).</p>
     </section>
-    <section id="external-templates">
-        <title>External template files</title>
+    <section id="control">
+        <title>Hamlet Control Structures</title>
+        <p id="c1">In addition to simple interpolations, Hamlet (though not Cassius or Julius) provides a few control structures, namely:</p>
+        <ul>
+            <li>if/elseif/else</li>
+            <li>forall</li>
+            <li>maybe/nothing</li>
+        </ul>
+        <p id="c2">For all control structures, the line must begin with a dollar sign and be followed immediately by the name of the control structure. Let's see a concrete example:</p>
+        <snippet name="templates-control"/>
+        <p id="c3">Line 10 shows the syntax of a forall. In particular, we mimick the variable binding syntax of do-notation to grab each variable from a list. Also, the pattern of li inside of $forall inside of ul is a very common one in Hamlet.</p>
+        <p id="c4">Lines 15 through 20 show usage of if/elseif/else. There is no variable binding here, and usage is fairly straight-forward. Notice that as long as we are inside the $forall block, we can refer to the person variable.</p>
+        <p id="c5">Finally, 24 and 26 show us maybe and nothing. Like forall, maybe uses do-notation variable binding for its value. On the other hand, nothing does not have any values associated, and therefore no binding is performed.</p>
+    </section>
+    <section id="comments">
+        <title>Comments</title>
+        <p id="com1">FIXME</p>
+        <!-- FIXME mention doctype !!! -->
+    </section>
+    <section id="external-files">
+        <title>Templates in External Files</title>
         <p id="et1">Quasi-quoting your templates can be convenient, as no extra files are needed, your template is close to your code, and recompilation happens automatically whenever your template changes. On the other hand, this also clutters your Haskell code with templates and requires a recompile for any change in the template. Hamlet provides two sets of functions for including an external template:</p>
 
         <ul>
@@ -119,11 +105,11 @@ hamletToRepHtml [$hamlet|
         <p id="et2">What's very nice about these is that they have the exact same type signature, so they can be exchanged without changing your code otherwise. These functions are not exported by the Yesod module and must be imported directly from their respective modules (Text.Hamlet, Text.Cassius, Text.Julius). You'll see in a second why that is.</p>
         <p id="et3">Usage is very straight-forward. Assuming there is a Hamlet template stored in "my-template.hamlet", you could write:</p>
 
-        <codeblock>hamletToRepHtml $(hamletFile "my-template.hamlet")</codeblock>
+        <codeblock>defaultLayout $(hamletFile "my-template.hamlet")</codeblock>
 
         <p id="et4">For those not familiar, the dollar sign and parantheses indicate a Template Haskell interpolation. Using the second set of functions, the above would become:</p>
 
-        <codeblock>hamletToRepHtml $(hamletFileDebug "my-template.hamlet")</codeblock>
+        <codeblock>defaultLayout $(hamletFileDebug "my-template.hamlet")</codeblock>
 
         <p id="et5">Note that in order to use this, you need to enable the TemplateHaskell language extension. You can do so by adding the following line to the top of your source file:</p>
 
@@ -142,7 +128,7 @@ hamletToRepHtml [$hamlet|
         <p id="et9">Excepting very short templates, this is probably how you'll write most of your templates in Yesod. The typical file structure is to create hamlet, cassius and julius folders and place the respective templates in each. Each template has a filename extension matching the template language. In other words, you'd typically have:</p>
 
         <codeblock># hamlet/homepage.hamlet
-%h1 Hello World!
+&lt;h1&gt;Hello World!
 
 # cassius/homepage.cassius
 h1
@@ -157,8 +143,8 @@ import qualified Text.Cassius
 import qualified Text.Julius
 
 hamletFile x = Text.Hamlet.hamletFileDebug $ "hamlet/" ++ x ++ ".hamlet"
--- same for cassius and julius
--- when moving to production, you would just remove Debug
+- - same for cassius and julius
+- - when moving to production, you would just remove Debug
 
 # And finally your handler code
 import Settings
@@ -168,6 +154,18 @@ getHomeR = defaultLayout $ do
     addCassius $(cassiusFile "homepage")
     addJulius $(juliusFile "homepage")</codeblock>
         <p id="et10">For simplicity, most of the examples in this book will use quasi-quoted syntax. Just remember that you can always swap this out for external files.</p>
+    </section>
+    <section id="types">
+        <title>Types</title>
+        <p id="types1">I have purposely skirted the issue of what the value of these templates is. Let's start of with Cassius: Text.Cassius defines a datatype called <code>Css</code>. Then the value of a cassius template is:</p>
+        <codeblock>type Cassius url = (url -> [(String, String)] -> String) -> Css</codeblock>
+        <p id="types2">That's a little bit intimidating, so let's break it down. Cassius takes a type parameter, url, which is the datatype of our type-safe URL. A Cassius value itself is a function: the argument to the function is a <term>URL rendering function</term>, which given a type-safe URL value and a list of query string parameters, produces a URL. Using that, a Cassius value can produce a Css value. Yesod itself knows how to apply the URL rendering function and unwrap the Css value, so unless you want to dig under the surface, you won't need to get your hands dirty.</p>
+        <p id="types3">Julius is almost identical. Instead of Css, it defines a type Javascript, and then has a datatype:</p>
+        <codeblock>type Julius url = (url -> [(String, String)] -> String) -> Javascript</codeblock>
+        <p id="types4">Now, you're probably expecting me to say that the same holds true for Hamlet. Well... it sort of does. Instead of defining its own Html datatype, Hamlet borrows the datatype from <hackage>blaze-html</hackage>. But then it does define a Hamlet type synonym:</p>
+        <codeblock>type Hamlet url = (url -> [(String, String)] -> String) -> Html</codeblock>
+        <p id="types5">However, Hamlet has an extra feature that Cassius and Julius don't have: polymorphism. This means that a Hamlet template can take on various values, including Html and Hamlet. Yesod defines an instance for Widget, meaning that a Hamlet template can be used directly as a widget. In fact, we have been abusing that fact every time we have written <code>defaultLayout [$hamlet|...|]</code> without using <code>addHamlet</code>.</p>
+        <p id="types6">When we <link chapter="widgets">get to widgets</link>, we will explore why this polymorphism is so useful. As a heads up: it really saves the day when dealing with forms.</p>
     </section>
     <summary>
         <p id="s1">Yesod has templating languages for HTML, CSS and Javascript. All of them allow variable interpolation, safe handling of URLs and embedding sub-templates. Since the code is dealt with at compile time, you can use the compiler as your friend and get strong type safety guarantees. Oh, and XSS vulnerabilities get handled automatically.</p>

@@ -497,6 +497,11 @@ inlineToHtml (Emphasis is) = [$hamlet|\
     $forall i <- is
         \^{inlineToHtml i}
 |]
+inlineToHtml (Strong is) = [$hamlet|\
+<b>
+    $forall i <- is
+        \^{inlineToHtml i}
+|]
 inlineToHtml (Term t) = [$hamlet|<b>#{t}
 |]
 inlineToHtml (Hackage t) = [$hamlet|\

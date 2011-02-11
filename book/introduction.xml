@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<chapter id="introduction" status="Unproofed">
+<chapter id="introduction" status="Proofread">
     <title>Introduction</title>
     <intro>
         <p id="i1">Since web programming began, people have been trying to make the development process a more pleasant one. As a community, we have continually pushed new techniques to try and solve some of the lingering difficulties of security threats, the stateless nature of HTTP, the multiple languages (HTML, CSS, Javascript) necessary to create a powerful web application, and more.</p>
@@ -14,27 +14,30 @@
     </section>
     <section id="concise">
         <title>Concise</title>
-        <p id="c1">Yesod is of course not the first project to strive for goals like these. It does, however, have a powerful weapon in its arsenal: quasi-quotation. Quasi-quotation allows the embedding of an arbitrary syntax within your source code, which will then be converted to Haskell. This grants us a number of benefits:</p>
+        <p id="c1">We all know that there is a lot of boilerplate coding involved in web applications. Wherever possible, Yesod tries to use Haskell's features to save your fingers the work:</p>
         <ul>
-            <li>You don't need to try and shoe-horn a very domain-specific idea into Haskell's syntactical rules.</li>
-            <li>By remaining within the source code, everything is checked at compile time to ensure it is both properly formatted and consistent with the rest of your code.</li>
-            <li>We don't need any XML, INI, or YAML config files.</li>
+            <li>The forms library reduces the amount of code used for common cases by leveraging the Applicative type class.</li>
+            <li>Routes are declared in a very terse format, without sacrificing type safety.</li>
+            <li>Serializing your data to and from a database is handled automatically via code generation.</li>
         </ul>
+        <p id="c2">In Yesod, we have two kinds of code generation. To get your project started, we provide a scaffolding tool to set up your file and folder structure. However, most code generation is done at compile time via Template Haskell and Quasi Quotation. This means your generated code will never get stale, as a simple library upgrade will bring all your generated code up-to-date.</p>
+        <p id="c3">But for those who like to stay in control, and know exactly what their code is doing, you can always run closer to the bare-metal and write all your code yourself.</p>
     </section>
     <section id="performance">
         <title>Performance</title>
         <p id="p1">Haskell's main compiler, the GHC, has amazing performance characteristics, and is improving all the time. This choice of language by itself gives Yesod a large performance advantage over other offerings. But that's not enough: we need an architecture designed for performance.</p>
-        <p id="p2">The usage of quasi-quotation is a minor example of this: by allowing HTML, CSS and JavaScript to be analyzed at compile time, Yesod both avoids costly disk I/O at runtime and can optimize the rendering of this code. But the architectural decisions go deeper: we use advanced techniques such as enumerators in the underlying libraries to make sure our code runs in constant memory, without exhausting precious file handles and other resources. By offering high-level abstractions, you can get highly compressed and properly cached CSS and JavaScript.</p>
+        <p id="p2">Our approach to templates is one example: by allowing HTML, CSS and JavaScript to be analyzed at compile time, Yesod both avoids costly disk I/O at runtime and can optimize the rendering of this code. But the architectural decisions go deeper: we use advanced techniques such as enumerators and builders in the underlying libraries to make sure our code runs in constant memory, without exhausting precious file handles and other resources. By offering high-level abstractions, you can get highly compressed and properly cached CSS and JavaScript.</p>
+        <p id="p3">Yesod's flagship web server, Warp, is the fastest Haskell web server around. When these two pieces of technology are combined, it produces one of the fastest web application deployment solutions available.</p>
     </section>
     <section id="modular">
         <title>Modular</title>
-        <p id="m1">Yesod has spawned the creation of over a dozen packages, all of which are usable in a context outside of Yesod itself. One of the goals of the project is to contribute back to the community as much as possible; as such, even if you are not planning on using Yesod in your next project, a large portion of this book may still be relevant for your needs.</p>
+        <p id="m1">Yesod has spawned the creation of dozens packages, most of which are usable in a context outside of Yesod itself. One of the goals of the project is to contribute back to the community as much as possible; as such, even if you are not planning on using Yesod in your next project, a large portion of this book may still be relevant for your needs.</p>
         <p id="m2">Of course, these libraries have all been designed to integrate well together. Using the Yesod Framework should give you a strong feeling of consistency throughout the various APIs.</p>
     </section>
     <section id="solid">
         <title>A solid foundation</title>
-        <p id="s1">I remember once seeing a PHP framework advertising support for UTF-8. In the Haskell world, we usually have the opposite problem: there are a number of packages providing powerful and well-designed support for the problem. The Haskell community is constantly pushing the boundaries finding the cleanest, most efficient solutions to problems.</p>
+        <p id="s1">I remember once seeing a PHP framework advertising support for UTF-8. In the Haskell world, we usually have the opposite problem: there are a number of packages providing powerful and well-designed support for the problem. The Haskell community is constantly pushing the boundaries finding the cleanest, most efficient solutions for each challenge.</p>
         <p id="s2">The downside of such a powerful ecosystem is the complexity of choice. By using Yesod, you will already have most of the tools chosen for you, and you can be guaranteed they work together. Of course, you always have the option of pulling in your own solution.</p>
-        <p id="s3">As a real-life example, Yesod and Hamlet (the default templating language) use <hackage>blaze-builder</hackage> for textual content generation. This choice was made because blaze provides the fastest interface for generating UTF-8 data. Anyone who wants to use one of the other great libraries out there, such as <hackage>text</hackage> should have no problem dropping it in.</p>
+        <p id="s3">As a real-life example, Yesod and Hamlet (the default templating language) use <hackage>blaze-builder</hackage> for textual content generation. This choice was made because blaze provides the fastest interface for generating UTF-8 data. Anyone who wants to use one of the other great libraries out there, such as <hackage>text</hackage>, should have no problem dropping it in.</p>
     </section>
 </chapter>

@@ -72,6 +72,7 @@ data Block = Paragraph { paraId :: Text, paraContents :: [Inline] }
 
 data Inline = Inline Text
             | Emphasis [Inline]
+            | Strong [Inline]
             | Term Text
             | Hackage Text
             | Xref { xrefHref :: Text, xrefInner :: Text }
@@ -201,6 +202,7 @@ parseInline :: MonadIO m => Iteratee SEvent m (Maybe Inline)
 parseInline = choose
     [ (fmap . fmap) Inline content
     , tag'' "i" $ fmap Emphasis $ many parseInline
+    , tag'' "b" $ fmap Strong $ many parseInline
     , tag'' "term" $ fmap Term content'
     , tag'' "hackage" $ fmap Hackage content'
     , tag' "xref" (requireAttr "href") parseXref

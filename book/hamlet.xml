@@ -3,6 +3,8 @@
     <title>Hamlet</title>
     <intro>
         <markdown><![CDATA[
+__WARNING__: This chapter is woefully out of date with regards to the 0.7 release of Hamlet. It will hopefully be updated in the near future. (Feb 11, 2011)
+
 Any templating system can be used with Yesod; as Yesod is built on top of [WAI](../wai/), we only need to be able to produce a response body understood by that interface. However, Yesod spawned the creation of a templating system called Hamlet which is designed to interoperate well with the Yesod ecosystem. It's also a very useful tool *outside* of Yesod, and is arguably the most popular of the projects spun off from Yesod.
 
 If you want a quick overview of what Hamlet looks like, you can [check out the Hamlet synopsis](/synopsis/hamlet/). This chapter is a reference manual on Hamlet, trying to cover all the features.

@@ -60,7 +60,7 @@
         <snippet name="basics-links"/>
         <p id="resources2">Overall, this is the same. Our foundation is now Links instead of HelloWorld, and in addition to the HomeR resource, we've added Page1R and Page2R. As such, we've also added two more handler functions: getPage1R and getPage2R.</p>
         <p id="resources3">The only truly new feature is inside the hamlet quasi-quotation on lines 10-12. We'll delve into syntax later, but we can see that:</p>
-        <codeblock><a href="@{Page1R}">Go to page 1!</codeblock>
+        <codeblock>&lt;a href="@{Page1R}"&gt;Go to page 1!</codeblock>
         <p id="resources4">creates a link to the Page1R resource. The important thing to note here is that Page1R is a data constructor. By making each resource a data constructor, we have a feature called <term>type-safe URLs</term>. Instead of splicing together strings to create URLs, we simply create a plain old Haskell value. By wrapping a type-safe URL in at-signs (@) in Hamlet, Yesod automatically renders those values to textual URLs before sending things off to the user.</p>
     </section>
     <section id="wai-handler-devel">

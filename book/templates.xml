@@ -7,7 +7,7 @@
     </intro>
     <section id="type-safety">
         <title>Type Safety</title>
-        <p id="ts1">One of the biggest features of Yesod is its pervasive type safety. This was the original impetus for the creation of Hamlet. As such, all variable interpolation gets checked at compile time. Hamlet supports three forms of interpolation:</p>
+        <p id="ts1">One of the biggest features of Yesod is its pervasive type safety. This was the original impetus for the creation of Hamlet. As such, all variable interpolations gets checked at compile time. Hamlet supports three forms of interpolation:</p>
         <ul>
             <li>Any instance of the ToHtml typeclass. This includes String and Html. This is also where Hamlet shows great <abbr title="Cross Site Scripting">XSS</abbr> attack defense: whenever interpolating a String, Hamlet automatically escapes all HTML entities. This is called dollar-sign interpolation.</li>
             <li>Type-safe URLs. We mentioned in <link chapter="basics">the basics chapter</link> that each URL can be represented as a Haskell value, and then we use a render function to convert those values into strings. Hamlet allows you to interpolate those type-safe URLs directly. This is called at-sign interpolation.</li>

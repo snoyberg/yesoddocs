@@ -44,7 +44,7 @@
     </section>
     <section id="foundation">
         <title>The Foundation</title>
-        <p id="foundation1">The word "HelloWorld" shows up on lines 3, 4, 7 and 9, yet the datatype doesn't seem to actually do anything important. In fact, this seemingly irrelevant piece of code is central to how Yesod works. Each Yesod application has a single datatype, referred to as its <term>foundation</term>.</p>
+        <p id="foundation1">The word "HelloWorld" shows up on lines 3, 4, 7 and 10, yet the datatype doesn't seem to actually do anything important. In fact, this seemingly irrelevant piece of code is central to how Yesod works. Each Yesod application has a single datatype, referred to as its <term>foundation</term>.</p>
         <p id="foundation2">Line 3 of our example defines this simple datatype. Line 4 does something a bit more interesting: it associates the routing rule we define on line 5 with this datatype. Each foundation <i>must</i> be an instance of the Yesod typeclass; we do this on line 7. (We'll get into much more detail on the Yesod typeclass and the approot method in <link chapter="yesod-typeclass">the next chapter</link>.</p>
         <advanced><p id="foundation3">By the way, the word Yesod (יסוד) means <i>foundation</i> in Hebrew.</p></advanced>
     </section>
@@ -60,7 +60,7 @@
         <snippet name="basics-links"/>
         <p id="resources2">Overall, this is the same. Our foundation is now Links instead of HelloWorld, and in addition to the HomeR resource, we've added Page1R and Page2R. As such, we've also added two more handler functions: getPage1R and getPage2R.</p>
         <p id="resources3">The only truly new feature is inside the hamlet quasi-quotation on lines 10-12. We'll delve into syntax later, but we can see that:</p>
-        <codeblock>%a!href=@Page1R@ Go to page 1!</codeblock>
+        <codeblock><a href="@{Page1R}">Go to page 1!</codeblock>
         <p id="resources4">creates a link to the Page1R resource. The important thing to note here is that Page1R is a data constructor. By making each resource a data constructor, we have a feature called <term>type-safe URLs</term>. Instead of splicing together strings to create URLs, we simply create a plain old Haskell value. By wrapping a type-safe URL in at-signs (@) in Hamlet, Yesod automatically renders those values to textual URLs before sending things off to the user.</p>
     </section>
     <section id="wai-handler-devel">

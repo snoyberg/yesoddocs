@@ -32,7 +32,8 @@
         <p id="bs2">Line 13 shows our Hamlet quasi-quotation, surrounded by <code>[$hamlet| and |]</code>. The Haskell compiler knows to parse the internal code, convert it to Haskell, and then compile that.</p>
         <p id="bs3">But that's a really boring HTML page: it's just the text "Hello World!" without any tags! Let's see something a little bit more interesting:</p>
         <snippet name="templates-helloworld2"/>
-        <p id="bs4">Overall, Hamlet syntax looks fairly similar to HTML. However, there is one important difference: instead of closing tags manually, nesting is determined by indentation level. Similarly, Cassius is also whitespace-sensitive: </p>
+        <p id="bs4">Overall, Hamlet syntax looks fairly similar to HTML. However, there is one important difference: instead of closing tags manually, nesting is determined by indentation level. The goal of Hamlet is to provide a less error-prone, more <abbr title="Don't Repeat Yourself">DRY</abbr> syntax for HTML, without introducing a completely foreign language that developers and designers wil need to relearn.</p>
+        <p id="bs4a">Similarly, Cassius is also whitespace-sensitive: </p>
         <snippet name="templates-helloworld3"/>
         <p id="bs5">On the other hand, Julius is mostly a pass-through format, allowing you to write your Javascript however you like:</p>
         <snippet name="templates-helloworld4"/>
@@ -48,6 +49,12 @@
             <p id="t5">Technically speaking, the trailing hash isn't necessary: if you leave a space at the end of a line, Hamlet will notice it and use it. However, some text editors will silently trim trailing whitespace, and it can be confusing to readers of your code. Therefore, using the trailing hash is recommended.</p>
         </advanced>
         <p id="t6">The other trick is whitespace at the beginning of a line. Since Hamlet is nested using whitespace, adding extra spaces will only increase the nesting level. To fix this, on line 5, we start the line with a backslash. Once we have the backslash, the nesting level is determined, and any whitespace we see is interpreted literally. (Like the trailing hash, if you need to start a line with a backslash, just use two of them.)</p>
+        <advanced>
+            <p id="t7">When it comes to tag attributes, you can write them either with or without quotes. In other words, the following lines are equivalent:</p>
+            <codeblock>&lt;a target="_blank" href="@{MyDest}"
+&lt;a target=_blank href=@{MyDest}</codeblock>
+            <p id="t8">Either way, Hamlet will generate HTML which quotes the attribute values. The only time you <b>must</b> use the quotes in Hamlet is when your attribute values contain whitespace.</p>
+        </advanced>
     </section>
     <section id="variables">
         <title>Variables</title>
@@ -59,7 +66,7 @@
             <li>If you make a typo, the compiler will catch it.</li>
             <li>Yesod can automatically generate unique identifiers (using the <code>newIdent</code> function) for you, and you can then use those to synchronize your Hamlet, Cassius and Julius code. This produces much more composable code, since you are guaranteed that names will not clash.</li>
         </ul>
-        <p id="v4">Finally, line 20 simply let's you know that Julius can do this too.</p>
+        <p id="v4">Finally, line 20 simply let's you know that Julius can do this too.</p> <!-- FIXME add a link to the (eventual) section on newIdent -->
     </section>
     <section id="functions">
         <title>Function Application</title>

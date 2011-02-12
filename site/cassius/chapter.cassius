@@ -51,6 +51,10 @@ article
     font-size: 80%
     color: #666
     padding-left: 1em
+.permalink
+    color: #666
+    padding-right: 0.2em
+    text-decoration: none
 .comment-count.link
     cursor: pointer
     color: blue

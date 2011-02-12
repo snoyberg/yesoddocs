@@ -405,6 +405,7 @@ sectionBlockToHtml chap cs _ (Right b) = blockToHtml chap cs b
 blockToHtml :: Chapter -> [(Text, [Comment])] -> Block -> Hamlet YesodDocsRoute -- FIXME put one of those paragraph symbol links here
 blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|\
 <p id="#{pid}">
+    <a .permalink href=##{pid}>&#x204B
     $forall i <- is
         \^{inlineToHtml i}
     <span .comment-count>#{csCount'}

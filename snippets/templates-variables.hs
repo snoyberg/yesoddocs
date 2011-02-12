@@ -16,7 +16,7 @@ getHomeR = defaultLayout $ do
     <span ##{nameId}>#{name}
     . Enjoy your stay!
 <p
-    <a href="@{HomeR}">Return Home
+    <a href=@{HomeR}>Return Home
 |]
 
     addCassius [$cassius|

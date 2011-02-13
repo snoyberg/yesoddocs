@@ -12,7 +12,7 @@
     <p>
         Since this book is still a work in progress, not every concept has been as fully documented as I would like. To supplement the book's content, it might be a good idea to look at the code of some real world projects. The #
         <a href="http://www.haskellers.com">Haskellers site
-        # was coded with best practices in mind. If you are looking for an example to get you started, #
+        \ was coded with best practices in mind. If you are looking for an example to get you started, #
         <a href="https://github.com/snoyberg/haskellers">check out the code on Github.
         .
 

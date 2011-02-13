@@ -11,6 +11,10 @@
             <li>Build up more complex forms by combining together simpler forms.</li>
         </ul>
         <p id="intro2">The form system used in Yesod is built around many of the concepts in formlets; if you are familiar with that work, it will give you a head start here. In this chapter, we'll start with some real-life examples of using forms, and then get into the low-level details of how they work so you can abuse their full power.</p>
+        <advanced>
+            <p id="intro3">The examples below all assume that you have the OverloadedStrings extension enabled. To do so, simply put the following line at the beginning of your code:</p>
+            <codeblock>{-# LANGUAGE OverloadedStrings #-}</codeblock>
+        </advanced>
     </intro>
     <section id="random-bananas">
         <title>Random bananas</title>

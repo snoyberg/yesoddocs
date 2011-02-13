@@ -52,9 +52,14 @@ article
     color: #666
     padding-left: 1em
 .permalink
-    color: #666
-    padding-right: 0.2em
+    position: relative
+.permalink a
+    position: absolute
+    color: #ccc
     text-decoration: none
+    left: -1.5em
+.permalink a:hover
+    color: #666
 .comment-count.link
     cursor: pointer
     color: blue

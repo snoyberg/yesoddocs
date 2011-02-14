@@ -39,16 +39,16 @@ getRootR = do
     width: 400px
     height: 300px
 |]
-        [$hamlet|\
+        [$hamlet|
 $maybe survey <- msurvey
     <h3>Previous Entries
     $maybe bday <- birthday survey
         <p>Born on #{show bday}
     <p>Favorite color: #{favoriteColor survey}
-    \#{aboutMe survey}
+    #{aboutMe survey}
 <form enctype="#{enctype}">
     <table>
-        \^{form}
+        ^{form}
         <tr>
             <td colspan="2">
                 <input type="submit">

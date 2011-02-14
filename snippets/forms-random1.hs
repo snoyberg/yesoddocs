@@ -1,15 +1,20 @@
+-- START
 {-# LANGUAGE QuasiQuotes, TypeFamilies, OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 import Yesod
 import System.Random
 import Control.Applicative
+
 data Rand = Rand
 type Handler = GHandler Rand Rand
+
 mkYesod "Rand" [$parseRoutes|
 / RootR GET
 |]
-instance Yesod Rand where approot _ = ""
--- START
+
+instance Yesod Rand where
+    approot _ = ""
+
 data Params = Params
     { minNumber :: Int
     , maxNumber :: Int
@@ -36,11 +41,11 @@ getRootR = do
                 number <- liftIO $ randomRIO (min, max)
                 let word = if number == 1 then single else plural
                 return $ "You got " ++ show number ++ " " ++ word
-    defaultLayout [$hamlet|\
+    defaultLayout [$hamlet|
 <p>#{output}
 <form enctype="#{enctype}">
     <table>
-        \^{form}
+        ^{form}
         <tr>
             <td colspan="2">
                 <input type="submit" value="Randomize!">

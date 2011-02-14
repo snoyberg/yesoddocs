@@ -54,10 +54,10 @@ rangeField initial = GForm $ do
             { fiLabel = "Number range"
             , fiTooltip = ""
             , fiIdent = minId -- for attribute of the label
-            , fiInput = [$hamlet|\
-\Between 
+            , fiInput = [$hamlet|
+Between #
 <input id="#{minId}" name="#{minName}" type="number" value="#{minValue}">
-\ and 
+ and #
 <input id="#{maxId}" name="#{maxName}" type="number" value="#{maxValue}">
 |]
             , fiErrors =

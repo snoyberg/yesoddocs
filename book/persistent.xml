@@ -10,233 +10,166 @@
             <li>A major source of frustration in dealing with SQL databases is changes to the schema. Persistent can automatically perform database migrations.</li>
         </ul>
     </intro>
+    <section id="boundary">
+        <title>Solving the boundary issue</title>
+        <p id="b1">Let's say you are storing information on people in a SQL database. Your table might look something like:</p>
+        <codeblock>CREATE TABLE Person(id SERIAL PRIMARY KEY, name VARCHAR NOT NULL, age INTEGER)</codeblock>
+        <p id="b2">And if you are using a database like PostgreSQL, you can be guaranteed that the database will never store some arbitrary text in your age field. (The same cannot be said of SQLite, but let's forget about that for now.) To mirror this database table, you would likely create a Haskell datatype that looks something like:</p>
+        <codeblock>data Person = Person
+    { personName :: String
+    , personAge :: Int
+    }</codeblock>
+        <p id="b3">It looks like everything is type safe: the database schema matches our Haskell datatypes, the database ensures that invalid data can never make it into our data store, and everything is generally awesome. Well, until:</p>
+        <ul>
+            <li>You want to pull data from the database, and the database layer gives you the data in an untyped format.</li>
+            <li>You want to find everyone older than 32, and you accidently write "thirtytwo" in your SQL statement. Guess what: that will compile just fine, and you won't find out you have a problem until runtime.</li>
+            <li>You decide you want to do something as simple as find the first 10 people alphabetically. No problem... until you make a typo in your SQL. Once again, you don't find out until runtime.</li>
+        </ul>
+        <p id="b4">In dynamic languages, the answers to these issues is unit testing. For everything that <i>can</i> go wrong, make sure you write a test case. But as I am sure you are aware by now, that doesn't jive well with the Yesod approach to things. We like to take advantage of Haskell's strong typing to save us wherever possible, and data storage is no exception.</p>
+        <p id="b5">So the question remains: how can we use Haskell's type system to save the day?</p>
+        <section id="types">
+            <title>Types</title>
+            <p id="ba1">Like routing, there is nothing intrinsically difficult about type-safe data access. It just requires a lot of monotonous, error prone, boiler plate code. This is a perfect use case for some Template Haskell to generate this code for us automatically. To start off with, let's analyze some data types and type classes.</p>
+            <p id="ba2"><code>PersistValue</code> is the basic building block of Persistent. It is a very simple datatype that can represent data that gets sent to and from a database. Its definition is:</p>
+            <codeblock>data PersistValue = PersistString String
+                  | PersistByteString ByteString
+                  | PersistInt64 Int64
+                  | PersistDouble Double
+                  | PersistBool Bool
+                  | PersistDay Day
+                  | PersistTimeOfDay TimeOfDay
+                  | PersistUTCTime UTCTime
+                  | PersistNull</codeblock>
+            <p id="ba3">Each Persistent backend needs to know how to translate these values into something the database can understand. In the case of PostgreSQL, this would be some C datatypes. For Redis, everything gets converted into a <code>ByteString</code>.</p>
+            <p id="ba4">However, it would be awkward do have to express all of our data simply in terms of these basic types. The next layer is the <code>PersistField</code> typeclass, which defines how an arbitrary Haskell datatype can be marshaled to and from a <code>PersistValue</code>. A PersistField correlates to a column in a SQL database. In our person example above, name and age would be our <code>Persistfield</code>s.</p>
+            <p id="ba5">To tie up the user side of the code, our last typeclass is <code>PersistEntity</code>. An instance of PersistEntity correlates with a table in a SQL database. This typeclass defines a number of functions and some associated types. We will explore the purpose of the associated types soon. However, for our purposes now, the functions are not important. Granted that they are central to the functioning of Persistent, but</p>
+            <ul>
+                <li>They are not generally useful for users to call directly.</li>
+                <li>Due to the usage of code generation, users do not need to define them manually.</li>
+            </ul>
+        </section>
+        <section id="codegen">
+            <title>Code Generation</title>
+            <p id="bb1">In order to ensure that the PersistEntity instances match up properly with your Haskell datatypes, Persistent takes responsibility for both. This is also good from a <abbr title="Don't Repeat Yourself">DRY</abbr> perspective: you only need to define your entities once. Let's see a quick example:</p>
+            <snippet name="persistent-person"/>
+            <p id="bb2">We use a combination of Template Haskell and Quasi-Quotation (like when defining routes): persist is a quasi-quoter which converts a whitespace-sensitive syntax into a list of entity definitions. mkPersist takes that list of entities and declares:</p>
+            <ul>
+                <li>One Haskell datatype for each entity.</li>
+                <li>A PersistEntity instance for each datatype defined.</li>
+            </ul>
+            <p id="bb3">Of course, the interesting part is how to use this datatype once it is defined.</p>
+            <snippet name="persistent-person-usage"/>
+            <p id="bb4">We start off with some standard database connection code. In this case, we used the single-connection functions. Persistent also comes built in with connection pool functions, which we will generally want to use in production.</p>
+            <p id="bb5">In this example, we have seen two functions: insert creates a new record in the database and returns its ID. Like everything else in Persistent, IDs are type safe. Each PersistEntity has an associated type called <code>Key</code>. So when you call <code>insert $ Person "Michael" 25</code>, it gives you a value back of type <code>Key Person</code>.</p>
+            <p id="bb6">The next function we see it get, which attempts to load a value from the database using a <code>Key</code>. In Persistent, you never need to worry that you are using the key from the wrong table: trying to load up a different entity (like House) using a <code>Key Person</code> will never compile.</p>
+        </section>
+        <section id="persistbackend">
+            <title>PersistBackend</title>
+            <p id="bc1">One last detail is left unexplained from the previous example: what are those withSqliteConn and runSqlConn functions doing, and what is that monad that our database actions are running in?</p>
+            <p id="bc2">All database actions need to occur within an instance of <code>PersistBackend</code>. As its name implies, every backend (PostgreSQL, SQLite, MongoDB) defines its own instance of PersistBackend. This is where all the translations from <code>PersistValue</code> to database-specific values occur, where SQL code generation happens, and so on.</p>
+            <advanced>
+                <p id="bc3">As you can imagine, even though PersistBackend provides a safe, well-typed interface to the outside world, there is a lot of unsafe magic that happens internally to make all this possible. This is a case where the only solution is thorough unit testing. However, by testing this code once, thoroughly, in a central location, we can centralize all of our error-prone code into a single location and make sure it is as bug-free as possible.</p>
+            </advanced>
+            <p id="bc4">withSqliteConn creates a single connection to a database using its supplied connection string. For our test cases, we will use ":memory:", which simply uses an in-memory database. runSqlConn uses that connection to run the inner action, in this case, SqlPersist. Both SQLite and PostgreSQL share the same instance of PersistBackend.</p>
+            <p id="bc5">One important thing to note is that everything which occurs inside a single call to runSqlConn runs in a single transaction. This has two important implications:</p>
+            <ul>
+                <li>For many databases, committing a transaction can be a costly activity. By putting multiple steps into a single transaction, you can speed up code dramatically.</li>
+                <li>If an exception is thrown anywhere inside a single call to runSqlConn, all actions will be rolled back.</li>
+            </ul>
+        </section>
+    </section>
+    <section id="migrations">
+        <title>Migrations</title>
+        <p id="m1">I'm sorry to tell you, but so far I have lied to you a bit: the example from the previous section does not actually work. If you try to run it, you will get an error message about a missing table.</p>
+        <p id="m2">For SQL databases, one of the major pains can be managing schema changes. Instead of leaving this to the user, Persistent steps in to help, but you have to <i>ask</i> it to help. Let's see what this looks like:</p>
+        <snippet name="persistent-migrate1"/>
+        <p id="m3">With this one little code change, Persistent will automatically create your Person table for you. This split between runMigration and migrate allows you to migrate multiple tables simultaneously:</p>
+        <snippet name="persistent-migrate2"/>
+        <p id="m4">This works when dealing with just a few entities, but can quickly get tiresome once we are dealing with a dozen entities. Instead of repeating yourself, Persistent provides a helper function:</p>
+        <p id="m5">mkMigrate is a Template Haskell function which creates a new function that will automatically call migrate on all entities defined in the persist block. The share function is just a little helper that passes the information from the persist block to each Template Haskell function and concatenates the results.</p>
+        <p id="m6">Persistent has very conservative rules about what it will do during a migration. It starts by loading up table information from the database, complete with all defined SQL datatypes. It then compares that against the entity definition given in the code. For simple cases, it will automatically alter the schema:</p>
+        <ul>
+            <li>The datatype of a field changed. However, the database may object to this modification if the data cannot be translated.</li>
+            <li>A field was added. However, if the field is not null, no default value is supplied (we'll discuss defaults later) and there is already data in the database, the database will not allow this to happen.</li>
+            <li>A field is converted from not null to null. In the opposite case, Persistent will attempt the conversion, contingent upon the database's approval.</li>
+            <li>A brand new entity is added.</li>
+        </ul>
+        <p id="m7">However, there are a number of cases that Persistent will not handle:</p>
+        <ul>
+            <li>Field or entity renames: Persistent has no way of knowing that "name" has now been renamed to "fullName": all it sees is an old field called name and a new field called fullName.</li>
+            <li>Field removals: since this can result in data loss, Persistent by default will refuse to perform the action (you can force the issue by using runMigrationUnsafe instead of runMigration, though it is <b>not</b> recommended).</li>
+        </ul>
+        <p id="m8">runMigration will print out the migrations it is running on stderr (you can bypass this by using runMigrationSilent). Whenever possible, it uses ALTER TABLE calls. However, in SQLite, ALTER TABLE has very limited abilities, and therefore Persistent must resort to copying the data from one table to another.</p>
+        <p id="m9">Finally, if instead of <i>performing</i> a migration, you just want Persistent to give you hints about what migrations are necessary, use the printMigration function.</p>
+    </section>
+    <section id="attributes">
+        <title>Attributes</title>
+        <p id="attr1">So far, we have seen a very simple syntax for our persist blocks: a line for the name of our entities, and then an indented line for each field with two words: the name of the field and the datatype of the field. Persistent handles more than this: you can assign an arbitrary list of attributes after the first two words on a line.</p>
+        <p id="attr2">Let's say that we want to add two new fields to our Person entity: a favorite color (optional), and the timestamp of when he/she was added to the system. For entities already in the database, we want to just use the current date-time for that timestamp.</p>
+        <snippet name="persistent-attributes"/>
+        <p id="attr3">Maybe is one of many built in, single word attributes. We will see many more below. The default attribute is backend specific, and uses whatever syntax is understood by the database. In this case, it uses the database's built-in now() function. Let's say we now want to add a field for favorite programming language:</p>
+        <snippet name="persistent-attributes2"/>
+        <p id="attr4">We need to surround the string with single quotes so that the database can properly interpret it. Finally, Persistent can use double quotes for containing white space, so let's say we want to set someone's default home country to the El Salvador:</p>
+        <snippet name="persistent-attributes3"/>
+    </section>
+    <section id="associated-types">
+        <title>Associated Types</title>
+        <p id="a1">We saw above that each PersistEntity has a Key associated type to provide for type-safe lookups by numerical ID. But let's say we are not satisfied with looking up by ID: I want to get every person from my database with the name "Michael" who is older than 25. In SQL, there's no type-safe way to do this. In Persistent, we can do it easily.</p>
+        <snippet name="persistent-where"/>
+        <p id="a2">The first thing to notice is that we have added some extra attributes to our persist block: Eq for name and Gt for age. There are six filtering attributes:</p>
+        <ul>
+            <li>Eq- equals</li>
+            <li>Ne- not equals</li>
+            <li>Lt- less than</li>
+            <li>Le- less than or equals</li>
+            <li>Gt- greater than</li>
+            <li>Ge- greater than or equals</li>
+        </ul>
+        <p id="a3">By adding these attribute, mkPersist automatically adds corresponding data constructores to the <code>Filter</code> associated type. In our case, this comes out to the equivalent of</p>
+        <codeblock>data Filter Person = PersonNameEq String | PersonAgeGt Int</codeblock>
+        <p id="a4">Notice how the datatype of the field is encoded in the data constructor itself. This is the very heart of Persistent's type safety. It's impossible to type in <code>PersonAgeGt "twenty-five"</code>, the compiler just won't have it.</p>
+        <p id="a5">Similarly, Persistent uses the <code>Order</code> associated type for sorting results. This comes with two attributes: Asc for sorting in ascending order, and Desc for descending order. So assuming we want to get all Michaels older than 25 in descending chronological order:</p>
+        <snippet name="persistent-order"/>
+        <p id="a6">Finally, let's say we have decided to rename everyone older than 25 and named Michael to Mike. For this, we use the Update associated type:</p>
+        <snippet name="persistent-update"/>
+        <p id="a7">There are a number of functions which take these associated types as parameters. As usual, the Haddock documentation is always the most authoritative source for a complete lists of API functions.</p>
+        <section id="unique">
+            <title>Uniqueness</title>
+            <p id="u1">The final associated type is is <code>Unique</code>. Its usage is slightly different than that of its siblings:</p>
+            <snippet name="persistent-unique"/>
+            <p id="u2">To declare a unique combination of fields, we add an extra line to our declaraction. Persistent knows that it is defining a unique constructor, since the line begins with a capital letter. Each following word must be a field in this entity.</p>
+            <p id="u3">The main restriction on uniqueness is that it can only be applied non-null fields. The reason for this is that the SQL standard is ambiguous on how uniqueness should be applied to NULL (eg, is NULL=NULL true or false?). Besides that ambiguity, most SQL engines in fact implement rules which would be <i>contary</i> to what the Haskell datatypes for anticipate (eg, PostgreSQL says that NULL=NULL is false, whereas Haskell says Nothing == Nothing is True).</p>
+        </section>
+    </section>
+    <section id="relations">
+        <title>Relations</title>
+        <p id="r1">Persistent is non-relational. This means that it is impossible to declare that a Person contains a list of Cars, for example. This is done for a few reasons:</p>
+        <ul>
+            <li>If we represented the Haskell datatypes that way, we would need to load up <i>all</i> related records. For a normal person, loading up all their cars may not be problematic, but just wait till someone requests the Bruce Wayne record.</li>
+            <li>Not all backends supports relations.</li>
+        </ul>
+        <p id="r2">Of course, we need some way to deal with these relations in Persistent. We do this by embedding a Key value in the related entity. So in our car example:</p>
+        <snippet name="persistent-cars"/>
+        <advanced>
+            <p id="r3">You might be wondering what that <code>PersonId</code> is. Persistent automatically defines a type synonym <code>type PersonId = Key Person</code> for all of your entities.</p>
+        </advanced>
+        <p id="r4">Using this technique, it's very easy to define one-to-many relationships. To define many-to-many relationships, we need a join entity, which has a one-to-many relationship with each of the original tables. It is also a good idea to use uniqueness constraints on these. For example, to model a situation where we want to track which people have shopped in which stores:</p>
+        <snippet name="persistent-stores"/>
+    </section>
+    <section id="custom-field">
+        <title>Custom Fields</title>
+        <p id="cf1">Occassionally, you will want to define a custom field to be used in your datastore. The most common case is an enumeration, such as employment status. For this, Persistent provides a helper Template Haskell function:</p>
+        <snippet name="persistent-derive"/>
+        <p id="cf2">derivePersistField stores the data in the database using a string field, and performs marshaling using the Show and Read instances of the datatype. This may not be as efficient as storing via an integer, but it is much more future proof: even if you add extra constructors in the future, your data will still be valid.</p>
+    </section>
     <section id="fixme">
         <title>FIXME Outline</title>
 
         <ul>
-            <li>"The boundary issue" and how we solve it</li>
-            <li>Type families</li>
-            <li>Update, sort, filter</li>
-            <li>Uniqueness</li>
-            <li>Handling relations</li>
             <li>mkToForm</li>
-            <li>Migration (SQL only)</li>
-            <li>insert, insertBy</li>
-            <li>replace, update</li>
-            <li>get, getBy</li>
-            <li>selectList</li>
             <li>Advanced: select enumerator interface</li>
+            <li>raw SQL</li>
+            <li>deriving</li>
         </ul>
-        <markdown><![CDATA[
-
-<hr>
-
-This chapter has not yet been written properly. Instead, it's a conglomeration of the old content from the persistent section. It will be cleaned up as the book is written.
-
-[The persistent synopsis](/synopsis/persistent/) gives an overview of how the library is used.
-
-## Overview
-
-Persistent is a persistence layer with a huge emphasis on type safety. It uses template haskell to automate the boilerplate production of data types and constructors that allow you to do regular database activities with full compile-time guarantees of type correctness.
-
-It uses a non-relational approach for its API. This is not to say SQL is unsupported; on the contrary, SQL is a first-class target of the library. Instead, it means you are free to break out of the SQL mold and use non-relational databases as a backend. A proof-of-concept Redis backend is in the making.
-
-While persistent is designed to integrate tightly with Yesod, it is quite usable in other contexts.
-
-To use Persistent, you must also use a backend, which provides database-specific code. The currently available backends are:
-
-* [persistent-sqlite 0.2.0](http://hackage.haskell.org/package/persistent-sqlite-0.2.0)
-
-* [persistent-postgresql 0.2.0](http://hackage.haskell.org/package/persistent-postgresql-0.2.0)
-
-There is currently work on both MongoDB and Redis backends being done.
-
-<h2 id="defining-entities">Defining Entities</h2>
-
-Remember that Persistent is non-relational. That makes our job in defining entities much simpler: we simply work one entity at a time. (We'll describe [later on](#relations) how to model relations.)
-
-A single entity consists of:
-
-* The name of the entity. This must be a valid name for a Haskell datatype.
-
-* A list of fields.
-
-* A list of unique keys.
-
-* A list of typeclasses that the entity should derive.
-
-A field in turn consists of:
-
-* A field name. This must begin with a lower case letter.
-
-* A datatype.
-
-* A list of attributes.
-
-And finally a unique key consists of:
-
-* A constructor name.
-
-* A list of fields included in the key.
-
-### EntityDef
-
-[EntityDef](http://docs.yesodweb.com/haddock/persistent/Database-Persist-Helper.html#t%3AEntityDef) is the most direct means of defining an entity. This is the data type used as input for all the template haskell code.
-
-### Quasi-quotation
-
-As a convenience, there is also a quasi-quoted syntax which is a little easier to use. It is merely a simpler way to define your entities. The quasiquoter is the [persist](http://docs.yesodweb.com/haddock/persistent/Database-Persist-Quasi.html) function.
-
-The syntax is very straight forward: each non-indented line is the name of an entity. All indented lines following it belong to that entity.
-
-* If a line begins with the word "deriving", then all of the following words are typeclasses which the entity should derive.
-
-* If a line begins with an upper-case letter, the first word is a unique key constructor name and the remaining words are field names to be included in the unique key.
-
-* Otherwise, a line declares a new field. The first word is the field name, the second word is the data type for that field, and each of the remaining words is an attribute.
-
-### Attributes
-
-Attributes are purposely defined as simple strings so that other tools can define their own attributes. The following attributes are used by Persistent itself:
-
-* null: A field can be nullable. In Haskell terms, this means that the datatype will be wrapped in a Maybe.
-
-* update: A field which can be updated. This will signal the template haskell code to create an appropriate update constructor. If the entity is named Person and the field is named age, the update constructor would be PersonAge.
-
-* Asc, Desc: A field sortable in either ascending or descending order. The resulting constructor names would be PersonAgeAsc and PersonAgeDesc.
-
-* Eq, Ne, Lt, Gt, Le, Ge: A field which can be filtered using one of these comparisons (equals, not equals, less than, etc). Constructor names are PersonAgeEq, PersonAgeNe, etc.
-
-## Type classes
-
-**NOTE: This documentation still reflects persistent version 0.0.0. It will be updated soon.**
-
-The API for Persistent really consists of just two type classes: [PersistField](http://docs.yesodweb.com/haddock/persistent/Database-Persist.html#t%3APersistField) and [PersistEntity](http://docs.yesodweb.com/haddock/persistent/Database-Persist.html#t%3APersistEntity). The former is for individual fields which can be included in an entity; the latter is for entities which are comprised of a number of fields.
-
-### PersistField
-
-There are four functions in PersistField. <code>isNullable</code> indicates that a field could store a null value; the default definition returns <code>False</code>. Most users will never need to override this, as usually only the <code>Maybe</code> would have a result of <code>True</code>.
-
-<code>sqlType</code> could in theory be part of a separate type class, but is included for convenience. This specifies the SQL datatype corresponding to this field. For example, <code>sqlType String</code> returns <code>SqlString</code>. You can see the [available SqlType constructors](http://docs.yesodweb.com/haddock/persistent/Database-Persist.html#t%3ASqlType).
-
-The other two functions are <code>toPersistValue</code> and <code>fromPersistValue</code>. The [PersistValue](http://docs.yesodweb.com/haddock/persistent/Database-Persist.html#t%3APersistValue) datatype is very similar to HDBC's SqlValue datatype: it allows us to have heterogenous lists of values. By creating proper instances of PersistField, Persistent is able to handle all of the marshalling for you automatically, and you never need to worry about data type issues.
-
-### PersistEntity
-
-This is the heart of Persistent. It really has two components: a set of associated data types (see [type families](http://www.haskell.org/haskellwiki/GHC/Type_families)) and functions.
-
-The functions are the bare minimum necessary to implement <abbr title="Create Read Update Delete">CRUD</abbr> operations:
-
-* Create: insert and replace
-
-* Read: get (for a single entity by its id), getBy (for a single entity by a unique key) and select (for multiple entities)
-
-* Update: update (by id) and updateWhere (by filter)
-
-* Delete: delete (by id), deleteBy (by unique key) and deleteWhere (by filter)
-
-Additionally, there is an initialize function for setting up a database, where necessary. For example, in SQL backends this creates tables and indices if they do not exist.
-
-The more exciting part of PersistEntity is the associated data types. Let's go through them:
-
-<ul>
-
-<li>PersistMonad is a *monad transformer* within which all database operations must occur. For example, the sqlite backend has a transformer called SqliteReader, which is simply a ReaderT monad transformer holding an sqlite database connection. Each backend provides its own mechanism for unwrapping this monad transformer.</li>
-
-<li>Key is a datatype for the unique id for each entity. In the current backends, this is just a newtype wrapper around an Int (or Int64). However, since each entity has its own newtype wrapper, everything is fully typesafe. When you write "get (personKey :: Key Person)", the result *must* be a Person.</li>
-
-<li>Update allows type-safe updates to entities. Let's give a little example; the same logic here applies to the remaining associated types. Continuing with our running example of a Person entity defined (using [quasi-quoted syntax](#defining-entities)) as:
-
-    Person
-        name String Eq
-        age Int update Asc
-        UniquePerson name
-
-We would end up with something akin to:
-
-    data Person = Person
-        { personName :: String
-        , personAge :: Int
-        }
-    data Update Person = PersonAge Int
-
-So if we want to write a function to change someone's age to 32, we could write:
-
-    fountainOfYouth :: Key Person -> PersistMonad Person IO ()
-    fountainOfYouth personId = update personId [PersonAge 32]
-</li>
-
-<li>Filter is used for (duh) filtering results. In SQL, this is the equivalent of a WHERE clause. Taking the same example from above, we would have generated:
-
-    data Filter Person = PersonNameEq String
-
-To delete every Michael in the system:
-
-    deleteWhere [PersonNameEq "Michael"]
-</li>
-
-<li>Order is only used in the select function, and corresponds to a SQL ORDER BY clause. From above:
-
-    data Order Person = PersonAgeAsc
-
-Notice how there is no argument to that constructor. To get everyone in ascending age, we'd write:
-
-    select [] [PersonAgeAsc]
-
-Or to get everyone named Michael in ascending age:
-
-    select [PersonNameEq "Michael"] [PersonAgeAsc]
-</li>
-
-<li>Unique is used by the getBy and deleteBy functions. You could get the same effect by using select and deleteWhere, but these variants are powerful in that they ensure you will be acting upon at most one value. From the example above:
-
-    data Unique Person = UniquePerson String
-
-So to get the one and only Michael out there, you'd type:
-
-    getBy $ UniquePerson "Michael"
-
-which is really equivalent to:
-
-    listToMaybe <$> select [PersonNameEq "Michael"] []
-</li>
-</ul>
-
-<h2 id="relations">Relations</h2>
-
-Persistent itself is non-relational. However, data *is* relational. As a motivating example, let's discuss a blog application, with multiple authors. Each author can have multiple entries; how does this work in Persistent?
-
-The idea is to design things exactly as you would with SQL: for a many-to-one relationship, you'll store a reference to the "one" entity in the "many" entity. So in our example, we could define our model using quasi-quoted syntax as:
-
-    Author
-        name String Asc
-        tagline String
-        birthday Day
-    Entry
-        author AuthorId Eq
-        title String
-        content Html
-        posted UTCTime Desc
-
-Note: Persistent automatically declares the type synonym <code>type AuthorId = Key Author</code>.
-
-So let's explain the non-relationality of Persistent again: Persistent doesn't do joins. The data structure itself, however, can be completely relational. The burden is on the programmer to do this.
-
-Let's say you want to create a list of author/title pairs; the following code will do it for you:
-
-    authors <- select [] [AuthorNameAsc]
-    concat <$> forM authors $ \(authorid, author) -> do
-        entries <- select [EntryAuthorEq authorid] [EntryPostedDesc]
-        return $ zip (repeat $ authorName author) $ map entryTitle entries
-
-Alternatively, you could do the following (which will sort things a little differently):
-
-    entries <- select [] [EntryPostedDesc]
-    forM entries $ \(_entryid, entry) -> do
-        author <- get $ entryAuthor entry
-        case author of
-            Nothing -> error $ "Missing author id: " ++ show (entryAuthor entry)
-            Just a -> return (authorName a, entryTitle entry)
-            ]]></markdown>
     </section>
 </chapter>

@@ -12,8 +12,7 @@ mkYesod "Args" [$parseRoutes|
 |]
 
 getPersonR :: String -> Handler RepHtml
-getPersonR name = defaultLayout [$hamlet|<h1>Hello #{name}!
-|]
+getPersonR name = defaultLayout [$hamlet|<h1>Hello #{name}!|]
 
 handleDateR :: Integer -> String -> Int -> Handler RepPlain -- text/plain
 handleDateR year month day =

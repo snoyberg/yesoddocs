@@ -12,7 +12,7 @@ instance SinglePiece Natural where
     fromSinglePiece s =
         case reads s of
             (i, _):_
-                | i < 1 -> Left "0 and negative numbers are unnatural" -- hehe
+                | i < 1 -> Left "0 and negative numbers are unnatural"
                 | otherwise -> Right $ Natural i
             [] -> Left "That's not even an integer!"
 -- STOP

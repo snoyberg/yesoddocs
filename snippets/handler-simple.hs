@@ -6,6 +6,7 @@ data Simple = Simple
 mkYesod "Simple" [$parseRoutes|
 / HomeR GET
 |]
+
 getHomeR :: GHandler subsite Simple RepHtml
 getHomeR = defaultLayout [$hamlet|<h1>This is simple
 |]

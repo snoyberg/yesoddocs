@@ -11,11 +11,11 @@
 > getRoot = do
 >     sess <- getSession
 >     hamletToRepHtml [$hamlet|
-> %form!method=post
->     %input!type=text!name=key
->     %input!type=text!name=val
->     %input!type=submit
-> %h1 $show.sess$
+> <form method=post
+>     <input type=text name=key
+>     <input type=text name=val
+>     <input type=submit
+> <h1>#{show sess}
 > |]
 > 
 > postRoot :: Handler ()

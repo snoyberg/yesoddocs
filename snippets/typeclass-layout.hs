@@ -8,23 +8,24 @@ instance Yesod Layout where
 -- START
     defaultLayout contents = do
         PageContent title headTags bodyTags <- widgetToPageContent $ do
-            addCassius [$cassius|#body
+            addCassius [$cassius|
+#body
     font-family: sans-serif
 #wrapper
     width: 760px
     margin: 0 auto
 |]
             addWidget contents
-        hamletToRepHtml [$hamlet|\
-\<!DOCTYPE html>
+        hamletToRepHtml [$hamlet|
+!!!
 
 <html>
     <head>
         <title>#{title}
-        \^{headTags}
+        ^{headTags}
     <body>
         <div id="wrapper">
-            \^{bodyTags}
+            ^{bodyTags}
 |]
 -- STOP
 getRootR = defaultLayout $ do

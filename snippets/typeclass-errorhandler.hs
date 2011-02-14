@@ -8,7 +8,7 @@ instance Yesod Layout where
 -- START
     errorHandler NotFound = fmap chooseRep $ defaultLayout $ do
         setTitle "Request page not located"
-        addWidget [$hamlet|\
+        addWidget [$hamlet|
 <h1>Not Found
 <p>We appologize for the inconvenience, but the requested page could not be located.
 |]

@@ -12,17 +12,17 @@ instance Yesod Layout where
     defaultLayout contents = do
         PageContent title headTags bodyTags <- widgetToPageContent contents
         mmsg <- getMessage
-        hamletToRepHtml [$hamlet|\
-\<!DOCTYPE html>
+        hamletToRepHtml [$hamlet|
+!!!
 
 <html>
     <head>
         <title>#{title}
-        \^{headTags}
+        ^{headTags}
     <body>
         $maybe msg <- mmsg
-            <div id="message">#{msg}
-        \^{bodyTags}
+            <div #message>#{msg}
+        ^{bodyTags}
 |]
 -- STOP
 getRootR = defaultLayout [$hamlet|<a href="@{MsgR}">message

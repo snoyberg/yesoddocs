@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<chapter id="persistent" status="Outline">
+<chapter id="persistent" status="Unproofed">
     <title>Persistent</title>
     <intro>
         <p id="i1">Forms deal with the boundary between the user and the application. Another boundary we need to deal with is between the application and the storage layer. Whether it be a SQL database, a YAML file, or a binary blob, odds are your storage layer isn't going to give you Haskell datatypes.</p>

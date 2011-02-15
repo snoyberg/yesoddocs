@@ -2,6 +2,7 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving #-}
 import Database.Persist
 import Database.Persist.Sqlite
+import Database.Persist.TH
 import Data.Time
 
 share [mkPersist, mkMigrate "migrateAll"] [$persist|
@@ -12,6 +13,6 @@ Person
     created UTCTime default=now()
 |]
 
-main = withSqliteConn ":memory:" $ flip runSqlConn $ do
+main = withSqliteConn ":memory:" $ runSqlConn $ do
     runMigration migrateAll
 -- STOP

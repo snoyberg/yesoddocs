@@ -2,6 +2,8 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving #-}
 import Database.Persist
 import Database.Persist.Sqlite
+import Database.Persist.TH
+import Control.Monad.IO.Class (liftIO)
 import Data.Time
 
 share [mkPersist, mkMigrate "migrateAll"] [$persist|
@@ -12,7 +14,7 @@ Car
     name String
 |]
 
-main = withSqliteConn ":memory:" $ flip runSqlConn $ do
+main = withSqliteConn ":memory:" $ runSqlConn $ do
     runMigration migrateAll
     bruce <- insert $ Person "Bruce Wayne"
     insert $ Car bruce "Bat Mobile"

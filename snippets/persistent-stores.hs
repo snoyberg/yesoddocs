@@ -2,6 +2,7 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving #-}
 import Database.Persist
 import Database.Persist.Sqlite
+import Database.Persist.TH
 import Data.Time
 
 share [mkPersist, mkMigrate "migrateAll"] [$persist|
@@ -15,7 +16,7 @@ PersonStore
     UniquePersonStore person store
 |]
 
-main = withSqliteConn ":memory:" $ flip runSqlConn $ do
+main = withSqliteConn ":memory:" $ runSqlConn $ do
     runMigration migrateAll
 
     bruce <- insert $ Person "Bruce Wayne"

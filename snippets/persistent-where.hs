@@ -2,7 +2,9 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving #-}
 import Database.Persist
 import Database.Persist.Sqlite
+import Database.Persist.TH
 import Data.Time
+import Control.Monad.IO.Class (liftIO)
 
 share [mkPersist, mkMigrate "migrateAll"] [$persist|
 Person
@@ -10,11 +12,11 @@ Person
     age Int Gt
 |]
 
-main = withSqliteConn ":memory:" $ flip runSqlConn $ do
+main = withSqliteConn ":memory:" $ runSqlConn $ do
     runMigration migrateAll
-    michaels <- select
+    michaels <- selectList
         [ PersonNameEq "Michael"
-        , PersonAge Gt 25
+        , PersonAgeGt 25
         ]
         [] 0 0 -- we will explain these later, all in good time
     liftIO $ print michaels

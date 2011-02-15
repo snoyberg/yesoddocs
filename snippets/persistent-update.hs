@@ -2,6 +2,7 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving #-}
 import Database.Persist
 import Database.Persist.Sqlite
+import Database.Persist.TH
 import Data.Time
 
 share [mkPersist, mkMigrate "migrateAll"] [$persist|
@@ -10,11 +11,11 @@ Person
     age Int Gt
 |]
 
-main = withSqliteConn ":memory:" $ flip runSqlConn $ do
+main = withSqliteConn ":memory:" $ runSqlConn $ do
     runMigration migrateAll
     updateWhere
         [ PersonNameEq "Michael"
-        , PersonAge Gt 25
+        , PersonAgeGt 25
         ]
         [ PersonName "Mike"
         ]

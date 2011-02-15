@@ -2,6 +2,7 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving #-}
 import Database.Persist
 import Database.Persist.Sqlite
+import Database.Persist.TH
 
 share [mkPersist, mkMigrate "migrateAll"] [$persist|
 Person
@@ -13,6 +14,6 @@ Car
     model String
 |]
 
-main = withSqliteConn ":memory:" $ flip runSqlConn $ do
+main = withSqliteConn ":memory:" $ runSqlConn $ do
     runMigration migrateAll
 -- STOP

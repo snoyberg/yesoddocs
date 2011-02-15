@@ -2,10 +2,11 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving #-}
 import Database.Persist
 import Database.Persist.Sqlite
+import Database.Persist.TH
 import Data.Time
 
 data Employment = Employed | Unemployed | Retired
-    deriving (Show, Read)
+    deriving (Show, Read, Eq)
 derivePersistField "Employment"
 
 share [mkPersist, mkMigrate "migrateAll"] [$persist|
@@ -14,7 +15,7 @@ Person
     employment Employment
 |]
 
-main = withSqliteConn ":memory:" $ flip runSqlConn $ do
+main = withSqliteConn ":memory:" $ runSqlConn $ do
     runMigration migrateAll
 
     insert $ Person "Bruce Wayne" Retired

@@ -1,10 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <chapter id="widgets" status="Unproofed">
     <title>Widgets</title>
+<!-- FIXME
+
+A lot of the content here is already covered in the templates chapter. On the
+other hand, most of the features of widgets are *not* covered here. Probably
+need to rearrange. Need to cover:
+
+* what's in a widget
+* setTitle
+* newIdent
+* addCassius et al
+* producing a main menu widget
+* better understanding of polymorphic hamlet
+* writing a defaultLayout function
+
+-->
     <intro>
         <p id="i1">One of the challenges in web development is that we have to coordinate three different client-side technologies: HTML, CSS and Javascript. Worse still, we have to place these components in different locations on the page: CSS in a style tag in the head, Javascript in a script tag in the head, and HTML in the body. And never mind if you want to put your CSS and Javascript in separate files!</p>
         <p id="i2">In practice, this works out fairly nicely when building a single page, becuase we can separate our structure (HTML), styling (CSS) and logic (Javascript). But when we want to build modular pieces of code that can be easily composed, it can be a headache to coordinate all three pieces separately. Widgets are Yesod's solution to the problem. They also help with the issue of including libraries, such as jQuery, one time only.</p>
+
+        <p id="i3">Our three template languages- Hamlet, Cassius and Julius- provide the raw tools for constructing your output. Widgets provide the glue that allows them to work together seemlessly.</p>
     </intro>
+    <section id="whats-in-widget">
+        <title>What's in a Widget?</title>
+
+        <p id="ww1">At a very superficial level, an HTML document is just a
+            bunch of nested tags. This is the approach most HTML generation
+            tools take: you simply define hierarchies of tags and are done with
+            it. But let's imagine that I want to write a component of a page
+            for displaying the navbar. I want this to be "plug and play": I
+            simply call the function at the right time, and the navbar is
+            inserted at the correct point in the hierarchy.</p>
+
+        <p id="ww2">This is where our superficial HTML generation breaks down.
+            Our navbar likely consists of some CSS and JavaScript in addition
+            to HTML. By the time we call the navbar function, we have already
+            rendered the &lt;head&gt; tag, so it is too late to add a new
+            &lt;style&gt; tag for our CSS declarations. Under normal
+            strategies, we would need to break up our navbar function into
+            three parts: HTML, CSS and JavaScript, and make sure that we always
+            call all three pieces.</p>
+
+        <p id="ww3">Widgets take a different approach. Instead of viewing an
+            HTML document as a monolithic tree of tags, widgets see a number of
+            distinct components in the page. In particular:</p>
+
+        <ul>
+            <li>The title</li>
+            <li>External stylesheets</li>
+            <li>External Javascript</li>
+            <li>CSS declarations</li>
+            <li>Javascript code</li>
+            <li>Arbitrary &lt;head&gt; content</li>
+            <li>Arbitrary &lt;body&gt; content</li>
+        </ul>
+
+        <p id="ww4">Different components have different semantics. For example,
+            there can only be one title, but there can be multiple external
+            scripts and stylesheets. However, those external scripts and
+            stylesheets should only be included once. Arbitrary head and body
+            content, on the other hand, has no limitation (someone may want to
+            have five lorem ipsum blocks after all).</p>
+
+        <p id="ww5">The job of a widget is to hold onto these disparate
+            components and apply proper logic for combining different widgets
+            together. This consists of things like taking the first title set
+            and ignoring others, applying <code>nub</code> to the list of
+            external scripts and stylesheets, and simply concatenating head and
+            body content.</p>
+
+        <advanced>
+
+            <p id="ww6">In general, you should avoid nub since it has very bad
+                performance. Usually when you are looking for uniqueness, you
+                do not care about sort, and therefore <code>map head . group .  sort</code>
+                is more efficient than a call to nub. However,
+                in our case, order <i>is</i> important: we would not want to
+                include jQuery UI before we include jQuery. Therefore, we are
+                stuck with nub.</p>
+
+        </advanced>
+    </section>
+
+    <section id="building-widgets">
+        <title>Building Widgets</title>
+
+        <p id="bw1">In the <link chapter="templates">templates chapter</link>, we already began an initial look at how to construct widgets. Let's begin more formally here. Widgets have a monad instance, so we can use do notation for building up larger widgets from smaller parts. For each of the components of a widget listed above, their is a corresponding primitive.
+
+    <!--
     <section id="expanding-hello-world">
         <title>Expanding Hello World</title>
         <p id="i3">In the <link chapter="basics">basics chapter</link>, our Hello World example produced some very basic HTML:</p>
@@ -21,22 +105,24 @@
         <codeblock>&lt;!DOCTYPE html&gt; 
 &lt;html&gt;&lt;head&gt;&lt;title&gt;Hello World&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Hello World!&lt;/body&gt;&lt;/html&gt;</codeblock>
         <p id="i6">defaultLayout takes a Widget as its argument; a Widget is a monad that contains information on the title, head tags, styles, javascript and body that make up a document. defaultLayout breaks all of this up into pieces and places them into an HTML template file.</p>
-        <advanced><p id="i7">OK, two things: there is no such thing as a Widget in Yesod; it's a GWidget. We'll see why when we learn about the default site template. And defaultLayout is a method in the Yesod typeclass, which you can (and should) override to give your site a uniform theme. We'll discuss that in the [Yesod typeclass chapter](/book/yesod-typeclass/).</p></advanced>
+        <advanced><p id="i7">OK, two things: there is no such thing as a Widget in Yesod; it's a GWidget. We'll see why when we learn about the default site template. And defaultLayout is a method in the Yesod typeclass, which you can (and should) override to give your site a uniform theme. We'll discuss that in the <link chapter="yesod-typeclass">Yesod typeclass chapter</link>.</p></advanced>
         <p id="i8">When we place a hamlet template in a widget, the content gets appended to the body section of the page. We have other helper functions, such as setTitle, that place content elsewhere. Let's say we decide we would like our text to be red. One approach would be to use a style attribute in our Hamlet:</p>
 
         <snippet name="widgets-style-attribute"/>
 
-        <p id="i9">But the better approach would be to declare this information in a separate CSS section, either a style tag or an external stylesheet.</p>
+        <p id="i9">But the better approach would be to declare this information in a separate CSS section, either a style tag or an external stylesheet. We can easily do that using addCassius:</p>
+        <snippet name="widgets-no-style-attribute"/>
+        <p id="i10">Now every paragraph on the page will be red. By default, the CSS code will be placed in a &lt;style&gt; tag in the &lt;head&gt; of the document. However, it's also possible to store this content in an external file as we will learn in the <link chapter="yesod-typeclass">Yesod typeclass chapter</link>.</p>
     </section>
     <section id="polymorphic-hamlet">
         <title>Polymorphic Hamlet</title>
-        <p id="ph1">The hamlet quasi-quoter is special in that its result can be polymorphic. So line 3 of the previous example could read:</p>
+        <p id="ph1">The hamlet quasi-quoter is special in that its result can be polymorphic. So line <b>FIXME</b> of our prior example could read:</p>
         <codeblock>addWidget [$hamlet|%p!style="color:red" Hello World!|]</codeblock>
         <p id="ph2">or</p>
         <codeblock>addHamlet [$hamlet|%p!style="color:red" Hello World!|]</codeblock>
         <p id="ph3">or</p>
         <codeblock>addHtml [$hamlet|%p!style="color:red" Hello World!|]</codeblock>
-        <p id="ph4">Without changing the resulting HTML page. It might be useful to look at the type signatures of these three functions:</p>
+        <p id="ph4">without changing the resulting HTML page. It might be useful to look at the type signatures of these three functions:</p>
 
         <codeblock>addWidget :: Widget () -> Widget ()
 addHamlet :: Hamlet    -> Widget ()
@@ -62,7 +148,7 @@ addHtml   :: Html      -> Widget ()</codeblock>
 
         <advanced>
             <p id="ph10">Once again, there <i>is</i> no such thing as a Widget. Technically speaking, addWidget is <code>GWidget s m () -&gt; GWidget s m ()</code>, and for that matter addHamlet is <code>Hamlet (Route m) -&gt; GWidget s m ()</code>. But worrying about all these types right now is just distracting; you can just pretend you have a simple Widget datatype.</p>
-            <p id="ph1">Oh, and what's the difference between Hamlet and Html? Html is a fully formed chunk of HTML data. Hamlet is a <i>function</i> which takes a URL renderer and returns an Html. This is how we implement type-safe URLs in Yesod: by passing around URL rendering functions.</p>
+            <p id="ph1">Oh, and what's the difference between Hamlet and Html? Html is a fully formed chunk of HTML data. Hamlet is a <i>function</i> which takes a URL renderer and returns an Html. This is how we implement type-safe URLs in Yesod: by passing around URL rendering functions, your code can deal with type safe URLs, and Yesod will know how to produce a final HTML page.</p>
         </advanced>
     </section>
     <section id="cassius">
@@ -167,4 +253,5 @@ $(function(){
     <summary>
         <p id="s1">Instead of having your HTML, CSS and Javascript sprawled all over the place, a Widget is a central, composable value that contains them all. This allows us to easily create reusable components that can be included in other widgets. Widgets simplify things for you further by ensuring that external files, such as jQuery, only get included once.</p>
     </summary>
+    -->
 </chapter>

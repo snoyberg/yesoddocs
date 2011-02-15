@@ -13,7 +13,7 @@
         <defs>
             <def term="GET">Read-only requests. Assuming no other changes occur on the server, calling a GET request multiple times should result in the same response, barring such things as "current time" or randomly assigned results.</def>
             <def term="POST">A general mutating request. A POST request should never be submitted twice by the user. A common example of this would be to transfer funds from one bank account to another.</def>
-            <def term="PUT">Create a new resource on the server, or replace an existing one. This method <i>is</i> same to be called multiple times.</def>
+            <def term="PUT">Create a new resource on the server, or replace an existing one. This method <i>is</i> safe to be called multiple times.</def>
             <def term="DELETE">Just like it sounds: wipe out a resource on the server. Calling multiple times should be OK.</def>
         </defs>
         <p id="rm3">To a certain extent, this fits in very well with Haskell philosophy: a GET request is similar to a pure function, which cannot have side effects. Of course, in practice, your GET functions will probably perform IO, such as reading information from a database, logging user actions, and so on.</p>
@@ -47,7 +47,7 @@ michael = Person "Michael" 25</codeblock>
     &lt;name&gt;Michael&lt;/name&gt;
     &lt;age&gt;25&lt;/age&gt;
 &lt;/person&gt;</codeblock>
-        <p id="rp5">Often times, web applications will use a different URL to get each of these representations; perhaps /person/michael.html, /person/michael.json, etc. Yesod follows the RESTful principle of a single URL for each <term>resource</term>. So in Yesod, all of these would be accessed from /person/michael/.</p>
+        <p id="rp5">Often times, web applications will use a different URL to get each of these representations; perhaps /person/michael.html, /person/michael.json, etc. Yesod follows the RESTful principle of a single URL for each <term>resource</term>. So in Yesod, all of these would be accessed from /person/michael.</p>
         <p id="rp6">Then the question becomes how do we determine <i>which</i> representation to serve. The answer is the HTTP Accept header: it gives a prioritized list of content types the client is expecting. Yesod will automatically determine which representation to serve based upon this header.</p>
         <p id="rp7">Let's make that last sentence a bit more concrete with some code:</p>
 
@@ -56,15 +56,13 @@ michael = Person "Michael" 25</codeblock>
 
         <p id="rp8">The chooseRep function takes two arguments: the value we are getting representations for, and a list of content types that the client will accept. We determine this by reading the "Accept" request header. chooseRep returns a tuple containing the content type of our response and the actual content.</p>
 
-        <advanced><p id="rp9"><code>Content</code> is actually just a synonym for the <code>ResponseBody</code> datatype from WAI. ResponseBody has three constructors: one for lazy bytestrings, one for files, and one for enumerators. Yesod comes with a <code>ToContent</code> typeclass that helps with these conversions. And usually you don't even need that: up until now you've been able to get by with just defaultLayout.</p></advanced>
-
         <p id="rp10">This typeclass is the core of Yesod's RESTful approach to representations. Every handler function must return an instance of HasReps. Yesod provides a number of instances of HasReps out of the box. When we use defaultLayout, for example, the return type is RepHtml, which looks like:</p>
 
         <codeblock>newtype RepHtml = RepHtml Content
 instance HasReps RepHtml where
     chooseRep (RepHtml content) _ = return ("text/html", content)</codeblock>
 
-        <p id="rp11">What's interesting here is that we ignore entirely the list of expected content types. A number of the built in representations (RepHtml, RepPlain, RepJson, RepXml) in fact only support a single representation, and therefore what the client wants is irrelevant.</p>
+        <p id="rp11">What's interesting here is that we ignore entirely the list of expected content types. A number of the built in representations (RepHtml, RepPlain, RepJson, RepXml) in fact only support a single representation, and therefore what the client requests in the Accept header is irrelevant.</p>
         <section id="rephtmljson">
             <title>RepHtmlJson</title>
             <p id="rhj1">An example to the contrary is RepHtmlJson, which provides either an HTML or JSON representation. This instance helps greatly in programming AJAX applications that degrade nicely. Here is an example that returns either HTML or JSON data, depnding on what the client wants.</p>

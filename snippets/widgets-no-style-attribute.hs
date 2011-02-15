@@ -9,6 +9,10 @@ instance Yesod HelloWorld where approot _ = ""
 -- START
 getHomeR = defaultLayout $ do
     setTitle "Hello World"
-    [$hamlet|<p style="color:red">Hello World!|]
+    addCassius [$cassius|
+p
+    color: red
+|]
+    [$hamlet|<p>Hello World!|]
 -- STOP
 main = warpDebug 3000 HelloWorld

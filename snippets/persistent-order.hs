@@ -1,4 +1,3 @@
--- START
 {-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving #-}
 import Database.Persist
 import Database.Persist.Sqlite
@@ -14,11 +13,12 @@ Person
 
 main = withSqliteConn ":memory:" $ runSqlConn $ do
     runMigration migrateAll
+-- START
     michaels <- selectList
         [ PersonNameEq "Michael"
         , PersonAgeGt 25
         ]
         [ PersonAgeDesc
         ] 0 0 -- we will explain these later, all in good time
-    liftIO $ print michaels
 -- STOP
+    liftIO $ print michaels

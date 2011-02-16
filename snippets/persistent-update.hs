@@ -1,4 +1,3 @@
--- START
 {-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving #-}
 import Database.Persist
 import Database.Persist.Sqlite
@@ -13,6 +12,7 @@ Person
 
 main = withSqliteConn ":memory:" $ runSqlConn $ do
     runMigration migrateAll
+-- START
     updateWhere
         [ PersonNameEq "Michael"
         , PersonAgeGt 25

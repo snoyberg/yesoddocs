@@ -132,7 +132,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz", ""]</codeblock>
                  <code>getPersonR</code>, <code>postPersonR</code> and
                  <code>deletePersonR</code>.</p>
 
-             <p id="rn10">Subsites are a very useful- and complicated- topic in Yesod. We
+             <p id="rn10">Subsites are a very useful&#x2014; but complicated&#x2014; topic in Yesod. We
                  will <link chapter="subsite">cover writing subsites
                      later</link>, but using them is not too difficult. The
                  most commonly used subsite is the static subsite, which serves

@@ -32,7 +32,7 @@
         <p id="bs2">Line 13 shows our Hamlet quasi-quotation, surrounded by <code>[$hamlet| and |]</code>. The Haskell compiler knows to parse the internal code, convert it to Haskell, and then compile that.</p>
         <p id="bs3">But that's a really boring HTML page: it's just the text "Hello World!" without any tags! Let's see something a little bit more interesting:</p>
         <snippet name="templates-helloworld2"/>
-        <p id="bs4">Overall, Hamlet syntax looks fairly similar to HTML. However, there is one important difference: instead of closing tags manually, nesting is determined by indentation level. The goal of Hamlet is to provide a less error-prone, more <abbr title="Don't Repeat Yourself">DRY</abbr> syntax for HTML, without introducing a completely foreign language that developers and designers wil need to relearn.</p>
+        <p id="bs4">Overall, Hamlet syntax looks fairly similar to HTML. However, there is one important difference: instead of closing tags manually, nesting is determined by indentation level. The goal of Hamlet is to provide a less error-prone, more <abbr title="Don't Repeat Yourself">DRY</abbr> syntax for HTML, without introducing a completely foreign language that developers and designers will need to relearn.</p>
         <p id="bs4a">Similarly, Cassius is also whitespace-sensitive: </p>
         <snippet name="templates-helloworld3"/>
         <p id="bs5">On the other hand, Julius is mostly a pass-through format, allowing you to write your Javascript however you like:</p>

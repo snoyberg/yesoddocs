@@ -20,7 +20,7 @@ need to rearrange. Need to cover:
         <p id="i1">One of the challenges in web development is that we have to coordinate three different client-side technologies: HTML, CSS and Javascript. Worse still, we have to place these components in different locations on the page: CSS in a style tag in the head, Javascript in a script tag in the head, and HTML in the body. And never mind if you want to put your CSS and Javascript in separate files!</p>
         <p id="i2">In practice, this works out fairly nicely when building a single page, becuase we can separate our structure (HTML), styling (CSS) and logic (Javascript). But when we want to build modular pieces of code that can be easily composed, it can be a headache to coordinate all three pieces separately. Widgets are Yesod's solution to the problem. They also help with the issue of including libraries, such as jQuery, one time only.</p>
 
-        <p id="i3">Our three template languages- Hamlet, Cassius and Julius- provide the raw tools for constructing your output. Widgets provide the glue that allows them to work together seemlessly.</p>
+        <p id="i3">Our three template languages- Hamlet, Cassius and Julius- provide the raw tools for constructing your output. Widgets provide the glue that allows them to work together seamlessly.</p>
     </intro>
     <section id="whats-in-widget">
         <title>What's in a Widget?</title>
@@ -86,7 +86,7 @@ need to rearrange. Need to cover:
     <section id="building-widgets">
         <title>Building Widgets</title>
 
-        <p id="bw1">In the <link chapter="templates">templates chapter</link>, we already began an initial look at how to construct widgets. Let's begin more formally here. Widgets have a monad instance, so we can use do notation for building up larger widgets from smaller parts. For each of the components of a widget listed above, their is a corresponding primitive.</p>
+        <p id="bw1">In the <link chapter="templates">templates chapter</link>, we already began an initial look at how to construct widgets. Let's begin more formally here. Widgets have a monad instance, so we can use do notation for building up larger widgets from smaller parts. For each of the components of a widget listed above, there is a corresponding primitive.</p>
 
         <p id="under-construction">FIXME The rest of this chapter is under construction.</p>
     </section>

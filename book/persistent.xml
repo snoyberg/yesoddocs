@@ -100,7 +100,12 @@
             <li>Field removals: since this can result in data loss, Persistent by default will refuse to perform the action (you can force the issue by using runMigrationUnsafe instead of runMigration, though it is <b>not</b> recommended).</li>
         </ul>
         <p id="m8">runMigration will print out the migrations it is running on stderr (you can bypass this by using runMigrationSilent). Whenever possible, it uses ALTER TABLE calls. However, in SQLite, ALTER TABLE has very limited abilities, and therefore Persistent must resort to copying the data from one table to another.</p>
-        <p id="m9">Finally, if instead of <i>performing</i> a migration, you just want Persistent to give you hints about what migrations are necessary, use the printMigration function.</p>
+        <p id="m9">Finally, if instead of <i>performing</i> a migration, you just want Persistent to give you hints about what migrations are necessary, use the printMigration function. This function will print out the migrations which runMigration would perform for you. This may be useful for performing migrations that Persistent is not capable of, or adding arbitrary SQL to a migration, or just to log what migrations occurred.</p>
+
+        <advanced>
+            <p id="m10">Although there is no official Persistent integration, there is a haskell package that can assist with running migrations called <hackage>dbmigrations</hackage>.</p>
+        </advanced>
+
     </section>
     <section id="attributes">
         <title>Attributes</title>
@@ -169,7 +174,6 @@
             <li>mkToForm</li>
             <li>Advanced: select enumerator interface</li>
             <li>raw SQL</li>
-            <li>deriving</li>
         </ul>
     </section>
 </chapter>

@@ -83,9 +83,9 @@
         <p id="m1">I'm sorry to tell you, but so far I have lied to you a bit: the example from the previous section does not actually work. If you try to run it, you will get an error message about a missing table.</p>
         <p id="m2">For SQL databases, one of the major pains can be managing schema changes. Instead of leaving this to the user, Persistent steps in to help, but you have to <i>ask</i> it to help. Let's see what this looks like:</p>
         <snippet name="persistent-migrate1"/>
-        <p id="m3">With this one little code change, Persistent will automatically create your Person table for you. This split between runMigration and migrate allows you to migrate multiple tables simultaneously:</p>
-        <snippet name="persistent-migrate2"/>
+        <p id="m3">With this one little code change, Persistent will automatically create your Person table for you. This split between runMigration and migrate allows you to migrate multiple tables simultaneously.</p>
         <p id="m4">This works when dealing with just a few entities, but can quickly get tiresome once we are dealing with a dozen entities. Instead of repeating yourself, Persistent provides a helper function:</p>
+        <snippet name="persistent-migrate2"/>
         <p id="m5">mkMigrate is a Template Haskell function which creates a new function that will automatically call migrate on all entities defined in the persist block. The share function is just a little helper that passes the information from the persist block to each Template Haskell function and concatenates the results.</p>
         <p id="m6">Persistent has very conservative rules about what it will do during a migration. It starts by loading up table information from the database, complete with all defined SQL datatypes. It then compares that against the entity definition given in the code. For simple cases, it will automatically alter the schema:</p>
         <ul>

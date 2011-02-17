@@ -45,7 +45,7 @@ getHomeR :: Handler RepHtml</codeblock>
     </section>
     <section id="handler-function">
         <title>Handler function</title>
-        <p id="handler1">Most of the code you write in Yesod lives in handler functions. This is where you process user input, perform database queries and create responses. In our simple example, we create a response using the defaultLayout function. By default, this is a simply HTML wrapper that creates a doctype, html, head and body tags. <link chapter="yesod-typeclass">As we'll see later</link>, this function can be overridden to do much more.</p>
+        <p id="handler1">Most of the code you write in Yesod lives in handler functions. This is where you process user input, perform database queries and create responses. In our simple example, we create a response using the defaultLayout function. By default, this is simply an HTML wrapper that creates a doctype, html, head and body tags. <link chapter="yesod-typeclass">As we'll see later</link>, this function can be overridden to do much more.</p>
 
         <p id="handler2">That funny <code>[$hamlet|Hello World!|]</code> is a <term>quasi-quotation</term>. It allows us to embed arbitrary text in our Haskell code, process it with a specific function and have that generate Haskell code, all at compile time. In our case, we feed the string "Hello World!" to the hamlet quasi-quoter.</p>
 

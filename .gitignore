@@ -1,7 +1,7 @@
 *.swp
 _cache
 _site
-/dist
+dist/
 client_session_key.aes
 snippets/tmp
 *.hi

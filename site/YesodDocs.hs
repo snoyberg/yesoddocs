@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, OverloadedStrings, MultiParamTypeClasses #-}
+{-# LANGUAGE CPP #-}
 
 module YesodDocs where
 
@@ -31,6 +32,13 @@ import Comments
 import Data.List (sortBy)
 import Text.Blaze (toHtml)
 import qualified Data.ByteString.Char8 as S8
+import qualified Text.Highlighting.Kate as Kate
+
+#ifndef PRODUCTION
+import Debug.Trace
+debug :: (Show a) => a -> a
+debug a = trace (show a) a
+#endif
 
 data YesodDocs = YesodDocs
     { getStatic :: Static
@@ -109,6 +117,28 @@ instance YesodJquery YesodDocs where
     urlJqueryUiJs _ = Left $ StaticR jquery_ui_js
     urlJqueryUiCss  _ = Left $ StaticR jquery_ui_css
 
+
+
+highlightedHamletExample =
+    case Kate.highlightAs "html" hamletExample of
+        Left e -> error $ "Could not parse front page hamlet snippet, error: " ++ e
+        Right lines -> preEscapedString $ showHtmlFragment $ Kate.formatAsXHtml [] "html" lines
+        -- trace (show lines) hamletExample
+
+hamletExample :: String
+hamletExample = concatMap (++ "\n") [
+    "<table#yesod-id.docs-class>",
+    "  <thead>",
+    "    <tr>",
+    "      <th>name",
+    "      <th>features",
+    "  <tbody data-superflous=none>",
+    "    <tr>",
+    "      <td>",
+    "        <a href=@{DocR doc}>#{docName doc}",
+    "      <td>#{docFeature f}"
+  ]
+
 getHomeR :: Handler RepHtml
 getHomeR = defaultLayout $ do
     setTitle "Yesod Web Framework for Haskell"
@@ -118,6 +148,7 @@ getHomeR = defaultLayout $ do
 <meta name="description" value="Yesod Web Framework for Haskell. Create RESTful web apps with type safety.">
 |]
     addCassius $(cassiusFile "root")
+    addStylesheet $ StaticR hk_html_css
     y <- lift getYesod
     addScriptEither $ urlJqueryJs y
     addScriptRemote "http://cdn.jquerytools.org/1.2.0/full/jquery.tools.min.js"

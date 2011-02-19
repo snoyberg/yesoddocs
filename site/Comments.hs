@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE CPP #-}
 module Comments where
 
 import Yesod hiding (get)
@@ -17,7 +18,7 @@ import Data.Object.Yaml hiding (encode, decode)
 import qualified Data.Object.Yaml as Y
 import Data.Object
 import qualified Data.Text.Lazy as T
-import Control.Monad (join)
+import Control.Monad (join, unless)
 
 data Comment = Comment
     { commentName :: Text
@@ -42,10 +43,20 @@ commentsToSO =
 commentsFile :: String
 commentsFile = "comments.dat"
 
+commentsYaml :: String
+commentsYaml = "comments.yaml"
+
 loadComments :: IO Comments
 loadComments = do
-    Mapping so <- join $ decodeFile "comments.yaml"
+#if PRODUCTION
+    Mapping so <- join $ decodeFile commentsYaml
     mapM go (so :: [(String, Object String String)])
+#else
+    -- this didn't work
+    -- d <- doesFileExist commentsYaml
+    -- unless d (saveComments [])
+    return []
+#endif
   where
     go :: (String, Object String String) -> IO (String, [(Text, [Comment])])
     go (x, Mapping y) = do
@@ -73,7 +84,7 @@ loadCommentsDat = do
         else return []
 
 saveComments :: Comments -> IO ()
-saveComments = writeFileL "comments.yaml" . L.fromChunks . return . Y.encode . commentsToSO
+saveComments = writeFileL commentsYaml . L.fromChunks . return . Y.encode . commentsToSO
 
 instance Serialize Text where
     put = put . encodeUtf8

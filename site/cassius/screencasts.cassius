@@ -1,3 +1,13 @@
+header p
+  margin: 30px
+  text-align: left
+  
+#accordion h3
+  display: block;
+
+#accordion h3 > span
+  display: inline-block;
+
 #accordion div
     height: 400px
 h3.ui-helper-reset

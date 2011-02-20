@@ -114,7 +114,7 @@ instance Yesod YesodDocs where
 instance YesodJquery YesodDocs where
     urlJqueryJs _ = Left $ StaticR jquery_js
     urlJqueryUiJs _ = Left $ StaticR jquery_ui_js
-    urlJqueryUiCss  _ = Left $ StaticR jquery_ui_css
+    urlJqueryUiCss  _ = Left $ StaticR jquery_ui_custom_css
 
 
 

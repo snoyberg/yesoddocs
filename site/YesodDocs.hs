@@ -32,7 +32,6 @@ import Comments
 import Data.List (sortBy)
 import Text.Blaze (toHtml)
 import qualified Data.ByteString.Char8 as S8
-import qualified Text.Highlighting.Kate as Kate
 
 #ifndef PRODUCTION
 import Debug.Trace
@@ -119,11 +118,11 @@ instance YesodJquery YesodDocs where
 
 
 
+highlightedHamletExample :: Html
 highlightedHamletExample =
     case Kate.highlightAs "html" hamletExample of
         Left e -> error $ "Could not parse front page hamlet snippet, error: " ++ e
-        Right lines -> preEscapedString $ showHtmlFragment $ Kate.formatAsXHtml [] "html" lines
-        -- trace (show lines) hamletExample
+        Right parsedLines -> preEscapedString $ showHtmlFragment $ Kate.formatAsXHtml [] "html" parsedLines
 
 hamletExample :: String
 hamletExample = concatMap (++ "\n") [

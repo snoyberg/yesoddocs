@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="testing" status="Outline">
+    <title>Testing</title>
+    <intro>
+        <p id="i1">FIXME This is just an outline. This chapter will mostly describe how to use wai-test.</p>
+    </intro>
+</chapter>

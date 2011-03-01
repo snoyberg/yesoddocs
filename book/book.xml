@@ -20,6 +20,7 @@
         <chapter href="auth.xml"/>
         <chapter href="scaffold.xml"/>
         <chapter href="advanced-forms.xml"/>
+        <chapter href="testing.xml"/>
         <chapter href="email.xml"/>
         <chapter href="deploying.xml"/>
         <chapter href="i18n.xml"/>

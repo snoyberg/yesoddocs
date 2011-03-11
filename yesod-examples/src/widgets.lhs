@@ -31,14 +31,14 @@
 >     addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
 >     addScript $ StaticR $ StaticRoute ["script.js"] []
 >     addHamlet [$hamlet|
-> %h1#$i$ Welcome to my first widget!!!
-> %p
->     %a!href=@RootR@ Recursive link.
-> %p
->     %a!href=@FormR@ Check out the form.
-> %p.noscript Your script did not load. :(
+> <h1 ##{i}>Welcome to my first widget!!!
+> <p
+>     <a href=@RootR@>Recursive link.
+> <p
+>     <a href=@FormR@>Check out the form.
+> <p .noscript>Your script did not load. :(
 > |]
->     addHtmlHead [$hamlet|%meta!keywords=haskell|]
+>     addHtmlHead [$hamlet|<meta keywords=haskell|]
 > 
 > handleFormR = do
 >     (res, form, enctype, nonce) <- runFormPost $ fieldsToTable $ (,,,,,,,,)

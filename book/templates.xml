@@ -42,7 +42,7 @@
         <title>Tags</title>
         <p id="t1">Besides the whitespace rules, Hamlet also provides a few more features to make your life a little bit easier.</p>
         <snippet name="templates-tags"/>
-        <p id="t2">Let's start on line 2. In Hamlet, instead of writing <code>id="my-id"</code>, you can get away with <code>#my-id</code>. The same trick applies to classes: <code>.my-class</code>.</p>
+        <p id="t2">Let's start on line 2. In Hamlet, instead of writing <code>id="my-id"</code>, you can use the css-selector: <code>#my-id</code>. The same applies to classes: <code>.my-class</code>.</p>
         <p id="t3">Next, compare line 2 with lines 4 and 6: line 2 does not complete the tag, it just leaves it open (no greater than sign), while lines 4 and 6 <b>do</b> complete it. In Hamlet, the greater than sign is optional. However, it <i>is</i> required if you want to put content on the same line as the tag.</p>
         <p id="t4">The last thing to note is how we handle whitespace. On line 3, we want to force an extra space at the end of the line, so that there will be a space between the word has and the &lt;b&gt; tag. When we place the hash at the end of the line by itself, Hamlet ignores it entirely, and therefore only the space is kept. (If you really want to output a hash at the end of a line, simply put two, and Hamlet will ignore the second one.)</p>
         <advanced>

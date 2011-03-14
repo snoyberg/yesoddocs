@@ -129,6 +129,7 @@
             <li>Le- less than or equals</li>
             <li>Gt- greater than</li>
             <li>Ge- greater than or equals</li>
+            <li>In- equals any member of a list (like a SQL IN)</li>
         </ul>
         <p id="a3">By adding these attribute, mkPersist automatically adds corresponding data constructores to the <code>Filter</code> associated type. In our case, this comes out to the equivalent of</p>
         <codeblock>data Filter Person = PersonNameEq String | PersonAgeGt Int</codeblock>

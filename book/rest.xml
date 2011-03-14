@@ -65,7 +65,7 @@ instance HasReps RepHtml where
         <p id="rp11">What's interesting here is that we ignore entirely the list of expected content types. A number of the built in representations (RepHtml, RepPlain, RepJson, RepXml) in fact only support a single representation, and therefore what the client requests in the Accept header is irrelevant.</p>
         <section id="rephtmljson">
             <title>RepHtmlJson</title>
-            <p id="rhj1">An example to the contrary is RepHtmlJson, which provides either an HTML or JSON representation. This instance helps greatly in programming AJAX applications that degrade nicely. Here is an example that returns either HTML or JSON data, depnding on what the client wants.</p>
+            <p id="rhj1">An example to the contrary is RepHtmlJson, which provides either an HTML or JSON representation. This instance helps greatly in programming AJAX applications that degrade nicely. Here is an example that returns either HTML or JSON data, depending on what the client wants.</p>
             <snippet name="rest-rephtmljson"/>
             <p id="rhj2">Our getRootR handler creates a page with three links and some Javascript which intercept clicks on the links and performs asynchronous requests. If the user has Javascript enabled, clicking on the link will cause a request to be sent with an "Accept" header of "application/json". In that case, getNameR will return the JSON representation defined on line 27.</p>
             <p id="rhj3">If the user disables Javascript, clicking on the link will send the user to the appropriate URL. A web browser places priority on an HTML representation of the data, and therefore the page defined on lines 24-26 will be returned.</p>

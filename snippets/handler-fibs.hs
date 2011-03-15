@@ -1,5 +1,5 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE MultiParamTypeClasses, TemplateHaskell #-}
 import Yesod
 data Fibs = Fibs
 -- START

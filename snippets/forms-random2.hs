@@ -1,5 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, OverloadedStrings #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE MultiParamTypeClasses, TemplateHaskell #-}
 import Yesod
 import Yesod.Form.Core
 import System.Random

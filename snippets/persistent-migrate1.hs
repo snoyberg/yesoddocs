@@ -1,5 +1,5 @@
 -- START
-{-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving, TemplateHaskell #-}
 import Database.Persist
 import Database.Persist.Sqlite
 import Control.Monad.IO.Class (liftIO)

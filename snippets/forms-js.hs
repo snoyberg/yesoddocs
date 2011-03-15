@@ -1,5 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, OverloadedStrings #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE MultiParamTypeClasses, TemplateHaskell #-}
 import Yesod
 import Yesod.Form.Jquery
 import Yesod.Form.Nic

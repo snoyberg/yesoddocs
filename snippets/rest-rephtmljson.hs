@@ -1,5 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, OverloadedStrings #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE MultiParamTypeClasses, TemplateHaskell #-}
 import Yesod
 data R = R
 mkYesod "R" [$parseRoutes|

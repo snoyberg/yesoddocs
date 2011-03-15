@@ -1,5 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE MultiParamTypeClasses, TemplateHaskell #-}
 -- START
 import Yesod
 import Web.Routes.Quasi.Parse

@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeFamilies, QuasiQuotes #-}
+{-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
 import Yesod
 data Fibs = Fibs
 -- START

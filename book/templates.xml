@@ -12,6 +12,21 @@
             <codeblock>setTitle $ string "Home Page"</codeblock>
         </advanced>
     </intro>
+    <section id="example-hamlet">
+        <title>A Hamlet example</title>
+        <p id="eh1">
+          The goal of hamlet syntax is essentially to remove all redundancy from html. By staying closer to html, we can:
+          <ul>
+            <li>avoid learning arbitrarily new syntax</li>
+            <li>appeal to a wider variety of programmers and</li>
+            <li>appeal to designers</li>
+          </ul>
+        </p>
+        <snippet name="example-hamlet1"/>
+        <p id="eh2">
+          Just by making white space significant and removing closing tags, we eliminate the main source of invalid html. With that, and some id/class shortcuts, and making attribute quoting optional, we have eliminated the main sources of tedium in html.
+        </p>
+    </section>
     <section id="type-safety">
         <title>Type Safety</title>
         <p id="ts1">One of the biggest features of Yesod is its pervasive type safety. This was the original impetus for the creation of Hamlet. As such, all variable interpolations gets checked at compile time. Hamlet supports three forms of interpolation:</p>

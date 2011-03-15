@@ -3,8 +3,8 @@
 module Comments where
 
 import Yesod hiding (get)
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy.Encoding (encodeUtf8, decodeUtf8With)
+import Data.Text (Text)
+import Data.Text.Encoding (encodeUtf8, decodeUtf8With)
 import Data.Text.Encoding.Error (lenientDecode)
 import Data.Time
 import Data.Serialize
@@ -17,7 +17,7 @@ import System.Directory (doesFileExist)
 import Data.Object.Yaml hiding (encode, decode)
 import qualified Data.Object.Yaml as Y
 import Data.Object
-import qualified Data.Text.Lazy as T
+import qualified Data.Text as T
 import Control.Monad (join, unless)
 
 data Comment = Comment

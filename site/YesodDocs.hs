@@ -21,8 +21,9 @@ import Data.Function (on)
 import qualified System.IO.UTF8 as U
 import Data.Time
 import Book
-import qualified Data.Text.Lazy as T
-import Data.Text.Lazy (Text)
+import qualified Data.Text as T
+import qualified Data.Text as TS -- FIXME remove
+import Data.Text (Text)
 import qualified Text.Highlighting.Kate as Kate
 import Text.XHtml.Strict (showHtmlFragment)
 import Data.Either (lefts)
@@ -433,7 +434,7 @@ sectionBlockToHtml chap cs level (Left section) = [$hamlet|\
 sectionBlockToHtml chap cs _ (Right b) = blockToHtml chap cs b
 
 blockToHtml :: Chapter -> [(Text, [Comment])] -> Block -> Hamlet YesodDocsRoute -- FIXME put one of those paragraph symbol links here
-blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|\
+blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|
 <p id="#{pid}">
     <span .permalink
         <a href=##{pid}>&#x204B
@@ -446,7 +447,7 @@ blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|\
             <span .name>#{commentName c}
             <span .datetime>#{show (utctDay (commentTime c))}
             <div .content>#{commentContent c}
-    <form method="post" action="@{CommentR (unpack (chapterSlug chap)) pid}">
+    <form method="post" action="@{CommentR (TS.unpack (chapterSlug chap)) $ TS.pack $ T.unpack pid}">
         <b>Add a comment
         \Name: 
         <input type="text" name="name" .name>
@@ -454,8 +455,8 @@ blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|\
         <input type="submit" value="Add comment">
 |]
   where
-    unpack = T.unpack
-    cs = fromMaybe [] $ lookup pid chapCs
+    unpack = TS.unpack
+    cs = fromMaybe [] $ lookup (T.pack $ TS.unpack pid) chapCs
     csCount = length cs
     csCount'
         | csCount == 0 = "No comments"
@@ -544,7 +545,7 @@ inlineToHtml (Xref href inner) = [$hamlet|<a href="#{href}">#{inner}
 inlineToHtml (Code inner) = [$hamlet|<code>#{inner}
 |]
 inlineToHtml (Link chapter msection inner) = [$hamlet|\
-<a href="@{ChapterR (unpack chapter)}#{section}">#{inner}
+<a href="@{ChapterR (TS.unpack chapter)}#{section}">#{inner}
 |]
   where
     section =

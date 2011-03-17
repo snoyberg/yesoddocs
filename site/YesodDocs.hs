@@ -145,7 +145,7 @@ getHomeR = defaultLayout $ do
     let faqR = ChapterR "faq"
     addHamlet $(hamletFile "root")
     addHtmlHead [$hamlet|\
-<meta name="description" value="Yesod Web Framework for Haskell. Create RESTful web apps with type safety.">
+<meta name="description" content="Yesod Web Framework for Haskell. Create RESTful web apps with type safety.">
 |]
     addCassius $(cassiusFile "root")
     addStylesheet $ StaticR hk_html_css

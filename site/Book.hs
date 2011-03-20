@@ -47,6 +47,7 @@ data Chapter = Chapter
     , chapterTitle :: Text
     , chapterStatus :: ChapterStatus
     , chapterIntro :: [Block]
+    , chapterSynopsis :: Maybe [Kate.SourceLine]
     , chapterSections :: [Section]
     , chapterSummary :: Maybe [Block]
     }
@@ -125,10 +126,20 @@ parseChapter = force "Missing chapter" $ tagName "chapter" ((,) <$> requireAttr 
     status <- readStatus status'
     title <- force "Chapter requires title" titleTag
     intro <- force "Intro required" $ tagNoAttr "intro" $ many parseBlock
+    msynopsis <- tagName "synopsis" (requireAttr "name") $ \name -> do
+        raw <- liftIO $ U.readFile $ "snippets/" ++ T.unpack name ++ ".hs" -- FIXME use text
+        case Kate.highlightAs "haskell" raw of
+            Left e -> throwError $ XmlException (concat
+                [ "Could not parse synopsis "
+                , T.unpack name
+                , ": "
+                , e
+                ]) Nothing
+            Right lines' -> return lines'
     sections <- many $ tagName "section" (requireAttr "id") parseSection
     checkUniqueIds slug sections
     summary <- tagNoAttr "summary" $ many parseBlock
-    return $ Chapter slug title status intro sections summary
+    return $ Chapter slug title status intro msynopsis sections summary
   where
     readStatus t =
         case reads $ T.unpack t of

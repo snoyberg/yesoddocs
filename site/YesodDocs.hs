@@ -376,12 +376,15 @@ withYesodDocs f = do
 
 chapterToHtml :: [(Text, [Comment])] -> Chapter -> Hamlet YesodDocsRoute
 chapterToHtml cs c@(Chapter { chapterIntro = intro, chapterSections = sections
-                       , chapterSummary = msummary }) = [$hamlet|\
+                       , chapterSummary = msummary
+                       , chapterSynopsis = msynopsis }) = [$hamlet|\
 $if not (null sections)
     <div id="toc">
         <ul>
             <li>
                 <a href="#introduction">Introduction
+            $maybe _ <- msynopsis
+                <a href=#synopsis>Synopsis
             $forall s <- sections
                 \^{sectionToc s}
             $maybe _ <- msummary
@@ -390,6 +393,9 @@ $if not (null sections)
 <div id="introduction">
     $forall b <- intro
         \^{blockToHtml c cs b}
+$maybe synopsis <- msynopsis
+    <h2 #synopsis>Synopsis
+    #{preEscapedString $ showHtmlFragment $ formatKateLines synopsis}
 $forall s <- sections
     <h2 id="#{sectionId s}">#{sectionTitle s}
     $forall b <- sectionBlocks s
@@ -483,10 +489,8 @@ blockToHtml _ _ (CodeBlock c) = [$hamlet|\
     <pre>#{c}
 |]
 blockToHtml _ _ (Snippet s) = [$hamlet|\
-\#{preEscapedString (showHtmlFragment html)}
+\#{preEscapedString $ showHtmlFragment $ formatKateLines s}
 |]
-  where
-    html = Kate.formatAsXHtml [Kate.OptNumberLines] "haskell" s
 blockToHtml chap cs (Advanced bs) = [$hamlet|\
 <div .advanced>
     $forall b <- bs
@@ -633,3 +637,5 @@ getCommentsFeedR = do
     stou ' ' = '_'
     stou ':' = 'c'
     stou c   = c
+
+formatKateLines = Kate.formatAsXHtml [Kate.OptNumberLines] "haskell"

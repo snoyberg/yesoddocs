@@ -50,14 +50,4 @@ executable         simple-server
                  , hscolour           >= 1.17       && < 1.18
                  , template-haskell
                  , xhtml              >= 3000       && < 3001
-    ghc-options:   -Wall -threaded -Werror
-
-executable         fastcgi
-    if flag(production)
-        Buildable: True
-        build-depends: wai-handler-fastcgi == 0.4.*
-    else
-        Buildable: False
-    cpp-options:   -DPRODUCTION
-    main-is:       fastcgi.hs
     ghc-options:   -Wall -threaded

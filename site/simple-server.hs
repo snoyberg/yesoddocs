@@ -1,4 +1,4 @@
-import YesodDocs
+import Controller
 import Network.Wai.Handler.Warp (run)
 
 main :: IO ()

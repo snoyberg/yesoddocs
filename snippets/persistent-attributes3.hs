@@ -10,7 +10,7 @@ Person
     name String
     age Int
     color String Maybe
-    created UTCTime default=now()
+    created UTCTime default=CURRENT_TIMESTAMP
     language String default='Haskell'
     country String "default='El Salvador'"
 |]

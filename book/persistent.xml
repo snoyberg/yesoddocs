@@ -131,7 +131,7 @@
             <li>Ge- greater than or equals</li>
             <li>In- equals any member of a list (like a SQL IN)</li>
         </ul>
-        <p id="a3">By adding these attribute, mkPersist automatically adds corresponding data constructores to the <code>Filter</code> associated type. In our case, this comes out to the equivalent of</p>
+        <p id="a3">By adding these attribute, mkPersist automatically adds corresponding data constructors to the <code>Filter</code> associated type. In our case, this comes out to the equivalent of</p>
         <codeblock>data Filter Person = PersonNameEq String | PersonAgeGt Int</codeblock>
         <p id="a4">Notice how the datatype of the field is encoded in the data constructor itself. This is the very heart of Persistent's type safety. It's impossible to type in <code>PersonAgeGt "twenty-five"</code>, the compiler just won't have it.</p>
         <p id="a5">Similarly, Persistent uses the <code>Order</code> associated type for sorting results. This comes with two attributes: Asc for sorting in ascending order, and Desc for descending order. So assuming we want to get all Michaels older than 25 in descending chronological order:</p>

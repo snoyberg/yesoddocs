@@ -74,7 +74,7 @@
     , ffsName = Just "single-word"
     } (fmap singleWord mparams)</codeblock>
 
-            <advanced><p id="missing5">You may have noticed that the minimum and maximum number input fields have a type="number" attribute. This is an example of Yesod including HTML 5 support by default. On some browsers (Chrome, for instance) this field gets rendered with up/down errors to control to value, plus it prevents non-numeric input. On browsers without any specific support, it gets rendered as a plain type="text" input. <xref href="http://diveintohtml5.org/forms.html">diveintohtml5 has a chapter on forms</xref>.</p></advanced>
+            <advanced><p id="missing5">You may have noticed that the minimum and maximum number input fields have a type="number" attribute. This is an example of Yesod including HTML 5 support by default. On some browsers (Chrome, for instance) this field gets rendered with up/down arrows to control to value, plus it prevents non-numeric input. On browsers without any specific support, it gets rendered as a plain type="text" input. <xref href="http://diveintohtml5.org/forms.html">diveintohtml5 has a chapter on forms</xref>.</p></advanced>
         </section>
         <section id="custom-fields">
             <title>Custom fields</title>

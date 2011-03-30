@@ -5,7 +5,7 @@
     <section id="fixme">
         <title></title>
         <markdown><![CDATA[
-<blockquote><b>Dammit, I'm a programmer, not a sysadmin!</b></blockquote>
+<blockquote><b>I'm a programmer, not a sysadmin!</b></blockquote>
 
 You've now written the most perfect web application ever. It makes angels sing and babies laugh. Now comes the most dreaded part of the process: deployment. You must somehow take your pure code and throw it out into the unholy realm of the Interwebs. What ever shall you do?
 
@@ -17,34 +17,7 @@ This magic is provided by the WAI; Yesod targets an abstract interface that is s
 
 During development, you don't want to fuss around with multiple servers, HTTP accelerators, caching, or even having a separate web server! You want to just run your application. For this, the SimpleServer handler is the most appropriate. Yesod comes built in with a function called basicHandler that calls SimpleServer for you.
 
-<p class="advanced">basicHandler actually checks the environment to see if it is being called as a CGI script and then acts appropriately. This can be convenient for low-end hosting setups, but isn't really applicable for most users.</p>
-
-SimpleServer is completely unoptimized, so it's not really appropriate for serving large sites. That said, small, personal applications may find it useful. For example, the [hledger](http://hackage.haskell.org/package/hledger) program uses SimpleServer as its default handler.
-
-Let's see this in action: first we'll set up a typical Hello World application:
-
-    {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
-    import Yesod
-    data HelloWorld = HelloWorld
-    mkYesod "HelloWorld" [$parseRoutes|/ Home GET|]
-    instance Yesod HelloWorld where approot _ = ""
-    getHome = return $ RepPlain $ toContent "Hello World!"
-
-We now need to set up our main function to call the correct handler. We'll need to import the handler at the beginning of our program:
-
-    import Network.Wai.Handler.SimpleServer
-
-Then we need to write a main function like:
-
-    main = toWaiApp HelloWorld >>= run 3000
-
-toWaiApp provides the gateway to the WAI world. run is the simple server, and 3000 is the port it runs on.
-
-### It's a Snap
-
-Just because it's so easy to demonstrate, let's talk about Snap. Snap Framework is another web framework in Haskell; one of the first components they have released is a web server. I won't talk benchmarks here, you should see [their site](http://snapframework.com/) for details, but it's fast. The great thing for Yesod is that it has the *exact same interface* as SimpleServer; all you have to do is replace the import line with
-
-    import Network.Wai.Handler.Snap
+The [development server](http://www.yesodweb.com/book/basics#wai-handler-devel) provides a simple way to run your application. It also automatically reloads it when files change.
 
 ### Let's go retro: desktop apps
 
@@ -53,13 +26,30 @@ There's one extra nifty handler that allows you to convert a web app into a desk
     import Network.Wai.Handler.Webkit
     main = toWaiApp HelloWorld >>= run "Titlebar Text"
 
+
 ## Production Servers
 
-Now, with those little details out of the way, let's get down to business: how do you server a production web application? Clearly, this document can't discuss every method available, so instead I'll describe *my* method. I use a separate web server and have it communicate with my Yesod apps via FastCGI. I also make sure that all of my static files are served from a separate subdomain by the web server itself.
+### Warp
 
-Obviously, the config files are very server-specific. The documentation site provides a number of examples, but here we'll only be discussing [nginx](http://nginx.org/). It's generally considered to be one of the fastest web servers out there and has a very sane config file format. Some of the options are a bit confusing, and you have to spawn your own FastCGI processes, but overall this proves to be a very stable setup.
+Warp is an [extremely fast](http://www.yesodweb.com/blog/preliminary-warp-cross-language-benchmarks) and scalable web server. By leveraging haskell's excellent multi-core and non-blocking IO runtime, and building on great libraries, the Yesod team managed to create one of the fastest application servers available today for any language.
+
+Running on warp is *easy*- it is the recommended WAI deployment target. For the default Yesod scaffold, compile with the "production" flag. That will compile a file that looks like this:
+
+    import Controller (withApp)
+    import Network.Wai.Handler.Warp (run)
+
+    main :: IO ()
+    main = withApp $ run 80
+
+The production server and application will be compiled to one binary. Just run it to serve your application! However, there are many advacned features that Apache and Nginx offer, so you may still want to use them as a reverse proxy to the Warp server.
 
 ### FastCGI
+
+The following is a more complex setup using fastcgi that I use to host this site. Some of the ideas are applicable to creating a more complex Warp setup also. 
+
+I use a separate web server and have it communicate with my Yesod apps via FastCGI. I also make sure that all of my static files are served from a separate subdomain by the web server itself.
+
+Obviously, the config files are very server-specific. The documentation site provides a number of examples, but here we'll only be discussing [nginx](http://nginx.org/). It's generally considered to be one of the fastest web servers out there and has a very sane config file format. Some of the options are a bit confusing, and you have to spawn your own FastCGI processes, but overall this proves to be a very stable setup.
 
 Let's take a little detour and discuss FastCGI itself; having a basic understanding of how it works will make the next steps much easier to grasp. A FastCGI application communicates with the web server over a **socket**. It accepts connection from this socket, speaks a FastCGI-specific language with the server to get the request headers and body, and then sends the response headers and body back over that socket.
 

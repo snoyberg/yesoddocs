@@ -10,7 +10,7 @@
             <code>cabal update
         <li>
             \Install Yesod by running 
-            <code>cabal install happy && cabal install alex && cabal install yesod
+            <code>cabal install yesod
         <li>
             <i>Optional: 
             \get the examples from this site by running 
@@ -34,4 +34,5 @@
             \Learn more about Yesod by 
             <a href="@{BookR}">reading the book
             \.
-    <p .note>Note: The scaffolded site you create with the <code>yesod</code> executable depends upon some libraries which the main yesod package does not require. These include hjsmin, persistent-sqlite, mime-mail and yesod-auth. You must either run <code>cabal install</code> in your scaffolded folder to install these automatically, or install them manually.
+    <p .note>Note: The scaffolded site you create with the <code>yesod</code> executable will likely depend on libraries that are not included with the <code>cabal install yesod</code> command, in particular database backends. You should make certain you build your app the first time with <code>cabal install</code> to get these dependencies.
+    <p .note>Yesod requires the presence of the happy and alex binaries. These will be included if you install the Haskell Platform, but not if you install GHC by itself.

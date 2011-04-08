@@ -67,18 +67,34 @@ instance HasReps RepHtml where
             <title>RepHtmlJson</title>
             <p id="rhj1">An example to the contrary is RepHtmlJson, which provides either an HTML or JSON representation. This instance helps greatly in programming AJAX applications that degrade nicely. Here is an example that returns either HTML or JSON data, depending on what the client wants.</p>
             <snippet name="rest-rephtmljson"/>
-            <p id="rhj2">Our getRootR handler creates a page with three links and some Javascript which intercept clicks on the links and performs asynchronous requests. If the user has Javascript enabled, clicking on the link will cause a request to be sent with an "Accept" header of "application/json". In that case, getNameR will return the JSON representation defined on line 27.</p>
-            <p id="rhj3">If the user disables Javascript, clicking on the link will send the user to the appropriate URL. A web browser places priority on an HTML representation of the data, and therefore the page defined on lines 24-26 will be returned.</p>
+            <p id="rhj2">Our getRootR handler creates a page with three links and some Javascript which intercept clicks on the links and performs asynchronous requests. If the user has Javascript enabled, clicking on the link will cause a request to be sent with an "Accept" header of "application/json". In that case, getNameR will return the JSON representation defined on line 40.</p>
+            <p id="rhj3">If the user disables Javascript, clicking on the link will send the user to the appropriate URL. A web browser places priority on an HTML representation of the data, and therefore the page defined on lines 36-38 will be returned.</p>
             <p id="rhj4">We can of course extend this to work with XML, Atom feeds, or even binary representations of the data. A fun exercise could be writing a web application that serves data simply using the default Show instances of datatypes, and then writing a web client that parses the results using the default Read instances.</p>
         </section>
-    </section>
-    <section id="atom">
-        <title>Atom feeds</title>
-        <p id="a1">You can check out the Atom module, which has some helper datatypes and functions for generating Atom feeds. This section will be expanded in the future with a working example.</p>
+        <section id="news">
+            <title>News Feeds</title>
+            <p id="n1">A great, practical example of multiple representations if the <hackage>yesod-newsfeed</hackage> package. There are two major formats for news feeds on the web: RSS and Atom. They contain almost exactly the same information, but are just packaged up differently.</p>
+            <p id="n2">The yesod-newsfeed package defines a <code>Feed</code> datatype which contains information like title, description, and last updated time. It then provides two separate sets of functions for displaying this data: one for RSS, one for Atom. They each define their own representation datatypes:</p>
+            <codeblock>newtype RepAtom = RepAtom Content
+instance HasReps RepAtom where
+    chooseRep (RepAtom c) _ = return (typeAtom, c)
+newtype RepRss = RepRss Content
+instance HasReps RepRss where
+    chooseRep (RepRss c) _ = return (typeRss, c)</codeblock>
+            <p id="n3">But there's a third module which defines another datatype:</p>
+<codeblock>data RepAtomRss = RepAtomRss RepAtom RepRss
+instance HasReps RepAtomRss where
+    chooseRep (RepAtomRss (RepAtom a) (RepRss r)) = chooseRep
+        [ (typeAtom, a)
+        , (typeRss, r)
+        ]</codeblock>
+            <p id="n4">This datatype will automatically serve whichever representation the client prefers, defaulting to Atom. If a client connects that only understands RSS, assuming it provides the correct HTTP headers, Yesod will provide RSS output.</p>
+        </section>
     </section>
     <section id="request-headers">
         <title>Other request headers</title>
-        <p id="rh1">TODO: talk about how we determine gzip encoding, languages, etc.</p>
+        <p id="rh1">There are a great deal of other request headers available. Some of them simply affect the transfer of data between the server and client, and should not affect the application at all. For example, Accept-Encoding informs the server which compression schemes the client understands, and Host informs the server which virtual host to serve up.</p>
+        <p id="rh2">Other headers <i>do</i> affect the application, but are automatically read by Yesod. For example, the Accept-Language header specifies which human language (English, Spanish, German, Swiss-German) the client prefers. See the <link chapter="i18n">i18n chapter</link> for details on how this header is used.</p>
     </section>
     <summary>
         <p id="s1">Yesod adheres to the following tenets of REST:</p>

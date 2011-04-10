@@ -98,7 +98,7 @@ instance Yesod YesodDocs where
         setHeader "Cache-Control" "max-age=3600, public"
         curr <- getCurrentRoute
         tm <- getRouteToMaster
-        let isCurrent x = fmap (Right . tm) curr == Just x
+        --let isCurrent x = fmap (Right . tm) curr == Just x
         render' <- getUrlRender
         let render (Left s) = s
             render (Right u) = render' u
@@ -109,9 +109,10 @@ instance Yesod YesodDocs where
             addCassius $(cassiusFile "default-layout")
             atomLink FeedR "Yesod Blog"
             widget
+        let isHome = fmap tm curr == Just HomeR
         hamletToRepHtml $(hamletFile "default-layout")
       where
-        addGoogleFont s = addStylesheetRemote $ "http://fonts.googleapis.com/css?family=" ++ s
+        addGoogleFont s = addStylesheetRemote $ T.pack $ "http://fonts.googleapis.com/css?family=" ++ s
 
 instance YesodJquery YesodDocs where
     urlJqueryJs _ = Left $ StaticR jquery_js
@@ -149,7 +150,7 @@ postCommentR slug pid = do
     content <- runFormPost' $ stringInput "content" -- FIXME textareaInput
     _ <- runFormPost' $ stringInput "code"
     now <- liftIO getCurrentTime
-    let cm = Comment (T.pack name) (Textarea content) now
+    let cm = Comment name (Textarea content) now
     tcs <- fmap comments getYesod
     liftIO $ atomically $ do
         cs <- readTVar tcs
@@ -158,7 +159,11 @@ postCommentR slug pid = do
         onCommit $ saveComments cs'
     setMessage "Your comment has been submitted"
     r <- getUrlRender
-    redirectString RedirectTemporary $ S8.pack $ r (ChapterR slug) ++ '#' : T.unpack pid
+    redirectString RedirectTemporary $ T.concat
+        [ r (ChapterR slug)
+        , "#"
+        , pid
+        ]
   where
     addComment cm ((slug', cs):rest)
         | slug == slug' = (slug', addComment' cm cs) : rest
@@ -188,8 +193,8 @@ getOneCommentR timeS = do
         go' time' (para, cs)
             | time' `elem` map commentTime cs = do
                 r <- getUrlRender
-                let dest = r (ChapterR chapter) ++ '#' : T.unpack para
-                redirectString RedirectPermanent $ S8.pack dest
+                let dest = T.unpack (r (ChapterR chapter)) ++ '#' : T.unpack para
+                redirectString RedirectPermanent $ T.pack dest
             | otherwise = return ()
 
 getCommentsFeedR :: Handler RepAtom

@@ -36,7 +36,7 @@ commentsToSO =
     go' (x, y) = (T.unpack x, Sequence $ map go'' y)
     go'' (Comment x (Textarea y) z) = Mapping
         [ ("name", Scalar $ T.unpack x)
-        , ("content", Scalar $ y)
+        , ("content", Scalar $ T.unpack y)
         , ("time", Scalar $ show z)
         ]
 
@@ -70,7 +70,7 @@ loadComments = do
         Just (Scalar content) <- return $ lookup "content" m
         Just (Scalar time) <- return $ lookup "time" m
         time' <- return $ read time
-        return $ Comment (T.pack name) (Textarea content) time'
+        return $ Comment (T.pack name) (Textarea $ T.pack content) time'
 
 loadCommentsDat :: IO Comments
 loadCommentsDat = do

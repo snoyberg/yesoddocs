@@ -2,25 +2,31 @@
 
 <html lang="en">
     <head>
-        <title>#{pageTitle pc}
+        <title>Yesod :: #{pageTitle pc}
+        <link rel=stylesheet href=@{StaticR bluevelvet_bluevelvet_css}>
         <meta charset="utf-8">
-        \^{pageHead pc}
-    <body>
-        <div id="topbar">
-            <ul>
-                $forall l <- navLinks
-                    <li>
-                        $if isCurrent (snd l)
-                            <span>#{fst l}
-                        $else
-                            <a href="#{render (snd l)}">#{fst l}
-            <a href="/" .yesod>Yesod Web Framework
-        <div id="pagecontent">
-            \^{pageBody pc}
-        <footer>
-            <p>
-                \Yesod is BSD licensed. This site is 
-                <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
-                    <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png">
+        ^{pageHead pc}
+    <body :isHome:.yesod-home :not isHome:.yesod-wide>
+        <div .yesod-main-wrapper>
+            <div .yesod-border-wrap>
+                <div .yesod-header-wrap>
+                    <div .yesod-header>
+                        <a .yesod-wide-logo href=@{HomeR}>
+                        <ul .yesod-primary-nav>
+                            <li>
+                                <a href=@{BookR}>Book
+                            <li>
+                                <a href=@{BookR}>Community
+                            <li>
+                                <a href=@{BlogR}>Blog
+                <div .yesod-body>
+                    ^{pageBody pc}
+                <div .yesod-footer>
+                    Yesod is BSD licensed. This is is #
+                    <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Attribution-NonCommercial-ShareAlike 3.0 Unported
+                    <br>
+                    Site design by #
+                    <a href="http://chrisdone.com/">Chris Done
+                    .
         <script>
             \var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-1434510-13']);_gaq.push(['_trackPageview']);(function(){var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);})();

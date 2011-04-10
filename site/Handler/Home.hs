@@ -38,15 +38,10 @@ getHomeR = defaultLayout $ do
     setTitle "Yesod Web Framework for Haskell"
     let faqR = ChapterR "faq"
     addHamlet $(hamletFile "root")
-    addHtmlHead [$hamlet|\
+    addHtmlHead [$hamlet|
 <meta name="description" content="Yesod Web Framework for Haskell. Create RESTful web apps with type safety.">
 |]
     addCassius $(cassiusFile "root")
-    addStylesheet $ StaticR hk_html_css
-    y <- lift getYesod
-    addScriptEither $ urlJqueryJs y
-    addScriptRemote "http://cdn.jquerytools.org/1.2.0/full/jquery.tools.min.js"
-    addJulius $(juliusFile "root")
 
 getFiveMinutesR :: Handler RepHtml
 getFiveMinutesR = defaultLayout $ do
@@ -59,6 +54,11 @@ getAboutR = defaultLayout $ do
     setTitle "About Yesod"
     addCassius $(cassiusFile "about")
     addHamlet $(hamletFile "about")
+
+getCommunityR :: Handler RepHtml
+getCommunityR = defaultLayout $ do
+    setTitle "Community"
+    addHamlet $(hamletFile "community")
 
 getExamplesR :: Handler RepHtml
 getExamplesR = defaultLayout [$hamlet|\

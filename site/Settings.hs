@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Settings where
 
 import qualified Text.Hamlet
@@ -7,7 +8,7 @@ import Yesod.Helpers.Static
 import Language.Haskell.TH.Syntax (Q, Exp)
 
 hamletFile :: String -> Q Exp
-hamletFile x = Text.Hamlet.hamletFileDebug $ "hamlet/" ++ x ++ ".hamlet"
+hamletFile x = Text.Hamlet.hamletFile $ "hamlet/" ++ x ++ ".hamlet"
 
 cassiusFile :: String -> Q Exp
 cassiusFile x = Text.Cassius.cassiusFileDebug $ "cassius/" ++ x ++ ".cassius"

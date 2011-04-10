@@ -1,67 +1,46 @@
-<div id="slideshow">
-    <div>
-        <img src="@{StaticR logo_red_png}">
-        <p>Yesod is a Haskell web framework promoting type-safe, RESTful web application development. Built from the ground up for performance, Yesod provides all the tools you need to quickly create fast, safe web applications.
-
-    <div #wai-slide>
-        <img src="@{StaticR warp_png}">
-        <p>Yesod is built on the WAI, an interface which allows multiple backends. We provide FastCGI, SCGI, development, and full HTTP servers.
-
-        <p>Our premiere production platform is Warp, a fast, light-weight web server designed from the ground up for incredible performance. See how we compare in #
-            <a href="http://wiki.yesodweb.com/Benchmarks">our benchmarks
-            .
-    <div #hamlet-slide>
-        <p>We believe in leveraging Haskell type safety to its fullest extent. Our family of templating languages allow you to create HTML, CSS and Javascript without worries of XSS attacks. And with type-safe URLs, say goodbye to 404s as well.
-        #{highlightedHamletExample}
-
-    <div>
-        <img src=@{StaticR img_database_png}
-
-        <p> Web development has long been tied to SQL.
-            With Persistent, we do not deny this heritage, but instead give a high-level wrapper around your database to make sure your data is type-safe and save you from SQL injection attacks.
-
-        <p>At the same time, Persistent was designed with NoSQL databases in mind, and we have a prototype MongoDB backend available.
-
-    <div>
-        <img src=@{StaticR img_legos_png}
-        <p>Yesod is a full-featured web application framework. It has support for authentication/authorization, i18n, third-party logins, forms with CSRF protection, JSON output, news feeds, and much more. Each component is designed to integrate well with all the others to provide a consistent, pragmatic web development experience.
-
-        <p>At the same time Yesod is completely modular: feel free to swap any of its components out with tools you like better, or just cherry pick the pieces you want into your framework of choice.
-
-    <div>
-        <img src=@{StaticR img_documentation_png}
-        <p>In addition to API documentation, this site provides you with screencasts, examples, FAQ, and most importantly, a book.
-        <p>While there is already a lot of content, we are constantly striving to add more, and to improve the quality of what is already there. If you have any recommendations, please use our inline commenting system.
-
-<div id="after-slideshow">
-    <p>
-        \If you are new to Yesod, you should start off with the 
-        <a href="@{FiveMinutesR}">five minute tutorial
-        \, which will get you started quickly. The 
-        <a href="@{ScreencastsR}">screencasts
-        \ give a nice introduction to some of the advanced concepts, and 
-        <a href="@{BookR}">the book
-        \ is the recommended approach to learning Yesod. If you already know Yesod, and are struggling with a specific issue, check out the 
-        <a href="@{faqR}">Frequently Asked Questions
-        \.
-    <p>
-        \Yesod has an active, vibrant community that is happy to help you get started. If you want to get involved, you should check out:
-    <ul>
-        <li>
-            <a href="http://www.haskell.org/mailman/listinfo/web-devel">web-devel mailing list
-            \ Most public Yesod discussions take place over here. Feel free to post any discussions or questions.
-        <li>
-            <a href="http://www.reddit.com/r/haskell/">Haskell Reddit
-            \ is a good place to post Yesod related posts. If you have specific questions, you might prefer 
-            <a href="http://stackoverflow.com/">Stack Overflow
-            \; just make sure to include the haskell tag.
-        <li>
-            <a href="https://github.com/snoyberg/yesod/issues">Issue Tracker
-            \ If you want to report a bug, we use the Github issue tracker. In general, you should just use the Yesod repository issue tracker instead of the issue tracker for each individual repo, as it is easier for the developers to keep track of open issues that way.
-        <li>
-            <a href="http://www.haskellers.com/teams/4/">Haskellers web development Special Interest Group
-            \ Not as popular as the web-devel mailing list, but also a good place to bring things up. If you want to use it, don't forget to subscribe to the 
-            <a href="http://www.haskellers.com/feed/team/4/">Atom news feed
-        <li>
-            <a href="http://wiki.yesodweb.com/">Yesod Wiki
-            \ This is a great place to post ideas for collaboration and tutorials.
+<div .yesod-tertiary-content>
+    <div .yesod-tertiary-content-inner>
+        <h2>Where
+        <div .yesod-tertiary-content-body>
+            <p>Install:
+            <pre>$ cabal install yesod
+            <p>Get the source:
+            <pre>$ git clone https://github.com/snoyberg/yesod.git
+<div .yesod-secondary-content>
+    <div .yesod-secondary-content-inner>
+        <h2>Quick Links
+        <ul>
+            <li>
+                <a href=@{ScreencastsR}>Screencasts
+            <li>
+                <a href=@{FiveMinutesR}>Yesod in 5 minutes
+            <li>
+                <a href=@{ChapterR "faq"}>Frequently Asked Questions
+            <li>
+                <a href="http://wiki.yesodweb.com/">Wiki
+            <li>
+                <a href=@{AboutR}>About: Why Yesod?
+<div .yesod-clear>
+<div .yesod-primary-content>
+    <div .yesod-primary-content-inner>
+        <h1>What
+        <div .yesod-primary-content-body
+        <p>
+            Yesod is a Haskell web framework promoting type-safe,
+            RESTful web application development. Built from the
+            ground up for performance, Yesod provides all the tools
+            you need to quickly create fast, safe web
+            applications.
+        <p>
+            If you are new to Yesod, you should start off with #
+            <a href=@{FiveMinutesR}>the five minute tutorial
+            , which will get you started quickly. The #
+            <a href=@{ScreencastsR}>screencasts
+            \ give a nice introduction to some of the advanced
+            concepts, and #
+            <a href=@{BookR}>the book
+            # is the recommended approach to learning Yesod. If you
+            already know Yesod, and are struggling with a
+            specific issue, check out the
+            <a href=@{ChapterR "faq"}>Frequently Asked Questions
+            \.

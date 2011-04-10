@@ -1,5 +1,5 @@
 name:              yesoddocs
-version:           0.1.0
+version:           0.2.0
 license:           BSD3
 license-file:      LICENSE
 author:            Michael Snoyman
@@ -9,7 +9,7 @@ category:          Web
 stability:         Experimental
 cabal-version:     >= 1.6
 build-type:        Simple
-homepage:          http://docs.yesodweb.com/
+homepage:          http://www.yesodweb.com/
 
 Flag production
     Description:   Build the production executable.
@@ -20,15 +20,15 @@ executable         simple-server
         Buildable: False
     main-is:       simple-server.hs
     build-depends: base               >= 4          && < 5
-                 , warp               >= 0.3        && < 0.4
-                 , yesod              >= 0.7        && < 0.8
-                 , yesod-static       >= 0.0        && < 0.1
-                 , yesod-form         >= 0.0        && < 0.1
-                 , yesod-newsfeed     >= 0.0        && < 0.1
-                 , yesod-sitemap      >= 0.0        && < 0.1
+                 , warp               >= 0.4        && < 0.5
+                 , yesod              >= 0.8        && < 0.9
+                 , yesod-static       >= 0.1        && < 0.2
+                 , yesod-form         >= 0.1        && < 0.2
+                 , yesod-newsfeed     >= 0.1        && < 0.2
+                 , yesod-sitemap      >= 0.1        && < 0.2
                  , blaze-html         >= 0.4        && < 0.5
-                 , wai-extra          >= 0.3        && < 0.4
-                 , hamlet             >= 0.7        && < 0.8
+                 , wai-extra          >= 0.4        && < 0.5
+                 , hamlet             >= 0.8        && < 0.9
                  , text               >= 0.11       && < 0.12
                  , data-object        >= 0.3        && < 0.4
                  , data-object-yaml   >= 0.3        && < 0.4
@@ -43,22 +43,20 @@ executable         simple-server
                  , utf8-string        >= 0.3.6      && < 0.4
                  , transformers       >= 0.2.2      && < 0.3
                  , enumerator         >= 0.4        && < 0.5
-                 , xml-types          >= 0.2        && < 0.3
-                 , xml-enumerator     >= 0.2        && < 0.3
-                 , pandoc             >= 1.6        && < 1.7
+                 , xml-types          >= 0.3        && < 0.4
+                 , xml-enumerator     >= 0.3        && < 0.4
+                 , pandoc             >= 1.8        && < 1.9
                  , old-locale         >= 1.0        && < 1.1
                  , hscolour           >= 1.17       && < 1.18
                  , template-haskell
     ghc-options:   -Wall -threaded
-    extensions:    TemplateHaskell, QuasiQuotes, TypeFamilies
 
 executable         fastcgi
     if flag(production)
         Buildable: True
+        build-depends: wai-handler-fastcgi == 0.4.*
     else
         Buildable: False
     cpp-options:   -DPRODUCTION
     main-is:       fastcgi.hs
-    build-depends: wai-handler-fastcgi == 0.3.*
     ghc-options:   -Wall -threaded
-    extensions:    TemplateHaskell, QuasiQuotes, TypeFamilies

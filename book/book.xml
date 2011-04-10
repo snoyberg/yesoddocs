@@ -32,7 +32,6 @@
         <title>Appendices</title>
         <chapter href="enumerator.xml"/>
         <chapter href="wai.xml"/>
-        <chapter href="web-routes-quasi.xml"/>
         <chapter href="blog-posts.xml"/>
         <chapter href="faq.xml"/>
         <chapter href="migrate6to7.xml"/>

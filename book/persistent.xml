@@ -175,6 +175,7 @@
             <li>mkToForm</li>
             <li>Advanced: select enumerator interface</li>
             <li>raw SQL</li>
+            <li>Join modules</li>
         </ul>
     </section>
 </chapter>

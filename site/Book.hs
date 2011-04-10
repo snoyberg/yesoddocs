@@ -12,7 +12,6 @@ module Book
     , loadBook
     ) where
 
-import Data.Enumerator (consume)
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
@@ -20,7 +19,7 @@ import Text.XML.Enumerator.Parse
 import Data.XML.Types (Event)
 import Data.Enumerator (Iteratee, throwError)
 import Control.Monad.IO.Class (MonadIO (liftIO))
-import Text.Blaze (ToHtml (..), string)
+import Text.Blaze (ToHtml (..))
 import qualified Text.Highlighting.Kate as Kate
 import qualified System.IO.UTF8 as U
 import Data.List (group, sort)
@@ -40,7 +39,7 @@ data Part = Part
 
 data ChapterStatus = Outline | Incomplete | Unproofed | Proofread | Finished
     deriving (Show, Read)
-instance ToHtml ChapterStatus where toHtml = string . show
+instance ToHtml ChapterStatus where toHtml = toHtml . show
 
 data Chapter = Chapter
     { chapterSlug :: Text
@@ -96,7 +95,7 @@ data ListItem = ListItem { unListItem :: [Inline] } -- FIXME block or inline
 
 loadBook :: IO Book
 loadBook = do
-    events <- parseFile_ "book/book.xml" decodeEntities consume
+    --events <- parseFile_ "book/book.xml" decodeEntities consume
     parseFile_ "book/book.xml" decodeEntities parseBook
 
 parseBook :: MonadIO m => Iteratee Event m Book

@@ -2,35 +2,16 @@
 module Handler.Home where
 
 import Yesod
-import Yesod.Helpers.Static
 import Yesod.Helpers.Sitemap
-import Yesod.Helpers.AtomFeed
 import Yesod.Form.Jquery
 import Settings
 import Text.Pandoc (readMarkdown, defaultParserState, writeHtmlString, defaultWriterOptions)
-import Language.Haskell.HsColour hiding (string)
-import Language.Haskell.HsColour.Colourise (defaultColourPrefs)
-import qualified Language.Haskell.HsColour.CSS as CSS
 import Entry
-import Control.Arrow ((&&&))
-import Data.List (groupBy, stripPrefix)
-import Data.Maybe (fromMaybe)
-import Data.Function (on)
 import qualified System.IO.UTF8 as U
 import Data.Time
 import Book
 import qualified Data.Text as T
-import qualified Data.Text as TS -- FIXME remove
-import Data.Text (Text)
-import qualified Text.Highlighting.Kate as Kate
-import Text.XHtml.Strict (showHtmlFragment)
-import Data.Either (lefts)
-import Control.Concurrent.AdvSTM
-import Control.Concurrent.AdvSTM.TVar
-import Comments
-import Data.List (sortBy)
 import Text.Blaze (toHtml)
-import qualified Data.ByteString.Char8 as S8
 import YesodDocs
 
 getHomeR :: Handler RepHtml
@@ -38,7 +19,7 @@ getHomeR = defaultLayout $ do
     setTitle "Yesod Web Framework for Haskell"
     let faqR = ChapterR "faq"
     addHamlet $(hamletFile "root")
-    addHtmlHead [$hamlet|
+    addHtmlHead [hamlet|
 <meta name="description" content="Yesod Web Framework for Haskell. Create RESTful web apps with type safety.">
 |]
     addCassius $(cassiusFile "root")
@@ -61,12 +42,12 @@ getCommunityR = defaultLayout $ do
     addHamlet $(hamletFile "community")
 
 getExamplesR :: Handler RepHtml
-getExamplesR = defaultLayout [$hamlet|\
+getExamplesR = defaultLayout [hamlet|
 <h1>We've Moved!
 <p>
-    \The examples have now been merged into the 
+    The examples have now been merged into the #
     <a href="@{BookR}">Yesod book
-    \. Each example is its own chapter in the Examples part. Enjoy!
+    . Each example is its own chapter in the Examples part. Enjoy!
 |]
 
 getScreencastsR :: Handler RepHtml
@@ -101,7 +82,7 @@ synLhs file title' = do
     raw <- liftIO $ U.readFile $ "yesod-examples/synopsis/" ++ file ++ ".lhs"
     let content = preEscapedString $ colorize title raw True
     defaultLayout $ do
-        setTitle $ string title
+        setTitle $ toHtml title
         addStylesheet $ StaticR hscolour_css
         addHamlet $(hamletFile "synopsis")
 

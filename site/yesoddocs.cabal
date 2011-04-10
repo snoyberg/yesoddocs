@@ -49,7 +49,8 @@ executable         simple-server
                  , old-locale         >= 1.0        && < 1.1
                  , hscolour           >= 1.17       && < 1.18
                  , template-haskell
-    ghc-options:   -Wall -threaded
+                 , xhtml              >= 3000       && < 3001
+    ghc-options:   -Wall -threaded -Werror
 
 executable         fastcgi
     if flag(production)

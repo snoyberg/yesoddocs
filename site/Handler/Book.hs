@@ -2,36 +2,25 @@
 module Handler.Book where
 
 import Yesod
-import Yesod.Helpers.Static
-import Yesod.Helpers.Sitemap
 import Yesod.Helpers.AtomFeed
 import Yesod.Form.Jquery
 import Settings
 import Text.Pandoc (readMarkdown, defaultParserState, writeHtmlString, defaultWriterOptions)
-import Language.Haskell.HsColour hiding (string)
-import Language.Haskell.HsColour.Colourise (defaultColourPrefs)
 import qualified Language.Haskell.HsColour.CSS as CSS
-import Entry
-import Control.Arrow ((&&&))
-import Data.List (groupBy, stripPrefix)
 import Data.Maybe (fromMaybe)
-import Data.Function (on)
 import qualified System.IO.UTF8 as U
 import Data.Time
 import Book
 import qualified Data.Text as T
 import qualified Data.Text as TS -- FIXME remove
 import Data.Text (Text)
-import qualified Text.Highlighting.Kate as Kate
 import Text.XHtml.Strict (showHtmlFragment)
 import Data.Either (lefts)
 import Control.Concurrent.AdvSTM
-import Control.Concurrent.AdvSTM.TVar
 import Comments
-import Data.List (sortBy)
 import Text.Blaze (toHtml)
-import qualified Data.ByteString.Char8 as S8
 import YesodDocs
+import Data.List (stripPrefix)
 
 getBookR :: Handler RepHtml
 getBookR = defaultLayout $ do
@@ -61,7 +50,7 @@ getChapterR slug = do
     let cs = fromMaybe [] $ lookup slug cs'
     let html = chapterToHtml cs chapter
     defaultLayout $ do
-        setTitle $ string $ "Yesod Book: " ++ title
+        setTitle $ toHtml $ "Yesod Book: " ++ title
         addScriptEither $ urlJqueryJs y
         atomLink CommentsFeedR "Book Comments"
         addHamlet $(hamletFile "chapter")
@@ -108,7 +97,7 @@ snippet filename = do
 chapterToHtml :: [(Text, [Comment])] -> Chapter -> Hamlet YesodDocsRoute
 chapterToHtml cs c@(Chapter { chapterIntro = intro, chapterSections = sections
                        , chapterSummary = msummary
-                       , chapterSynopsis = msynopsis }) = [$hamlet|\
+                       , chapterSynopsis = msynopsis }) = [hamlet|\
 $if not (null sections)
     <div id="toc">
         <ul>
@@ -140,7 +129,7 @@ $maybe summary <- msummary
     firstLevel = 3
 
 sectionToc :: Section -> Hamlet YesodDocsRoute
-sectionToc s = [$hamlet|\
+sectionToc s = [hamlet|\
 <li>
     <a href="##{sectionId s}">#{sectionTitle s}
     $if not (null (lefts (sectionBlocks s)))
@@ -151,7 +140,7 @@ sectionToc s = [$hamlet|\
 
 sectionBlockToHtml :: Chapter -> [(Text, [Comment])]
                    -> Int -> Either Section Block -> Hamlet YesodDocsRoute
-sectionBlockToHtml chap cs level (Left section) = [$hamlet|\
+sectionBlockToHtml chap cs level (Left section) = [hamlet|\
 <div class="section#{show level}">
     \^{showTitle (sectionId section) level (sectionTitle section)}
     $forall b <- sectionBlocks section
@@ -159,19 +148,19 @@ sectionBlockToHtml chap cs level (Left section) = [$hamlet|\
 |]
   where
     showTitle :: T.Text -> Int -> T.Text -> Hamlet YesodDocsRoute
-    showTitle i 3 t = [$hamlet|<h3 id="#{i}">#{t}
+    showTitle i 3 t = [hamlet|<h3 id="#{i}">#{t}
 |]
-    showTitle i 4 t = [$hamlet|<h4 id="#{i}">#{t}
+    showTitle i 4 t = [hamlet|<h4 id="#{i}">#{t}
 |]
-    showTitle i 5 t = [$hamlet|<h5 id="#{i}">#{t}
+    showTitle i 5 t = [hamlet|<h5 id="#{i}">#{t}
 |]
-    showTitle i _ t = [$hamlet|<h6 id="#{i}">#{t}
+    showTitle i _ t = [hamlet|<h6 id="#{i}">#{t}
 |]
     nextLevel = level + 1
 sectionBlockToHtml chap cs _ (Right b) = blockToHtml chap cs b
 
 blockToHtml :: Chapter -> [(Text, [Comment])] -> Block -> Hamlet YesodDocsRoute -- FIXME put one of those paragraph symbol links here
-blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|
+blockToHtml chap chapCs (Paragraph pid is) = [hamlet|
 <p id="#{pid}">
     <span .permalink
         <a href=##{pid}>&#x204B
@@ -192,47 +181,46 @@ blockToHtml chap chapCs (Paragraph pid is) = [$hamlet|
         <input type="submit" value="Add comment">
 |]
   where
-    unpack = TS.unpack
     cs = fromMaybe [] $ lookup (T.pack $ TS.unpack pid) chapCs
     csCount = length cs
     csCount'
         | csCount == 0 = "No comments"
         | csCount == 1 = "1 comment"
         | otherwise = show csCount ++ " comments"
-blockToHtml _ _ (Note is) = [$hamlet|\
+blockToHtml _ _ (Note is) = [hamlet|\
 <p .note>
     \Note: 
     $forall i <- is
         \^{inlineToHtml i}
 |]
-blockToHtml _ _ (UList items) = [$hamlet|\
+blockToHtml _ _ (UList items) = [hamlet|\
 <ul>
     $forall i <- items
         \^{listItemToHtml i}
 |]
-blockToHtml _ _ (OList items) = [$hamlet|\
+blockToHtml _ _ (OList items) = [hamlet|\
 <ol>
     $forall i <- items
         \^{listItemToHtml i}
 |]
-blockToHtml _ _ (CodeBlock c) = [$hamlet|\
+blockToHtml _ _ (CodeBlock c) = [hamlet|\
 <code>
     <pre>#{c}
 |]
-blockToHtml _ _ (Snippet s) = [$hamlet|\
+blockToHtml _ _ (Snippet s) = [hamlet|\
 \#{preEscapedString $ showHtmlFragment $ formatKateLines s}
 |]
-blockToHtml chap cs (Advanced bs) = [$hamlet|\
+blockToHtml chap cs (Advanced bs) = [hamlet|\
 <div .advanced>
     $forall b <- bs
         \^{blockToHtml chap cs b}
 |]
-blockToHtml _ _ (Image { imageSrc = src, imageTitle = title }) = [$hamlet|\
+blockToHtml _ _ (Image { imageSrc = src, imageTitle = title }) = [hamlet|\
 <div .image>
     <img src="/static/book/#{src}" alt="#{title}" title="#{title}">
     \#{title}
 |]
-blockToHtml _ _ (Defs ds) = [$hamlet|\
+blockToHtml _ _ (Defs ds) = [hamlet|\
 <table border="1">
     $forall d <- ds
         <tr>
@@ -242,7 +230,7 @@ blockToHtml _ _ (Defs ds) = [$hamlet|\
                     \^{inlineToHtml i}
 |]
 blockToHtml _ _ (Markdown text) =
-    [$hamlet|\#{content}
+    [hamlet|\#{content}
 |]
   where
     pandoc = readMarkdown defaultParserState $ T.unpack text
@@ -251,44 +239,43 @@ blockToHtml _ _ (Example text) =
     const $ preEscapedString $ colorize "" (T.unpack text) True
 
 listItemToHtml :: ListItem -> Hamlet YesodDocsRoute
-listItemToHtml (ListItem is) = [$hamlet|\
+listItemToHtml (ListItem is) = [hamlet|\
 <li>
     $forall i <- is
         \^{inlineToHtml i}
 |]
 
 inlineToHtml :: Inline -> Hamlet YesodDocsRoute
-inlineToHtml (Inline t) = [$hamlet|\#{t}
+inlineToHtml (Inline t) = [hamlet|\#{t}
 |]
-inlineToHtml (Emphasis is) = [$hamlet|\
+inlineToHtml (Emphasis is) = [hamlet|\
 <i>
     $forall i <- is
         \^{inlineToHtml i}
 |]
-inlineToHtml (Strong is) = [$hamlet|\
+inlineToHtml (Strong is) = [hamlet|\
 <b>
     $forall i <- is
         \^{inlineToHtml i}
 |]
-inlineToHtml (Term t) = [$hamlet|<b>#{t}
+inlineToHtml (Term t) = [hamlet|<b>#{t}
 |]
-inlineToHtml (Hackage t) = [$hamlet|\
+inlineToHtml (Hackage t) = [hamlet|\
 <a href="http://hackage.haskell.org/package/#{t}">#{t}
 |]
-inlineToHtml (Xref href inner) = [$hamlet|<a href="#{href}">#{inner}
+inlineToHtml (Xref href inner) = [hamlet|<a href="#{href}">#{inner}
 |]
-inlineToHtml (Code inner) = [$hamlet|<code>#{inner}
+inlineToHtml (Code inner) = [hamlet|<code>#{inner}
 |]
-inlineToHtml (Link chapter msection inner) = [$hamlet|\
+inlineToHtml (Link chapter msection inner) = [hamlet|\
 <a href="@{ChapterR (TS.unpack chapter)}#{section}">#{inner}
 |]
   where
     section =
         case msection of
             Nothing -> ""
-            Just section' -> [$hamlet|\##{section'}
+            Just section' -> [hamlet|\##{section'}
 |] :: Html
-    unpack = T.unpack
-inlineToHtml (Abbr title inner) = [$hamlet|\
+inlineToHtml (Abbr title inner) = [hamlet|\
 <abbr title="#{title}">#{inner}
 |]

@@ -14,11 +14,14 @@ import qualified Data.ByteString as S
 import qualified Data.ByteString.Lazy as L
 import Control.Applicative
 import System.Directory (doesFileExist)
-import Data.Object.Yaml hiding (encode, decode)
 import qualified Data.Object.Yaml as Y
 import Data.Object
 import qualified Data.Text as T
+
+#if PRODUCTION
+import Data.Object.Yaml hiding (encode, decode)
 import Control.Monad (join, unless)
+#endif
 
 data Comment = Comment
     { commentName :: Text
@@ -51,12 +54,6 @@ loadComments = do
 #if PRODUCTION
     Mapping so <- join $ decodeFile commentsYaml
     mapM go (so :: [(String, Object String String)])
-#else
-    -- this didn't work
-    -- d <- doesFileExist commentsYaml
-    -- unless d (saveComments [])
-    return []
-#endif
   where
     go :: (String, Object String String) -> IO (String, [(Text, [Comment])])
     go (x, Mapping y) = do
@@ -71,6 +68,12 @@ loadComments = do
         Just (Scalar time) <- return $ lookup "time" m
         time' <- return $ read time
         return $ Comment (T.pack name) (Textarea $ T.pack content) time'
+#else
+    -- this didn't work
+    -- d <- doesFileExist commentsYaml
+    -- unless d (saveComments [])
+    return []
+#endif
 
 loadCommentsDat :: IO Comments
 loadCommentsDat = do

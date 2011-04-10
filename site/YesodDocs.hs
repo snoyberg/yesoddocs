@@ -5,34 +5,24 @@ module YesodDocs where
 
 import Yesod
 import Yesod.Helpers.Static
-import Yesod.Helpers.Sitemap
 import Yesod.Helpers.AtomFeed
 import Yesod.Form.Jquery
 import Settings
-import Text.Pandoc (readMarkdown, defaultParserState, writeHtmlString, defaultWriterOptions)
 import Language.Haskell.HsColour hiding (string)
 import Language.Haskell.HsColour.Colourise (defaultColourPrefs)
-import qualified Language.Haskell.HsColour.CSS as CSS
 import Entry
-import Control.Arrow ((&&&))
-import Data.List (groupBy, stripPrefix)
-import Data.Maybe (fromMaybe)
-import Data.Function (on)
-import qualified System.IO.UTF8 as U
 import Data.Time
 import Book
 import qualified Data.Text as T
-import qualified Data.Text as TS -- FIXME remove
 import Data.Text (Text)
 import qualified Text.Highlighting.Kate as Kate
 import Text.XHtml.Strict (showHtmlFragment)
-import Data.Either (lefts)
 import Control.Concurrent.AdvSTM
 import Control.Concurrent.AdvSTM.TVar
 import Comments
 import Data.List (sortBy)
 import Text.Blaze (toHtml)
-import qualified Data.ByteString.Char8 as S8
+import qualified Text.XHtml
 
 #ifndef PRODUCTION
 import Debug.Trace
@@ -49,7 +39,7 @@ data YesodDocs = YesodDocs
 
 type Handler = GHandler YesodDocs YesodDocs
 
-mkYesodData "YesodDocs" [$parseRoutes|
+mkYesodData "YesodDocs" [parseRoutes|
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
 /sitemap.xml SitemapR GET
@@ -159,7 +149,7 @@ postCommentR slug pid = do
         onCommit $ saveComments cs'
     setMessage "Your comment has been submitted"
     r <- getUrlRender
-    redirectString RedirectTemporary $ T.concat
+    redirectText RedirectTemporary $ T.concat
         [ r (ChapterR slug)
         , "#"
         , pid
@@ -194,7 +184,7 @@ getOneCommentR timeS = do
             | time' `elem` map commentTime cs = do
                 r <- getUrlRender
                 let dest = T.unpack (r (ChapterR chapter)) ++ '#' : T.unpack para
-                redirectString RedirectPermanent $ T.pack dest
+                redirectText RedirectPermanent $ T.pack dest
             | otherwise = return ()
 
 getCommentsFeedR :: Handler RepAtom
@@ -224,4 +214,5 @@ getCommentsFeedR = do
     stou ':' = 'c'
     stou c   = c
 
+formatKateLines :: [Kate.SourceLine] -> Text.XHtml.Html
 formatKateLines = Kate.formatAsXHtml [Kate.OptNumberLines] "haskell"

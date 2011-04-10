@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <chapter id="deploying" status="Unproofed">
     <title>Deploying your Webapp</title>
-    <intro></intro>
+    <intro>
+        <p id="intro1">I can't speak for others, but I personally prefer programming to system administration. But the fact is that, eventually, you need to serve your app somehow, and odds are that you'll need to be the one to set it up.</p>
+        <p id="intro2">There are some promising initiatives in the Haskell web community towards making deployment easier. In the future, we may even have a service that allows you to deploy your app with a single command.</p>
+        <p id="intro3">But we're not there yet. And even if we were, such a solution will never work for everyone. This chapter covers the different options you have for deployment, and gives some general recommendations on what you should choose in different situations.</p>
+    </intro>
+    <section id="backend">
+        <title>Backend</title>
+        <p id="backend1">As has been mentioned a few times already, Yesod is built on the Web Application Interface (WAI). This means that it can be deployed to any WAI handler. At the time of writing, the following handlers are available:</p>
+        <ul>
+            <li>Warp</li>
+            <li>Development server</li>
+            <li>FastCGI</li>
+            <li>SCGI</li>
+            <li>CGI</li>
+            <li>Webkit</li>
+        </ul>
+        <p id="backend2">The devel server is only useful during development: it automatically reloads your app whenever you change the code. And Webkit is a nifty little backend that embeds the Webkit library in your application, making your application appear like a desktop app. Usage is very simple:</p>
+        <codeblock>import Network.Wai.Handler.Webkit (run)
+main = toWaiApp MyApp >>= run "Titlebar Text"</codeblock>
+        <p id="backend3">So you're not going to be using these in a normal deployment. Of the remaining backends, let's analyze the choices.</p>
+        <section id="warp-standalone">
+            <title>Warp: Standalone</title>
+            <p id="ws1">Warp is an <xref href="http://www.yesodweb.com/blog/preliminary-warp-cross-language-benchmarks">extremely fast</xref> and scalable web server. By leveraging haskell's excellent multi-core and non-blocking IO runtime, and building on great libraries, the Yesod team managed to create one of the fastest application servers available today for any language.</p>
+            <p id="ws2">Warp is fully capable of serving your application directly to clients. In this case, you will compile your application with the Warp server embedded.</p>
+            <p id="ws3">The advantage of this approach is that it's simple and fast. But if you need the features of a more established server, read on.</p>
+        </section>
+        <section id="warp-proxy">
+            <title>Warp: Reverse Proxy</title>
+            <p id="wp1">FIXME</p>
+        </section>
+    </section>
     <section id="fixme">
         <title></title>
         <markdown><![CDATA[

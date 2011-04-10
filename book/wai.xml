@@ -11,6 +11,8 @@
     </intro>
     <section id="interface">
         <title>The Interface</title>
+        <markdown><![CDATA[
+FIXME
 
 ## The Interface
 
@@ -69,5 +71,5 @@ The great thing about middlewares is that they are unobtrusive. Let's see how we
 
 We added an import line to actually have access to the middleware, and then simply applied gzip to our application. You can also *chain together* multiple middlewares: a line such as <code>gzip $ jsonp $ othermiddleware $ myapplication</code> is perfectly valid. One word of warning: the order the middleware is applied can be important. For example, jsonp needs to work on uncompressed data, so if you apply it after you apply gzip, you'll have trouble.
 ]]></markdown>
-    </intro>
+    </section>
 </chapter>

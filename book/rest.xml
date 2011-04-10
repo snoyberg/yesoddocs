@@ -96,6 +96,20 @@ instance HasReps RepAtomRss where
         <p id="rh1">There are a great deal of other request headers available. Some of them simply affect the transfer of data between the server and client, and should not affect the application at all. For example, Accept-Encoding informs the server which compression schemes the client understands, and Host informs the server which virtual host to serve up.</p>
         <p id="rh2">Other headers <i>do</i> affect the application, but are automatically read by Yesod. For example, the Accept-Language header specifies which human language (English, Spanish, German, Swiss-German) the client prefers. See the <link chapter="i18n">i18n chapter</link> for details on how this header is used.</p>
     </section>
+    <section id="stateless">
+        <title>Stateless</title>
+        <p id="stateless1">I've saved this section for the last, not because it is less important, but rather because there are no specific features in Yesod to enforce this.</p>
+        <p id="stateless2">HTTP is a stateless protocol: each request is to be seen as the beginning of a conversation. This means, for instance, it doesn't matter to the server if you requested five pages previously, it will treat your sixth request as if it's your first one.</p>
+        <p id="stateless3">On the other hand, some features on websites won't work without some kind of state. For example, how can you implement a shopping cart without saving information about items in between requests?</p>
+        <p id="stateless4">The solution to this is cookies, and built on top of this, sessions. We have a <link chapter="sessions">whole section</link> addressing the sessions features in Yesod. However, I cannot stress enough that this should be used sparingly.</p>
+        <p id="stateless5">Let me give you an example. There's a popular bug tracking system that I deal with on a daily basis which horribly abuses sessions. There's a little drop-down on every page to select the current project. Seems harmless, right? What that dropdown does is set the current project in your session.</p>
+        <p id="stateless6">The result of all this is that clicking on the "view issues" link is entirely dependent on the last project you selected. There's no way to create a bookmark to your "Yesod" issues and a separate link for your "Hamlet" issues.</p>
+        <p id="stateless7">The proper RESTful approach to this is to have one resource for all of the Yesod issues and a separate one for all the Hamlet issues. In Yesod, this is easily done with a route definition like:</p>
+        <codeblock>/ ProjectsR GET
+/projects/#ProjectID ProjectIssuesR GET
+/issues/#IssueID IssueR GET</codeblock>
+        <p id="stateless8">Be nice to your users: proper stateless architecture means that basic features like bookmarks, permalinks and the back/forward button will always work.</p>
+    </section>
     <summary>
         <p id="s1">Yesod adheres to the following tenets of REST:</p>
         <ul>

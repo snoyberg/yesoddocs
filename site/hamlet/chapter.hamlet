@@ -2,10 +2,7 @@
     <h1>Yesod Book: #{title}
 <article>
     <div id="status">Chapter status: #{show (chapterStatus chapter)}
-    <p>
-        <b>NOTE: 
-        \While all of the snippets and code examples in this book have been updated to Yesod 0.7, the content has not. This is a top priority and will be done shortly. Look for a blog post when the transition is complete.
-    \^{html}
+    ^{html}
     <p>
         <a href="@{BookR}">Table of Contents
         $maybe p <- previous

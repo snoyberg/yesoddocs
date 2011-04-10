@@ -66,6 +66,7 @@ mkYesodData "YesodDocs" [parseRoutes|
 /blog/#String EntryR GET
 
 /about AboutR GET
+/community CommunityR GET
 
 /comment/#String/#Text CommentR POST
 /feed/comments CommentsFeedR GET
@@ -100,9 +101,48 @@ instance Yesod YesodDocs where
             atomLink FeedR "Yesod Blog"
             widget
         let isHome = fmap tm curr == Just HomeR
+        (title, bcs) <- breadcrumbs
         hamletToRepHtml $(hamletFile "default-layout")
       where
         addGoogleFont s = addStylesheetRemote $ T.pack $ "http://fonts.googleapis.com/css?family=" ++ s
+
+instance YesodBreadcrumbs YesodDocs where
+    breadcrumb HomeR = return ("Home", Nothing)
+    breadcrumb FiveMinutesR = return ("Yesod in Five Minutes", Just HomeR)
+    breadcrumb BookR = return ("Book", Just HomeR)
+    breadcrumb ScreencastsR = return ("Screencasts", Just HomeR)
+    breadcrumb AboutR = return ("About", Just HomeR)
+    breadcrumb CommunityR = return ("Community", Just HomeR)
+    breadcrumb (EntryR slug) = do
+        y <- getYesod
+        entry <-
+            case filter (\x -> entrySlug x == slug) $ getEntries y of
+                [] -> notFound
+                e:_ -> return e
+        return (entryTitle entry, Just HomeR)
+    breadcrumb (ChapterR slug) = do
+        book <- fmap getBook getYesod
+        let chapters = concatMap partChapters $ bookParts book
+        chapter <-
+            case filter (\x -> chapterSlug x == T.pack slug) chapters of
+                [] -> notFound
+                x:_ -> return x
+        return (T.unpack $ chapterTitle chapter, Just BookR)
+
+    breadcrumb FaviconR = return ("", Nothing)
+    breadcrumb RobotsR = return ("", Nothing)
+    breadcrumb SitemapR = return ("", Nothing)
+    breadcrumb FeedR = return ("", Nothing)
+    breadcrumb StaticR{} = return ("", Nothing)
+    breadcrumb ArticlesR = return ("", Nothing)
+    breadcrumb ExamplesR = return ("", Nothing)
+    breadcrumb SynWrqR = return ("", Nothing)
+    breadcrumb SynPerR = return ("", Nothing)
+    breadcrumb SynHamR = return ("", Nothing)
+    breadcrumb BlogR = return ("", Nothing)
+    breadcrumb CommentR{} = return ("", Nothing)
+    breadcrumb CommentsFeedR = return ("", Nothing)
+    breadcrumb OneCommentR{} = return ("", Nothing)
 
 instance YesodJquery YesodDocs where
     urlJqueryJs _ = Left $ StaticR jquery_js

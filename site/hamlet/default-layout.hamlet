@@ -16,11 +16,27 @@
                             <li>
                                 <a href=@{BookR}>Book
                             <li>
-                                <a href=@{BookR}>Community
+                                <a href=@{CommunityR}>Community
                             <li>
                                 <a href=@{BlogR}>Blog
                 <div .yesod-body>
-                    ^{pageBody pc}
+                    $if isHome
+                        ^{pageBody pc}
+                    $else
+                        <div .yesod-breadcrumb>
+                            <p .yesod-breadcrumb-label>You are here:
+                            <ul>
+                              $forall bc <- bcs
+                                <li>
+                                  <span class="yesod-breadcrumb-separator">»</span>
+                                  <a href=@{fst bc}>#{snd bc}
+                              <li>
+                                <span class="yesod-breadcrumb-separator">»</span>
+                                \#{title}
+                            <div .yesod-clear>
+                        <!-- <div .yesod-secondary-content> -->
+                        <div .yesod-primary-content>
+                            ^{pageBody pc}
                 <div .yesod-footer>
                     Yesod is BSD licensed. This is is #
                     <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Attribution-NonCommercial-ShareAlike 3.0 Unported

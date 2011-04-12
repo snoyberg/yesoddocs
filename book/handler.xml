@@ -212,7 +212,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz", ""]</codeblock>
     </section>
     <section id="ghandler">
         <title>The GHandler Monad</title>
-        <p id="ghandler1">The vast majority of code you write in Yesod sites in the GHandler monad. If you are approaching this from an <abbr title="Model-View-Controller">MVC</abbr> background, your GHandler code is the Controller. Some important points to know about GHandler:</p>
+        <p id="ghandler1">The vast majority of code you write in Yesod sits in the GHandler monad. If you are approaching this from an <abbr title="Model-View-Controller">MVC</abbr> background, your GHandler code is the Controller. Some important points to know about GHandler:</p>
         <ul>
             <li>It is an instance of <code>MonadIO</code>, so you can run any IO action in your handlers with <code>liftIO</code>. By the way, <code>liftIO</code> is exported by the <code>Yesod</code> module for your convenience.</li>
             <li>GHandler is really a <term>monad transformer stack</term> providing a number of different components.</li>

@@ -61,7 +61,7 @@
             <snippet name="persistent-person-usage"/>
             <p id="bb4">We start off with some standard database connection code. In this case, we used the single-connection functions. Persistent also comes built in with connection pool functions, which we will generally want to use in production.</p>
             <p id="bb5">In this example, we have seen two functions: insert creates a new record in the database and returns its ID. Like everything else in Persistent, IDs are type safe. Each PersistEntity has an associated type called <code>Key</code>. So when you call <code>insert $ Person "Michael" 25</code>, it gives you a value back of type <code>Key Person</code>.</p>
-            <p id="bb6">The next function we see it get, which attempts to load a value from the database using a <code>Key</code>. In Persistent, you never need to worry that you are using the key from the wrong table: trying to load up a different entity (like House) using a <code>Key Person</code> will never compile.</p>
+            <p id="bb6">The next function we see is get, which attempts to load a value from the database using a <code>Key</code>. In Persistent, you never need to worry that you are using the key from the wrong table: trying to load up a different entity (like House) using a <code>Key Person</code> will never compile.</p>
         </section>
         <section id="persistbackend">
             <title>PersistBackend</title>

@@ -7,8 +7,6 @@ A lot of the content here is already covered in the templates chapter. On the
 other hand, most of the features of widgets are *not* covered here. Probably
 need to rearrange. Need to cover:
 
-* what's in a widget
-* setTitle
 * newIdent
 * addCassius et al
 * producing a main menu widget
@@ -88,7 +86,40 @@ need to rearrange. Need to cover:
 
         <p id="bw1">In the <link chapter="templates">templates chapter</link>, we already began an initial look at how to construct widgets. Let's begin more formally here. Widgets have a monad instance, so we can use do notation for building up larger widgets from smaller parts. For each of the components of a widget listed above, there is a corresponding primitive.</p>
 
-        <p id="bw2">See how widgets are used to create <link chapter="yesod-typeclass">the default layout</link>.</p>
+        <p id="bw2">Let's see how we can combined two simple primitives: setTitle and addHtml:</p>
+
+        <snippet name="widgets-settitle"/>
+
+        <p id="bw3">The one thing to note is that setTitle takes a value of
+            type Html as an argument, not a String. As usual, the
+            recommendation is to run your code with OverloadedStrings turned
+            on.</p>
+
+        <section id="polyhamlet">
+            <title>Polymorphic Hamlet</title>
+
+            <p id="ph1">We have already mentioned that a Hamlet template is
+                polymorphic. This is best seen in the context of widgets.</p>
+
+            <snippet name="widgets-polyhamlet1"/>
+
+            <p id="ph2">As you can see, all three functions
+                <code>addHtml</code>, <code>addHamlet</code> and
+                <code>addWidget</code> can work on a Hamlet template. The
+                question arises: why do we need three? One reason is that while
+                a Hamlet template itself is polymorphic, not all values are.
+                For example, you may have a user-supplied Html value that you
+                wish to add to your page: addHamlet and addWidget will not
+                work; you will have to use addHtml.</p>
+
+            <p id="ph3">However, there is a more subtle point as well. While in
+                theory a Hamlet template is polymorphic, this actually depends
+                upon what values are embedded inside it (using ^{...}
+                interpolation). For example,
+                <code>[$hamlet|^{someValue}|]</code> will have the same type as
+                <code>someValue</code>; if someValue is of type Hamlet, then so
+                will the template.</p>
+            </section>
 
         <p id="under-construction">FIXME The rest of this chapter is under construction.</p>
     </section>

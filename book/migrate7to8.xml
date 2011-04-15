@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="migrate7to8" status="Unproofed">
+    <title>Migration Guide: 0.7 to 0.8</title>
+    <intro>
+        <p id="intro1">Following on the success of the <link chapter="migrate6to7">previous migration guide</link>, this chapter will similarly document the necessary changes to upgrade the Haskellers site to Yesod 0.8.</p>
+        <p id="intro2">As before, if you run into issues not covered here, please add it to the comments.</p>
+    </intro>
+    <section id="no-warnings">
+        <title>No Warnings</title>
+        <p id="nw1">Before you get started, I recommend you get your current
+            code to compile without any warnings. That way, as you begin
+            migrating, you'll know that any new warnings are caused by the
+            migration process itself. In fact, you may even want to turn on
+            <code>-Wall -Werror</code> in your cabal file.</p> </section>
+    <section id="install-yesod">
+        <title>Install yesod</title>
+        <p id="iy1">In theory, this will simply require running <code>cabal
+                update &amp;&amp; cabal install yesod</code>. In practice,
+            cabal may not be able to figure everything out for you. If you run
+            into <xref
+                href="http://cdsmith.wordpress.com/2011/01/16/haskells-own-dll-hell/">DLL
+                hell</xref>, the simplest solution currently is to just delete
+            your .ghc folder. Please note that you need to have the <hackage>happy</hackage> and <hackage>alex</hackage> packages installed to install <hackage>yesod</hackage>.</p>
+
+    </section>
+    <section id="cabal">
+        <title>Update cabal file</title>
+        <p id="c1">Almost all underlying packages for Yesod have been upgraded,
+            including WAI, Hamlet, etc. Make sure to include newer versions.
+            For the most part, if you depend on the yesod package itself, you
+            can leave off version bounds on underlying packages. However, cabal
+            may not always do the right thing.</p>
+        <p id="c2">Some specific notes:</p>
+        <ul>
+            <li>Obviously, make sure your version bounds on the yesod package allow 0.8.0. I recommend <code>&gt;= 0.8 &amp;&amp; &lt; 0.9</code></li>
+            <li>There was a brief period where putting language extensions in the cabal file was considered a Good Thing. We have now reversed our decision on this.</li>
+            <li>Haskellers for 0.7 was still using FastCGI for production deployment. I'm finally switching it over to Warp this time around. The important thing is to make sure the <code>cpp-options: -DPRODUCTION</code> is applied to the Warp-based executable as necessary.</li>
+            <li>If you reference <hackage>monad-peel</hackage>, please replace it with <hackage>monad-control</hackage>.</li>
+            <li>You likely need to add the new <hackage>persistent-template</hackage> package to the dependencies.</li>
+            <li>Also, you'll likely need <hackage>http-types</hackage>.</li>
+        </ul>
+    </section>
+      <section id="cabal-install">
+          <title>cabal install</title>
+          <p id="ci1">Even though your code won't build yet, this will be a
+              good way to see if you've set up your cabal file correctly.</p>
+      </section>
+      <section id="persistent-template">
+          <title>persistent-template</title>
+          <p id="pt1">Some functions have moved around a bit. In particular, <code>mkMigrate</code> is no longer provided by <code>Database.Persist.GenericSql</code>, but by <code>Database.Persist.TH</code>. However, since the <code>Yesod</code> module now exports that entire module, you will likely be able to simply remove an import line.</p>
+      </section>
+      <section id="extensions">
+          <title>Language Extensions</title>
+          <p id="le1">I'll assume that some people are simultaneously making the leap from GHC 6.12 to 7 (I recommend you do at this point, Warp performs much better on GHC 7). Here are some extension gotchas:</p>
+          <ul>
+              <li>You need to enable the <code>TemplateHaskell</code> language extension if you use any top-level TH splices. Otherwise you'll see <code>Parse error: naked expression at top level</code></li>
+              <li>The syntax for quasi-quotation changed in GHC 7 to no longer need the dollar sign. While you <i>can</i> leave it in, the compiler will give a warning. I'm keeping the dollar sign for the moment in all packages on Hackage to allow people to stick with GHC 6.12 for a bit longer, but in private packages, I recommend using GHC 7 syntax.</li>
+          </ul>
+      </section>
+      <section id="external-file">
+          <title>External File</title>
+          <p id="ef1">This one isn't strictly necessary, but the scaffolded site is now using external files for model entity and routing declarations. This will allow us to develop standalone tools to make modifications to scaffolded sites. You may want to consider doing the same thing. For example, if you have:</p>
+          <codeblock>mkPersist [$persist|
+Person
+    name String
+    age Int
+|]</codeblock>
+            <p id="ef2">You can put the entity itself in a file like <code>entities</code> and replace the quasi-quotation with <code>$(persistFile "entities")</code>. Similarly, for routing, just use the <code>parseRoutesFile</code> function.</p>
+        </section>
+        <section id="toHtml">
+            <title>toHtml</title>
+            <p id="tohtml1">Hamlet is built on top of <hackage>blaze-html</hackage>. In the past, in order to convert a <code>String</code> to <code>Html</code> (and escape entities), you would use the <code>string</code> function. That function, and all its relatives (like <code>text</code>) have been deprecated in favor of <code>toHtml</code>.</p>
+        </section>
+        <section id="peel">
+            <title>MonadPeelIO to MonadControlIO</title>
+            <p id="p1">Nuff said :)</p>
+        </section>
+        <section id="text">
+            <title>String to Text</title>
+            <p id="text1">This is the big one. We've moved virtually every usage of <code>String</code> to strict <code>Text</code>. Just follow the compiler warnings on this one: it's a bit of a pain to migrate this, but well worth it in potential performance improvements. The OverloadedStrings extensions can help you big here.</p>
+            <p id="text2">It's tempting to just start packing and unpacking all over the place. I tried this as well. But the fact is, this defeats all the possible performance benefits of the switch to Text, and is frankly harder to manage. It's much easier to just bite the bullet, switch your datatypes from String to Text, and then clean up once.</p>
+        </section>
+        <section id="persist-keys">
+            <title>Persist Keys</title>
+            <p id="pk1">In previous versions of Persistent, all database keys were stored as integers. However, the MongoDB backend is going to require a different datatype (it uses 12-byte strings), so we needed to make some changes. This means that Persistent keys are no longer instances of Integral.</p>
+            <p id="pk2">For the scaffolded site from previous version of Yesod, this has an effect on the implementation of the <code>showAuthId</code>, <code>readAuthId</code>, <code>showAuthEmailId</code> and <code>readAuthEmailId</code> functions. These functions have now been removed, and are instead implemented internally using the <code>SinglePiece</code> instance for keys.</p>
+            <p id="pk3">In general, if you need to serialize a key to/from text, you should use the <code>SinglePiece</code> instance. Most code doesn't need to do this too often, since Yesod handles it for you via type-safe URLs. But if the need arises, use <code>toSinglePiece</code> to produce a <code>Text</code> and <code>fromSinglePiece</code> to parse a <code>Text</code>.</p>
+        </section>
+        <section id="typesigs">
+            <title>Explicit Type Signatures</title>
+            <p id="typesigs1">You may occassionally need to add explicit type signatures to deal with GHC 7's new type inferencer. This has affected me mostly with polymorphic Hamlet.</p>
+        </section>
+    </chapter>

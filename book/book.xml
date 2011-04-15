@@ -35,6 +35,7 @@
         <chapter href="blog-posts.xml"/>
         <chapter href="faq.xml"/>
         <chapter href="migrate6to7.xml"/>
+        <chapter href="migrate7to8.xml"/>
     </part>
     <part>
         <title>Examples</title>

@@ -234,7 +234,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz", ""]</codeblock>
 
         </advanced>
 
-            <p id="ghandler2">The remainder of this chapter will give a brief introduction to some of the most common functions living in the GHandler monad. I am specifically <i>not</i> covering any of the session functions; that will be addressed in the <link chapter="sesssions">sessions chapter</link>.</p>
+            <p id="ghandler2">The remainder of this chapter will give a brief introduction to some of the most common functions living in the GHandler monad. I am specifically <i>not</i> covering any of the session functions; that will be addressed in the <link chapter="sessions">sessions chapter</link>.</p>
         <section id="application-info">
             <title>Application Information</title>
             <p id="ghandler3">There are a number of functions that return information about your application as a whole, and give no information about individual requests. Some of these are:</p>

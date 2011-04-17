@@ -50,7 +50,7 @@ getHomeR :: Handler RepHtml</codeblock>
         <p id="handler2">That funny <code>[$hamlet|Hello World!|]</code> is a <term>quasi-quotation</term>. It allows us to embed arbitrary text in our Haskell code, process it with a specific function and have that generate Haskell code, all at compile time. In our case, we feed the string "Hello World!" to the hamlet quasi-quoter.</p>
 
         <advanced>
-            <p id="handler2a">While quasi quotation is great for small code snippets, and wonderful for making single-file examples, it does not scale well to production levels, since it mixes logic and presentation in the same file. When we <link chapter="templates" section="external-templates">discuss templates</link>, you will see how to put your templates in external files.</p>
+            <p id="handler2a">While quasi quotation is great for small code snippets, and wonderful for making single-file examples, it does not scale well to production levels, since it mixes logic and presentation in the same file. When we <link chapter="templates" section="external-files">discuss templates</link>, you will see how to put your templates in external files.</p>
         </advanced>
 
         <p id="handler3">Hamlet is the default HTML templating engine in Yesod. Together with its siblings Cassius and Julius, you can create HTML, CSS and Javascript in a fully type-safe and compile-time-checked manner. We'll see much more about this <link chapter="widgets">when we discuss widgets</link>.</p>

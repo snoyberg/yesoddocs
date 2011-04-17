@@ -18,7 +18,6 @@ import Text.XHtml.Strict (showHtmlFragment)
 import Data.Either (lefts)
 import Control.Concurrent.AdvSTM
 import Comments
-import Text.Blaze (toHtml)
 import YesodDocs
 import Data.List (stripPrefix)
 

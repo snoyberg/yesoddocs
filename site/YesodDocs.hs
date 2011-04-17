@@ -21,7 +21,6 @@ import Control.Concurrent.AdvSTM
 import Control.Concurrent.AdvSTM.TVar
 import Comments
 import Data.List (sortBy)
-import Text.Blaze (toHtml)
 import qualified Text.XHtml
 
 #ifndef PRODUCTION
@@ -119,7 +118,7 @@ instance YesodBreadcrumbs YesodDocs where
             case filter (\x -> entrySlug x == slug) $ getEntries y of
                 [] -> notFound
                 e:_ -> return e
-        return (entryTitle entry, Just HomeR)
+        return (T.pack $ entryTitle entry, Just HomeR)
     breadcrumb (ChapterR slug) = do
         book <- fmap getBook getYesod
         let chapters = concatMap partChapters $ bookParts book
@@ -127,7 +126,7 @@ instance YesodBreadcrumbs YesodDocs where
             case filter (\x -> chapterSlug x == T.pack slug) chapters of
                 [] -> notFound
                 x:_ -> return x
-        return (T.unpack $ chapterTitle chapter, Just BookR)
+        return (chapterTitle chapter, Just BookR)
 
     breadcrumb FaviconR = return ("", Nothing)
     breadcrumb RobotsR = return ("", Nothing)
@@ -247,7 +246,7 @@ getCommentsFeedR = do
     go c = FeedEntry
         { feedEntryLink = OneCommentR $ map stou $ show $ commentTime c
         , feedEntryUpdated = commentTime c
-        , feedEntryTitle = "Comment by " ++ T.unpack (commentName c)
+        , feedEntryTitle = "Comment by " `T.append` commentName c
         , feedEntryContent = toHtml $ commentContent c
         }
     stou ' ' = '_'

@@ -11,7 +11,6 @@ import qualified System.IO.UTF8 as U
 import Data.Time
 import Book
 import qualified Data.Text as T
-import Text.Blaze (toHtml)
 import YesodDocs
 
 getHomeR :: Handler RepHtml

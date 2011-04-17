@@ -9,9 +9,9 @@ import Entry
 import Control.Arrow ((&&&))
 import Data.Function (on)
 import Data.Time
-import Text.Blaze (toHtml)
 import YesodDocs
 import Data.List (groupBy)
+import Data.Text (pack)
 
 getBlogR :: Handler ()
 getBlogR = do
@@ -56,6 +56,6 @@ getFeedR = do
     go e = FeedEntry
         { feedEntryLink = EntryR $ entrySlug e
         , feedEntryUpdated = UTCTime (entryDay e) $ secondsToDiffTime 0
-        , feedEntryTitle = entryTitle e
+        , feedEntryTitle = pack $ entryTitle e
         , feedEntryContent = entryContent e
         }

@@ -4,7 +4,7 @@
     <intro>
         <p id="i1">Since web programming began, people have been trying to make the development process a more pleasant one. As a community, we have continually pushed new techniques to try and solve some of the lingering difficulties of security threats, the stateless nature of HTTP, the multiple languages (HTML, CSS, Javascript) necessary to create a powerful web application, and more.</p>
         <p id="i2">Yesod attempts to ease the web development process by playing to the strengths of the Haskell programming language. Haskell's strong compile-time guarantees of correctness not only encompass types; referential transparency ensures that we don't have any unintended side effects. Pattern matching on algebraic data types can help guarantee we've accounted for every possible case. By building upon Haskell, entire classes of bugs disappear.</p>
-        <p id="i3">Unfortunately, using Haskell isn't enough. The web, by its very nature, is <i>not</i> type safe. Even the simplest case of distinguishing between an integer and string is impossible: all data on the web is transferred as raw bytes, evading our best efforts at type safety. Every app writer is left with the task of validating that all input is valid. I call this problem <term>the boundary issue</term>: as much as your application is type safe on the inside, every boundary with the outside world still needs to be sanitized.</p>
+        <p id="i3">Unfortunately, using Haskell isn't enough. The web, by its very nature, is <i>not</i> type safe. Even the simplest case of distinguishing between an integer and string is impossible: all data on the web is transferred as raw bytes, evading our best efforts at type safety. Every app writer is left with the task of validating all input. I call this problem <term>the boundary issue</term>: as much as your application is type safe on the inside, every boundary with the outside world still needs to be sanitized.</p>
     </intro>
 
     <section id="type-safety">
@@ -20,8 +20,8 @@
             <li>Routes are declared in a very terse format, without sacrificing type safety.</li>
             <li>Serializing your data to and from a database is handled automatically via code generation.</li>
         </ul>
-        <p id="c2">In Yesod, we have two kinds of code generation. To get your project started, we provide a scaffolding tool to set up your file and folder structure. However, most code generation is done at compile time via Template Haskell and Quasi Quotation. This means your generated code will never get stale, as a simple library upgrade will bring all your generated code up-to-date.</p>
-        <p id="c3">But for those who like to stay in control, and know exactly what their code is doing, you can always run closer to the bare-metal and write all your code yourself.</p>
+        <p id="c2">In Yesod, we have two kinds of code generation. To get your project started, we provide a scaffolding tool to set up your file and folder structure. However, most code generation is done at compile time via meta programming. This means your generated code will never get stale, as a simple library upgrade will bring all your generated code up-to-date.</p>
+        <p id="c3">But for those who like to stay in control, and know exactly what their code is doing, you can always run closer to the compiler and write all your code yourself.</p>
     </section>
     <section id="performance">
         <title>Performance</title>
@@ -31,7 +31,7 @@
     </section>
     <section id="modular">
         <title>Modular</title>
-        <p id="m1">Yesod has spawned the creation of dozens packages, most of which are usable in a context outside of Yesod itself. One of the goals of the project is to contribute back to the community as much as possible; as such, even if you are not planning on using Yesod in your next project, a large portion of this book may still be relevant for your needs.</p>
+        <p id="m1">Yesod has spawned the creation of dozens of packages, most of which are usable in a context outside of Yesod itself. One of the goals of the project is to contribute back to the community as much as possible; as such, even if you are not planning on using Yesod in your next project, a large portion of this book may still be relevant for your needs.</p>
         <p id="m2">Of course, these libraries have all been designed to integrate well together. Using the Yesod Framework should give you a strong feeling of consistency throughout the various APIs.</p>
     </section>
     <section id="solid">

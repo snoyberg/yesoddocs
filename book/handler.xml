@@ -229,7 +229,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz", ""]</codeblock>
                 GHandler wraps around an Iteratee, which allows it to read the
                 request body, a GGHandler can wrap around any monad, including
                 directly around IO. This generalization is necessary for
-                dealing with catching exceptions. We will discuss this on more
+                dealing with catching exceptions. We will discuss this in more
                 depth later. <!-- FIXME add link --></p>
 
         </advanced>

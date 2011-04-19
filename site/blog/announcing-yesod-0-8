@@ -11,6 +11,8 @@ Originally Yesod 0.8 was mostly about internal consistency- the main goal was to
 
 With every release of Yesod, we see more new contributors. Thanks to Chris Casinghino: he caught 3 bugs in the beta release (1 of them being a GHC bug). The other two required breaking API changes to fix. Also a big thanks to Rick Richardson- without his help we wouldn't be able to announce perhaps the biggest feature of this release: preliminary support for MongoDB in Persistent! This was a great example of collaboration in Yesod. There was an original implementation written quite some time ago. Rick finally picked it up and pushed it to completion, consulting with us along the way.
 
+Also, thanks to Aur Saraf for the initial SQL join code, and for contributing a lot of good ideas for the final design.
+
 ## Persistent
 
 ### MongoDB support

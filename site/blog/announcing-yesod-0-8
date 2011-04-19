@@ -26,8 +26,8 @@ If you haven't tried MongoDB yet, it is perhaps the most feature-rich NoSQL data
 Persistent is designed for high scalability- we have always thought about application-level joins first. This release adds both application level joins and SQL joins- take your pick and change it up when the need arises.
 
 ### Future work
-As mentioned above, there is still work to be done to full support MongoDB. More types of joins can be added also.
-Users generally want more database specific features. While we can add these features, it is also important for Persistent to make it easier to drop down and run queries that it cannot generate, but still receive haskell ADTs in response, or to support the addition of raw queries to what it generates. Persistent is a great for the haskell community, and adding the next data store is always a fun, self-contained project to embark on. One direction we have always been thinking about is having key-value stores support the key-value portion of the Persistent API. I want to stress that while most of Persistent development occurs within the Yesod community, there is nothing specific to Yesod about it. And there is nothing stopping you from using it in a different web framework, or on a project that has nothing to do with web development.
+As mentioned above, there is still work to be done to fullly support MongoDB. More types of joins can be added also.
+Users generally want more database specific features. While we can add these features, it is also important for Persistent to make it easier to drop down and run queries that it cannot generate, but still receive haskell ADTs in response, or to support the addition of raw queries to what it generates. Persistent is a great library for the haskell community, and adding the next data store is always a fun, self-contained project to embark on. One direction we have always been thinking about is having key-value stores support the key-value portion of the Persistent API. I want to stress that while most of Persistent development does occur within the Yesod community, there is nothing specific to Yesod about it. And there is nothing stopping you from using it in a different web framework, or on a project that has nothing to do with web development.
 
 ## Template languages
 
@@ -76,7 +76,7 @@ A new version of wai-handler-devel is underway that will efficiently reload code
 * Running "yesod build" is *almost* identical to "cabal build", but with one change: it performs a dependency analysis of external files included by Template Haskell (Hamlet templates, routes, entity definitions) and changes modification times as needed to force cabal to build modules. For example, if "Handler/Root.hs" references "hamlet/root.hamlet", and the latter has a later modification time than the former, the former's modification times will be changed to match that of the latter.
 * Running "yesod devel" runs the devel server (automatically re-compiles code) which now uses cabal for the compiling (passing in a special "devel" flag). Previously we were using the hint package (uses the ghc api) and re-loading the entire application. The new version uses direct-plugins (uses .hi files) and will load individual files.
 
-If this sounds like overkill to you, keep in mind that best practice in dynamic languages is to have a file watcher that will run the test suite as changes are made (based on user defined rules that need to be adjusted) and that development mode (re-interpreting files when a request comes in) can be noticeably slow. By using (the type-safe language) haskell we have avoided the need to constantly run a test suite. But we need some smarts to achieve fast re-compilation. This project watching tool is another that will hopefully be shared at least among other web frameworks, if not in other projects.
+If this sounds like overkill to you, keep in mind that best practice in dynamic languages is to have a file watcher that will run the test suite as changes are made (based on user defined rules that need to be adjusted) and that development mode (re-interpreting files when a request comes in) can be noticeably slow. By using (the type-safe language) haskell we have avoided the need to constantly run a test suite. But we need some smarts to achieve fast re-compilation. This project watching tool is another that will hopefully be shared at least among other web frameworks, if not in haskell projects in general.
 
 ## JSON support
 We are switching our default JSON library to the excellent aeson package. This adds speed, features, and easier compatibility if this package becomes the community's default json package. We are giving up enumerator streaming, but that should be addable to aeson when the need arises.
@@ -92,7 +92,7 @@ We are switching our default JSON library to the excellent aeson package. This a
 
 ## The future: 0.9 - 1.0
 * Documentation- we know that this is really the biggest area for improvement in Yesod. By the 0.9 release we will probably make some improvements to the documentation site to make it easier for others to contribute. And we will hold up the 1.0 release until we have documentation that we can be proud of.
-* static file caching headers support - a rough implementation is already completed. This allows for a pure haskell deployment- Apache/Nginx optional.
+* static file caching headers support - a rough implementation is already completed. This allows for a pure haskell deployment- Apache or Nginx are optional.
 * Support for other template types as first class citizens. So you can treat coffeescript as if it were javascript or use a different html template in the same way you would use hamlet.
 * Easier support for faster, non-blocking Javascript loading via something akin to require.js.
 * A complete i18n solution.
@@ -102,4 +102,4 @@ We are switching our default JSON library to the excellent aeson package. This a
 
 0.9 is a chance to finish all the features that we feel are needed for a 1.0 release, and then to have another cycle to reflect and make sure things are done right, well-documented, and that we aren't missing anything that we view as critical for a complete web framework.
 
-As always, if you send a patch for or start working on a useful feature, like Rick did for the MongoDB backend, we will make helping you our top priority, so there is always a lot of variance in the roadmap.
+As always, if you send a patch for or start working on a useful feature, we will make helping you our top priority, and we are always listening to the needs of Yesod users- so there is always a lot of variance in the roadmap.

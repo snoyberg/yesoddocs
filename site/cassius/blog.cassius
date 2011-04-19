@@ -1,3 +1,9 @@
+h2
+    font-size: 1.75em
+    margin-top: 2em
+h3
+    font-size: 1.4em
+    margin-top: 2em
 #pagecontent
     width: 95%
 #archive

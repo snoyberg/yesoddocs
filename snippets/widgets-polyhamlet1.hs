@@ -1,5 +1,6 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TemplateHaskell #-}
 import Yesod
 data HelloWorld = HelloWorld
 mkYesod "HelloWorld" [$parseRoutes|

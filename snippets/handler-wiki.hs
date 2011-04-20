@@ -1,11 +1,13 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings #-}
 import Yesod
+import Data.Text (Text)
 data Fibs = Fibs
 -- START
-data Page = Page String String [String] -- 2 or more
+data Page = Page Text Text [Text] -- 2 or more
 instance MultiPiece Page where
     toMultiPiece (Page x y z) = x : y : z
-    fromMultiPiece (x:y:z) = Right $ Page x y z
-    fromMultiPiece _ = Left "I need at least 2 pieces"
+    fromMultiPiece (x:y:z) = Just $ Page x y z
+    fromMultiPiece _ = Nothing
 -- STOP
 main = return ()

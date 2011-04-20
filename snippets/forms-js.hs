@@ -6,6 +6,8 @@ import Yesod.Form.Nic
 import Data.Time
 import Control.Applicative
 import Data.List
+import Data.Text (Text)
+import qualified Data.Text as T
 data Js = Js
 type Handler = GHandler Js Js
 mkYesod "Js" [$parseRoutes|
@@ -18,7 +20,7 @@ instance YesodJquery Js
 instance YesodNic Js
 data Survey = Survey
     { birthday :: Maybe Day
-    , favoriteColor :: String
+    , favoriteColor :: Text
     , aboutMe :: Html
     }
 
@@ -57,8 +59,8 @@ $maybe survey <- msurvey
 
 getColorsR = do
     term <- runFormGet' $ stringInput "term"
-    jsonToRepJson $ jsonList $ map jsonScalar $ filter (isPrefixOf term) colors
+    jsonToRepJson $ jsonList $ map (jsonScalar . T.unpack) $ filter (T.isPrefixOf term) colors
   where
-    colors = words "red orange yellow green blue purple black brown"
+    colors = T.words "red orange yellow green blue purple black brown"
 
 main = warpDebug 3001 Js

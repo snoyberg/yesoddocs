@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeFamilies, QuasiQuotes, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies, QuasiQuotes, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
 import Yesod
 data HelloWorld = HelloWorld
 mkYesod "HelloWorld" [$parseRoutes|/ HomeR GET|]
@@ -9,7 +9,7 @@ getHomeR = defaultLayout [$hamlet|
 <p>Here are some of my favorite links:
 <ul>
     <li>
-        <a href=http://docs.yesodweb.com/>Yesod Web Framework Docs
+        <a href=http://www.yesodweb.com/>Yesod Web Framework Docs
     <li>
         <a href=http://www.haskell.org/>Haskell Homepage
 <p>Thanks for visiting!

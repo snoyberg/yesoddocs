@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeFamilies, QuasiQuotes, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies, QuasiQuotes, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
 -- START
 import Yesod
 
@@ -15,7 +15,7 @@ instance Yesod HelloWorld where
     approot _ = ""
 
 getHomeR = defaultLayout $ do
-    let myPhrase = "ring ring ring ring ring ring ring, BANANA PHONE"
+    let myPhrase = "ring ring ring ring ring ring ring, BANANA PHONE" :: String
     let myNumber = 12345
     addHamlet [$hamlet|
 <h1>Welcome to the blog homepage.

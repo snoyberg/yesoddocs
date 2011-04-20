@@ -1,5 +1,6 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
 {-# LANGUAGE MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings #-}
 import Yesod
 -- START
 import Web.Routes.Base (encodePathInfo, decodePathInfo)

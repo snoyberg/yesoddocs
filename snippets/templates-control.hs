@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeFamilies, QuasiQuotes, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies, QuasiQuotes, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
 import Yesod
 data HelloWorld = HelloWorld
 mkYesod "HelloWorld" [$parseRoutes|/ HomeR GET|]
@@ -6,7 +6,7 @@ instance Yesod HelloWorld where approot _ = ""
 
 getHomeR = defaultLayout $ do
 -- START
-    let people = ["Michael", "Miriam", "Eliezer", "Gavriella"]
+    let people = ["Michael", "Miriam", "Eliezer", "Gavriella"] :: [String]
     let isFather x = x == "Michael"
         isMother x = x == "Miriam"
     let getAge "Michael" = Just 26

@@ -1,5 +1,6 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
 {-# LANGUAGE MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings #-}
 import Yesod
 data Layout = Layout
 mkYesod "Layout" [$parseRoutes|/ RootR GET|]

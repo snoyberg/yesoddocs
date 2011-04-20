@@ -1,5 +1,6 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes #-}
 {-# LANGUAGE MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings #-}
 import Yesod
 data Layout = Layout
 mkYesod "Layout" [$parseRoutes|
@@ -25,7 +26,6 @@ instance Yesod Layout where
         ^{bodyTags}
 |]
 -- STOP
-getRootR = defaultLayout [$hamlet|<a href="@{MsgR}">message
-|]
+getRootR = defaultLayout [$hamlet|<a href="@{MsgR}">message|]
 getMsgR = setMessage (string "foo") >> redirect RedirectTemporary RootR >> return ()
 main = warpDebug 4000 Layout

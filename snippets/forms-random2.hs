@@ -7,6 +7,8 @@ import Control.Applicative
 import Safe
 import Data.Maybe
 import Control.Monad
+import Data.Text (Text)
+import qualified Data.Text as T
 data Rand = Rand
 type Handler = GHandler Rand Rand
 mkYesod "Rand" [$parseRoutes|
@@ -16,8 +18,8 @@ instance Yesod Rand where approot _ = ""
 -- START
 data Params = Params
     { numberRange :: (Int, Int)
-    , singleWord :: String
-    , pluralWord :: String
+    , singleWord :: Text
+    , pluralWord :: Text
     }
 
 paramsFormlet :: Formlet s m Params
@@ -41,15 +43,15 @@ rangeField initial = GForm $ do
                 _ ->
                     case (lookup minName env, lookup maxName env) of
                         (Just minString, Just maxString) ->
-                            case (readMay minString, readMay maxString) of
+                            case (readMay $ T.unpack minString, readMay $ T.unpack maxString) of
                                 (Just min, Just max) ->
                                     if min > max
                                         then FormFailure ["Min is greater than max"]
                                         else FormSuccess (min, max)
                                 _ -> FormFailure ["Expecting two integers"]
                         _ -> FormFailure ["Range is required"]
-    let minValue = fromMaybe "" $ lookup minName env `mplus` fmap (show . fst) initial
-    let maxValue = fromMaybe "" $ lookup maxName env `mplus` fmap (show . snd) initial
+    let minValue = fromMaybe "" $ lookup minName env `mplus` fmap (T.pack . show . fst) initial
+    let maxValue = fromMaybe "" $ lookup maxName env `mplus` fmap (T.pack . show . snd) initial
     let fi = FieldInfo
             { fiLabel = "Number range"
             , fiTooltip = ""
@@ -62,7 +64,7 @@ Between #
 |]
             , fiErrors =
                 case res of
-                    FormFailure [x] -> Just $ string x
+                    FormFailure [x] -> Just $ toHtml x
                     _ -> Nothing
             , fiRequired = True
             }
@@ -79,7 +81,7 @@ getRootR = do
             FormSuccess (Params range single plural) -> do
                 number <- liftIO $ randomRIO range
                 let word = if number == 1 then single else plural
-                return $ "You got " ++ show number ++ " " ++ word
+                return $ T.concat ["You got ", T.pack $ show number, " ", word]
     defaultLayout $ do
         addCassius [$cassius|input[type=number]
     width: 50px

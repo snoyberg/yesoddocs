@@ -1,6 +1,8 @@
 {-# LANGUAGE TypeFamilies, QuasiQuotes, GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings #-}
 import Yesod
+import qualified Data.Text as T
 data Fibs = Fibs
 -- START
 newtype Natural = Natural Int -- we might even like to go with Word here
@@ -8,13 +10,13 @@ newtype Natural = Natural Int -- we might even like to go with Word here
     deriving (Show, Read, Eq, Num, Ord)
 -- START
 instance SinglePiece Natural where
-    toSinglePiece (Natural i) = show i
+    toSinglePiece (Natural i) = T.pack $ show i
     fromSinglePiece s =
-        case reads s of
+        case reads $ T.unpack s of
             (i, _):_
-                | i < 1 -> Left "0 and negative numbers are unnatural"
-                | otherwise -> Right $ Natural i
-            [] -> Left "That's not even an integer!"
+                | i < 1 -> Nothing
+                | otherwise -> Just $ Natural i
+            [] -> Nothing
 -- STOP
 mkYesod "Fibs" [$parseRoutes|
 /fibs/#Natural FibsR GET

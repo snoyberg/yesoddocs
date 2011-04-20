@@ -4,6 +4,8 @@
 import Yesod
 import System.Random
 import Control.Applicative
+import Data.Text (Text)
+import qualified Data.Text as T
 
 data Rand = Rand
 type Handler = GHandler Rand Rand
@@ -18,8 +20,8 @@ instance Yesod Rand where
 data Params = Params
     { minNumber :: Int
     , maxNumber :: Int
-    , singleWord :: String
-    , pluralWord :: String
+    , singleWord :: Text
+    , pluralWord :: Text
     }
 
 paramsFormlet :: Maybe Params -> Form s m Params
@@ -40,7 +42,7 @@ getRootR = do
             FormSuccess (Params min max single plural) -> do
                 number <- liftIO $ randomRIO (min, max)
                 let word = if number == 1 then single else plural
-                return $ "You got " ++ show number ++ " " ++ word
+                return $ T.concat ["You got ", T.pack $ show number, " ",  word]
     defaultLayout [$hamlet|
 <p>#{output}
 <form enctype="#{enctype}">

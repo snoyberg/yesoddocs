@@ -10,13 +10,12 @@ import Data.Time
 import Data.Serialize
 import System.IO.Cautious
 import Prelude hiding (writeFile)
-import qualified Data.ByteString as S
 import qualified Data.ByteString.Lazy as L
 import Control.Applicative
-import System.Directory (doesFileExist)
 import qualified Data.Object.Yaml as Y
 import Data.Object
 import qualified Data.Text as T
+import Control.Monad (join)
 
 #if PRODUCTION
 import Data.Object.Yaml hiding (encode, decode)
@@ -43,48 +42,30 @@ commentsToSO =
         , ("time", Scalar $ show z)
         ]
 
-commentsFile :: String
-commentsFile = "comments.dat"
-
 commentsYaml :: String
 commentsYaml = "comments.yaml"
 
 loadComments :: IO Comments
 loadComments = do
-#if PRODUCTION
-    Mapping so <- join $ decodeFile commentsYaml
+    Mapping so <- join $ Y.decodeFile commentsYaml
     mapM go (so :: [(String, Object String String)])
   where
     go :: (String, Object String String) -> IO (String, [(Text, [Comment])])
     go (x, Mapping y) = do
         y' <- mapM go' y
         return (x, y')
+    go _ = error "go"
     go' (x, Sequence y) = do
         y' <- mapM go'' y
         return (T.pack x, y')
+    go' _ = error "go'"
     go'' (Mapping m) = do
         Just (Scalar name) <- return $ lookup "name" m
         Just (Scalar content) <- return $ lookup "content" m
         Just (Scalar time) <- return $ lookup "time" m
         time' <- return $ read time
         return $ Comment (T.pack name) (Textarea $ T.pack content) time'
-#else
-    -- this didn't work
-    -- d <- doesFileExist commentsYaml
-    -- unless d (saveComments [])
-    return []
-#endif
-
-loadCommentsDat :: IO Comments
-loadCommentsDat = do
-    d <- doesFileExist commentsFile
-    if d
-        then do
-            c <- S.readFile commentsFile
-            case decode c of
-                Left e -> error e
-                Right x -> return x
-        else return []
+    go'' _ = error "go''"
 
 saveComments :: Comments -> IO ()
 saveComments = writeFileL commentsYaml . L.fromChunks . return . Y.encode . commentsToSO

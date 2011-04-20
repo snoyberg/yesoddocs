@@ -7,7 +7,7 @@
         \ or simply send patches to the 
         <a href="http://github.com/snoyberg/yesoddocs/">Yesod documentation site github repo
         \.
-    <p>All syntax-highlighted code snippets are automatically tested against the most recent Yesod release (0.7.0) to ensure they are correct. Nonetheless, it <i>is</i> possible that the text may be lagging behind in some areas as Yesod evolves. Please leave a comment if something seems to be wrong.
+    <p>All syntax-highlighted code snippets are automatically tested against the most recent Yesod release (0.8.0) to ensure they are correct. Nonetheless, it <i>is</i> possible that the text may be lagging behind in some areas as Yesod evolves. Please leave a comment if something seems to be wrong.
 
     <p>
         Since this book is still a work in progress, not every concept has been as fully documented as I would like. To supplement the book's content, it might be a good idea to look at the code of some real world projects. The #

@@ -3,6 +3,9 @@
     <title>Templates</title>
     <intro>
         <p id="i1">Yesod is built upon the <hackage>hamlet</hackage> package, which provides three templating systems: Hamlet (HTML), Cassius (CSS) and Julius (Javascript). These systems are all available for use outside the realm of Yesod.</p>
+        <advanced>
+            <p id="i1a">Starting with Yesod 0.8, there is a new CSS template language, Lucius. While Cassius uses white space to imply nesting, Lucius is a superset of CSS itself, and therefore uses braces/semicolons. Both languages are currently fully supported, first-class Yesod citizens. If we end up with a clear winner between them in the future, we might consider deprecating one.</p>
+        </advanced>
         <p id="i2">In this chapter, we will explore the syntax of these languages, how they can be combined to form complete documents, and where to actually put the content.</p>
         <p id="i3">To start off, our examples will use the same quasi-quotation syntax as the <link chapter="basics">basics chapter</link>, and we will move on from there.</p>
         <advanced>
@@ -185,6 +188,44 @@ getHomeR = defaultLayout $ do
         <codeblock>type Hamlet url = (url -> [(String, String)] -> String) -> Html</codeblock>
         <p id="types5">However, Hamlet has an extra feature that Cassius and Julius don't have: polymorphism. This means that a Hamlet template can take on various values, including Html and Hamlet. Yesod defines an instance for Widget, meaning that a Hamlet template can be used directly as a widget. In fact, we have been abusing that fact every time we have written <code>defaultLayout [$hamlet|...|]</code> without using <code>addHamlet</code>.</p>
         <p id="types6">When we <link chapter="widgets">get to widgets</link>, we will explore why this polymorphism is so useful. As a heads up: it really saves the day when dealing with forms.</p>
+    </section>
+    <section id="lucius">
+        <title>Lucius</title>
+        <p id="lucius1">Cassius is a great pair to Hamlet: both indicate nesting via indentation and do away with various "line noise" characters. However, there are a few practical issues with Cassius:</p>
+        <ul>
+            <li>You cannot copy-paste a CSS file into a Cassius template.</li>
+            <li>It's difficult to add extra features like block nesting (to be described below).</li>
+        </ul>
+        <p id="lucius2">Whether or not this is a serious problem is a subjective matter. To provide Yesod users with the greatest flexibility, there is now a second CSS language: Lucius. Cassius and Lucius share a number of things: variable/URL interpolation syntax is identical, and they end up producing the same datatypes. It is therefore trivial to mix-and-match them, and even use them simultaneously in a single project.</p>
+        <p id="lucius3">The difference is that Lucius is designed as a superset of CSS. It should be possible to take any valid CSS file, copy it into a Lucius file, and get the same results (albeit a bit minified).</p>
+        <advanced>
+            <p id="lucius4">Those familiar with it might note a corrolary to the Sass/Less divide in the Ruby world.</p>
+        </advanced>
+        <p id="lucius5">Besides being a CSS pass-through with variable interpolation, Lucius also intends to add convenience features. For now, this is limited to block nesting. This means that Lucius will convert:</p>
+        <codeblock>foo, bar {
+    baz, bin {
+        color: red;
+    }
+}</codeblock>
+        <p id="lucius6">into</p>
+        <codeblock>foo baz, foo bin, bar baz, bar bin {
+    color: red;
+}</codeblock>
+    </section>
+    <section id="hamlet-syntax">
+        <title>Hamlet Syntax</title>
+        <p id="hs1">The examples above have not covered every aspect of Hamlet. This section gives a complete overview of the Hamlet syntax for learning and reference purposes.</p>
+        <defs>
+            <def term="Interpolation">Hamlet supports four forms of interpolation: <code>#{var}</code> interpolates a normal variable, which must be an instance of <code>ToHtml</code>. <code>@{url}</code> interpolates a type-safe URL. <code>@?{urlParams}</code> interpolates a URL/get parameters pair. <code>^{template}</code> interpolates another template. (Note: in Hamlet 0.9, we will introduce a fifth form of interpolation to handle internationalized messages.)</def>
+            <def term="Tags">Any line that begins with a less-than sign begins a tag. The name of the tag must immediately follow. (If no name is given, div is assumed.) There are then a number of whitespace-separated attributes, either given as <code>key=value</code>, <code>#id</code> or <code>.class</code>.</def>
+            <def term="Conditional attributes">Both <code>key=value</code> and class attributes can be prefixed with a condition. So for example: <code>&lt;input type=checkbox :isSelected:selected=true&gt;</code> or <code>&lt;a :isCurrent:.current href=@{MyRouteR}&gt;</code>.</def>
+            <def term="Sealing the tag">Sealing the tag is <i>optional</i>. However, if you <i>do</i> seal it, you can put some raw content after the tag.</def>
+            <def term="Close tag">Close tags are <i>not</i> used at all in Hamlet.</def>
+            <def term="Indentation">Nesting of tags and content is implied via indentation level. For these purposes, a hard tab has the value of four spaces.</def>
+            <def term="Conditionals">You can do conditionals via $if/$elseif/$else.</def>
+            <def term="Loops">$forall can be applied to any instance of <code>Foldable</code>.</def>
+            <def term="with binding">$with can be used to bind a new variable.</def>
+        </defs>
     </section>
     <summary>
         <p id="s1">Yesod has templating languages for HTML, CSS and Javascript. All of them allow variable interpolation, safe handling of URLs and embedding sub-templates. Since the code is dealt with at compile time, you can use the compiler as your friend and get strong type safety guarantees. Oh, and XSS vulnerabilities get handled automatically.</p>

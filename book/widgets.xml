@@ -86,7 +86,7 @@ need to rearrange. Need to cover:
 
         <p id="bw1">In the <link chapter="templates">templates chapter</link>, we already began an initial look at how to construct widgets. Let's begin more formally here. Widgets have a monad instance, so we can use do notation for building up larger widgets from smaller parts. For each of the components of a widget listed above, there is a corresponding primitive.</p>
 
-        <p id="bw2">Let's see how we can combined two simple primitives: setTitle and addHtml:</p>
+        <p id="bw2">Let's see how we can combine two simple primitives: setTitle and addHtml:</p>
 
         <snippet name="widgets-settitle"/>
 

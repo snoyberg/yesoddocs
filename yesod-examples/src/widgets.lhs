@@ -1,9 +1,10 @@
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings, MultiParamTypeClasses #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings, MultiParamTypeClasses, TemplateHaskell #-}
 > import Yesod
 > import Yesod.Helpers.Static
 > import Yesod.Form.Jquery
 > import Yesod.Form.Nic
 > import Control.Applicative
+> import Data.Text (unpack)
 > 
 > data HW = HW { hwStatic :: Static }
 > type Handler = GHandler HW HW
@@ -82,7 +83,7 @@
 > getAutoCompleteR = do
 >     term <- runFormGet' $ stringInput "term"
 >     jsonToRepJson $ jsonList
->         [ jsonScalar $ term ++ "foo"
->         , jsonScalar $ term ++ "bar"
->         , jsonScalar $ term ++ "baz"
+>         [ jsonScalar $ unpack term ++ "foo"
+>         , jsonScalar $ unpack term ++ "bar"
+>         , jsonScalar $ unpack term ++ "baz"
 >         ]

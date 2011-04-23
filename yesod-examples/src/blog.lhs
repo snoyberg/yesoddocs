@@ -2,7 +2,7 @@
 
 <p>This file is literate Haskell, so we'll start off with our language pragmas and import statements. Basically every Yesod application will start off like this:</p>
 
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses, OverloadedStrings #-}
 > import Yesod
 
 Next, we'll define the blog entry information. Usually, we would want to store the data in a database and allow users to modify them, but we'll simplify for the moment.
@@ -29,7 +29,7 @@ Each Yesod application needs to define the site argument. You can use this for s
 
 Now we use the first "magical" Yesod set of functions: mkYesod and parseRoutes. If you want to see *exactly* what they do, look at their Haddock docs. For now, we'll try to keep this tutorial simple:
 
-> mkYesod "Blog" [$parseRoutes|
+> mkYesod "Blog" [parseRoutes|
 > /               HomeR   GET
 > /entry/#String  EntryR  GET
 > |]
@@ -68,7 +68,7 @@ The Nav datatype will contain navigation information (ie, the URL and title) of 
 And now the template itself:
 
 > entryTemplate :: TemplateArgs -> Hamlet (Route Blog)
-> entryTemplate args = [$hamlet|
+> entryTemplate args = [hamlet|
 >   !!!
 > 
 >   <html>
@@ -97,8 +97,8 @@ Finally, the entry route handler:
 >       (entry:_) -> do
 >           let nav = reverse $ map toNav entries
 >           let tempArgs = TemplateArgs
->                   { templateTitle = string $ entryTitle entry
->                   , templateContent = string $ entryContent entry
+>                   { templateTitle = toHtml $ entryTitle entry
+>                   , templateContent = toHtml $ entryContent entry
 >                   , templateNavbar = nav
 >                   }
 >           hamletToRepHtml $ entryTemplate tempArgs
@@ -106,7 +106,7 @@ Finally, the entry route handler:
 >    toNav :: Entry -> Nav
 >    toNav e = Nav
 >       { navUrl = EntryR $ entrySlug e
->       , navTitle = string $ entryTitle e
+>       , navTitle = toHtml $ entryTitle e
 >       }
 
 All that's left now is the main function. Yesod is built on top of WAI, so you can use any WAI handler you wish. For the tutorials, we'll use the basicHandler that comes built-in with Yesod: it serves content via CGI if the appropriate environment variables are available, otherwise with simpleserver.

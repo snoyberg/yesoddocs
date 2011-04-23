@@ -11,7 +11,7 @@ Yesod has instances for:
 This example uses all three. You are of course free in your own code to make
 your own instances.
 
-> {-# LANGUAGE QuasiQuotes, TypeFamilies, MultiParamTypeClasses #-}
+> {-# LANGUAGE QuasiQuotes, TypeFamilies, MultiParamTypeClasses, OverloadedStrings, TemplateHaskell #-}
 > import Yesod
 > data NewHamlet = NewHamlet
 > mkYesod "NewHamlet" [$parseRoutes|/ RootR GET|]

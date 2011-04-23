@@ -1,8 +1,8 @@
 Name:                yesod-examples
-Version:             0.7.0.1
+Version:             0.8.0
 Synopsis:            Example programs using the Yesod Web Framework.
 Description:         These are the same examples and tutorials found on the documentation site.
-Homepage:            http://docs.yesodweb.com/
+Homepage:            http://www.yesodweb.com/
 License:             BSD3
 License-file:        LICENSE
 Author:              Michael Snoyman
@@ -18,7 +18,7 @@ extra-source-files:  static/yesod/ajax/script.js,
 Executable blog
   Main-is:             src/blog.lhs
   Build-depends:       base >= 4 && < 5,
-                       yesod >= 0.7 && < 0.8
+                       yesod >= 0.8 && < 0.9
 
 Executable ajax
   Main-is:             src/ajax.lhs
@@ -26,6 +26,7 @@ Executable ajax
 
 Executable file-echo
   Main-is:             src/file-echo.lhs
+  Build-depends:       text
 
 Executable pretty-yaml
   Main-is:             src/pretty-yaml.lhs
@@ -52,7 +53,8 @@ Executable form
 Executable persistent-synopsis
   Main-is:             synopsis/persistent.lhs
   Build-depends:       transformers >= 0.2.1 && < 0.3,
-                       persistent-sqlite
+                       persistent-sqlite,
+                       persistent-template
 
 Executable hamlet-synopsis
   Main-is:             synopsis/hamlet.lhs

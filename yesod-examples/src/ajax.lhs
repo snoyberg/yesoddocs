@@ -2,7 +2,7 @@
 
 <p>We're going to use jQuery for the Javascript, though anything would work just fine. Also, the AJAX responses will be served as JSON. Let's get started.</p>
 
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses, OverloadedStrings #-}
 > import Yesod
 > import Yesod.Helpers.Static
 > import Data.Monoid (mempty)

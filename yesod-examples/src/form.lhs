@@ -1,9 +1,11 @@
 <p>Forms can be a tedious part of web development since they require synchronization of code in many different areas: the HTML form declaration, parsing of the form and reconstructing a datatype from the raw values. The Yesod form library simplifies things greatly. We'll start off with a basic application.</p>
 
 
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings, MultiParamTypeClasses #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, OverloadedStrings, MultiParamTypeClasses, TemplateHaskell #-}
 > import Yesod
 > import Control.Applicative
+> import Data.Text (Text)
+
 > data FormExample = FormExample
 > type Handler = GHandler FormExample FormExample
 > mkYesod "FormExample" [$parseRoutes|
@@ -13,7 +15,7 @@
 
 Next, we'll declare a Person datatype with a name and age. After that, we'll create a formlet. A formlet is a declarative approach to forms. It takes a Maybe value and constructs either a blank form, a form based on the original value, or a form based on the values submitted by the user. It also attempts to construct a datatype, failing on validation errors.
 
-> data Person = Person { name :: String, age :: Int }
+> data Person = Person { name :: Text, age :: Int }
 >     deriving Show
 > personFormlet p = fieldsToTable $ Person
 >     <$> stringField "Name" (fmap name p)

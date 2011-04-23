@@ -1,8 +1,9 @@
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses, OverloadedStrings #-}
 
 > import Yesod
 > import Data.Monoid (mempty)
 > import qualified Data.ByteString.Char8 as S8
+> import qualified Data.Text as T
 
 > data Echo = Echo
 
@@ -24,6 +25,6 @@
 > postHomepage = do
 >   (_, files) <- runRequestBody
 >   fi <- maybe notFound return $ lookup "file" files
->   return [(S8.pack $ fileContentType fi, toContent $ fileContent fi)]
+>   return [(S8.pack $ T.unpack $ fileContentType fi, toContent $ fileContent fi)]
 
 > main = warpDebug 3000 Echo

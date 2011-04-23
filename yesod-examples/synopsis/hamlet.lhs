@@ -1,8 +1,9 @@
 \begin{code}
-{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE QuasiQuotes, OverloadedStrings #-}
 
 import Text.Hamlet
 import qualified Data.ByteString.Lazy as L
+import Data.Text (Text, cons)
 
 data Person = Person
     { name :: String
@@ -11,11 +12,11 @@ data Person = Person
     , isMarried :: Bool
     , children :: [String]
     }
-data PersonUrls = Homepage | PersonPage String
+data PersonUrls = Homepage | PersonPage Text
 
-renderUrls :: PersonUrls -> [(String, String)] -> String
+renderUrls :: PersonUrls -> [(Text, Text)] -> Text
 renderUrls Homepage _ = "/"
-renderUrls (PersonPage name) _ = '/' : name
+renderUrls (PersonPage name) _ = '/' `cons` name
 
 footer :: Hamlet url
 footer = [$hamlet|\

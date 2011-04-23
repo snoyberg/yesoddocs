@@ -2,16 +2,18 @@
 > {-# LANGUAGE TemplateHaskell #-}
 > {-# LANGUAGE TypeFamilies #-}
 > {-# LANGUAGE MultiParamTypeClasses #-}
+> {-# LANGUAGE OverloadedStrings #-}
 
 > import Yesod
 > import Data.Monoid (mempty)
+> import Data.Text (Text)
 
 > data I18N = I18N
 > type Handler = GHandler I18N I18N
 
 > mkYesod "I18N" [$parseRoutes|
 > /            HomepageR GET
-> /set/#String SetLangR  GET
+> /set/#Text SetLangR  GET
 > |]
 
 > instance Yesod I18N where
@@ -22,12 +24,12 @@
 >     ls <- languages
 >     let hello = chooseHello ls
 >     let choices =
->             [ ("en", "English")
+>             [ ("en", "English") :: (Text, Text)
 >             , ("es", "Spanish")
 >             , ("he", "Hebrew")
 >             ]
 >     defaultLayout $ do
->       setTitle $ string "I18N Homepage"
+>       setTitle "I18N Homepage"
 >       addHamlet [$hamlet|
 > <h1>#{hello}
 > <p>In other languages:
@@ -37,13 +39,13 @@
 >             <a href="@{SetLangR (fst choice)}">#{snd choice}
 > |]
 
-> chooseHello :: [String] -> String
+> chooseHello :: [Text] -> Text
 > chooseHello [] = "Hello"
-> chooseHello ("he":_) = "שלום"
+> chooseHello ("he":_) = "Shalom"
 > chooseHello ("es":_) = "Hola"
 > chooseHello (_:rest) = chooseHello rest
 
-> getSetLangR :: String -> Handler ()
+> getSetLangR :: Text -> Handler ()
 > getSetLangR lang = do
 >     setLanguage lang
 >     redirect RedirectTemporary HomepageR

@@ -1,6 +1,6 @@
 <p>This example uses the <a href="http://hackage.haskell.org/package/data-object-yaml">data-object-yaml package</a> to display YAML files as cleaned-up HTML. If you've read through the other tutorials, this one should be easy to follow.</p>
 
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses, OverloadedStrings #-}
 
 > import Yesod
 > import Data.Object

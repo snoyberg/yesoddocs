@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell, QuasiQuotes, TypeFamilies #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Main where
 
@@ -12,9 +13,10 @@ import Control.Concurrent.STM.TChan
 import Control.Concurrent.STM.TVar
 
 import Control.Arrow ((***))
+import Data.Text (Text, unpack)
 
 -- speaker and content
-data Message = Message String String
+data Message = Message Text Text
 
 type Handler yesod = GHandler yesod yesod
 
@@ -87,7 +89,7 @@ getCheckR = do
     c <- lookupGetParam "client"
     case c of
       Nothing -> invalidArgs ["No client value in Check request"]
-      Just c' -> return $ read c'
+      Just c' -> return $ read $ unpack c'
   cs <- liftIO . atomically $ readTVar clients
   chan <- case lookup client cs of
             Nothing -> invalidArgs ["Bad client value"]
@@ -97,7 +99,7 @@ getCheckR = do
   let Message s c = first
   jsonToRepJson $ zipJson ["sender", "content"] [s,c]
 
-zipJson x y = jsonMap $ map (id *** jsonScalar) $ zip x y
+zipJson x y = jsonMap $ map (unpack *** jsonScalar . unpack) $ zip x y
 
 getPostR :: Handler Chat RepJson
 getPostR = do

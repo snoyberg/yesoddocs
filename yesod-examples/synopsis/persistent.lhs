@@ -1,13 +1,14 @@
 This example uses the sqlite backend for Persistent, since it can run in-memory and has no external dependencies.
 
-> {-# LANGUAGE TypeFamilies, GeneralizedNewtypeDeriving, QuasiQuotes #-}
+> {-# LANGUAGE TypeFamilies, GeneralizedNewtypeDeriving, QuasiQuotes, TemplateHaskell, OverloadedStrings #-}
 >
 > import Database.Persist.Sqlite
+> import Database.Persist.TH
 > import Control.Monad.IO.Class (liftIO)
 >
 > mkPersist [$persist|Person
 >     name String Eq
->     age Int update
+>     age Int Update
 > |]
 >
 > main :: IO ()

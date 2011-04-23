@@ -1,4 +1,4 @@
-> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses #-}
+> {-# LANGUAGE TypeFamilies, QuasiQuotes, TemplateHaskell, MultiParamTypeClasses, OverloadedStrings #-}
 > import Yesod
 > import Control.Applicative ((<$>), (<*>))
 > 

@@ -256,118 +256,114 @@ head' =
     </ul>
 </section>
 </section>
+<section id="enumerators">
+    <title>Enumerators</title>
+    <section id="extracting-a-value">
+        <title>Extracting a value</title>
+        <p id="extract1">So far, we've written a few iteratees, but we still don't know how to extract values from them. To start, let's remember that <code>Iteratee</code> is just a newtype wrapper around <code>Step</code>:</p>
+        <codeblock>newtype Iteratee a m b = Iteratee { runIteratee :: m (Step a m b) }</codeblock>
+        <p id="extract2">First we need to unwrap the Iteratee and deal with the Step value inside. Remember also that Step has three constructors: Continue, Yield and Error. We'll handle the Error constructor by returning our result in an Either. Yield already provides the data we're looking for.</p>
+
+        <p id="extract3">The tricky case is Continue: here, we have an iteratee that is still expecting more data. This is where the EOF constructor comes in handy: it's our little way to tell the iteratee to finish what it's doing and get on with things. If you remember from above, I said a well-behaving iteratee will never return a Continue after receiving an EOF; now we'll see why:</p>
+
+        <codeblock>extract :: Monad m => Iteratee a m b -> m (Either SomeException b)
+extract (Iteratee mstep) = do
+    step &lt;- mstep
+    case step of
+        Continue k -> do
+            let Iteratee mstep' = k EOF
+            step' &lt;- mstep'
+            case step' of
+                Continue _ -> error "Misbehaving iteratee"
+                Yield b _ -> return $ Right b
+                Error e -> return $ Left e
+        Yield b _ -> return $ Right b
+        Error e -> return $ Left e</codeblock>
+
+    <p id="extract4">Fortunately, you don't need to redefine this yourself: enumerator includes both a <xref href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:run">run</xref> and <xref href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:run_">run_</xref> function. Let's go ahead and use it on our sum6 function:</p>
+
+    <codeblock>main = run_ sum6 >>= print</codeblock>
+
+    <p id="extract5">If you run this, the result will be 0. This emphasizes an important point: an iteratee is not just <i>how</i> to process incoming data, <b>it is the state of the processing</b>. In this case, we haven't done anything to change the initial state of sum6, so we still have the initial value of 0.</p>
+
+    <p id="extract6">To give an analogy: think of an iteratee as a machine. When you feed it data, you modify the internal state but you can't see any of those changes on the outside. When you are done feeding the data, you press a button and it spits out the result. If you don't feed in any data, your result is the initial state.</p>
+</section>
+<section id="adding-data">
+    <title>Adding data</title>
+    <p id="addingdata1">Let's say that we actually want to sum some numbers. For example, the numbers 1 to 10. We need some way to feed that into our sum6 iteratee. In order to approach this, we'll once again need to unwrap our Iteratee and deal with the Step value directly.</p>
+
+    <p id="addingdata2">In our case, we know with certainty that the Step constructor we used is Continue, so it's safe to write our function as:</p>
+
+    <codeblock>sum7 :: Monad m => Iteratee Int m Int
+sum7 = Iteratee $ do
+    Continue k &lt;- runIteratee sum6
+    runIteratee $ k $ Chunks [1..10]</codeblock>
+
+<p id="addingdata3">But in general, we won't know what constructor will be lying in wait for us. We need to properly deal with Continue, Yield and Error. We've seen what to do with Continue: feed it the data. With Yield and Error, the right action in general is to <b>do nothing</b>, since we've already arrived at our final result (either a successful Yield or an Error). So the "proper" way to write the above function is:</p>
+
+<codeblock>sum8 :: Monad m => Iteratee Int m Int
+sum8 = Iteratee $ do
+    step &lt;- runIteratee sum6
+    case step of
+        Continue k -> runIteratee $ k $ Chunks [1..10]
+        _ -> return step</codeblock>
+</section>
+<section id="enum-type-syn">
+    <title>Enumerator type synonym</title>
+    <p id="ets1">What we've done with sum7 and sum8 is perform a transformation on the Iteratee. But we've done this in a very limited way: we've hard-coded in the original Iteratee function (sum6). We could just make this an argument to the function:</p>
+
+    <codeblock>sum9 :: Monad m => Iteratee Int m Int -> Iteratee Int m Int
+sum9 orig = Iteratee $ do
+    step &lt;- runIteratee orig
+    case step of
+        Continue k -> runIteratee $ k $ Chunks [1..10]
+        _ -> return step</codeblock>
+
+    <p id="ets2">But since we always just want to unwrap the Iteratee value anyway, it turns out that it's more natural to make the argument of type Step, ie:</p>
+
+    <codeblock>sum10 :: Monad m => Step Int m Int -> Iteratee Int m Int
+sum10 (Continue k) = k $ Chunks [1..10]
+sum10 step = returnI step</codeblock>
+
+<p id="ets3">This type signature (take a Step, return an Iteratee) turns out to be very common:</p>
+
+<codeblock>type Enumerator a m b = Step a m b -> Iteratee a m b</codeblock>
+
+<p id="ets4">Meaning sum10's type signature could also be expressed as:</p>
+
+<codeblock>sum10 :: Monad m => Enumerator Int m Int</codeblock>
+
+<p id="ets5">Of course, we need some helper function to connect an Enumerator and an Iteratee:</p>
+
+<codeblock>applyEnum :: Monad m => Enumerator a m b -> Iteratee a m b -> Iteratee a m b
+applyEnum enum iter = Iteratee $ do
+    step &lt;- runIteratee iter
+    runIteratee $ enum step</codeblock>
+
+<p id="ets6">Let me repeat the intuition here: the Enumerator is transforming the Iteratee from its initial state to a new state by feeding it more data. In order to use this function, we could write:</p>
+
+<codeblock>run_ (applyEnum sum10 sum6) >>= print</codeblock>
+
+<p id="ets7">This results in 55, exactly as we'd expect. But now we can see one of the benefits of enumerators: we can use multiple data sources. Let's say we have another enumerator:</p>
+
+<codeblock>sum11 :: Monad m => Enumerator Int m Int
+sum11 (Continue k) = k $ Chunks [11..20]
+sum11 step = returnI step</codeblock>
+
+<p id="ets8">Then we could simply apply both enumerators:</p>
+
+<codeblock>run_ (applyEnum sum11 $ applyEnum sum10 sum6) >>= print</codeblock>
+
+<p id="ets9">And we would get the result 210. (Yes, (1 + 20) * 10 = 210.) But don't worry, you don't need to write this applyEnum function yourself: enumerator provides a <xref href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:-36--36-">$$</xref> operator which does the same thing. Its type signature is a bit scarier, since it's a generalization of applyEnum, but it works the same, and even makes code more readable:</p>
+
+<codeblock>run_ (sum11 $$ sum10 $$ sum6) >>= print</codeblock>
+
+<p id="ets10"><code>&#36;&#36;</code> is a synonym for <xref href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:-61--61--60--60-">==&lt;&lt;</xref>, which is simply flip <xref href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:-62--62--61--61-">&gt;&gt;==</xref>. I find <code>&#36;&#36;</code> the most readable, but <abbr title="your mileage my vary">YMMV</abbr>.</p>
+</section>
+</section>
 </chapter>
 <!--
         <markdown><![CDATA[
-
-
-# Part 2: Enumerators
-
-Note: code for this tutorial is available as [a github gist](http://gist.github.com/607856).
-
-## Extracting a value
-
-When we finished the [last part of our tutorial](http://docs.yesodweb.com/blog/enumerators-tutorial-part-1/), we had written a few iteratees, but we still didn't know how to extract values from them. To start, let's remember that Iteratee is just a newtype wrapper around Step:
-
-    newtype Iteratee a m b = Iteratee { runIteratee :: m (Step a m b) }
-
-First we need to unwrap the Iteratee and deal with the Step value inside. Remember also that Step has three constructors: Continue, Yield and Error. We'll handle the Error constructor by returning our result in an Either. Yield already provides the data we're looking for.
-
-The tricky case is Continue: here, we have an iteratee that is still expecting more data. This is where the EOF constructor comes in handy: it's our little way to tell the iteratee to finish what it's doing and get on with things. If you remember from the last part, I said a well-behaving iteratee will never return a Continue after receiving an EOF; now we'll see why:
-
-    extract :: Monad m => Iteratee a m b -> m (Either SomeException b)
-    extract (Iteratee mstep) = do
-        step <- mstep
-        case step of
-            Continue k -> do
-                let Iteratee mstep' = k EOF
-                step' <- mstep'
-                case step' of
-                    Continue _ -> error "Misbehaving iteratee"
-                    Yield b _ -> return $ Right b
-                    Error e -> return $ Left e
-            Yield b _ -> return $ Right b
-            Error e -> return $ Left e
-
-Fortunately, you don't need to redefine this yourself: enumerator includes both a [run](http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:run) and [run\_](http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:run_) function. Let's go ahead and use it on our sum6 function:
-
-    main = run_ sum6 >>= print
-
-If you run this, the result will be 0. This emphasizes an important point: an iteratee is not just *how* to process incoming data, **it is the state of the processing**. In this case, we haven't done anything to change the initial state of sum6, so we still have the initial value of 0.
-
-To give an analogy: think of an iteratee as a machine. When you feed it data, you modify the internal state but you can't see any of those changes on the outside. When you are done feeding the data, you press a button and it spits out the result. If you don't feed in any data, your result is the initial state.
-
-## Adding data
-
-Let's say that we actually want to sum some numbers. For example, the numbers 1 to 10. We need some way to feed that into our sum6 iteratee. In order to approach this, we'll once again need to unwrap our Iteratee and deal with the Step value directly.
-
-In our case, we know with certainty that the Step constructor we used is Continue, so it's safe to write our function as:
-
-    sum7 :: Monad m => Iteratee Int m Int
-    sum7 = Iteratee $ do
-        Continue k <- runIteratee sum6
-        runIteratee $ k $ Chunks [1..10]
-
-But in general, we won't know what constructor will be lying in wait for us. We need to properly deal with Continue, Yield and Error. We've seen what to do with Continue: feed it the data. With Yield and Error, the right action in general is to **do nothing**, since we've already arrived at our final result (either a successful Yield or an Error). So the "proper" way to write the above function is:
-
-    sum8 :: Monad m => Iteratee Int m Int
-    sum8 = Iteratee $ do
-        step <- runIteratee sum6
-        case step of
-            Continue k -> runIteratee $ k $ Chunks [1..10]
-            _ -> return step
-
-## Enumerator type synonym
-
-What we've done with sum7 and sum8 is perform a transformation on the Iteratee. But we've done this in a very limited way: we've hard-coded in the original Iteratee function (sum6). We could just make this an argument to the function:
-
-    sum9 :: Monad m => Iteratee Int m Int -> Iteratee Int m Int
-    sum9 orig = Iteratee $ do
-        step <- runIteratee orig
-        case step of
-            Continue k -> runIteratee $ k $ Chunks [1..10]
-            _ -> return step
-
-But since we always just want to unwrap the Iteratee value anyway, it turns out that it's more natural to make the argument of type Step, ie:
-
-    sum10 :: Monad m => Step Int m Int -> Iteratee Int m Int
-    sum10 (Continue k) = k $ Chunks [1..10]
-    sum10 step = returnI step
-
-This type signature (take a Step, return an Iteratee) turns out to be very common:
-
-    type Enumerator a m b = Step a m b -> Iteratee a m b
-
-Meaning sum10's type signature could also be expressed as:
-
-    sum10 :: Monad m => Enumerator Int m Int
-
-Of course, we need some helper function to connect an Enumerator and an Iteratee:
-
-    applyEnum :: Monad m => Enumerator a m b -> Iteratee a m b -> Iteratee a m b
-    applyEnum enum iter = Iteratee $ do
-        step <- runIteratee iter
-        runIteratee $ enum step
-
-Let me repeat the intuition here: the Enumerator is transforming the Iteratee from its initial state to a new state by feeding it more data. In order to use this function, we could write:
-
-    run_ (applyEnum sum10 sum6) >>= print
-
-This results in 55, exactly as we'd expect. But now we can see one of the benefits of enumerators: we can use multiple data sources. Let's say we have another enumerator:
-
-    sum11 :: Monad m => Enumerator Int m Int
-    sum11 (Continue k) = k $ Chunks [11..20]
-    sum11 step = returnI step
-
-Then we could simply apply both enumerators:
-
-    run_ (applyEnum sum11 $ applyEnum sum10 sum6) >>= print
-
-And we would get the result 210. (Yes, (1 + 20) * 10 = 210.) But don't worry, you don't need to write this applyEnum function yourself: enumerator provides a [$$](http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:-36--36-) operator which does the same thing. Its type signature is a bit scarier, since it's a generalization of applyEnum, but it works the same, and even makes code more readable:
-
-    run_ (sum11 $$ sum10 $$ sum6) >>= print
-
-<code>&#36;&#36;</code> is a synonym for <a href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:-61--61--60--60-">==&lt;&lt;</a>, which is simply <code>flip <a href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:-62--62--61--61-">&gt;&gt;==</a></code>. I find <code>&#36;&#36;</code> the most readable, but <abbr title="your mileage my vary">YMMV</abbr>.
 
 ## Some built-in enumerators
 

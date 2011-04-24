@@ -1,4 +1,12 @@
+#why
+    margin: 0 2%
+    width: 45%
+    float: left
 #what
+    margin: 0 2%
+    width: 45%
+    float: left
+#docs
     margin: 0 2%
     width: 45%
     float: left

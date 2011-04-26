@@ -162,7 +162,7 @@ blockToHtml :: Chapter -> [(Text, [Comment])] -> Block -> Hamlet YesodDocsRoute 
 blockToHtml chap chapCs (Paragraph pid is) = [hamlet|
 <p id="#{pid}">
     <span .permalink
-        <a href=##{pid}>&#x204B
+        <a href=##{pid}>&#x204B;
     $forall i <- is
         \^{inlineToHtml i}
     <span .comment-count>#{csCount'}

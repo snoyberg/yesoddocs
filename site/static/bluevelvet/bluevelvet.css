@@ -57,7 +57,7 @@ body.yesod-wide {
 }
 .yesod-home .yesod-header {
     width: 876px;
-    height: 140px;
+    height: 120px;
     background: url(header.png) no-repeat bottom;
     position: relative
 }
@@ -174,6 +174,7 @@ body.yesod-wide {
     clear:both;
 }
 .yesod-primary-content {
+    padding-top: 20px;
     background: #ffffff;
     border-bottom: 7px solid #7f808a;
 }

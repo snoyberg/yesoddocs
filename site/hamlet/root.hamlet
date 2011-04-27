@@ -11,6 +11,8 @@
         <h2>Quick Links
         <ul>
             <li>
+                <a href=@{AboutR}>About: Why Yesod?
+            <li>
                 <a href=@{ScreencastsR}>Screencasts
             <li>
                 <a href=@{FiveMinutesR}>Yesod in 5 minutes
@@ -18,15 +20,14 @@
                 <a href=@{ChapterR "faq"}>Frequently Asked Questions
             <li>
                 <a href="http://wiki.yesodweb.com/">Wiki
-            <li>
-                <a href=@{AboutR}>About: Why Yesod?
 <div .yesod-clear>
 <div .yesod-primary-content>
     <div .yesod-primary-content-inner>
         <h1>What
         <div .yesod-primary-content-body
         <p>
-            Yesod is a Haskell web framework promoting type-safe, RESTful web application development. Built from the ground up for performance, Yesod provides all the tools you need to quickly create fast, safe web applications.
+            Yesod is a Haskell web framework for productive development of type-safe, RESTful, high performance web applications. #
+            <a href=@{AboutR}> Learn more.
         <p>
             If you are new to Yesod, you should start off with #
             <a href=@{FiveMinutesR}>the five minute tutorial
@@ -34,7 +35,6 @@
             <a href=@{ScreencastsR}>screencasts
             \ give a nice introduction to some of the advanced concepts, and #
             <a href=@{BookR}>the book
-            \ is the recommended approach to learning Yesod. If you
-            already know Yesod, and are struggling with a specific issue, check out the #
+            \ is the recommended approach to learning Yesod. If you already know Yesod, and are struggling with a specific issue, check out the #
             <a href=@{ChapterR "faq"}>Frequently Asked Questions
             \.

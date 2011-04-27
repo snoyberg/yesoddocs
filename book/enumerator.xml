@@ -360,40 +360,40 @@ sum11 step = returnI step</codeblock>
 
 <p id="ets10"><code>&#36;&#36;</code> is a synonym for <xref href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:-61--61--60--60-">==&lt;&lt;</xref>, which is simply flip <xref href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:-62--62--61--61-">&gt;&gt;==</xref>. I find <code>&#36;&#36;</code> the most readable, but <abbr title="your mileage my vary">YMMV</abbr>.</p>
 </section>
+<section id="built-in">
+    <title>Some built-in enumerators</title>
+    <p id="builtin1">Of course, writing a whole function just to pass some numbers to our sum function seems a bit tedious. We could easily make the list an argument to the function:</p>
+
+    <codeblock>sum12 :: Monad m => [Int] -> Enumerator Int m Int
+sum12 nums (Continue k) = k $ Chunks nums
+sum12 _ step = returnI step</codeblock>
+
+<p id="builtin2">But now there's not even anything Int-specific in our function. We could easily generalize this to:</p>
+
+<codeblock>genericSum12 :: Monad m => [a] -> Enumerator a m b
+genericSum12 nums (Continue k) = k $ Chunks nums
+genericSum12 _ step = returnI step</codeblock>
+
+<p id="builtin3">And in fact, enumerator comes built in with the <xref href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:enumList">enumList</xref> function which does this. enumList also takes an Integer argument to indicate the maximum number of elements to stick in a chunk. For example, we could write:</p>
+
+<codeblock>run_ (enumList 5 [1..30] $$ sum6) >>= print</codeblock>
+
+<p id="builtin4">(That produces 465 if you're counting.) The first argument to enumList should never affect the result, though it may have some performance impact.</p>
+
+<p id="builtin5">Data.Enumerator includes two other enumerators: <xref href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:enumEOF">enumEOF</xref> simply passes an EOF to the iteratee. <xref href="http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:concatEnums">concatEnums</xref> is slightly more interesting; it combines multiple enumerators together. For example:</p>
+
+<codeblock>run_ (concatEnums
+        [ enumList 1 [1..10]
+        , enumList 1 [11..20]
+        , enumList 1 [21..30]
+        ] $$ sum6) >>= print</codeblock>
+
+    <p id="builtin6">This also produces 465.</p>
+</section>
 </section>
 </chapter>
 <!--
         <markdown><![CDATA[
-
-## Some built-in enumerators
-
-Of course, writing a whole function just to pass some numbers to our sum function seems a bit tedious. We could easily make the list an argument to the function:
-
-    sum12 :: Monad m => [Int] -> Enumerator Int m Int
-    sum12 nums (Continue k) = k $ Chunks nums
-    sum12 _ step = returnI step
-
-But now there's not even anything Int-specific in our function. We could easily generalize this to:
-
-    genericSum12 :: Monad m => [a] -> Enumerator a m b
-    genericSum12 nums (Continue k) = k $ Chunks nums
-    genericSum12 _ step = returnI step
-
-And in fact, enumerator comes built in with the [enumList](http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:enumList) function which does this. enumList also takes an Integer argument to indicate the maximum number of elements to stick in a chunk. For example, we could write:
-
-    run_ (enumList 5 [1..30] $$ sum6) >>= print
-
-(That produces 465 if you're counting.) The first argument to enumList should never affect the result, though it may have some performance impact.
-
-Data.Enumerator includes two other enumerators: [enumEOF](http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:enumEOF) simply passes an EOF to the iteratee. [concatEnums](http://hackage.haskell.org/packages/archive/enumerator/0.4.0.2/doc/html/Data-Enumerator.html#v:concatEnums) is slightly more interesting; it combines multiple enumerators together. For example:
-
-    run_ (concatEnums
-            [ enumList 1 [1..10]
-            , enumList 1 [11..20]
-            , enumList 1 [21..30]
-            ] $$ sum6) >>= print
-
-This also produces 465.
 
 ## Some non-pure input
 

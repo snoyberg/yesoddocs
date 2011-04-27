@@ -6,7 +6,7 @@
       </p>
         <p id="i1.5">
           Haskell has many different database bindings available. However, most of these have little knowledge of a schema and therefore do not provide useful static guarantees and force database-dependent interfaces and data structures on the programmer. Haskellers have attempted a more revolutionary route of creating haskell specific data stores to get around these flaws that allow one to easily store any haskell type. These options are great for certain use cases, but they constrain one to the storage techniques provided by the library, do not interface well with other languages, and the flexibility can also mean one must write reams of code for querying data. In contrast, Persistent allows us to choose among existing databases that are highly tuned for different data storage use cases, interoperate with other programming languages, and to use a safe and productive query interface.
-        </r>
+        </p>
         <p id="i2">Persistent follows the guiding principles of type safety and concise, declarative syntax. Some other nice features are:</p>
         <ul>
             <li>Database-agnostic. While the most highly supported backends are Postgresql and SQLite, there is alpha support for MongoDB.</li>
@@ -49,7 +49,7 @@
                   | PersistForeignKey ByteString -- ^ intended especially for MongoDB backend
                 </codeblock>
             <p id="ba4">Each Persistent backend needs to know how to translate the relevant values into something the database can understand. However, it would be awkward do have to express all of our data simply in terms of these basic types. The next layer is the <code>PersistField</code> typeclass, which defines how an arbitrary Haskell datatype can be marshaled to and from a <code>PersistValue</code>. A PersistField correlates to a column in a SQL database. In our person example above, name and age would be our <code>Persistfield</code>s.</p>
-            <p id="ba5">To tie up the user side of the code, our last typeclass is <code>PersistEntity</code>. An instance of PersistEntity correlates with a table in a SQL database. This typeclass defines a number of functions and some associated types.
+            <p id="ba5">To tie up the user side of the code, our last typeclass is <code>PersistEntity</code>. An instance of PersistEntity correlates with a table in a SQL database. This typeclass defines a number of functions and some associated types.</p>
         </section>
         <section id="codegen">
             <title>Code Generation</title>

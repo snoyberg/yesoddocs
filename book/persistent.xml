@@ -2,10 +2,14 @@
 <chapter id="persistent" status="Unproofed">
     <title>Persistent</title>
     <intro>
-        <p id="i1">Forms deal with the boundary between the user and the application. Another boundary we need to deal with is between the application and the storage layer. Whether it be a SQL database, a YAML file, or a binary blob, odds are your storage layer isn't going to give you Haskell datatypes.</p>
-        <p id="i2">Persistent is the storage layer of choice for Yesod. It follows the guiding principles of type safety and concise, declarative syntax. Some other nice features are:</p>
+      <p id="i1">Forms deal with the boundary between the user and the application. Another boundary we need to deal with is between the application and the storage layer. Whether it be a SQL database, a YAML file, or a binary blob, odds are you have to work to get your storage layer to accept your application datatypes. Persistent is Yesod's answer to data storage- a type-safe universal data store interface for haskell. 
+      </p>
+        <p id="i1.5">
+          Haskell has many different database bindings available. However, most of these have little knowledge of a schema and therefore do not provide useful static guarantees and force database-dependent interfaces and data structures on the programmer. Haskellers have attempted a more revolutionary route of creating haskell specific data stores to get around these flaws that allow one to easily store any haskell type. These options are great for certain use cases, but they constrain one to the storage techniques provided by the library, do not interface well with other languages, and the flexibility can also mean one must write reams of code for querying data. In contrast, Persistent allows us to choose among existing databases that are highly tuned for different data storage use cases, interoperate with other programming languages, and to use a safe and productive query interface.
+        </r>
+        <p id="i2">Persistent follows the guiding principles of type safety and concise, declarative syntax. Some other nice features are:</p>
         <ul>
-            <li>Database-agnostic. While the most highly supported backends are Postgresql and SQLite, there is preliminary support for MongoDB and Redis.</li>
+            <li>Database-agnostic. While the most highly supported backends are Postgresql and SQLite, there is alpha support for MongoDB.</li>
             <li>By being non-relational in nature, we simultaneously are able to support a wider number of storage layers and are not constrained by some of the performance bottlenecks incurred through joins.</li>
             <li>A major source of frustration in dealing with SQL databases is changes to the schema. Persistent can automatically perform database migrations.</li>
         </ul>
@@ -31,7 +35,7 @@
             <title>Types</title>
             <p id="ba1">Like routing, there is nothing intrinsically difficult about type-safe data access. It just requires a lot of monotonous, error prone, boiler plate code. This is a perfect use case for some Template Haskell to generate this code for us automatically. To start off with, let's analyze some data types and type classes.</p>
             <p id="ba2"><code>PersistValue</code> is the basic building block of Persistent. It is a very simple datatype that can represent data that gets sent to and from a database. Its definition is:</p>
-            <codeblock>data PersistValue = PersistString String
+            <codeblock> data PersistValue = PersistText Text
                   | PersistByteString ByteString
                   | PersistInt64 Int64
                   | PersistDouble Double
@@ -39,14 +43,13 @@
                   | PersistDay Day
                   | PersistTimeOfDay TimeOfDay
                   | PersistUTCTime UTCTime
-                  | PersistNull</codeblock>
-            <p id="ba3">Each Persistent backend needs to know how to translate these values into something the database can understand. In the case of PostgreSQL, this would be some C datatypes. For Redis, everything gets converted into a <code>ByteString</code>.</p>
-            <p id="ba4">However, it would be awkward do have to express all of our data simply in terms of these basic types. The next layer is the <code>PersistField</code> typeclass, which defines how an arbitrary Haskell datatype can be marshaled to and from a <code>PersistValue</code>. A PersistField correlates to a column in a SQL database. In our person example above, name and age would be our <code>Persistfield</code>s.</p>
-            <p id="ba5">To tie up the user side of the code, our last typeclass is <code>PersistEntity</code>. An instance of PersistEntity correlates with a table in a SQL database. This typeclass defines a number of functions and some associated types. We will explore the purpose of the associated types soon. However, for our purposes now, the functions are not important. Granted that they are central to the functioning of Persistent, but</p>
-            <ul>
-                <li>They are not generally useful for users to call directly.</li>
-                <li>Due to the usage of code generation, users do not need to define them manually.</li>
-            </ul>
+                  | PersistNull
+                  | PersistList [PersistValue]
+                  | PersistMap [(T.Text, PersistValue)]
+                  | PersistForeignKey ByteString -- ^ intended especially for MongoDB backend
+                </codeblock>
+            <p id="ba4">Each Persistent backend needs to know how to translate the relevant values into something the database can understand. However, it would be awkward do have to express all of our data simply in terms of these basic types. The next layer is the <code>PersistField</code> typeclass, which defines how an arbitrary Haskell datatype can be marshaled to and from a <code>PersistValue</code>. A PersistField correlates to a column in a SQL database. In our person example above, name and age would be our <code>Persistfield</code>s.</p>
+            <p id="ba5">To tie up the user side of the code, our last typeclass is <code>PersistEntity</code>. An instance of PersistEntity correlates with a table in a SQL database. This typeclass defines a number of functions and some associated types.
         </section>
         <section id="codegen">
             <title>Code Generation</title>
@@ -66,9 +69,9 @@
         <section id="persistbackend">
             <title>PersistBackend</title>
             <p id="bc1">One last detail is left unexplained from the previous example: what are those withSqliteConn and runSqlConn functions doing, and what is that monad that our database actions are running in?</p>
-            <p id="bc2">All database actions need to occur within an instance of <code>PersistBackend</code>. As its name implies, every backend (PostgreSQL, SQLite, MongoDB) defines its own instance of PersistBackend. This is where all the translations from <code>PersistValue</code> to database-specific values occur, where SQL code generation happens, and so on.</p>
+            <p id="bc2">All database actions need to occur within an instance of <code>PersistBackend</code>. As its name implies, every backend (PostgreSQL, SQLite, MongoDB) defines its own instance of PersistBackend. This is where all the translations from <code>PersistValue</code> to database-specific values occur, where SQL query generation happens, and so on.</p>
             <advanced>
-                <p id="bc3">As you can imagine, even though PersistBackend provides a safe, well-typed interface to the outside world, there is a lot of unsafe magic that happens internally to make all this possible. This is a case where the only solution is thorough unit testing. However, by testing this code once, thoroughly, in a central location, we can centralize all of our error-prone code into a single location and make sure it is as bug-free as possible.</p>
+                <p id="bc3">As you can imagine, even though PersistBackend provides a safe, well-typed interface to the outside world, there are a lot of database interactions that could go wrong. However, by testing this code automatically and thoroughly in a central location, we can centralize our error-prone code into a single location and make sure it is as bug-free as possible.</p>
             </advanced>
             <p id="bc4">withSqliteConn creates a single connection to a database using its supplied connection string. For our test cases, we will use ":memory:", which simply uses an in-memory database. runSqlConn uses that connection to run the inner action, in this case, SqlPersist. Both SQLite and PostgreSQL share the same instance of PersistBackend.</p>
             <p id="bc5">One important thing to note is that everything which occurs inside a single call to runSqlConn runs in a single transaction. This has two important implications:</p>
@@ -100,7 +103,7 @@
             <li>Field removals: since this can result in data loss, Persistent by default will refuse to perform the action (you can force the issue by using runMigrationUnsafe instead of runMigration, though it is <b>not</b> recommended).</li>
         </ul>
         <p id="m8">runMigration will print out the migrations it is running on stderr (you can bypass this by using runMigrationSilent). Whenever possible, it uses ALTER TABLE calls. However, in SQLite, ALTER TABLE has very limited abilities, and therefore Persistent must resort to copying the data from one table to another.</p>
-        <p id="m9">Finally, if instead of <i>performing</i> a migration, you just want Persistent to give you hints about what migrations are necessary, use the printMigration function. This function will print out the migrations which runMigration would perform for you. This may be useful for performing migrations that Persistent is not capable of, or adding arbitrary SQL to a migration, or just to log what migrations occurred.</p>
+        <p id="m9">Finally, if instead of <i>performing</i> a migration, you just want Persistent to give you hints about what migrations are necessary, use the printMigration function. This function will print out the migrations which runMigration would perform for you. This may be useful for performing migrations that Persistent is not capable of, for adding arbitrary SQL to a migration, or just to log what migrations occurred.</p>
 
         <advanced>
             <p id="m10">Although there is no official Persistent integration, there is a haskell package that can assist with running migrations called <hackage>dbmigrations</hackage>.</p>
@@ -149,12 +152,7 @@
     </section>
     <section id="relations">
         <title>Relations</title>
-        <p id="r1">Persistent is non-relational. This means that it is impossible to declare that a Person contains a list of Cars, for example. This is done for a few reasons:</p>
-        <ul>
-            <li>If we represented the Haskell datatypes that way, we would need to load up <i>all</i> related records. For a normal person, loading up all their cars may not be problematic, but just wait till someone requests the Bruce Wayne record.</li>
-            <li>Not all backends supports relations.</li>
-        </ul>
-        <p id="r2">Of course, we need some way to deal with these relations in Persistent. We do this by embedding a Key value in the related entity. So in our car example:</p>
+        <p id="r1">Persistent allows references between your data types in a manner that is consistent with supporting non-SQL databases. We do this by embedding a Key value in the related entity. So if a person has many cars:</p>
         <snippet name="persistent-cars"/>
         <advanced>
             <p id="r3">You might be wondering what that <code>PersonId</code> is. Persistent automatically defines a type synonym <code>type PersonId = Key Person</code> for all of your entities.</p>
@@ -176,6 +174,7 @@
             <li>Advanced: select enumerator interface</li>
             <li>raw SQL</li>
             <li>Join modules</li>
+            <li>custom table/column names</li>
         </ul>
     </section>
 </chapter>

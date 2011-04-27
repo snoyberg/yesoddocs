@@ -62,7 +62,7 @@ article
     color: #666
 .comment-count.link
     cursor: pointer
-    color: blue
+    color: #ccc
     text-decoration: underline
 .comments
     margin-left: 3em

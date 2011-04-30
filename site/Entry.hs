@@ -1,4 +1,7 @@
-module Entry where
+module Entry
+    ( Entry (..)
+    , loadEntries
+    ) where
 
 import qualified Data.ByteString as S
 import Data.ByteString.UTF8 (toString)
@@ -11,32 +14,42 @@ import System.Locale
 import Text.Hamlet
 import Data.Ord (comparing)
 import Text.Pandoc
+import qualified Text.XML.Enumerator.Document as D
+import Text.XML.Enumerator.Parse (decodeEntities)
+import qualified Data.XML.Types as XML
+import Dita (renderDita)
 
-data EntryFormat = EFHtml | EFMarkdown
+data EntryFormat = EFHtml String | EFMarkdown String | EFDita XML.Document
 
 loadEntry :: String -> IO Entry
 loadEntry slug = do
     let fp = "blog/" ++ slug
     withFile fp ReadMode $ \h -> do
         firstLine <- toString `fmap` S.hGetLine h
-        (format, title) <-
+        format <-
             case firstLine of
                 "!markdown" -> do
                     title <- toString `fmap` S.hGetLine h
-                    return (EFMarkdown, title)
-                _ -> return (EFHtml, firstLine)
+                    return $ EFMarkdown title
+                "!dita" -> do
+                    doc <- D.readFile_ ("../dita/" ++ slug ++ ".dita") decodeEntities
+                    return $ EFDita doc
+                '!':x -> error $ "Unknown first line: " ++ x
+                _ -> return $ EFHtml firstLine
         date' <- fmap toString $ S.hGetLine h
         date <- case reads date' of
                     (d, _):_ -> return d
                     _ -> error $ "Invalid date for " ++ slug ++ ": " ++ date'
         contents <- S.hGetContents h
-        let html =
+        let (html, title) =
                 case format of
-                    EFHtml -> unsafeByteString contents
-                    EFMarkdown -> preEscapedString
-                                $ writeHtmlString defaultWriterOptions
-                                $ readMarkdown defaultParserState
-                                $ toString contents
+                    EFHtml title' -> (unsafeByteString contents, title')
+                    EFMarkdown title'
+                        -> (preEscapedString
+                         $ writeHtmlString defaultWriterOptions
+                         $ readMarkdown defaultParserState
+                         $ toString contents, title')
+                    EFDita doc -> renderDita doc
         return Entry
             { entrySlug = slug
             , entryTitle = title

@@ -93,7 +93,7 @@
             <li>You can apply functions and constructors to values.</li>
             <li>Binding order works the same as in Haskell.</li>
             <li>You can use the dollar sign ($) operator like you can in Haskell to control binding order.</li>
-            <li>You can also use parantheses.</li>
+            <li>You can also use parentheses.</li>
         </ul>
         <p id="f3">The syntax for the contents of an interpolation are identical amongst Hamlet, Cassius and Julius, and do not depend on the type of interpolation (variable, URL or embedding).</p>
     </section>

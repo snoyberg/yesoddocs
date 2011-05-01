@@ -255,7 +255,7 @@ toPieces "/foo/bar/baz/" = ["foo", "bar", "baz", ""]</codeblock>
             <title>Short Circuiting</title>
             <p id="ghandler7">The following functions immediately end execution of a handler function and return a result to the user.</p>
             <defs>
-                <def term="redirect">Sends a redirect response to the user. You can specify whether you want a 301, 302 or 303 status code. This function takes a type-safe URL as a destination. There are also <code>redirectString</code> and <code>redirecParams</code> variants.</def>
+                <def term="redirect">Sends a redirect response to the user. You can specify whether you want a 301, 302 or 303 status code. This function takes a type-safe URL as a destination. There are also <code>redirectString</code> and <code>redirectParams</code> variants.</def>
                 <def term="notFound">Return a 404 response. This can be useful if a user requests a database value that doesn't exist.</def>
                 <def term="permissionDenied">Return a 403 response with a specific error message.</def>
                 <def term="invalidArgs">A 400 response with a list of invalid arguments.</def>

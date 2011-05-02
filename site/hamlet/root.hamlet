@@ -2,8 +2,10 @@
     <div .yesod-tertiary-content-inner>
         <h2>Where
         <div .yesod-tertiary-content-body>
-            <p>Install:
-            <pre>$ cabal install yesod
+            <p>
+                Use the scaffolding tool to quickly #
+                <a href=@{FiveMinutesR} style=color:white;>
+                    create your first Yesod project
             <p>Get the source:
             <pre>$ git clone https://github.com/snoyberg/yesod.git
 <div .yesod-secondary-content>
@@ -17,9 +19,7 @@
             <li>
                 <a href=@{FiveMinutesR}>Yesod in 5 minutes
             <li>
-                <a href=@{ChapterR "faq"}>Frequently Asked Questions
-            <li>
-                <a href="http://wiki.yesodweb.com/">Wiki
+                <a href=@{CommunityR}>Community resources
 <div .yesod-clear>
 <div .yesod-primary-content>
     <div .yesod-primary-content-inner>
@@ -28,13 +28,14 @@
         <p>
             Yesod is a Haskell web framework for productive development of type-safe, RESTful, high performance web applications. #
             <a href=@{AboutR}> Learn more.
+        <h1>Getting Started
         <p>
             If you are new to Yesod, you should start off with #
-            <a href=@{FiveMinutesR}>the five minute tutorial
-            , which will get you started quickly. The #
+            <a href=@{FiveMinutesR}>the five minute start instructions
+            . The #
             <a href=@{ScreencastsR}>screencasts
             \ give a nice introduction to some of the advanced concepts, and #
             <a href=@{BookR}>the book
-            \ is the recommended approach to learning Yesod. If you already know Yesod, and are struggling with a specific issue, check out the #
-            <a href=@{ChapterR "faq"}>Frequently Asked Questions
-            \.
+            \ is the recommended approach to learning Yesod. Ask the #
+            <a href=@{CommunityR}>commnunity
+            \ for help.

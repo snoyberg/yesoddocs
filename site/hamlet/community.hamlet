@@ -1,21 +1,24 @@
-<p>Yesod has an active, vibrant community that is happy to help you get started. If you want to get involved, you should check out:
+<header>
+    <h1>Yesod Community
+<article>
+    <p>Yesod has an active, vibrant community that is happy to help you get started. If you want to get involved, you should check out:
 
-<ul>
-    <li>
-        <a href="http://www.haskell.org/mailman/listinfo/web-devel">web-devel mailing list
-        \ Most public Yesod discussions take place over here. Feel free to post any discussions or questions.
-    <li>
-        <a href="http://www.reddit.com/r/haskell/">Haskell Reddit
-        \ is a good place to post Yesod related posts. If you have specific questions, you might prefer #
-        <a href="http://stackoverflow.com/">Stack Overflow
-        ; just make sure to include the haskell tag.
-    <li>
-        <a href="https://github.com/snoyberg/yesod/issues">Issue Tracker
-        # If you want to report a bug, we use the Github issue tracker. In general, you should just use the Yesod repository issue tracker instead of the issue tracker for each individual repo, as it is easier for the developers to keep track of open issues that way.
-    <li>
-        <a href="http://www.haskellers.com/teams/4/">Haskellers web development Special Interest Group
-        \ Not as popular as the web-devel mailing list, but also a good place to bring things up. If you want to use it, don't forget to subscribe to the #
-        <a href="http://www.haskellers.com/feed/team/4/">Atom news feed
-    <li>
-        <a href="http://wiki.yesodweb.com/">Yesod Wiki
-        \ This is a great place to post ideas for collaboration and tutorials.
+    <ul>
+        <li>
+            <a href="http://www.haskell.org/mailman/listinfo/web-devel">web-devel mailing list
+            \ Most public Yesod discussions take place over here. Feel free to post any discussions or questions.
+        <li>
+            <a href="http://www.reddit.com/r/haskell/">Haskell Reddit
+            \ is a good place to post Yesod related posts. If you have specific questions, you might prefer #
+            <a href="http://stackoverflow.com/">Stack Overflow
+            ; just make sure to include the haskell tag.
+        <li>
+            <a href="https://github.com/snoyberg/yesod/issues">Issue Tracker
+            \ If you want to report a bug, we use the Github issue tracker. In general, you should just use the Yesod repository issue tracker instead of the issue tracker for each individual repo, as it is easier for the developers to keep track of open issues that way.
+        <li>
+            <a href="http://www.haskellers.com/teams/4/">Haskellers web development Special Interest Group
+            \ Not as popular as the web-devel mailing list, but also a good place to bring things up. If you want to use it, don't forget to subscribe to the #
+            <a href="http://www.haskellers.com/feed/team/4/">Atom news feed
+        <li>
+            <a href="http://wiki.yesodweb.com/">Yesod Wiki
+            \ This is a great place to post ideas for collaboration and tutorials.

@@ -20,7 +20,6 @@ body.yesod-wide {
 .yesod-home .yesod-main-wrapper {
     width: 900px;
     margin: auto auto;
-    margin-top: 30px;
 }
 .yesod-wide .yesod-border-wrap {
 }
@@ -95,7 +94,7 @@ body.yesod-wide {
 .yesod-home .yesod-secondary-content,
 .yesod-home .yesod-tertiary-content {
     border-top: 4px solid #7f808a;
-    height: 13em;
+    height: 11em;
 }
 .yesod-tertiary-content {
     float:left;

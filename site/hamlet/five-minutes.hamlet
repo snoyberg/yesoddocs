@@ -3,36 +3,36 @@
 <article>
     <ol>
         <li>
-            \Get the 
+            Get the 
             <a href="http://hackage.haskell.org/platform/">Haskell Platform
         <li>
-            \Update your list of packages by running 
-            <code>cabal update
+            Update your list of packages
+            <pre>cabal update
         <li>
-            \Install Yesod by running 
-            <code>cabal install yesod
+            Install Yesod
+            <pre>cabal install yesod
         <li>
-            <i>Optional: 
-            \get the examples from this site by running 
-            <code>cabal install yesod-examples
+            <i>Optional:
+            \ get the examples from this site by running 
+            <pre>cabal install yesod-examples
         <li>
-            \Create a new project by using the scaffolding tool: run 
-            <code>yesod
-            \ and answer the questions.
+            Create a new project by answering the questions of the scaffolding tool
+            <pre>yesod init
         <li>
-            \Change into the project directory.
-        <li>Automatically install all extra support libraries and build your appliation with 
-            <code>cabal install
+            Change into the project directory.
+            <pre>cd my-project
         <li>
-            \Start up your development server by running 
-            <code>./dist/build/devel-server/devel-server
-            \. (On Windows, use backslashes.)
+            Automatically install all extra support libraries and build your application
+            <pre>cabal install --only-dependencies && cabal build
         <li>
-            \See your application at 
+            Start up your development server.
+            <pre> wai-handler-devel 3000 Controller withMyData
+        <li>
+            View your application at: #
             <a href="http://localhost:3000/">http://localhost:3000
         <li>
-            \Learn more about Yesod by 
-            <a href="@{BookR}">reading the book
-            \.
+            <a href="@{BookR}"> read the book
+            \ to learn more about Yesod
+
     <p .note>Note: The scaffolded site you create with the <code>yesod</code> executable will likely depend on libraries that are not included with the <code>cabal install yesod</code> command, in particular database backends. You should make certain you build your app the first time with <code>cabal install</code> to get these dependencies.
     <p .note>Yesod requires the presence of the happy and alex binaries. These will be included if you install the Haskell Platform, but not if you install GHC by itself.

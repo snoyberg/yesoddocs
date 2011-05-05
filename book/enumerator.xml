@@ -103,7 +103,7 @@ sum4 getNum = do
 
         <codeblock>Continue (Stream a -> Iteratee a m b)</codeblock>
 
-        <p id="step5">Euerka! We've finally seen the Iteratee datatype! Actually, Iteratee is a very boring datatype that is only present to allow us to declare cool instances (eg, Monad) for our functions. Iteratee is defined as:</p>
+        <p id="step5">Eureka! We've finally seen the Iteratee datatype! Actually, Iteratee is a very boring datatype that is only present to allow us to declare cool instances (eg, Monad) for our functions. Iteratee is defined as:</p>
 
         <codeblock>newtype Iteratee a m b = Iteratee (m (Step a m b))</codeblock>
 
@@ -250,7 +250,7 @@ head' =
 
         <li>Using the Monad instance of Iteratee can allow you to build up complicated iteratees from simpler ones.</li>
 
-        <li>he three states an enumerator can be in are Continue (still processing data), Yield (a result is ready) and Error (duh).</li>
+        <li>The three states an enumerator can be in are Continue (still processing data), Yield (a result is ready) and Error (duh).</li>
 
         <li>Well behaved iteratees will never return a Continue after receiving an EOF.</li>
     </ul>

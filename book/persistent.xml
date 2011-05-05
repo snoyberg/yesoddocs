@@ -147,7 +147,7 @@
             <p id="u1">The final associated type is is <code>Unique</code>. Its usage is slightly different than that of its siblings:</p>
             <snippet name="persistent-unique"/>
             <p id="u2">To declare a unique combination of fields, we add an extra line to our declaraction. Persistent knows that it is defining a unique constructor, since the line begins with a capital letter. Each following word must be a field in this entity.</p>
-            <p id="u3">The main restriction on uniqueness is that it can only be applied non-null fields. The reason for this is that the SQL standard is ambiguous on how uniqueness should be applied to NULL (eg, is NULL=NULL true or false?). Besides that ambiguity, most SQL engines in fact implement rules which would be <i>contary</i> to what the Haskell datatypes for anticipate (eg, PostgreSQL says that NULL=NULL is false, whereas Haskell says Nothing == Nothing is True).</p>
+            <p id="u3">The main restriction on uniqueness is that it can only be applied non-null fields. The reason for this is that the SQL standard is ambiguous on how uniqueness should be applied to NULL (eg, is NULL=NULL true or false?). Besides that ambiguity, most SQL engines in fact implement rules which would be <i>contrary</i> to what the Haskell datatypes anticipate (eg, PostgreSQL says that NULL=NULL is false, whereas Haskell says Nothing == Nothing is True).</p>
         </section>
     </section>
     <section id="relations">

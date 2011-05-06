@@ -12,21 +12,17 @@
             Install Yesod
             <pre>cabal install yesod
         <li>
-            <i>Optional:
-            \ get the examples from this site by running 
-            <pre>cabal install yesod-examples
-        <li>
             Create a new project by answering the questions of the scaffolding tool
             <pre>yesod init
         <li>
             Change into the project directory.
             <pre>cd my-project
         <li>
-            Automatically install all extra support libraries and build your application
-            <pre>cabal install --only-dependencies && cabal build
+            Automatically install all extra support libraries.
+            <pre>cabal install --only-dependencies
         <li>
             Start up your development server.
-            <pre> wai-handler-devel 3000 Controller withMyData
+            <pre>yesod devel
         <li>
             View your application at: #
             <a href="http://localhost:3000/">http://localhost:3000
@@ -34,5 +30,4 @@
             <a href="@{BookR}"> read the book
             \ to learn more about Yesod
 
-    <p .note>Note: The scaffolded site you create with the <code>yesod</code> executable will likely depend on libraries that are not included with the <code>cabal install yesod</code> command, in particular database backends. You should make certain you build your app the first time with <code>cabal install</code> to get these dependencies.
     <p .note>Yesod requires the presence of the happy and alex binaries. These will be included if you install the Haskell Platform, but not if you install GHC by itself.

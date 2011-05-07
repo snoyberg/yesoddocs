@@ -36,7 +36,7 @@
             <li>Other Hamlet templates. This is great for creating a chunk of code that will be reused in other templates. This is called <term>embedding</term>.</li>
         </ul>
         <p id="ts2">Cassius provides support for the first two forms of interpolation, but instead of the ToHtml typeclass, there is the ToCss typeclass. Embedding does not make as much sense with CSS. Julius provides support for all three.</p>
-        <advanced><p id="ts3">Cassius used to provide support for something similar to embedding, called mixins. This was removed due to implementation details regarding the whitespace syntax. There are plans for an alternate CSS templating language which will not be whitespace sensitive, which will hopefully reintroduce mixins, along with some other nice features.</p></advanced>
+        <advanced><p id="ts3">Cassius used to provide support for something similar to embedding, called mixins. This was removed due to implementation details regarding the whitespace syntax. We now also have Lucius (described below) that provides these features.</p></advanced>
         <p id="ts4">In order to perform an interpolation, you enter the interpolation character, followed by the variable inside braces. For example, <code>My name is #{name}</code>. The hash is used for variable interpolation, at-sign (@) for URL interpolation, and caret (^) for embedding.</p>
     </section>
     <section id="basic-syntax">
@@ -196,7 +196,7 @@ getHomeR = defaultLayout $ do
             <li>You cannot copy-paste a CSS file into a Cassius template.</li>
             <li>It's difficult to add extra features like block nesting (to be described below).</li>
         </ul>
-        <p id="lucius2">Whether or not this is a serious problem is a subjective matter. To provide Yesod users with the greatest flexibility, there is now a second CSS language: Lucius. Cassius and Lucius share a number of things: variable/URL interpolation syntax is identical, and they end up producing the same datatypes. It is therefore trivial to mix-and-match them, and even use them simultaneously in a single project.</p>
+        <p id="lucius2">Whether or not this is a serious problem is a subjective matter. To provide Yesod users with the greatest flexibility, there is now a second CSS language: Lucius. Cassius and Lucius share a number of things: variable/URL interpolation syntax is identical, and they end up producing the same datatypes. They are therefore completely interchangeable, and even use them simultaneously in a single project.</p>
         <p id="lucius3">The difference is that Lucius is designed as a superset of CSS. It should be possible to take any valid CSS file, copy it into a Lucius file, and get the same results (albeit a bit minified).</p>
         <advanced>
             <p id="lucius4">Those familiar with it might note a corrolary to the Sass/Less divide in the Ruby world.</p>

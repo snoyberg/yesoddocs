@@ -72,7 +72,7 @@ need to rearrange. Need to cover:
 
             <p id="ww6">In general, you should avoid nub since it has very bad
                 performance. Usually when you are looking for uniqueness, you
-                do not care about sort, and therefore <code>map head . group .  sort</code>
+                do not care about order, and therefore <code>map head . group .  sort</code>
                 is more efficient than a call to nub. However,
                 in our case, order <i>is</i> important: we would not want to
                 include jQuery UI before we include jQuery. Therefore, we are

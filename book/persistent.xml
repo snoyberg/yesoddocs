@@ -115,7 +115,7 @@
         <p id="attr1">So far, we have seen a very simple syntax for our persist blocks: a line for the name of our entities, and then an indented line for each field with two words: the name of the field and the datatype of the field. Persistent handles more than this: you can assign an arbitrary list of attributes after the first two words on a line.</p>
         <p id="attr2">Let's say that we want to add two new fields to our Person entity: a favorite color (optional), and the timestamp of when he/she was added to the system. For entities already in the database, we want to just use the current date-time for that timestamp.</p>
         <snippet name="persistent-attributes"/>
-        <p id="attr3">Maybe is one of many built in, single word attributes. We will see many more below. The default attribute is backend specific, and uses whatever syntax is understood by the database. In this case, it uses the database's built-in now() function. Let's say we now want to add a field for favorite programming language:</p>
+        <p id="attr3">Maybe is one of many built in, single word attributes. We will see many more below. The default attribute is backend specific, and uses whatever syntax is understood by the database. In this case, it uses the database's built-in CURRENT_TIMESTAMP function. Let's say we now want to add a field for favorite programming language:</p>
         <snippet name="persistent-attributes2"/>
         <p id="attr4">We need to surround the string with single quotes so that the database can properly interpret it. Finally, Persistent can use double quotes for containing white space, so let's say we want to set someone's default home country to the El Salvador:</p>
         <snippet name="persistent-attributes3"/>

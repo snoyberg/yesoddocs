@@ -3,7 +3,7 @@
     <p>
         Users of Yesod are web developers that want something better. Much of today's web development occurs in dynamic languages like PHP, Python, and Ruby. We see the results: cross-site scripting attacks, applications that are difficult to scale, and a choice between countless minor bugs entering production or enormous test suites that take ages to run.
 
-    <p> There is a false dichotomy of Java (for type-safety, scalability, and high performance) or dynamic languages for high productivity. We think you can have both options, and more. The key is to start with haskell- a fast, compiled language with an expressive type system that allows programmers to maintain high productivity. Haskell also has highly scalable concurrency built in.
+    <p> There is a false dichotomy of Java (for type-safety, scalability, and high performance) or dynamic languages for high productivity. We think you can have both options, and more. The key is to start with Haskell- a fast, compiled language with an expressive type system that allows programmers to maintain high productivity. Haskell also has highly scalable concurrency built in.
 
     <p> Web developers have been able to opt for the ease of use of dynamic languages because often the performance problems are focused around the database. However, there are usually critical parts of an application where performance of application code is a bottleneck, and most applications can achieve noticeably faster response times with compiled code.
 
@@ -13,7 +13,7 @@
 
 <section #what>
     <h1>What
-    <p> Yesod is in many ways a traditional MVC REST web framework- the revolution comes from consitently applying haskell's strengths to that model to achieve web applications that are:
+    <p> Yesod is in many ways a traditional MVC REST web framework- the revolution comes from consitently applying Haskell's strengths to that model to achieve web applications that are:
     <ul>
         <li>type-safe
         <li>secure
@@ -23,7 +23,7 @@
     <p> Yesod is built on a number of sophisticated techniques to provide fast performance. Enumerators provide constant memory usage; blaze-builder efficiently generates html. However, the tedious aspects of performance are kept under the hood so that a user can reap their benefits without boilerplate.
     <p> Scalability is achieved through the #
         <a href=@{EntryR "announcing-warp"}> Warp web server, which can handle tens of thousands of simultaneous requests.
-    <p> When our goals conflict with programmer productivity, we use haskell's most advanced compile-time features (template haskell and quasi-quoting) to keep things declaritive.
+    <p> When our goals conflict with programmer productivity, we use Haskell's most advanced compile-time features (template Haskell and quasi-quoting) to keep things declaritive.
     <p> Instead of creating a single, monolithic package containing our entire framework, Yesod has spun off dozens of individual packages that can be used independently of each other. But all of these packages have been designed to integrate well with each other to make your Yesod coding as productive as possible.
 
 <div .clear>

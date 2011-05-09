@@ -1,12 +1,12 @@
 body
-    font-family: Calibri, Helvetica, Cantarell, verdana, sans-serif
+    /*font-family: Calibri, Helvetica, Cantarell, verdana, sans-serif*/
     margin: 0
     background: #A3B5BA
 h1, h2, h3, h4, h5, h6
-    font-family: Cambria, Droid Serif, Georgia, serif
+    /*font-family: Cambria, Droid Serif, Georgia, serif*/
     font-weight: normal
 code, pre
-    font-family: Consolas, Inconsolata, monospaced
+    /*font-family: Consolas, Inconsolata, monospaced*/
 header
     text-align: center
     color: #353948

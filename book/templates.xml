@@ -199,7 +199,7 @@ getHomeR = defaultLayout $ do
         <p id="lucius2">Whether or not this is a serious problem is a subjective matter. To provide Yesod users with the greatest flexibility, there is now a second CSS language: Lucius. Cassius and Lucius share a number of things: variable/URL interpolation syntax is identical, and they end up producing the same datatypes. They are therefore completely interchangeable, and even use them simultaneously in a single project.</p>
         <p id="lucius3">The difference is that Lucius is designed as a superset of CSS. It should be possible to take any valid CSS file, copy it into a Lucius file, and get the same results (albeit a bit minified).</p>
         <advanced>
-            <p id="lucius4">Those familiar with it might note a corrolary to the Sass/Less divide in the Ruby world.</p>
+            <p id="lucius4">Those familiar with it might note a corrolary to the Sass/Scss divide in the Ruby world.</p>
         </advanced>
         <p id="lucius5">Besides being a CSS pass-through with variable interpolation, Lucius also intends to add convenience features. For now, this is limited to block nesting. This means that Lucius will convert:</p>
         <codeblock>foo, bar {

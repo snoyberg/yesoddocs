@@ -7,7 +7,7 @@ instance Yesod HelloWorld where approot _ = ""
 getHomeR = defaultLayout $ do
 -- START
     [$hamlet|
-<p #my-id .my-class
+<p #my-id .my-class>
     This paragraph has an ID and a class. It also has #
     <b>bold
     \ and #

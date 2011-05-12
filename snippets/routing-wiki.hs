@@ -3,6 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Yesod
 import Data.Text (Text)
+import Web.Routes.Quasi
 data Wiki = Wiki
 -- START
 newtype WikiPage = WikiPage { unWikiPage :: [Text] }

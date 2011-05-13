@@ -1,0 +1,4 @@
+static/tmp/
+client_session_key.aes
+*.swp
+dist/

@@ -1,0 +1,37 @@
+User
+    ident Text
+    password Text Maybe Update
+    UniqueUser ident
+
+TFamily
+    created UTCTime
+
+Topic
+    owner UserId
+    title Text
+    created UTCTime
+    family TFamilyId
+
+TopicContent
+    topic TopicId
+    author UserId
+    summary Text Maybe
+    changed UTCTime
+    format Text
+    content Text
+
+TMap
+    owner UserId
+    title Text
+    created UTCTime
+    node TMapNodeId
+
+TContent
+    topic TopicId Maybe
+    tmap TMapId Maybe
+
+TMapNode
+    parent TMapNodeId Maybe
+    position Int
+    content TContentId Maybe
+    title Text Maybe

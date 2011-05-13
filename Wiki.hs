@@ -1,5 +1,6 @@
 {-# LANGUAGE QuasiQuotes, TemplateHaskell, TypeFamilies #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Wiki
     ( Wiki (..)
     , WikiRoute (..)
@@ -7,19 +8,32 @@ module Wiki
     , Handler
     , Widget
     , maybeAuth
+    , maybeAuthId
     , requireAuth
+    , requireAuthId
     , module Yesod.Core
     , module Yesod.Form
+    , module Yesod.Persist
     , module Settings
     , module Model
     , module StaticFiles
     , StaticRoute (..)
     , AuthRoute (..)
+    , WikiMessage (..)
     , lift
     , liftIO
+    , getCurrentTime
+    , (<$>)
+    , (<*>)
+    , Text
+    , setMessage
+    , addNewsItem
+    , mappend
     ) where
 
-import Yesod.Core
+import Data.Time
+import Yesod.Core hiding (YesodBreadcrumbs (..), breadcrumbs, setMessage)
+import qualified Yesod.Core
 import Yesod.Form
 import Yesod.Persist
 import Yesod.Helpers.Static
@@ -37,6 +51,13 @@ import Text.Jasmine (minifym)
 import qualified Data.Text as T
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.IO.Class (liftIO)
+import Yesod.Message
+import Data.Text (Text)
+import Control.Applicative ((<$>), (<*>))
+import Text.Hamlet (Html)
+import Data.Monoid (mappend)
+
+mkMessage "Wiki" "messages" "en"
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -83,7 +104,9 @@ instance Yesod Wiki where
 
     defaultLayout widget = do
         mmsg <- getMessage
+        (title, _bcs) <- breadcrumbs
         pc <- widgetToPageContent $ do
+            setTitle' title
             widget
             addCassius $(Settings.cassiusFile "default-layout")
         hamletToRepHtml $(Settings.hamletFile "default-layout")
@@ -135,6 +158,59 @@ instance YesodAuth Wiki where
         case x of
             Just (uid, _) -> return $ Just uid
             Nothing -> do
-                fmap Just $ insert $ User (credsIdent creds) Nothing
+                fmap Just $ insert $ User (credsIdent creds) Nothing "Unnamed User"
 
     authPlugins = [authOpenId]
+
+instance YesodBreadcrumbs Wiki where
+    breadcrumb RootR = return (MsgHomepageTitle, Nothing)
+    breadcrumb CreateTopicR = return (MsgCreateTopicTitle, Just RootR)
+    breadcrumb (TopicR tid) = do
+        t <- runDB $ get404 tid
+        return (MsgTopicTitle $ topicTitle t, Just RootR)
+
+    breadcrumb StaticR{} = return (MsgNotFound, Nothing)
+    breadcrumb AuthR{} = return (MsgNotFound, Nothing)
+    breadcrumb FaviconR{} = return (MsgNotFound, Nothing)
+    breadcrumb RobotsR{} = return (MsgNotFound, Nothing)
+
+class YesodBreadcrumbs y where
+    -- | Returns the title and the parent resource, if available. If you return
+    -- a 'Nothing', then this is considered a top-level page.
+    breadcrumb :: Route y -> GHandler sub y (WikiMessage, Maybe (Route y))
+
+-- | Gets the title of the current page and the hierarchy of parent pages,
+-- along with their respective titles.
+breadcrumbs :: YesodBreadcrumbs y => GHandler sub y (WikiMessage, [(Route y, WikiMessage)])
+breadcrumbs = do
+    x' <- getCurrentRoute
+    tm <- getRouteToMaster
+    let x = fmap tm x'
+    case x of
+        Nothing -> return (MsgNotFound, [])
+        Just y -> do
+            (title, next) <- breadcrumb y
+            z <- go [] next
+            return (title, z)
+  where
+    go back Nothing = return back
+    go back (Just this) = do
+        (title, next) <- breadcrumb this
+        go ((this, title) : back) next
+
+setTitle' :: WikiMessage -> GWidget s Wiki ()
+setTitle' msg = do
+    l <- lift languages
+    y <- lift getYesod
+    setTitle $ renderMessage y y l msg
+
+setMessage :: WikiMessage -> Handler ()
+setMessage msg = do
+    mr <- getMessageRender
+    Yesod.Core.setMessage $ mr msg
+
+addNewsItem title url content = do
+    now <- liftIO getCurrentTime
+    render <- lift getUrlRender
+    _ <- insert $ NewsItem now title (render url) content
+    return ()

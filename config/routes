@@ -5,3 +5,10 @@
 /robots.txt RobotsR GET
 
 / RootR GET
+
+/create/topic CreateTopicR GET POST
+
+/show/topic/#TopicId TopicR GET POST
+
+/feed FeedR GET
+/feed/item/#NewsItemId FeedItemR GET

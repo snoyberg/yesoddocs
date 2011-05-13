@@ -18,6 +18,9 @@ import Network.Wai (Application)
 
 -- Import all relevant handler modules here.
 import Handler.Root
+import Handler.Topic
+import Handler.CreateTopic
+import Handler.Feed
 
 -- This line actually creates our YesodSite instance. It is the second half
 -- of the call to mkYesodData which occurs in Wiki.hs. Please see

@@ -29,7 +29,7 @@ import Language.Haskell.TH.Syntax
 import Database.Persist.Postgresql
 
 import Control.Monad.IO.Control (MonadControlIO)
-import Yesod.Widget (addWidget, addCassius, addJulius, addLucius)
+import Yesod.Widget (addWidget, addCassius, addJulius, addLucius, whamletFile)
 import Data.Monoid (mempty, mappend)
 import System.Directory (doesFileExist)
 import Data.Text (Text)
@@ -140,7 +140,7 @@ juliusFile = H.juliusFileDebug . toJuliusFile
 
 widgetFile :: FilePath -> Q Exp
 widgetFile x = do
-    let h = unlessExists toHamletFile hamletFile
+    let h = unlessExists toHamletFile (whamletFile . toHamletFile)
     let c = unlessExists toCassiusFile cassiusFile
     let j = unlessExists toJuliusFile juliusFile
     let l = unlessExists toLuciusFile luciusFile

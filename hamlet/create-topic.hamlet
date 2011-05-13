@@ -1,0 +1,8 @@
+$maybe err <- merr
+    <p .error>_{err}
+<form method=post enctype=#{enctype}>
+    <table>
+        ^{form}
+        <tr>
+            <td colspan=3>
+                <input type=submit value=_{MsgCreateTopic}>

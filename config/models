@@ -1,6 +1,7 @@
 User
     ident Text
     password Text Maybe Update
+    name Text
     UniqueUser ident
 
 TFamily
@@ -8,16 +9,16 @@ TFamily
 
 Topic
     owner UserId
-    title Text
+    title Text Update
     created UTCTime
     family TFamilyId
 
 TopicContent
-    topic TopicId
+    topic TopicId Eq
     author UserId
     summary Text Maybe
-    changed UTCTime
-    format Text
+    changed UTCTime Desc
+    format TopicFormat
     content Text
 
 TMap
@@ -35,3 +36,10 @@ TMapNode
     position Int
     content TContentId Maybe
     title Text Maybe
+
+NewsItem
+    created UTCTime Desc
+    title Text
+    url Text
+    content Html
+    deriving

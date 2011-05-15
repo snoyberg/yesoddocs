@@ -1,0 +1,7 @@
+<h1>The people who make Yesod
+$forall c <- contribs y
+    <div .contributor>
+        <a href=#{curl c}>
+            <img src=#{gravatar 150 $ cemail c}>
+            <span>#{cname c}
+        <div .bio>#{cbio c}

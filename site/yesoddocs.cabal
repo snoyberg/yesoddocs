@@ -50,6 +50,7 @@ executable         simple-server
                  , hscolour           >= 1.17       && < 1.18
                  , template-haskell
                  , xhtml              >= 3000       && < 3001
+                 , pureMD5
     ghc-options:   -Wall -threaded -Werror
 
 executable         fastcgi

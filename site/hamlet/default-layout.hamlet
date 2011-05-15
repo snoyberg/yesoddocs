@@ -16,6 +16,8 @@
                             <li>
                                 <a href=@{BookR}>Book
                             <li>
+                                <a href=@{ContributorsR}>Contributors
+                            <li>
                                 <a href=@{CommunityR}>Community
                             <li>
                                 <a href=@{BlogR}>Blog

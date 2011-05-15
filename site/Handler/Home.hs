@@ -12,6 +12,10 @@ import Data.Time
 import Book
 import qualified Data.Text as T
 import YesodDocs
+import Data.Text (Text, pack, unpack)
+import Data.Digest.Pure.MD5 (md5)
+import qualified Data.ByteString.Lazy.UTF8 as L
+import Data.Char (isSpace, toLower)
 
 getHomeR :: Handler RepHtml
 getHomeR = defaultLayout $ do
@@ -115,3 +119,21 @@ getSitemapR = do
                 (EntryR $ entrySlug e)
                 (UTCTime (entryDay e) $ secondsToDiffTime 0)
                 Monthly 0.5
+
+getContributorsR :: Handler RepHtml
+getContributorsR = do
+    y <- getYesod
+    defaultLayout $ do
+        $(whamletFile "hamlet/contributors.hamlet")
+        addLucius $(luciusFile "contributors")
+
+gravatar :: Int -> Text -> Text
+gravatar s x = T.concat
+    [ "http://www.gravatar.com/avatar/"
+    , hash
+    , "?d=identicon&s="
+    , pack $ show s
+    ]
+  where
+    hash = pack $ show $ md5 $ L.fromString $ map toLower $ trim $ unpack x
+    trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace

@@ -26,7 +26,6 @@ module Wiki
     , (<$>)
     , (<*>)
     , Text
-    , setMessage
     , addNewsItem
     , mappend
     ) where
@@ -106,7 +105,7 @@ instance Yesod Wiki where
         mmsg <- getMessage
         (title, _bcs) <- breadcrumbs
         pc <- widgetToPageContent $ do
-            setTitle' title
+            setTitleI title
             widget
             addCassius $(Settings.cassiusFile "default-layout")
         hamletToRepHtml $(Settings.hamletFile "default-layout")
@@ -145,6 +144,9 @@ instance YesodPersist Wiki where
     runDB db = liftIOHandler
              $ fmap connPool getYesod >>= Settings.runConnectionPool db
 
+instance RenderMessage Wiki FormMessage where
+    renderMessage _ _ = defaultFormMessage
+
 instance YesodAuth Wiki where
     type AuthId Wiki = UserId
 
@@ -158,7 +160,7 @@ instance YesodAuth Wiki where
         case x of
             Just (uid, _) -> return $ Just uid
             Nothing -> do
-                fmap Just $ insert $ User (credsIdent creds) Nothing "Unnamed User"
+                fmap Just $ insert $ User (credsIdent creds) "Unnamed User" False
 
     authPlugins = [authOpenId]
 
@@ -168,6 +170,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb (TopicR tid) = do
         t <- runDB $ get404 tid
         return (MsgTopicTitle $ topicTitle t, Just RootR)
+    breadcrumb SettingsR = return (MsgSettingsTitle, Just RootR)
 
     breadcrumb StaticR{} = return (MsgNotFound, Nothing)
     breadcrumb AuthR{} = return (MsgNotFound, Nothing)
@@ -197,17 +200,6 @@ breadcrumbs = do
     go back (Just this) = do
         (title, next) <- breadcrumb this
         go ((this, title) : back) next
-
-setTitle' :: WikiMessage -> GWidget s Wiki ()
-setTitle' msg = do
-    l <- lift languages
-    y <- lift getYesod
-    setTitle $ renderMessage y y l msg
-
-setMessage :: WikiMessage -> Handler ()
-setMessage msg = do
-    mr <- getMessageRender
-    Yesod.Core.setMessage $ mr msg
 
 addNewsItem title url content = do
     now <- liftIO getCurrentTime

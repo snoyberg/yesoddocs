@@ -35,6 +35,7 @@ library
                      Handler.CreateTopic
                      Handler.Topic
                      Handler.Feed
+                     Handler.Settings
                      Yesod.Message
                      Util
 

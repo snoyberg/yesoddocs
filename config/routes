@@ -12,3 +12,5 @@
 
 /feed FeedR GET
 /feed/item/#NewsItemId FeedItemR GET
+
+/settings SettingsR GET POST

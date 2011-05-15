@@ -14,10 +14,12 @@ import Text.Hamlet.NonPoly (html)
 topicForm :: (Text, TopicFormat, Textarea, Maybe Text)
           -> Handler ((FormResult (Text, TopicFormat, Textarea, Maybe Text), Widget ()), Enctype)
 topicForm (a, b, c, d) = runFormPost $ renderTable $ (,,,)
-    <$> areq textField "Title" (Just a) -- TRANS
-    <*> areq (selectField formats) "Format" (Just b)
-    <*> areq textareaField "Content" (Just c)
-    <*> aopt textField "Summary" (Just d)
+    <$> areq textField (fromLabel MsgTitle) (Just a) -- TRANS
+    <*> areq (selectField formats) (fromLabel MsgFormat) (Just b)
+    <*> areq textareaField (fromLabel MsgContent) (Just c)
+    <*> aopt textField (fromLabel MsgSummary) (Just d)
+
+fromLabel x = FieldSettings x Nothing Nothing Nothing
 
 getTopicR :: TopicId -> Handler RepHtml
 getTopicR tid = do
@@ -32,10 +34,12 @@ getTopicR tid = do
                 notFound
     owner <- runDB $ get404 topicOwner
     mauthor <- if topicOwner == topicContentAuthor then return Nothing else fmap Just $ runDB $ get404 topicContentAuthor
-    maid <- maybeAuthId
+    ma <- maybeAuth
+    let maid = fmap fst ma
+        muser = fmap snd ma
     $(logDebug) $ pack $ concat ["maid: ", show maid, ", topicOwner", show topicOwner]
     mform <-
-        if maid == Just topicOwner
+        if maid == Just topicOwner || fmap userAdmin muser == Just True
             then Just `fmap` (do
                 ((_, w), e) <- topicForm (topicTitle, topicContentFormat, (Textarea $ topicContentContent), Nothing)
                 return (w, e)
@@ -55,7 +59,7 @@ postTopicR tid = do
                 $(logError) "Should only have returned 0 or 1 results"
                 notFound
     (aid, user) <- requireAuth
-    unless (aid == topicOwner) $ permissionDenied ""
+    unless (aid == topicOwner || userAdmin user) $ permissionDenied ""
     ((res, wform), enctype) <- topicForm (topicTitle, topicContentFormat, (Textarea $ topicContentContent), Nothing)
     case res of
         FormSuccess (title, format, (Textarea content), msummary) -> do
@@ -69,6 +73,6 @@ $maybe summary <- msummary
     <p>Update summary: #{summary}
 |]
                 return ()
-            setMessage MsgTopicUpdated
+            setMessageI MsgTopicUpdated
             redirect RedirectTemporary $ TopicR tid
         _ -> defaultLayout $(widgetFile "topic_post")

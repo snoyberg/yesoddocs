@@ -8,7 +8,17 @@ EditThisTopic: Edit This Topic
 TopicCreated title@Text: Your topic "#{title}" has been created.
 TopicUpdated: Your topic has been updated.
 
+UpdateSettings: Update settings
+SettingsUpdated: Your settings have been updated.
+
+YourName: Your name
+Title: Title
+Format: Format
+Content: Content
+Summary: Summary
+
 # Page titles
 CreateTopicTitle: Create Topic
 HomepageTitle: Homepage
 TopicTitle title@Text: #{title}
+SettingsTitle: Settings

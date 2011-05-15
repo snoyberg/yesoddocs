@@ -21,6 +21,7 @@ import Handler.Root
 import Handler.Topic
 import Handler.CreateTopic
 import Handler.Feed
+import Handler.Settings
 
 -- This line actually creates our YesodSite instance. It is the second half
 -- of the call to mkYesodData which occurs in Wiki.hs. Please see

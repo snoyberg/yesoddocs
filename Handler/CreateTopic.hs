@@ -12,15 +12,17 @@ import Text.Hamlet.NonPoly (html)
 
 topicForm :: Handler ((FormResult (Text, TopicFormat, Textarea), Widget ()), Enctype)
 topicForm = runFormPost $ renderTable $ (,,)
-    <$> areq textField "Title" Nothing
-    <*> areq (selectField formats) "Format" Nothing
-    <*> areq textareaField "Content" Nothing
+    <$> areq textField (fromLabel MsgTitle) Nothing
+    <*> areq (selectField formats) (fromLabel MsgFormat) Nothing
+    <*> areq textareaField (fromLabel MsgContent) Nothing
+
+fromLabel x = FieldSettings x Nothing Nothing Nothing
 
 getCreateTopicR :: Handler RepHtml
 getCreateTopicR = do
     _ <- requireAuthId
     ((_, form), enctype) <- topicForm
-    let merr = Nothing
+    let merr = Nothing :: Maybe Text
     defaultLayout $(widgetFile "create-topic")
 
 postCreateTopicR :: Handler RepHtml
@@ -38,7 +40,7 @@ postCreateTopicR = do
 <p>#{userName user} created a new topic: #{title}
 |]
                 return topic
-            setMessage $ MsgTopicCreated title
+            setMessageI $ MsgTopicCreated title
             redirect RedirectTemporary $ TopicR topic
         _ -> do
             let merr = Just MsgInvalidTopic

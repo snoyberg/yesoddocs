@@ -1,7 +1,7 @@
 User
     ident Text
-    password Text Maybe Update
-    name Text
+    name Text Update
+    admin Bool default=false
     UniqueUser ident
 
 TFamily

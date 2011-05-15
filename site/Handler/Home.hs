@@ -124,6 +124,7 @@ getContributorsR :: Handler RepHtml
 getContributorsR = do
     y <- getYesod
     defaultLayout $ do
+        setTitle "Contributors"
         $(whamletFile "hamlet/contributors.hamlet")
         addLucius $(luciusFile "contributors")
 

@@ -1,11 +1,11 @@
 - name: Michael Snoyman
   email: michael@snoyman.com
   url: http://www.haskellers.com/user/snoyberg
-  bio: Michael is the Yesod project founder and lead developer.
+  bio: Michael founded the Yesod Web Framework in an effort to bring Haskell's many great features into the web world. He has since used Yesod for a number of client, personal and community sites, and has continued its usage with his current employer, Suite Solutions.
 - name: Greg Weber
   email: greg@gregweber.info
   url: http://www.haskellers.com/user/342
-  bio: Greg...
+  bio: Greg is a freelance web developer used to using Ruby for its expressiveness. He was looking for something faster, easier to scale, and with more intrinsic safety instead of requiring enormous amounts of unit tests. Yesod has been up to the challenge without throwing away the expressiveness he is used to. He used Yesod for eatnutrients.com and now spends time working with a startup using Yesod.
 - name: Matt Brown
   email: matt@softmechanics.net
   url: http://www.haskellers.com/user/mattbrown

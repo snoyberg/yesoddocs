@@ -97,7 +97,7 @@ sum4 getNum = do
 
         <codeblock>Yield b (Stream a)</codeblock>
 
-        <p id="step3">Here, a is the <i>input</i> to our iteratee and b is the <i>output</i>. This constructor allows us to simultaneously produce a result and save any "leftover" input for another iteratee that may run after us. (This won't be the case with the sum function, which always consumes all its input, but we'll see some other examples that do no such thing.)</p>
+        <p id="step3">Here, a is the <i>input</i> to our iteratee and b is the <i>output</i>. This constructor allows us to simultaneously produce a result and save any "leftover" input for another iteratee that may run after us. (This won't be the case with the sum function, which always consumes all its input, but we'll see some other examples that do not consume all output.)</p>
 
         <p id="step4">Now the question is how to represent the state of an iteratee that's waiting for more data. You might at first want to declare some datatype to represent the internal state and pass that around somehow. That's not how it works: instead, we simply use a function (very Haskell of us, right?):</p>
 
@@ -106,6 +106,12 @@ sum4 getNum = do
         <p id="step5">Eureka! We've finally seen the Iteratee datatype! Actually, Iteratee is a very boring datatype that is only present to allow us to declare cool instances (eg, Monad) for our functions. Iteratee is defined as:</p>
 
         <codeblock>newtype Iteratee a m b = Iteratee (m (Step a m b))</codeblock>
+
+        <p id="step5a">And the complete Step datatype is:</p>
+
+        <codeblock>data Step a m b = Error SomeException 
+                | Yield b (Stream a) 
+                | Continue (Stream a -> Iteratee a m b)</codeblock>
 
         <p id="step6">This is important: <b>Iteratee is just a newtype wrapper around a Step inside a monad</b>. Just keep that in mind as you look at definitions in the enumerator package. So knowing this, we can think of the Continue constructor as:</p>
 

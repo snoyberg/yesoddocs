@@ -63,7 +63,7 @@ getHomeR :: Handler RepHtml</codeblock>
     </section>
     <section id="running">
         <title>Running</title>
-        <p id="running1">Once again we mention HelloWorld in our main function. Our foundation contains all the information we need to route and respond to requests in our application, now we just need to convert it into something that can run. A great function for this in Yesod is warpDebug, which runs the Warp webserver with debug output enabled the specified port (here, it's 3000).</p>
+        <p id="running1">Once again we mention HelloWorld in our main function. Our foundation contains all the information we need to route and respond to requests in our application, now we just need to convert it into something that can run. A great function for this in Yesod is warpDebug, which runs the Warp webserver with debug output enabled on the specified port (here, it's 3000).</p>
         <advanced>
             <p id="running2">In addition to warpDebug, Yesod provides the warp function for a no-debug-output server (useful for production), as well as develServer, which does automatic code reloading. The scaffolded site sets up your development and production builds automatically.</p>
         </advanced>

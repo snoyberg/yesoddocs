@@ -5,8 +5,6 @@ module Handler.CreateTopic
     ) where
 
 import Wiki
-import Control.Applicative
-import Data.Text (Text)
 import Util (validateContent)
 import Text.Hamlet.NonPoly (html)
 
@@ -15,8 +13,6 @@ topicForm = runFormPost $ renderTable $ (,,)
     <$> areq textField (fromLabel MsgTitle) Nothing
     <*> areq (selectField formats) (fromLabel MsgFormat) Nothing
     <*> areq textareaField (fromLabel MsgContent) Nothing
-
-fromLabel x = FieldSettings x Nothing Nothing Nothing
 
 getCreateTopicR :: Handler RepHtml
 getCreateTopicR = do

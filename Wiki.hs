@@ -28,11 +28,11 @@ module Wiki
     , Text
     , addNewsItem
     , mappend
+    , fromLabel
     ) where
 
 import Data.Time
 import Yesod.Core hiding (YesodBreadcrumbs (..), breadcrumbs, setMessage)
-import qualified Yesod.Core
 import Yesod.Form
 import Yesod.Persist
 import Yesod.Helpers.Static
@@ -171,11 +171,17 @@ instance YesodBreadcrumbs Wiki where
         t <- runDB $ get404 tid
         return (MsgTopicTitle $ topicTitle t, Just RootR)
     breadcrumb SettingsR = return (MsgSettingsTitle, Just RootR)
+    breadcrumb CreateMapR = return (MsgCreateMapTitle, Just RootR)
+    breadcrumb (EditMapR i) = do
+        m <- runDB $ get404 i
+        return (MsgEditMapTitle $ tMapTitle m, Just RootR) -- FIXME parent is map list
 
     breadcrumb StaticR{} = return (MsgNotFound, Nothing)
     breadcrumb AuthR{} = return (MsgNotFound, Nothing)
     breadcrumb FaviconR{} = return (MsgNotFound, Nothing)
     breadcrumb RobotsR{} = return (MsgNotFound, Nothing)
+    breadcrumb FeedR{} = return (MsgNotFound, Nothing)
+    breadcrumb FeedItemR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return
@@ -201,8 +207,12 @@ breadcrumbs = do
         (title, next) <- breadcrumb this
         go ((this, title) : back) next
 
+addNewsItem :: Text -> WikiRoute -> Html -> SqlPersist (GGHandler s Wiki IO) ()
 addNewsItem title url content = do
     now <- liftIO getCurrentTime
     render <- lift getUrlRender
     _ <- insert $ NewsItem now title (render url) content
     return ()
+
+fromLabel :: WikiMessage -> FieldSettings WikiMessage
+fromLabel x = FieldSettings x Nothing Nothing Nothing

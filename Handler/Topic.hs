@@ -19,8 +19,6 @@ topicForm (a, b, c, d) = runFormPost $ renderTable $ (,,,)
     <*> areq textareaField (fromLabel MsgContent) (Just c)
     <*> aopt textField (fromLabel MsgSummary) (Just d)
 
-fromLabel x = FieldSettings x Nothing Nothing Nothing
-
 getTopicR :: TopicId -> Handler RepHtml
 getTopicR tid = do
     Topic {..} <- runDB $ get404 tid

@@ -26,3 +26,5 @@ CreateTopicTitle: Create Topic
 HomepageTitle: Homepage
 TopicTitle title@Text: #{title}
 SettingsTitle: Settings
+CreateMapTitle: Create Map
+EditMapTitle title@Text: Edit Map "#{title}"

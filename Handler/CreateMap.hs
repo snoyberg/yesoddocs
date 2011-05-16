@@ -26,4 +26,5 @@ postCreateMapR = do
             m <- runDB $ insert $ TMap aid title now
             setMessageI $ MsgMapCreated title
             redirect RedirectTemporary $ EditMapR m
+        _ -> return ()
     defaultLayout $(widgetFile "create-map")

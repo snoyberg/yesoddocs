@@ -27,7 +27,7 @@ TMap
     created UTCTime
 
 TMapNode
-    map TMapId Eq Maybe
+    map TMapId Eq
     parent TMapNodeId Maybe Eq
     position Int Asc
     ctopic TopicId Maybe

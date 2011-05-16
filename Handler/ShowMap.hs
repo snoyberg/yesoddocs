@@ -29,7 +29,7 @@ showTree tmid trees = [whamlet|
 
 loadTree :: TMapId -> Handler [Tree]
 loadTree tmid =
-    runDB $ selectList [TMapNodeMapEq $ Just tmid] [TMapNodePositionAsc] 0 0 >>= mapM (go True)
+    runDB $ selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= mapM (go True)
   where
     go deeper (tmnid, tmn) = do
         c <- if deeper

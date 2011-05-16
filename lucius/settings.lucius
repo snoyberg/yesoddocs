@@ -1,0 +1,4 @@
+#topics, #maps {
+    display: table-cell;
+    padding-right: 5em;
+}

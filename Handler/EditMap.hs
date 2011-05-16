@@ -32,7 +32,7 @@ showTMs tms = [whamlet|
 
 loadTM :: TMapId -> Handler [TM]
 loadTM tmid =
-    runDB $ selectList [TMapNodeMapEq $ Just tmid] [TMapNodePositionAsc] 0 0 >>= mapM go
+    runDB $ selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= mapM go
   where
     go (tmnid, tmn) = do
         children <- selectList [TMapNodeParentEq $ Just tmnid] [TMapNodePositionAsc] 0 0 >>= mapM go
@@ -81,13 +81,13 @@ postEditMapR tmid = do
         Nothing -> invalidArgsI [MsgInvalidJsonInput]
         Just x -> do
             runDB $ do
-                deleteWhere [TMapNodeMapEq $ Just tmid]
+                deleteWhere [TMapNodeMapEq tmid]
                 mapM_ (add Nothing) $ zip [1..] x
             setMessageI MsgMapUpdated
             redirect RedirectTemporary $ EditMapR tmid
   where
     add parent (pos, SM tid children) = do
-        let tmn = TMapNode (maybe (Just tmid) (const Nothing) parent) parent pos (Just tid) Nothing Nothing
+        let tmn = TMapNode tmid parent pos (Just tid) Nothing Nothing
         tmnid <- insert tmn
         mapM_ (add $ Just tmnid) $ zip [1..] children
     go (Array x) = mapM go' $ V.toList x

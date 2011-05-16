@@ -10,8 +10,8 @@ $(function(){
 
     var selectedNode = "";
     $("#topics > ul > li").append("<ul></ul>");
-    $("li.node").click(function(){
-        var t = $(this);
+    $("li.node > span").click(function(){
+        var t = $(this).parent();
         var isSel = t.hasClass("selected");
 
         $("li.selected").removeClass("selected");

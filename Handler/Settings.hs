@@ -11,8 +11,10 @@ form' = runFormPost . renderTable . areq textField (FieldSettings MsgYourName No
 
 getSettingsR :: Handler RepHtml
 getSettingsR = do
-    (_, user) <- requireAuth
+    (uid, user) <- requireAuth
     ((_, form), enctype) <- form' $ userName user
+    maps <- runDB $ selectList [TMapOwnerEq uid] [] 0 0
+    topics <- runDB $ selectList [TopicOwnerEq uid] [] 0 0
     defaultLayout $(widgetFile "settings")
 
 postSettingsR :: Handler ()

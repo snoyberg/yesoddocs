@@ -4,3 +4,23 @@
         <tr>
             <td colspan=3>
                 <input type=submit value=_{MsgUpdateSettings}
+<#topics>
+    <h2>_{MsgTopicsListHeading}
+    <p>
+        <a href=@{CreateTopicR}>_{MsgCreateTopic}
+    <ul>
+        $forall topic <- topics
+            <li>
+                <a href=@{TopicR $ fst topic}>#{topicTitle $ snd topic}
+
+<#maps>
+    <h2>_{MsgMapsListHeading}
+    <p>
+        <a href=@{CreateMapR}>_{MsgCreateMap}
+    <ul>
+        $forall map <- maps
+            <li>
+                <a href=@{ShowMapR $ fst map}>#{tMapTitle $ snd map}
+                \ (
+                <a href=@{EditMapR $ fst map}>_{MsgEdit}
+                )

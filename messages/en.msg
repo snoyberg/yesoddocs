@@ -30,6 +30,11 @@ MapTitleTooltip: Name of the entire map.
 SelectedContent: Selected content
 AvailableTopics: Available topics
 
+TopicsListHeading: Topics
+MapsListHeading: Maps
+
+Edit: Edit
+
 # Page titles
 CreateTopicTitle: Create Topic
 HomepageTitle: Homepage

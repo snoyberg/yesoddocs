@@ -35,6 +35,7 @@ library
                      Handler.CreateTopic
                      Handler.CreateMap
                      Handler.EditMap
+                     Handler.ShowMap
                      Handler.Topic
                      Handler.Feed
                      Handler.Settings
@@ -49,7 +50,7 @@ executable         yesodwiki
         cpp-options:   -DPRODUCTION
         ghc-options:   -Wall -threaded -O2
     else
-        ghc-options:   -Wall -Werror -threaded
+        ghc-options:   -Wall -Werror -threaded -O0
 
     main-is:       config/yesodwiki.hs
     hs-source-dirs: ., config
@@ -80,3 +81,7 @@ executable         yesodwiki
                  , wai
                  , parsec
                  , xss-sanitize
+                 , attoparsec
+                 , aeson
+                 , containers
+                 , vector

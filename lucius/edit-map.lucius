@@ -1,0 +1,16 @@
+#map, #topics {
+    display: table-cell;
+    padding-right: 5em;
+}
+
+li.node, li.dropzone {
+    cursor: pointer;
+}
+
+li.selected > span {
+    color: #900;
+}
+
+li.dropzone {
+    background-color: #090;
+}

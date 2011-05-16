@@ -8,7 +8,7 @@ TFamily
     created UTCTime
 
 Topic
-    owner UserId
+    owner UserId Eq
     title Text Update
     created UTCTime
     family TFamilyId
@@ -22,19 +22,16 @@ TopicContent
     content Text
 
 TMap
-    owner UserId
+    owner UserId Eq
     title Text
     created UTCTime
 
-TContent
-    topic TopicId Maybe
-    tmap TMapId Maybe
-
 TMapNode
-    map TMapId
-    parent TMapNodeId Maybe
-    position Int
-    content TContentId Maybe
+    map TMapId Eq Maybe
+    parent TMapNodeId Maybe Eq
+    position Int Asc
+    ctopic TopicId Maybe
+    cmap TMapId Maybe
     title Text Maybe
 
 NewsItem

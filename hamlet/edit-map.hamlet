@@ -1,0 +1,12 @@
+<div #map>
+    <h2>_{MsgSelectedContent}
+    ^{showTMs tree}
+<div #topics>
+    <h2>_{MsgAvailableTopics}
+    <ul>
+        $forall topic <- topics
+            <li .node #topic#{toSinglePiece $ fst topic}>
+                <span>#{topicTitle $ snd topic} (#{toSinglePiece $ fst topic})
+<form #submit method=post>
+    <input type=hidden id=tree name=tree>
+    <button>_{MsgUpdateMap}

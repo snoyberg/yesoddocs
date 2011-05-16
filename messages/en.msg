@@ -9,6 +9,12 @@ TopicCreated title@Text: Your topic "#{title}" has been created.
 TopicUpdated: Your topic has been updated.
 MapCreated title@Text: Your map "#{title}" has been created.
 CreateMap: Create map
+UpdateMap: Update map
+MapUpdated: Your map has been updated.
+
+InvalidJsonInput: Invalid JSON input
+
+NotYourMap: You cannot edit another user's map.
 
 UpdateSettings: Update settings
 SettingsUpdated: Your settings have been updated.
@@ -21,6 +27,9 @@ Summary: Summary
 
 MapTitleTooltip: Name of the entire map.
 
+SelectedContent: Selected content
+AvailableTopics: Available topics
+
 # Page titles
 CreateTopicTitle: Create Topic
 HomepageTitle: Homepage
@@ -28,3 +37,6 @@ TopicTitle title@Text: #{title}
 SettingsTitle: Settings
 CreateMapTitle: Create Map
 EditMapTitle title@Text: Edit Map "#{title}"
+MapListTitle: Map List
+ShowMapTitle title@Text: #{title}
+ShowMapTopicTitle maptitle@Text topictitle@Text: #{maptitle} :: #{topictitle}

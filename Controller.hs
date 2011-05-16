@@ -21,6 +21,7 @@ import Handler.Root
 import Handler.Topic
 import Handler.CreateTopic
 import Handler.CreateMap
+import Handler.ShowMap
 import Handler.EditMap
 import Handler.Feed
 import Handler.Settings

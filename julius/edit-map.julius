@@ -1,0 +1,56 @@
+$(function(){
+    $.each($("#map li.node"), function(i, x){
+        var y = $(x);
+        var id = y.attr("id").substring(1);
+        var z = $("#" + id);
+        y.prepend("<span>" + z.text() + "</span>");
+        z.detach();
+        y.attr("id", id);
+    });
+
+    var selectedNode = "";
+    $("#topics > ul > li").append("<ul></ul>");
+    $("li.node").click(function(){
+        var t = $(this);
+        var isSel = t.hasClass("selected");
+
+        $("li.selected").removeClass("selected");
+        $("li.dropzone").detach();
+
+        if (! isSel) {
+            selectedNode = t.addClass("selected");
+            var dz = "<li class='dropzone'>Drop Here</li>"; // TRANS
+            $("#map li:not(.selected)").before(dz);
+            $("#map ul").append(dz);
+            $("#topics > ul").append(dz);
+
+            $("#map li.selected > ul > li.dropzone").detach();
+            $("#map li.selected + li.dropzone").detach();
+            $("#topics li.selected ~ li.dropzone").detach();
+        }
+    });
+    $("li.dropzone").live("click", function(){
+        selectedNode.removeClass("selected");
+        $(this).before(selectedNode);
+        $("li.dropzone").detach();
+    });
+
+    $("#submit > button").click(function(){
+        $("#tree").attr("value", mkTree($("#map > ul > li")));
+    });
+});
+
+function mkTree(lis) {
+    var x = ["["];
+    $.each(lis, function(i, li){
+        var l = $(li);
+        if (i != 0) x.push(",");
+        x.push("{\"topic\":\"");
+        x.push(l.attr("id"));
+        x.push("\",\"children\":");
+        x.push(mkTree(l.children("ul").children("li")));
+        x.push("}");
+    });
+    x.push("]");
+    return x.join("");
+}

@@ -9,9 +9,12 @@
 /create/topic CreateTopicR GET POST
 /create/map CreateMapR GET POST
 
+/edit/map MapListR GET
 /edit/map/#TMapId EditMapR GET POST
 
 /show/topic/#TopicId TopicR GET POST
+/show/map/#TMapId ShowMapR GET
+/show/map/#TMapId/#TopicId ShowMapTopicR GET
 
 /feed FeedR GET
 /feed/item/#NewsItemId FeedItemR GET

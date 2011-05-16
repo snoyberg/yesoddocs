@@ -1,0 +1,7 @@
+<p>
+    <a href=@{CreateMapR}>_{MsgCreateMap}
+$if not $ null tms
+    <ul>
+        $forall tm <- tms
+            <li>
+                <a href=@{EditMapR $ fst tm}>#{tMapTitle $ snd tm}

@@ -40,3 +40,8 @@ NewsItem
     url Text
     content Html
     deriving
+
+Page
+    name Text
+    topic TopicId
+    UniquePage name

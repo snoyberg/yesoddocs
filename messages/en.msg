@@ -35,9 +35,11 @@ MapsListHeading: Maps
 
 Edit: Edit
 
+PageName: Page name
+PageTopic: Redirected topic
+
 # Page titles
 CreateTopicTitle: Create Topic
-HomepageTitle: Homepage
 TopicTitle title@Text: #{title}
 SettingsTitle: Settings
 CreateMapTitle: Create Map

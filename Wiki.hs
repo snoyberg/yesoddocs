@@ -55,6 +55,7 @@ import Data.Text (Text)
 import Control.Applicative ((<$>), (<*>))
 import Text.Hamlet (Html)
 import Data.Monoid (mappend)
+import Text.Hamlet.NonPoly (ihamletFile)
 
 mkMessage "Wiki" "messages" "en"
 
@@ -103,12 +104,15 @@ instance Yesod Wiki where
 
     defaultLayout widget = do
         mmsg <- getMessage
-        (title, _bcs) <- breadcrumbs
+        (title, bcs) <- breadcrumbs
         pc <- widgetToPageContent $ do
             setTitleI title
             widget
             addCassius $(Settings.cassiusFile "default-layout")
-        hamletToRepHtml $(Settings.hamletFile "default-layout")
+        tm <- getRouteToMaster
+        mcurr <- getCurrentRoute
+        let isHome = fmap tm mcurr == Just RootR
+        ihamletToRepHtml $(ihamletFile "hamlet/default-layout.hamlet")
 
     -- This is done to provide an optimization for serving static files from
     -- a separate domain. Please see the staticroot setting in Settings.hs
@@ -151,7 +155,7 @@ instance YesodAuth Wiki where
     type AuthId Wiki = UserId
 
     -- Where to send a user after successful login
-    loginDest _ = RootR
+    loginDest _ = SettingsR
     -- Where to send a user after logout
     logoutDest _ = RootR
 
@@ -165,8 +169,17 @@ instance YesodAuth Wiki where
     authPlugins = [authOpenId]
 
 instance YesodBreadcrumbs Wiki where
-    breadcrumb RootR = return (MsgHomepageTitle, Nothing)
-    breadcrumb CreateTopicR = return (MsgCreateTopicTitle, Just RootR)
+    breadcrumb RootR = do
+        t <- runDB $ do
+            x <- getBy $ UniquePage ""
+            case x of
+                Nothing -> return "You must set a homepage topic"
+                Just y -> fmap topicTitle $ get404 $ pageTopic $ snd y
+        return (MsgTopicTitle t, Nothing)
+    breadcrumb (PageR p) = do
+        t <- runDB $ getBy404 (UniquePage p) >>= get404 . pageTopic . snd
+        return (MsgTopicTitle $ topicTitle t, Just RootR)
+    breadcrumb CreateTopicR = return (MsgCreateTopicTitle, Just SettingsR)
     breadcrumb (TopicR tid) = do
         t <- runDB $ get404 tid
         return (MsgTopicTitle $ topicTitle t, Just RootR)
@@ -191,6 +204,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb RobotsR{} = return (MsgNotFound, Nothing)
     breadcrumb FeedR{} = return (MsgNotFound, Nothing)
     breadcrumb FeedItemR{} = return (MsgNotFound, Nothing)
+    breadcrumb EditPageR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return

@@ -17,7 +17,6 @@ import Data.Dynamic (Dynamic, toDyn)
 import Network.Wai (Application)
 
 -- Import all relevant handler modules here.
-import Handler.Root
 import Handler.Topic
 import Handler.CreateTopic
 import Handler.CreateMap
@@ -25,6 +24,7 @@ import Handler.ShowMap
 import Handler.EditMap
 import Handler.Feed
 import Handler.Settings
+import Handler.Root
 
 -- This line actually creates our YesodSite instance. It is the second half
 -- of the call to mkYesodData which occurs in Wiki.hs. Please see

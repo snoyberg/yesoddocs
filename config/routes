@@ -5,9 +5,12 @@
 /robots.txt RobotsR GET
 
 / RootR GET
+/page/#Text PageR GET
 
 /create/topic CreateTopicR GET POST
 /create/map CreateMapR GET POST
+
+/edit/page EditPageR POST
 
 /edit/map MapListR GET
 /edit/map/#TMapId EditMapR GET POST

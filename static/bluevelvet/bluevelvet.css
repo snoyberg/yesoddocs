@@ -1,0 +1,295 @@
+html,body.yesod-wide {    
+   height: 100%; 
+}
+body {
+    background: url(gradient.png) repeat-x #7c7c8a;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Droid Serif',serif;
+}
+body.yesod-wide {
+    padding: 0;
+    margin: 0;
+    background: url(gradient.png) repeat-x #7c7c8a;
+}
+.yesod-wide .yesod-main-wrapper {
+   min-height: 100%;
+   margin-bottom: -330px;
+   position: relative;
+}
+.yesod-home .yesod-main-wrapper {
+    width: 900px;
+    margin: auto auto;
+}
+.yesod-wide .yesod-border-wrap {
+}
+.yesod-home .yesod-border-wrap {
+    background: #848491 url(gradient-border.png) repeat-x;
+    border-radius: 25px;
+    padding: 5px;
+}
+.yesod-wide .yesod-header-wrap {
+}
+.yesod-wide .yesod-header .yesod-wide-logo {
+    background: url(logo-wide.png) no-repeat left center;
+    width: 287px;
+    height: 56px;
+    margin-left: 10px;
+    display: block;
+}
+.yesod-wide .yesod-header {
+    box-shadow: 2px -4px 20px #555
+}
+.yesod-home .yesod-header .yesod-wide-logo {
+    display: none
+}
+.yesod-home .yesod-header-wrap {
+    background: #ffffff;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding: 10px 10px 0 10px;
+}
+.yesod-wide .yesod-header {
+    height: 56px;
+    background: url(wide-header-bg.png) no-repeat bottom #fff;
+    position: relative
+}
+.yesod-home .yesod-header {
+    width: 876px;
+    height: 120px;
+    background: url(header.png) no-repeat bottom;
+    position: relative
+}
+.yesod-footer {
+    text-align: center;
+    padding: 20px;
+    color: white;
+    font-family: 'Droid Serif',serif;
+}
+.yesod-wide .yesod-footer {
+    background:#363648;
+    position: relative;
+}
+.yesod-wide .yesod-clear-footer {
+   height: 330px;
+   clear: both;
+}
+.yesod-footer a {
+    color: #cccccc;
+    text-decoration: none;
+}
+.yesod-wide .yesod-body {
+    text-align: left;
+    background: white;
+    margin: 0 50px 0 50px;
+}
+.yesod-body {
+    text-align: left
+}
+.yesod-body h1,.yesod-body h2 {
+    margin-top: 0;
+    padding-top: 0;
+    font-family: 'Droid Sans',sans-serif;
+}
+.yesod-home .yesod-secondary-content,
+.yesod-home .yesod-tertiary-content {
+    border-top: 4px solid #7f808a;
+    height: 11em;
+}
+.yesod-tertiary-content {
+    float:left;
+    width: 570px;
+    background: #26355c;
+}
+.yesod-tertiary-content-inner {
+    padding:1em;
+}
+.yesod-tertiary-content-inner h1,
+.yesod-tertiary-content-inner h2 {
+    color: #afb8d1;
+    border-bottom: 1px solid #3b4c75;
+    font-size: 22px;
+    text-shadow: #4d576f 1px 1px 3px;
+}
+.yesod-tertiary-content p {
+    color: #ffffff;
+    font-family: 'Droid Serif',serif;
+}
+.yesod-tertiary-content pre {
+    font-size: 0.9em;
+    color: #ffffff;
+    font-family: 'DejaVu Sans Mono', monospace;
+    padding-left: 1em;
+}
+.yesod-home .yesod-secondary-content {
+    float: right;
+    width: 320px;
+    background: #1e2030;
+}
+.yesod-wide .yesod-secondary-content {
+    float: right;
+    background: #1e2030;
+    margin: 15px;
+}
+.yesod-tertiary-content-body {
+    padding-left: 1em
+}
+.yesod-secondary-content-inner {
+    padding: 1em;
+}
+.yesod-secondary-content-inner h1,
+.yesod-secondary-content-inner h2 {
+    color: #d1d6e4;
+    border-bottom: 1px solid #373a57;
+    font-size: 22px;
+    text-shadow: #56627d 1px 1px 3px;
+}
+.yesod-secondary-content h1,
+.yesod-secondary-content h2 {
+    margin-bottom: 0.5em;
+}
+.yesod-secondary-content ul {
+    margin-top: 0;
+    padding-top: 0;
+    color: #ffffff;
+}
+.yesod-home .yesod-secondary-content li {
+    line-height: 1.5em;
+}
+.yesod-wide .yesod-secondary-content li {
+    line-height: 2em;
+}
+.yesod-secondary-content a {
+    color: #ffffff;
+    text-decoration: none;
+    font-family: 'Droid Serif',serif;
+    font-weight: bold;
+    font-size: 1.05em
+}
+.yesod-secondary-content a:hover {
+    text-decoration: underline
+}
+.yesod-clear {
+    clear:both;
+}
+.yesod-primary-content {
+    padding-top: 20px;
+    background: #ffffff;
+    border-bottom: 7px solid #7f808a;
+}
+.yesod-primary-content-inner h1,
+.yesod-primary-content-inner h2 {
+    color: #526290;
+    border-bottom: 1px solid #dedede;
+    font-size: 22px;
+}
+.yesod-primary-content-inner h2 {
+    color: #7887b9;
+}
+.yesod-home .yesod-primary-content-inner h1,
+.yesod-home .yesod-primary-content-inner h2 {
+    text-shadow: #7f90b8 1px 1px 3px;
+}
+.yesod-primary-content-inner {
+    padding:1em;
+}
+.yesod-primary-content-body {
+    padding-left:1em;
+}
+.yesod-primary-content p {
+    line-height:1.5em;
+    font-size: 18px;
+    font-family: 'Droid Serif',serif;
+}
+.yesod-primary-content a {
+    color: #33487c;
+}
+.yesod-primary-content a:hover {
+    color: #384f88;
+    text-decoration: none;
+}
+.yesod-primary-content a:visited {
+    color: #484c58;
+}
+.yesod-wide .yesod-primary-nav {
+    font-family: 'Droid Serif',serif;
+    position: absolute;
+    right: 15px;
+    top: 0px;
+    margin-top: 0px;
+    list-style: none;
+    background: #26355c;
+    padding: 4px 3px 5px 3px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.yesod-home .yesod-primary-nav {
+    font-family: 'Droid Serif',serif;
+    position: absolute;
+    right: 50px;
+    top: 0px;
+    margin-top:-10px;
+    list-style: none;
+    background: #26355c;
+    padding: 4px 3px 5px 3px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.yesod-primary-nav li {
+    float: left;
+}
+.yesod-primary-nav li a {
+    display: block;
+    padding: 0 10px 0 10px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 15px;
+    text-shadow: #697697 1px 1px 1px;
+}
+.yesod-primary-nav li a:hover {
+    text-shadow: #fff 0px 0px 4px;
+}
+.yesod-primary-nav li + li {
+    border-left: 1px solid #364468;
+}
+.yesod-breadcrumb {
+    background: #393d43;
+    color: #fff;
+    font-size: 0.95em
+}
+.yesod-breadcrumb .yesod-breadcrumb-label {
+    padding: 1em;
+    margin: 0;
+    color: #979899;
+    float: left;
+    cursor: default;
+}
+.yesod-breadcrumb ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    float: left
+}
+.yesod-breadcrumb li {
+    float: left;
+    padding: 1em 0 1em 0;
+}
+.yesod-breadcrumb li a {
+    color: white;
+    text-decoration: none;
+    display:block;
+    float:left
+}
+.yesod-breadcrumb li a:hover {
+    text-decoration: underline
+}
+.yesod-breadcrumb .yesod-breadcrumb-separator {
+    display:none;
+}
+.yesod-breadcrumb li + li .yesod-breadcrumb-separator {
+    cursor: default;
+    padding: 0 1em 0 1em;
+    display:block;
+    float: left;
+    color: white
+}

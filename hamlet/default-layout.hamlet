@@ -1,9 +1,52 @@
-!!!
-<html
-    <head
-        <title>#{pageTitle pc}
-        ^{pageHead pc}
-    <body
-        $maybe msg <- mmsg
-            <div #message>#{msg}
-        ^{pageBody pc}
+\<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>Yesod :: #{pageTitle pc}
+        <link rel=stylesheet href=@{StaticR bluevelvet_bluevelvet_css}>
+        <meta charset="utf-8">
+        ^{const $ pageHead pc}
+    <body :isHome:.yesod-home :not isHome:.yesod-wide>
+        <div .yesod-main-wrapper>
+            <div .yesod-border-wrap>
+                <div .yesod-header-wrap>
+                    <div .yesod-header>
+                        <a .yesod-wide-logo href=@{RootR}>
+                        <ul .yesod-primary-nav>
+                            <li>
+                                <a href=@\{BookR}>Book
+                            <li>
+                                <a href=@\{ContributorsR}>Contributors
+                            <li>
+                                <a href=@\{CommunityR}>Community
+                            <li>
+                                <a href=@\{BlogR}>Blog
+                <div .yesod-body>
+                    $if isHome
+                        ^{const $ pageBody pc}
+                    $else
+                        <div .yesod-breadcrumb>
+                            <p .yesod-breadcrumb-label>You are here:
+                            <ul>
+                              $forall bc <- bcs
+                                <li>
+                                  <span class="yesod-breadcrumb-separator">»</span>
+                                  <a href=@{fst bc}>_{snd bc}
+                              <li>
+                                <span class="yesod-breadcrumb-separator">»</span>
+                                _{title}
+                            <div .yesod-clear>
+                        <!-- <div .yesod-secondary-content> -->
+                        <div .yesod-primary-content>
+                            ^{const $ pageBody pc}
+                <div .yesod-footer>
+                    Yesod is BSD licensed. This is is #
+                    <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Attribution-NonCommercial-ShareAlike 3.0 Unported
+                    <br>
+                    Site design by #
+                    <a href="http://chrisdone.com/">Chris Done
+                    . For site issues, contact #
+                    <a href="mailto:michael@snoyman.com">Michael Snoyman
+                    .
+        <script>
+            \var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-1434510-13']);_gaq.push(['_trackPageview']);(function(){var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);})();

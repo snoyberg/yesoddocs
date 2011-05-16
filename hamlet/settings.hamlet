@@ -24,3 +24,18 @@
                 \ (
                 <a href=@{EditMapR $ fst map}>_{MsgEdit}
                 )
+
+$if userAdmin user
+    <form method=post action=@{EditPageR}>
+        <table>
+            ^{pageNew}
+            <tr>
+                <td colspan=3>
+                    <input type=submit>
+    $forall pform <- pforms
+        <form method=post action=@{EditPageR}>
+            <table>
+                ^{pform}
+                <tr>
+                    <td colspan=3>
+                        <input type=submit>

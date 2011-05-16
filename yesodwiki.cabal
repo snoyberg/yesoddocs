@@ -33,6 +33,8 @@ library
                      StaticFiles
                      Handler.Root
                      Handler.CreateTopic
+                     Handler.CreateMap
+                     Handler.EditMap
                      Handler.Topic
                      Handler.Feed
                      Handler.Settings

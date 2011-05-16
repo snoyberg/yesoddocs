@@ -7,6 +7,8 @@ CreateTopic: Create topic
 EditThisTopic: Edit This Topic
 TopicCreated title@Text: Your topic "#{title}" has been created.
 TopicUpdated: Your topic has been updated.
+MapCreated title@Text: Your map "#{title}" has been created.
+CreateMap: Create map
 
 UpdateSettings: Update settings
 SettingsUpdated: Your settings have been updated.
@@ -16,6 +18,8 @@ Title: Title
 Format: Format
 Content: Content
 Summary: Summary
+
+MapTitleTooltip: Name of the entire map.
 
 # Page titles
 CreateTopicTitle: Create Topic

@@ -7,6 +7,9 @@
 / RootR GET
 
 /create/topic CreateTopicR GET POST
+/create/map CreateMapR GET POST
+
+/edit/map/#TMapId EditMapR GET POST
 
 /show/topic/#TopicId TopicR GET POST
 

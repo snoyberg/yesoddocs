@@ -25,13 +25,13 @@ TMap
     owner UserId
     title Text
     created UTCTime
-    node TMapNodeId
 
 TContent
     topic TopicId Maybe
     tmap TMapId Maybe
 
 TMapNode
+    map TMapId
     parent TMapNodeId Maybe
     position Int
     content TContentId Maybe

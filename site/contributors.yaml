@@ -10,3 +10,23 @@
   email: matt@softmechanics.net
   url: http://www.haskellers.com/user/mattbrown
   bio: Matt...
+- name: Rick Richardson
+  email: rick.richardson@gmail.com
+  url: http://www.haskellers.com/user/rick-richardson
+  bio: I was told that there was going to be punch and pie.
+- name: Ian Duncan
+  email: iand675@gmail.com
+  url: http://www.surucreative.com/
+  bio: Ian is fresh out of college and by day slings C++ at Milsoft Utility Solutions. At night, he works with Haskell writing a scriptable programmer's text editor that deploys across OS X, Linux, and the Cloud (using Yesod). Look for it soon!
+- name: Hiromi ISHII (a.k.a. mr_konn)
+  email: konn.jinro@gmail.com
+  url: http://www.haskellers.com/user/konn
+  bio: Undergraduate Student at Waseda University, Japan. I added OAuth Support to authenticate package. If there is anyone who has opinion about OAuth support, please tell me.
+- name: Patrick Brisbin
+  email:
+  url:
+  bio:
+- name: Kazu Yamamoto
+  email:
+  url:
+  bio:

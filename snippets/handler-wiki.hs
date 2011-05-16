@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Yesod
 import Data.Text (Text)
+import Web.Routes.Quasi
 data Fibs = Fibs
 -- START
 data Page = Page Text Text [Text] -- 2 or more

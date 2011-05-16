@@ -2,6 +2,8 @@
 Enumerators Tutorial Part 3: Enumeratee
 2010-10-07
 
+This content is now part of the [Yesod book](http://www.yesodweb.com/book/enumerator). It is recommended to read there, since the content is more up-to-date.
+
 This is part 3 of a series of tutorials on the [enumerator package](http://hackage.haskell.org/package/enumerator). As usual, the code for this part of the tutorial is available as [a github gist](http://gist.github.com/615786).
 
 ## Generalizing getNumberEnum

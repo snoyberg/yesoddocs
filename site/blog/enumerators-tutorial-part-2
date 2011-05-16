@@ -2,6 +2,8 @@
 Enumerators Tutorial Part 2: Enumerator
 2010-10-02
 
+This content is now part of the [Yesod book](http://www.yesodweb.com/book/enumerator). It is recommended to read there, since the content is more up-to-date.
+
 Note: code for this tutorial is available as [a github gist](http://gist.github.com/607856).
 
 ## Extracting a value

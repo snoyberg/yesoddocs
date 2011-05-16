@@ -2,6 +2,8 @@
 Enumerators Tutorial Part 1: Iteratee
 2010-09-30
 
+This content is now part of the [Yesod book](http://www.yesodweb.com/book/enumerator). It is recommended to read there, since the content is more up-to-date.
+
 ## Introduction
 
 One of the upcoming patterns in Haskell is the enumerators. Unfortunately, it's very difficult to get started with them since:

@@ -1,0 +1,32 @@
+- name: Michael Snoyman
+  email: michael@snoyman.com
+  url: http://www.haskellers.com/user/snoyberg
+  bio: Michael founded the Yesod Web Framework in an effort to bring Haskell's many great features into the web world. He has since used Yesod for a number of client, personal and community sites, and has continued its usage with his current employer, Suite Solutions.
+- name: Greg Weber
+  email: greg@gregweber.info
+  url: http://www.haskellers.com/user/342
+  bio: Greg is a freelance web developer used to using Ruby for its expressiveness. He was looking for something faster, easier to scale, and with more intrinsic safety instead of requiring enormous amounts of unit tests. Yesod has been up to the challenge without throwing away the expressiveness he is used to. He used Yesod for eatnutrients.com and now spends time working with a startup using Yesod.
+- name: Matt Brown
+  email: matt@softmechanics.net
+  url: http://www.haskellers.com/user/mattbrown
+  bio: Matt...
+- name: Rick Richardson
+  email: rick.richardson@gmail.com
+  url: http://www.haskellers.com/user/rick-richardson
+  bio: I was told that there was going to be punch and pie.
+- name: Ian Duncan
+  email: iand675@gmail.com
+  url: http://www.surucreative.com/
+  bio: Ian is fresh out of college and by day slings C++ at Milsoft Utility Solutions. At night, he works with Haskell writing a scriptable programmer's text editor that deploys across OS X, Linux, and the Cloud (using Yesod). Look for it soon!
+- name: Hiromi ISHII (a.k.a. mr_konn)
+  email: konn.jinro@gmail.com
+  url: http://www.haskellers.com/user/konn
+  bio: Undergraduate Student at Waseda University, Japan. I added OAuth Support to authenticate package. If there is anyone who has opinion about OAuth support, please tell me.
+- name: Patrick Brisbin
+  email:
+  url:
+  bio:
+- name: Kazu Yamamoto
+  email:
+  url:
+  bio:

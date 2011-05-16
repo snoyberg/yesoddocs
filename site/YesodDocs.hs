@@ -29,11 +29,19 @@ debug :: (Show a) => a -> a
 debug a = trace (show a) a
 #endif
 
+data Contributor = Contributor
+    { cname :: Text
+    , cemail :: Text
+    , curl :: Text
+    , cbio :: Text
+    }
+
 data YesodDocs = YesodDocs
     { getStatic :: Static
     , getEntries :: [Entry]
     , getBook :: Book
     , comments :: TVar Comments
+    , contribs :: [Contributor]
     }
 
 type Handler = GHandler YesodDocs YesodDocs
@@ -66,6 +74,8 @@ mkYesodData "YesodDocs" [parseRoutes|
 
 /about AboutR GET
 /community CommunityR GET
+
+/contributors ContributorsR GET
 
 /comment/#String/#Text CommentR POST
 /feed/comments CommentsFeedR GET
@@ -106,6 +116,7 @@ instance Yesod YesodDocs where
         addGoogleFont s = addStylesheetRemote $ T.pack $ "http://fonts.googleapis.com/css?family=" ++ s
 
 instance YesodBreadcrumbs YesodDocs where
+    breadcrumb ContributorsR = return ("Contributors", Just HomeR)
     breadcrumb HomeR = return ("Home", Nothing)
     breadcrumb FiveMinutesR = return ("Yesod in Five Minutes", Just HomeR)
     breadcrumb BookR = return ("Book", Just HomeR)

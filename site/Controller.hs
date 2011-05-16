@@ -13,6 +13,9 @@ import Book
 import Control.Concurrent.AdvSTM.TVar
 import Comments
 import YesodDocs
+import qualified Data.Object.Yaml as Y
+import Data.Object
+import Control.Monad (join)
 
 import Handler.Home
 import Handler.Blog
@@ -27,5 +30,19 @@ withYesodDocs f = do
     book <- loadBook
     cs <- loadComments
     tcomments <- newTVarIO cs
-    app <- toWaiApp $ YesodDocs s entries book tcomments
+    conts <- loadConts
+    app <- toWaiApp $ YesodDocs s entries book tcomments conts
     f app
+
+loadConts :: IO [Contributor]
+loadConts = do
+    Sequence o <- join $ Y.decodeFile "contributors.yaml"
+    mapM go (o :: [TextObject])
+  where
+    go (Mapping m) = do
+        Just (Scalar name) <- return $ lookup "name" m
+        Just (Scalar email) <- return $ lookup "email" m
+        Just (Scalar url) <- return $ lookup "url" m
+        Just (Scalar bio) <- return $ lookup "bio" m
+        return $ Contributor name email url bio
+    go _ = fail "Invalid loadConts"

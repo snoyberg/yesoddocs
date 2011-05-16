@@ -1,0 +1,21 @@
+h1 {
+    text-align: center;
+}
+
+.contributor {
+    margin: 2em;
+    font-size: 1.4em;
+    border: 1px solid black;
+    padding: 1em;
+    background-color: #eee;
+}
+
+.contributor > a, .contributor > div {
+    display: table-cell;
+    padding-right: 1em;
+    vertical-align: top;
+}
+
+.contributor > a > span {
+    display: block;
+}

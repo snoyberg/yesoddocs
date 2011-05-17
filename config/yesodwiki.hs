@@ -4,7 +4,7 @@ import Controller (withWiki)
 import Network.Wai.Handler.Warp (run)
 
 main :: IO ()
-main = withWiki $ run 3000
+main = withWiki $ run 5002
 #else
 import Controller (withWiki)
 import System.IO (hPutStrLn, stderr)

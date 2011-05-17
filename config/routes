@@ -23,3 +23,6 @@
 /feed/item/#NewsItemId FeedItemR GET
 
 /settings SettingsR GET POST
+
+/edit/labels LabelsR GET POST
+/edit/labels/new NewLabelR POST

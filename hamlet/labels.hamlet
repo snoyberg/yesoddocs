@@ -1,0 +1,13 @@
+<form method=post action=@{NewLabelR}>
+    <table>
+        ^{newform}
+        <tr>
+            <td colspan=3>
+                <input type=submit>
+
+<#labels>
+    ^{showLTree ltree}
+
+<form method=post>
+    <input #tree type=hidden name=tree>
+    <input #update type=submit value="Update Labels">

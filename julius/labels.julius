@@ -1,0 +1,46 @@
+$(function(){
+    $("#labels li").addClass("node");
+    var selected;
+    $("li.node > div").click(function(){
+        var t = $(this).parent();
+        var isSel = t.hasClass("selected");
+
+        $("li.selected").removeClass("selected");
+        $("li.dropzone").detach();
+
+        if (! isSel) {
+            selectedNode = t.addClass("selected");
+            var dz = "<li class='dropzone'>Drop Here</li>"; // TRANS
+            $("#labels li:not(.selected)").before(dz);
+            $("#labels ul").append(dz);
+
+            $("#labels li.selected li.dropzone").detach();
+            $("#labels li.selected + li.dropzone").detach();
+        }
+    });
+
+    $("li.dropzone").live("click", function(){
+        selectedNode.removeClass("selected");
+        $(this).before(selectedNode);
+        $("li.dropzone").detach();
+    });
+
+    $("#update").click(function(){
+        $("#tree").attr("value", mkTree($("#labels > ul > li")));
+    });
+});
+
+function mkTree(lis) {
+    var x = ["["];
+    $.each(lis, function(i, li){
+        var l = $(li);
+        if (i != 0) x.push(",");
+        x.push("{\"id\":\"");
+        x.push(l.attr("id").substring(5));
+        x.push("\",\"children\":");
+        x.push(mkTree(l.children("ul").children("li")));
+        x.push("}");
+    });
+    x.push("]");
+    return x.join("");
+}

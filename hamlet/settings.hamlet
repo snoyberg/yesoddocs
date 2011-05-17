@@ -26,6 +26,8 @@
                 )
 
 $if userAdmin user
+    <p>
+        <a href=@{LabelsR}>_{MsgLabelsTitle}
     <form method=post action=@{EditPageR}>
         <table>
             ^{pageNew}

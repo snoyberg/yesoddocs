@@ -45,3 +45,17 @@ Page
     name Text
     topic TopicId
     UniquePage name
+
+Label
+    parent LabelId Maybe Eq Update
+    name Text
+
+TopicLabel
+    topic TopicId
+    label LabelId
+    UniqueTopicLabel topic label
+
+MapLabel
+    map TMapId
+    label LabelId
+    UniqueMapLabel map label

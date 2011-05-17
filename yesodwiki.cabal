@@ -39,6 +39,7 @@ library
                      Handler.Topic
                      Handler.Feed
                      Handler.Settings
+                     Handler.Labels
                      Yesod.Message
                      Util
 

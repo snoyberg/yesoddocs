@@ -11,6 +11,9 @@ MapCreated title@Text: Your map "#{title}" has been created.
 CreateMap: Create map
 UpdateMap: Update map
 MapUpdated: Your map has been updated.
+LabelsUpdated: Labels have been updated.
+
+LabelName: Label name
 
 InvalidJsonInput: Invalid JSON input
 
@@ -47,3 +50,4 @@ EditMapTitle title@Text: Edit Map "#{title}"
 MapListTitle: Map List
 ShowMapTitle title@Text: #{title}
 ShowMapTopicTitle maptitle@Text topictitle@Text: #{maptitle} :: #{topictitle}
+LabelsTitle: Labels

@@ -189,6 +189,7 @@ instance YesodBreadcrumbs Wiki where
         m <- runDB $ get404 i
         return (MsgEditMapTitle $ tMapTitle m, Just MapListR)
     breadcrumb MapListR = return (MsgMapListTitle, Just RootR)
+    breadcrumb LabelsR = return (MsgLabelsTitle, Just SettingsR)
 
     breadcrumb (ShowMapR tmid) = do
         tm <- runDB $ get404 tmid
@@ -205,6 +206,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb FeedR{} = return (MsgNotFound, Nothing)
     breadcrumb FeedItemR{} = return (MsgNotFound, Nothing)
     breadcrumb EditPageR{} = return (MsgNotFound, Nothing)
+    breadcrumb NewLabelR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return

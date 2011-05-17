@@ -1,0 +1,8 @@
+#nav {
+    display: table-cell;
+    width: 200px;
+}
+
+#list {
+    display: table-cell;
+}

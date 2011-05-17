@@ -40,7 +40,7 @@ library
                      Handler.Feed
                      Handler.Settings
                      Handler.Labels
-                     Yesod.Message
+                     Handler.Browse
                      Util
 
 executable         yesodwiki

@@ -29,3 +29,5 @@
 
 /edit/labels LabelsR GET POST
 /edit/labels/new NewLabelR POST
+
+/browse BrowseR GET

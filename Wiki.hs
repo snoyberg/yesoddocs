@@ -190,6 +190,7 @@ instance YesodBreadcrumbs Wiki where
         return (MsgEditMapTitle $ tMapTitle m, Just MapListR)
     breadcrumb MapListR = return (MsgMapListTitle, Just RootR)
     breadcrumb LabelsR = return (MsgLabelsTitle, Just SettingsR)
+    breadcrumb BrowseR = return (MsgBrowseTitle, Just RootR)
 
     breadcrumb (ShowMapR tmid) = do
         tm <- runDB $ get404 tmid

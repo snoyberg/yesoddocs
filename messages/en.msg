@@ -41,6 +41,8 @@ Edit: Edit
 PageName: Page name
 PageTopic: Redirected topic
 
+BrowseFilter: Filter
+
 # Page titles
 CreateTopicTitle: Create Topic
 TopicTitle title@Text: #{title}
@@ -51,3 +53,4 @@ MapListTitle: Map List
 ShowMapTitle title@Text: #{title}
 ShowMapTopicTitle maptitle@Text topictitle@Text: #{maptitle} :: #{topictitle}
 LabelsTitle: Labels
+BrowseTitle: Browse

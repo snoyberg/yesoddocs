@@ -1,0 +1,10 @@
+<#nav>
+    <form>
+        ^{showLTree active ltree}
+        <div>
+            <input type=submit value=_{MsgBrowseFilter}
+<#list>
+    <ul>
+        $forall entry <- entries
+            <li>
+                <a href=@{eurl entry}>#{etitle entry} (#{userName $ eauthor entry})

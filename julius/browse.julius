@@ -1,0 +1,6 @@
+$(function(){
+    $("input").change(function(){
+        $("form").submit();
+    });
+    $("input[type=submit]").hide();
+});

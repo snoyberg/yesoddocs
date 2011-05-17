@@ -3,6 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Yesod
 import qualified Data.Text as T
+import Web.Routes.Quasi
 data Fibs = Fibs
 -- START
 newtype Natural = Natural Int -- we might even like to go with Word here

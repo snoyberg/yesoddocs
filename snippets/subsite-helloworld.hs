@@ -1,5 +1,6 @@
 -- START
-{-# LANGUAGE QuasiQuotes, TypeFamilies, MultiParamTypeClasses, TemplateHaskell, FlexibleInstances, OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes, TypeFamilies, MultiParamTypeClasses #-}
+{-# LANGUAGE TemplateHaskell, FlexibleInstances, OverloadedStrings #-}
 import Yesod
 
 -- Subsites have foundations just like master sites.

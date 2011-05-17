@@ -10,3 +10,8 @@
 <form #submit method=post>
     <input type=hidden id=tree name=tree>
     <button>_{MsgUpdateMap}
+
+<form #maplabels method=post action=@{MapLabelsR mid}>
+    ^{showLTree activeLabel ltree}
+    <div>
+        <input type=submit>

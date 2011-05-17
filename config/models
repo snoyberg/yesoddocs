@@ -51,11 +51,11 @@ Label
     name Text
 
 TopicLabel
-    topic TopicId
+    topic TopicId Eq
     label LabelId
     UniqueTopicLabel topic label
 
 MapLabel
-    map TMapId
+    map TMapId Eq
     label LabelId
     UniqueMapLabel map label

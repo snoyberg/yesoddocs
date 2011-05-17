@@ -15,3 +15,8 @@ $maybe form <- mform
                 <tr>
                     <td colspan=3>
                         <input type=submit value=_{MsgUpdateTopic}
+
+    <form #topiclabels method=post action=@{TopicLabelsR tid}>
+        ^{showLTree activeLabel ltree}
+        <div>
+            <input type=submit>

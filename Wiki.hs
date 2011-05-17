@@ -207,6 +207,8 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb FeedItemR{} = return (MsgNotFound, Nothing)
     breadcrumb EditPageR{} = return (MsgNotFound, Nothing)
     breadcrumb NewLabelR{} = return (MsgNotFound, Nothing)
+    breadcrumb TopicLabelsR{} = return (MsgNotFound, Nothing)
+    breadcrumb MapLabelsR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return

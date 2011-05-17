@@ -3,6 +3,8 @@ module Handler.Labels
     ( getLabelsR
     , postLabelsR
     , postNewLabelR
+    , LTree (..)
+    , getLTree
     ) where
 
 import Wiki
@@ -32,21 +34,25 @@ showLTree ls = [whamlet|
             ^{showLTree $ lchildren l}
 |]
 
-getLabelsR :: Handler RepHtml
-getLabelsR = do
-    (_, user) <- requireAuth
-    unless (userAdmin user) $ permissionDenied ""
-    ((_, newform), _) <- newLabelForm
+getLTree :: Handler [LTree]
+getLTree = do
     allLabels <- runDB $ selectList [] [] 0 0
-    let ltree = map (go allLabels) $ filter (filt Nothing) (allLabels :: [(LabelId, Label)])
-    defaultLayout $ do
-        addScript $ StaticR jquery_js
-        $(widgetFile "labels")
+    return $ map (go allLabels) $ filter (filt Nothing) (allLabels :: [(LabelId, Label)])
   where
     filt :: Maybe LabelId -> (LabelId, Label) -> Bool
     filt x (_, y) = labelParent y == x
     go :: [(LabelId, Label)] -> (LabelId, Label) -> LTree
     go m (lid', l) = LTree lid' (labelName l) $ map (go m) $ filter (filt $ Just lid') m
+
+getLabelsR :: Handler RepHtml
+getLabelsR = do
+    (_, user) <- requireAuth
+    unless (userAdmin user) $ permissionDenied ""
+    ((_, newform), _) <- newLabelForm
+    ltree <- getLTree
+    defaultLayout $ do
+        addScript $ StaticR jquery_js
+        $(widgetFile "labels")
 
 postLabelsR :: Handler ()
 postLabelsR = do

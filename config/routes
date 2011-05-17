@@ -19,6 +19,9 @@
 /show/map/#TMapId ShowMapR GET
 /show/map/#TMapId/#TopicId ShowMapTopicR GET
 
+/edit/topic-labels/#TopicId TopicLabelsR POST
+/edit/map-labels/#TMapId MapLabelsR POST
+
 /feed FeedR GET
 /feed/item/#NewsItemId FeedItemR GET
 

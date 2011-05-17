@@ -3,16 +3,20 @@ module Handler.EditMap
     ( getMapListR
     , getEditMapR
     , postEditMapR
+    , postMapLabelsR
     ) where
 
 import Wiki
-import Control.Monad (unless)
+import Control.Monad (unless, when)
 import Data.Aeson (json, Value (..))
 import Data.Text.Encoding (encodeUtf8)
 import Data.Attoparsec (parse, maybeResult)
 import qualified Data.Map as Map
 import qualified Data.Vector as V
 import qualified Data.Text as T
+import Handler.Labels (getLTree)
+import Handler.Topic (showLTree)
+import Data.Maybe (mapMaybe)
 
 data TM = TM
     { tmTitle :: Maybe Text
@@ -58,6 +62,9 @@ getEditMapR mid = do
     tree <- loadTM mid
     let treeTopics = getTopics tree
     -- FIXME list maps also
+    ltree <- getLTree
+    slabels <- runDB $ fmap (map $ mapLabelLabel . snd) $ selectList [MapLabelMapEq mid] [] 0 0
+    let activeLabel = flip elem slabels
     defaultLayout $ do
         addScript $ StaticR jquery_js
         $(widgetFile "edit-map")
@@ -76,6 +83,9 @@ data SM = SM
 
 postEditMapR :: TMapId -> Handler ()
 postEditMapR tmid = do
+    (aid, user) <- requireAuth
+    tm <- runDB $ get404 tmid
+    unless (aid == tMapOwner tm || userAdmin user) $ permissionDeniedI MsgNotYourMap
     text <- runInputPost $ ireq textField "tree"
     case maybeResult (parse json $ encodeUtf8 text) >>= go of
         Nothing -> invalidArgsI [MsgInvalidJsonInput]
@@ -102,3 +112,18 @@ postEditMapR tmid = do
     go'' (String t)
         | "topic" `T.isPrefixOf` t = fromSinglePiece $ T.drop 5 t
     go'' _ = Nothing
+
+postMapLabelsR :: TMapId -> Handler ()
+postMapLabelsR mid = do
+    (aid, user) <- requireAuth
+    tm <- runDB $ get404 mid
+    unless (aid == tMapOwner tm || userAdmin user) $ permissionDeniedI MsgNotYourMap
+    (pp, _) <- runRequestBody
+    let sel = mapMaybe (fromSinglePiece . fst) pp
+    runDB $ do
+        deleteWhere [MapLabelMapEq mid]
+        labels <- selectList [] [] 0 0
+        flip mapM_ labels $ \(lid', _) -> do -- FIXME use a Set?
+            when (lid' `elem` sel) $
+                insert (MapLabel mid lid') >> return ()
+    redirect RedirectTemporary $ EditMapR mid

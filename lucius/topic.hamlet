@@ -1,0 +1,3 @@
+#topiclabels > ul
+    display: table-cell
+    padding-right: 2em

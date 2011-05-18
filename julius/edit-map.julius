@@ -1,3 +1,11 @@
+function setupDropZones() {
+    var dz = "<li class='dropzone hidden'>Drop Here</li>"; // TRANS
+    $("li.dropzone").detach();
+    $("#map li").before(dz);
+    $("#map ul").append(dz);
+    $("#topics ul").append(dz);
+}
+
 $(function(){
     $.each($("#map li.node"), function(i, x){
         var y = $(x);
@@ -8,31 +16,30 @@ $(function(){
         y.attr("id", id);
     });
 
-    var selectedNode = "";
+    setupDropZones();
+
+    var selectedNode;
     $("#topics > ul > li").append("<ul></ul>");
     $("li.node > span").click(function(){
         var t = $(this).parent();
         var isSel = t.hasClass("selected");
 
         $("li.selected").removeClass("selected");
-        $("li.dropzone").detach();
+        $("li.dropzone").addClass("hidden");
 
         if (! isSel) {
             selectedNode = t.addClass("selected");
-            var dz = "<li class='dropzone'>Drop Here</li>"; // TRANS
-            $("#map li:not(.selected)").before(dz);
-            $("#map ul").append(dz);
-            $("#topics > ul").append(dz);
-
-            $("#map li.selected > ul > li.dropzone").detach();
-            $("#map li.selected + li.dropzone").detach();
-            $("#topics li.selected ~ li.dropzone").detach();
+            $("li.dropzone").removeClass("hidden");
+            t.prev().addClass("hidden");
+            t.next().addClass("hidden");
+            $("li.selected li.dropzone").addClass("hidden");
+            $("#topics li.selected ~ li.dropzone").addClass("hidden");
         }
     });
     $("li.dropzone").live("click", function(){
         selectedNode.removeClass("selected");
         $(this).before(selectedNode);
-        $("li.dropzone").detach();
+        setupDropZones();
     });
 
     $("#submit > button").click(function(){

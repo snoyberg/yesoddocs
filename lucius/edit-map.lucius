@@ -1,4 +1,4 @@
-#map, #topics {
+#map, #topics, #labels {
     display: table-cell;
     padding-right: 5em;
 }
@@ -13,4 +13,10 @@ li.selected > span {
 
 li.dropzone {
     background-color: #090;
+    font-size: 0.8em;
+}
+
+li.dropzone.hidden {
+    background-color: #efe;
+    color: #efe;
 }

@@ -42,7 +42,7 @@ import qualified Settings
 import System.Directory
 import qualified Data.ByteString.Lazy as L
 import Database.Persist.GenericSql
-import Settings (hamletFile, cassiusFile, juliusFile, widgetFile)
+import Settings (hamletFile, cassiusFile, juliusFile, widgetFile, luciusFile)
 import Model
 import StaticFiles
 import Control.Monad (unless)

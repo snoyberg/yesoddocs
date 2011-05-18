@@ -1,28 +1,36 @@
+function setupDropZones() {
+    var dz = "<li class='dropzone hidden'>Drop Here</li>"; // TRANS
+    $("li.dropzone").detach();
+    $("#labels li").before(dz);
+    $("#labels ul").append(dz);
+}
+
 $(function(){
     $("#labels li").addClass("node");
+    setupDropZones();
+
     var selected;
-    $("li.node > div").click(function(){
+    $("li.node > span").click(function(){
         var t = $(this).parent();
         var isSel = t.hasClass("selected");
 
         $("li.selected").removeClass("selected");
-        $("li.dropzone").detach();
+        $("li.dropzone").addClass("hidden");
 
         if (! isSel) {
             selectedNode = t.addClass("selected");
-            var dz = "<li class='dropzone'>Drop Here</li>"; // TRANS
-            $("#labels li:not(.selected)").before(dz);
-            $("#labels ul").append(dz);
 
-            $("#labels li.selected li.dropzone").detach();
-            $("#labels li.selected + li.dropzone").detach();
+            $("li.dropzone").removeClass("hidden");
+            t.prev().addClass("hidden");
+            t.next().addClass("hidden");
+            $("li.selected li.dropzone").addClass("hidden");
         }
     });
 
     $("li.dropzone").live("click", function(){
         selectedNode.removeClass("selected");
         $(this).before(selectedNode);
-        $("li.dropzone").detach();
+        setupDropZones();
     });
 
     $("#update").click(function(){

@@ -30,7 +30,7 @@ showLTree ls = [whamlet|
 <ul>
     $forall l <- ls
         <li #label#{toSinglePiece $ lid l}>
-            <div>#{lname l}
+            <span>#{lname l}
             ^{showLTree $ lchildren l}
 |]
 
@@ -52,6 +52,7 @@ getLabelsR = do
     ltree <- getLTree
     defaultLayout $ do
         addScript $ StaticR jquery_js
+        addLucius $(luciusFile "edit-map")
         $(widgetFile "labels")
 
 postLabelsR :: Handler ()

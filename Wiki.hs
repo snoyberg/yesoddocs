@@ -29,6 +29,7 @@ module Wiki
     , addNewsItem
     , mappend
     , fromLabel
+    , getBlogPost
     ) where
 
 import Data.Time
@@ -217,6 +218,10 @@ instance YesodBreadcrumbs Wiki where
         t <- runDB $ get404 tid
         return (MsgShowMapTopicTitle (tMapTitle tm) (topicTitle t), Just $ ShowMapR tmid)
     breadcrumb (AuthR LoginR) = return (MsgLoginTitle, Just RootR)
+    breadcrumb (BlogPostR handle slug) = do
+        blog <- getBlogPost handle slug
+        tm <- runDB $ get404 $ blogMap blog
+        return (MsgBlogPostTitle $ tMapTitle tm, Just RootR)
 
     breadcrumb StaticR{} = return (MsgNotFound, Nothing)
     breadcrumb FaviconR{} = return (MsgNotFound, Nothing)
@@ -228,6 +233,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb TopicLabelsR{} = return (MsgNotFound, Nothing)
     breadcrumb MapLabelsR{} = return (MsgNotFound, Nothing)
     breadcrumb AuthR{} = return (MsgNotFound, Nothing)
+    breadcrumb AddBlogMapR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return
@@ -262,3 +268,8 @@ addNewsItem title url content = do
 
 fromLabel :: WikiMessage -> FieldSettings WikiMessage
 fromLabel x = FieldSettings x Nothing Nothing Nothing
+
+getBlogPost :: Text -> Text -> GHandler sub Wiki Blog
+getBlogPost handle slug = runDB $ do
+    (uid, _) <- getBy404 $ UniqueHandle handle
+    fmap snd $ getBy404 $ UniqueBlogSlug uid slug

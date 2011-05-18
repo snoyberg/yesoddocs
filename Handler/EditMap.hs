@@ -88,7 +88,7 @@ postEditMapR tmid = do
     unless (aid == tMapOwner tm || userAdmin user) $ permissionDeniedI MsgNotYourMap
     text <- runInputPost $ ireq textField "tree"
     case maybeResult (parse json $ encodeUtf8 text) >>= go of
-        Nothing -> invalidArgsI [MsgInvalidJsonInput]
+        Nothing -> invalidArgsI [MsgInvalidJsonInput text]
         Just x -> do
             runDB $ do
                 deleteWhere [TMapNodeMapEq tmid]

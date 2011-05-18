@@ -64,3 +64,15 @@ MapLabel
     map TMapId Eq
     label LabelId
     UniqueMapLabel map label
+
+Blog
+    owner UserId Eq
+    posted UTCTime Desc
+    map TMapId
+    slug Text
+    UniqueBlogSlug owner slug
+
+Book
+    owner UserId Eq
+    map TMapId
+    chunking Int

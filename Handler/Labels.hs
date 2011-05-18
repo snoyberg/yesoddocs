@@ -59,7 +59,7 @@ postLabelsR :: Handler ()
 postLabelsR = do
     text <- runInputPost $ ireq textField "tree"
     case maybeResult (parse json $ encodeUtf8 text) >>= go of
-        Nothing -> invalidArgsI [MsgInvalidJsonInput]
+        Nothing -> invalidArgsI [MsgInvalidJsonInput text]
         Just x -> do
             runDB $ mapM_ (fix Nothing) x
             setMessageI MsgLabelsUpdated

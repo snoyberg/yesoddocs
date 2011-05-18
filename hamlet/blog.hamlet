@@ -1,0 +1,6 @@
+<p .date>#{prettyDate $ blogPosted blog}
+<p .author>
+    #{userGravatar user}
+    #{userName user}
+<article>
+    ^{showMap}

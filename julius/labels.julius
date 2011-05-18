@@ -34,7 +34,7 @@ $(function(){
     });
 
     $("#update").click(function(){
-        $("#tree").attr("value", mkTree($("#labels > ul > li")));
+        $("#tree").attr("value", mkTree($("#labels > ul > li.node")));
     });
 });
 
@@ -46,7 +46,7 @@ function mkTree(lis) {
         x.push("{\"id\":\"");
         x.push(l.attr("id").substring(5));
         x.push("\",\"children\":");
-        x.push(mkTree(l.children("ul").children("li")));
+        x.push(mkTree(l.children("ul").children("li.node")));
         x.push("}");
     });
     x.push("]");

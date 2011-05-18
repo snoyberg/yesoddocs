@@ -4,6 +4,7 @@ module Handler.Settings
     ( getSettingsR
     , postSettingsR
     , postEditPageR
+    , postAddBlogMapR
     ) where
 
 import Wiki
@@ -38,6 +39,7 @@ getSettingsR = do
     pages <- runDB $ selectList [] [] 0 0
     ((_, pageNew), _) <- pageForm topics Nothing
     pforms <- (fmap . fmap) (snd . fst) $ mapM (pageForm topics . Just . snd) pages
+    ((_, ab), _) <- addBlog uid
     defaultLayout $(widgetFile "settings")
 
 postSettingsR :: Handler ()
@@ -66,3 +68,26 @@ postEditPageR = do
             return ()
         _ -> return ()
     redirect RedirectTemporary SettingsR
+
+addBlog :: UserId -> Handler ((FormResult (TMapId, Text), Widget ()), Enctype)
+addBlog uid = do
+    maps <- runDB $ selectList [TMapOwnerEq uid] [] 0 0
+    runFormPost $ renderTable $ (,)
+        <$> areq (selectField $ map go maps) (FieldSettings MsgMapForBlog Nothing Nothing Nothing) Nothing
+        <*> areq textField (FieldSettings MsgSlug (Just MsgSlugTooltip) Nothing Nothing) Nothing
+  where
+    go (x, y) = (tMapTitle y, x)
+
+postAddBlogMapR :: Handler ()
+postAddBlogMapR = do
+    (uid, u) <- requireAuth
+    ((res, _), _) <- addBlog uid
+    case res of
+        FormSuccess (tmid, slug) -> do
+            -- FIXME check for unique slug
+            now <- liftIO getCurrentTime
+            _ <- runDB $ insert $ Blog uid now tmid slug
+            redirect RedirectTemporary $ BlogPostR (userHandle u) slug
+        _ -> do
+            setMessageI MsgInvalidBlogInfo
+            redirect RedirectTemporary SettingsR

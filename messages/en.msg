@@ -15,7 +15,7 @@ LabelsUpdated: Labels have been updated.
 
 LabelName: Label name
 
-InvalidJsonInput: Invalid JSON input
+InvalidJsonInput json@Text: Invalid JSON input (#{json})
 
 NotYourMap: You cannot edit another user's map.
 
@@ -28,6 +28,11 @@ YourEmail: Email Address
 EmailTooltip: Your email will never be shared. It is only used for Gravatar.
 YourUrl: Website
 YourBio: Short bio
+
+MapForBlog: Map to post
+Slug: Slug
+SlugTooltip: Unique name for URLs
+InvalidBlogInfo: Invalid blog information, please try again.
 
 YourName: Your name
 Title: Title
@@ -58,6 +63,8 @@ LoginNow: Login now
 
 YouAreHere: You are here:
 
+AddBlogPost: Add blog post
+
 # Page titles
 LoginTitle: Login
 CreateTopicTitle: Create Topic
@@ -70,3 +77,4 @@ ShowMapTitle title@Text: #{title}
 ShowMapTopicTitle maptitle@Text topictitle@Text: #{maptitle} :: #{topictitle}
 LabelsTitle: Labels
 BrowseTitle: Browse
+BlogPostTitle title@Text: #{title}

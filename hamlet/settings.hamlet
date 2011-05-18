@@ -26,6 +26,13 @@
                 <a href=@{EditMapR $ fst map}>_{MsgEdit}
                 )
 
+<form #blog action=@{AddBlogMapR} method=post>
+    <table>
+        ^{ab}
+        <tr>
+            <td colspan=3>
+                <input type=submit value=_{MsgAddBlogPost}>
+
 $if userAdmin user
     <p>
         <a href=@{LabelsR}>_{MsgLabelsTitle}

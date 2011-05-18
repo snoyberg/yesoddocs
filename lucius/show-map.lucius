@@ -1,0 +1,12 @@
+a.topic-link, a.topic-link:visited {
+    color: inherit;
+    text-decoration: none;
+}
+
+a.topic-link:hover {
+    text-decoration: underline;
+}
+
+section section {
+    margin-left: 1em;
+}

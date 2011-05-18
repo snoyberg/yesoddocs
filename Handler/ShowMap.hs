@@ -2,30 +2,38 @@
 module Handler.ShowMap
     ( getShowMapR
     , getShowMapTopicR
+    , loadTree
+    , showTree
     ) where
 
 import Wiki
 import Handler.Topic (getTopicR)
+import Util (renderContent)
 
 data Tree = Tree
     { treeTopicId :: Maybe TopicId -- FIXME TMapNodeId
     , treeTitle :: Text
+    , treeContent :: Maybe TopicContent
     , treeChildren :: [Tree]
     }
 
-showTree :: TMapId -> [Tree] -> Widget ()
-showTree tmid trees = [whamlet|
-<ol>
-    $forall tree <- trees
-        <li>
-            <span>
-                $maybe tid <- treeTopicId tree
-                    <a href=@{ShowMapTopicR tmid tid}>#{treeTitle tree}
-                $nothing
-                    #{treeTitle tree}
-            $if not $ null $ treeChildren tree
-                ^{showTree tmid $ treeChildren tree}
+showTree :: Int -> TMapId -> [Tree] -> Widget ()
+showTree depth tmid trees = [whamlet|
+$forall tree <- trees
+    <section>
+        \<h#{show depth}>
+        $maybe tid <- treeTopicId tree
+            <a .topic-link href=@{ShowMapTopicR tmid tid}>#{treeTitle tree}
+        $nothing
+            \#{treeTitle tree}
+        \</h#{show depth}>
+        $maybe c <- treeContent tree
+            \#{renderContent (topicContentFormat c) (topicContentContent c)}
+        ^{showTree (incr depth) tmid $ treeChildren tree}
 |]
+  where
+    incr 6 = 6
+    incr i = i + 1
 
 loadTree :: TMapId -> Handler [Tree]
 loadTree tmid =
@@ -41,10 +49,19 @@ loadTree tmid =
                 Just tid -> do
                     t <- get404 tid
                     return $ topicTitle t
+        content <-
+            case tMapNodeCtopic tmn of
+                Nothing -> return Nothing
+                Just tid -> do
+                    x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+                    case x of
+                        (_, y):_ -> return $ Just y
+                        [] -> return Nothing
         return Tree
             { treeTopicId = tMapNodeCtopic tmn
             , treeTitle = title
             , treeChildren = c
+            , treeContent = content
             }
 
 getShowMapR :: TMapId -> Handler RepHtml

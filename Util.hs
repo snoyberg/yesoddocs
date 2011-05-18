@@ -4,6 +4,7 @@ module Util
     ( renderContent
     , validateContent
     , userGravatar
+    , prettyDate
     ) where
 
 import Model (TopicFormat (..), User (userEmail))
@@ -34,3 +35,6 @@ userGravatar u =
     email = fromMaybe "" $ userEmail u
     hash = pack $ show $ md5 $ L.fromChunks $ return $ encodeUtf8 $ pack $ map toLower $ trim $ unpack email
     trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
+
+prettyDate :: Show a => a -> String -- FIXME
+prettyDate = show

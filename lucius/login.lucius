@@ -5,3 +5,7 @@ button {
     margin: 0.5em 0;
     cursor: pointer;
 }
+##{ident} {
+    background: #fff url(@{StaticR openid_icon_small_gif}) no-repeat scroll 0pt 50%;
+    padding-left: 18px;
+}

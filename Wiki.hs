@@ -56,6 +56,8 @@ import Control.Applicative ((<$>), (<*>))
 import Text.Hamlet (Html)
 import Data.Monoid (mappend)
 import Text.Hamlet.NonPoly (ihamletFile)
+import qualified Yesod.Auth.OpenId as OpenId
+import qualified Yesod.Auth.Message as Msg
 
 mkMessage "Wiki" "messages" "en"
 
@@ -105,6 +107,7 @@ instance Yesod Wiki where
     defaultLayout widget = do
         mmsg <- getMessage
         (title, bcs) <- breadcrumbs
+        muser <- fmap (fmap snd) maybeAuth
         pc <- widgetToPageContent $ do
             setTitleI title
             widget
@@ -168,6 +171,11 @@ instance YesodAuth Wiki where
 
     authPlugins = [authOpenId]
 
+    loginHandler = do
+        ident <- newIdent
+        let name = "openid_identifier" :: Text
+        defaultLayout $(widgetFile "login")
+
 instance YesodBreadcrumbs Wiki where
     breadcrumb RootR = do
         t <- runDB $ do
@@ -199,9 +207,9 @@ instance YesodBreadcrumbs Wiki where
         tm <- runDB $ get404 tmid
         t <- runDB $ get404 tid
         return (MsgShowMapTopicTitle (tMapTitle tm) (topicTitle t), Just $ ShowMapR tmid)
+    breadcrumb (AuthR LoginR) = return (MsgLoginTitle, Just RootR)
 
     breadcrumb StaticR{} = return (MsgNotFound, Nothing)
-    breadcrumb AuthR{} = return (MsgNotFound, Nothing)
     breadcrumb FaviconR{} = return (MsgNotFound, Nothing)
     breadcrumb RobotsR{} = return (MsgNotFound, Nothing)
     breadcrumb FeedR{} = return (MsgNotFound, Nothing)
@@ -210,6 +218,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb NewLabelR{} = return (MsgNotFound, Nothing)
     breadcrumb TopicLabelsR{} = return (MsgNotFound, Nothing)
     breadcrumb MapLabelsR{} = return (MsgNotFound, Nothing)
+    breadcrumb AuthR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return

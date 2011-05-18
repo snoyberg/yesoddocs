@@ -43,7 +43,16 @@ PageTopic: Redirected topic
 
 BrowseFilter: Filter
 
+PleaseLogIn: Please log in to gain access to all features of the site.
+LoggedInAs name@Text: Logged in as #{name}
+Logout: Logout
+NotLoggedIn: Not logged in.
+LoginNow: Login now
+
+YouAreHere: You are here:
+
 # Page titles
+LoginTitle: Login
 CreateTopicTitle: Create Topic
 TopicTitle title@Text: #{title}
 SettingsTitle: Settings

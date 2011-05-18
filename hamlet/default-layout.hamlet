@@ -22,11 +22,19 @@
                             <li>
                                 <a href=@\{BlogR}>Blog
                 <div .yesod-body>
+                    <div .yesod-userbar>
+                      $maybe user <- muser
+                        <a href=@{SettingsR}>_{MsgLoggedInAs $ userName user}
+                        \ | #
+                        <a href=@{AuthR LogoutR}>_{MsgLogout}
+                      $nothing
+                        _{MsgNotLoggedIn} #
+                        <a href=@{AuthR LoginR}>_{MsgLoginNow}
                     $if isHome
                         ^{const $ pageBody pc}
                     $else
                         <div .yesod-breadcrumb>
-                            <p .yesod-breadcrumb-label>You are here:
+                          <p .yesod-breadcrumb-label>_{MsgYouAreHere}
                             <ul>
                               $forall bc <- bcs
                                 <li>

@@ -1,3 +1,4 @@
+<p>#{userGravatar user}
 <form method=post enctype=#{enctype}>
     <table>
         ^{form}

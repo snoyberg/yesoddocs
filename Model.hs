@@ -5,6 +5,7 @@ import Yesod.Persist
 import Data.Text (Text)
 import Data.Time (UTCTime)
 import Text.Hamlet (Html)
+import Yesod.Form (Textarea)
 
 data TopicFormat = TFHtml | TFMarkdown | TFText | TFDita
     deriving (Read, Eq, Show)

@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell, QuasiQuotes, OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 module Handler.Settings
     ( getSettingsR
     , postSettingsR
@@ -6,11 +7,20 @@ module Handler.Settings
     ) where
 
 import Wiki
+import Util
 import Control.Monad (unless)
 import Data.Maybe (fromMaybe)
+import Control.Applicative (pure)
 
-form' :: Text -> Handler ((FormResult Text, Widget ()), Enctype)
-form' = runFormPost . renderTable . areq textField (FieldSettings MsgYourName Nothing Nothing Nothing) . Just
+form' :: User -> Handler ((FormResult User, Widget ()), Enctype)
+form' User {..} = runFormPost $ renderTable $ User
+    <$> pure userIdent
+    <*> areq textField (FieldSettings MsgYourName Nothing Nothing Nothing) (Just userName)
+    <*> pure userAdmin
+    <*> areq textField (FieldSettings MsgYourHandle (Just MsgHandleTooltip) Nothing Nothing) (Just userHandle)
+    <*> aopt emailField (FieldSettings MsgYourEmail (Just MsgEmailTooltip) Nothing Nothing) (Just userEmail)
+    <*> aopt urlField (FieldSettings MsgYourUrl Nothing Nothing Nothing) (Just userUrl)
+    <*> aopt textareaField (FieldSettings MsgYourBio Nothing Nothing Nothing) (Just userBio)
 
 pageForm :: [(TopicId, Topic)] -> Maybe Page -> Handler ((FormResult (Maybe Text, TopicId), Widget ()), Enctype)
 pageForm topics mp = runFormPost $ renderTable $ (,)
@@ -22,7 +32,7 @@ pageForm topics mp = runFormPost $ renderTable $ (,)
 getSettingsR :: Handler RepHtml
 getSettingsR = do
     (uid, user) <- requireAuth
-    ((_, form), enctype) <- form' $ userName user
+    ((_, form), enctype) <- form' user
     maps <- runDB $ selectList [TMapOwnerEq uid] [] 0 0
     topics <- runDB $ selectList [TopicOwnerEq uid] [] 0 0
     pages <- runDB $ selectList [] [] 0 0
@@ -32,11 +42,12 @@ getSettingsR = do
 
 postSettingsR :: Handler ()
 postSettingsR = do
-    uid <- requireAuthId
-    ((res, _), _) <- form' ""
+    (uid, user) <- requireAuth
+    ((res, _), _) <- form' user
     case res of
-        FormSuccess name -> do
-            runDB $ update uid [UserName name]
+        FormSuccess user' -> do
+            -- FIXME check for duplicate handle
+            runDB $ replace uid user'
             setMessageI MsgSettingsUpdated
         _ -> return ()
     redirect RedirectTemporary SettingsR

@@ -86,3 +86,4 @@ executable         yesodwiki
                  , aeson
                  , containers
                  , vector
+                 , pureMD5

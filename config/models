@@ -2,7 +2,12 @@ User
     ident Text
     name Text Update
     admin Bool default=false
+    handle Text Eq
+    email Text Maybe
+    url Text Maybe
+    bio Textarea Maybe
     UniqueUser ident
+    UniqueHandle handle
 
 TFamily
     created UTCTime

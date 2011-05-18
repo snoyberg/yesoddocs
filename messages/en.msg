@@ -22,6 +22,13 @@ NotYourMap: You cannot edit another user's map.
 UpdateSettings: Update settings
 SettingsUpdated: Your settings have been updated.
 
+YourHandle: User handle
+HandleTooltip: Short name to identify you on the site.
+YourEmail: Email Address
+EmailTooltip: Your email will never be shared. It is only used for Gravatar.
+YourUrl: Website
+YourBio: Short bio
+
 YourName: Your name
 Title: Title
 Format: Format

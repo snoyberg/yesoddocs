@@ -51,7 +51,7 @@ import qualified Data.Text as T
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.IO.Class (liftIO)
 import Yesod.Message
-import Data.Text (Text)
+import Data.Text (Text, pack)
 import Control.Applicative ((<$>), (<*>))
 import Text.Hamlet (Html)
 import Data.Monoid (mappend)
@@ -112,6 +112,7 @@ instance Yesod Wiki where
             setTitleI title
             widget
             addCassius $(Settings.cassiusFile "default-layout")
+            addLucius $(Settings.luciusFile "default-layout")
         tm <- getRouteToMaster
         mcurr <- getCurrentRoute
         let isHome = fmap tm mcurr == Just RootR
@@ -167,7 +168,15 @@ instance YesodAuth Wiki where
         case x of
             Just (uid, _) -> return $ Just uid
             Nothing -> do
-                fmap Just $ insert $ User (credsIdent creds) "Unnamed User" False
+                handle <- getUniqueHandle (1 :: Int)
+                fmap Just $ insert $ User (credsIdent creds) "Unnamed User" False handle Nothing Nothing Nothing
+      where
+        getUniqueHandle i = do
+            let h = pack $ "anon" ++ show i
+            x <- getBy $ UniqueHandle h
+            case x of
+                Nothing -> return h
+                Just _ -> getUniqueHandle $ i + 1
 
     authPlugins = [authOpenId]
 

@@ -2,6 +2,6 @@
 $forall c <- contribs y
     <div .contributor>
         <a href=#{curl c}>
-            <img src=#{gravatar 150 $ cemail c}>
+            <img src=#{gravatar 160 $ cemail c}>
             <span>#{cname c}
-        <div .bio>#{cbio c}
+        <div .bio>#{Textarea $ cbio c}

@@ -76,6 +76,7 @@ mkYesodData "YesodDocs" [parseRoutes|
 /community CommunityR GET
 
 /contributors ContributorsR GET
+/testimonials TestR GET
 
 /comment/#String/#Text CommentR POST
 /feed/comments CommentsFeedR GET
@@ -117,6 +118,7 @@ instance Yesod YesodDocs where
 
 instance YesodBreadcrumbs YesodDocs where
     breadcrumb ContributorsR = return ("Contributors", Just HomeR)
+    breadcrumb TestR = return ("Testimonials", Just HomeR)
     breadcrumb HomeR = return ("Home", Nothing)
     breadcrumb FiveMinutesR = return ("Yesod in Five Minutes", Just HomeR)
     breadcrumb BookR = return ("Book", Just HomeR)

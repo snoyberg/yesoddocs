@@ -120,6 +120,12 @@ getSitemapR = do
                 (UTCTime (entryDay e) $ secondsToDiffTime 0)
                 Monthly 0.5
 
+getTestR :: Handler RepHtml
+getTestR = defaultLayout $ do
+    setTitle "Testimonials"
+    addHamlet $(hamletFile "testimonials")
+    addLucius $(luciusFile "testimonials")
+
 getContributorsR :: Handler RepHtml
 getContributorsR = do
     y <- getYesod

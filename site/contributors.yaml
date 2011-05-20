@@ -9,7 +9,19 @@
 - name: Matt Brown
   email: matt@softmechanics.net
   url: http://www.haskellers.com/user/mattbrown
-  bio: Matt...
+  bio: Matt Brown is the maintainer of both the WAI and Warp projects. He took the original WAI simpleserver code and transformed it into one of the fastest web servers out there. He's also implemented a number of the internal Yesod features, like dynamic subsites.
+- name: Patrick Brisbin
+  email: pbrisbin@gmail.com
+  url: http://pbrisbin.com/
+  bio:
+         I'm a 26 year old Enterprise Resource Planning consultant and developer in Boston, MA. Stuck in a Windows world at work, I hack on open source code at home as my main hobby. A large part of this hobby is maintaining my personal web site which started as just static html with a few php helpers.
+
+
+         Some time ago, I looked into converting this simple blog site to a framework. About that same time, I was being sucked into haskell thanks to the window manager XMonad. Finding Yesod gave me a great way to continue cutting my haskell teeth on something personal and productive.
+
+
+         I enjoy working on Yesod because the framework is so rich, the development is so active, and the lead developer is about as accessible as it gets through email, blog comments, or github issues. The fact that a junior haskell developer like myself can roll in, get involved, and feel useful is a huge bonus as well.
+
 - name: Rick Richardson
   email: rick.richardson@gmail.com
   url: http://www.haskellers.com/user/rick-richardson
@@ -22,11 +34,7 @@
   email: konn.jinro@gmail.com
   url: http://www.haskellers.com/user/konn
   bio: Undergraduate Student at Waseda University, Japan. I added OAuth Support to authenticate package. If there is anyone who has opinion about OAuth support, please tell me.
-- name: Patrick Brisbin
-  email:
-  url:
-  bio:
 - name: Kazu Yamamoto
-  email:
-  url:
-  bio:
+  email: kazu@iij.ad.jp
+  url: http://www.mew.org/~kazu/
+  bio: I'm a member of Parallel GHC Project and seeking modular network programming on highly scalable and concurrent platform in Haskell.

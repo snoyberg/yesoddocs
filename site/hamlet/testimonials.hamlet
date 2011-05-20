@@ -1,0 +1,31 @@
+<p>
+    If you have a real-life Yesod success story, please #
+    <a href="mailto:michael@snoyman.com">let us know
+    .
+
+<h2>Blake Rain, Massive Tactical
+<p>It's about 6am here. I've been rushing the past few days to get a working demo of one of our sites up for a meeting with an investor tomorrow. I thought I'd take a few minutes to share a few results:
+
+<p>The site itself is deceptive: it is considerably more complex than the original idea led us to believe. This is actually the third generation of the application: the others were in C# (2) and PHP (1). None of them were very good, and were riddled with bugs. Each feature took longer and longer to implement: development time was almost exponential in terms of required features.
+
+<p>Haskell helped me to avoid so many problems; I don't need to tell you about how great Haskell is. The more I wrote, the faster it was to write. Development time is now a much nicer function.
+
+<p>Widgets are a really big win here. The site has several rather complex controls, which are used in various places. I had previously attempted this with ASP.Net controls (and failed).
+
+<p>Yesod's widgets just made life so simple I was quite literally moved.  There is so much reuse of HTML, CSS and JavaScript in this site it amazes me.
+
+<p>My only regret was that I used persistent and PostgreSQL. NOT because of any deficiencies on the part of either persistent or Postgre themselves: persistent is a really wonderful library, and a joy to work with. More that the system I am modelling just doesn't sit well with a relational database.
+
+<p>The major bottleneck for the site is the database. The next point-release might use something like acid-state, and do away with the database altogether. Thankfully, persistent is a separate package from Yesod, so this will be a reasonably trivial refactoring.
+
+<p>Although my choice of using a relational database was flawed, persistent's abstractions made what would have been quite tedious work relatively painless.
+
+<p>The production server (using Warp) benchmarked at 45,079 requests a second for the index page... (and it's writing out somewhat more than "PONG"). That is pretty scary; the potential is quite worrying.
+
+<p>In conclusion, I feel qualified in stating that Haskell is a fantastic language for web development.
+
+<p>But this couldn't have happened if it was not for your amazing work with Yesod, Warp and their friends. You have truly brought the power of Haskell to the world of web development, and I have met my deadline because of it. Thank you.
+
+<p>Yours Sincerely,
+
+<p>Blake.

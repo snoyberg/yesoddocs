@@ -22,6 +22,8 @@ We want to keep things simple and avoid intimidating the first-time user. So the
 The file: hamlet/default-layout.hamlet is still the default. But when you are serious about launching, you will want to switch to use html5boilerplate. Or if you have your own tried and true techniques, just delete these files.
 
 ## Forms
+__Note__: Just to make it clear, these "decisions" are still up for discussion. Greg has some ideas on how to clean up the API a bit, and I'd rather delay the release if it means a better final product.
+
 I [blogged recently about the Yesod forms library](http://www.yesodweb.com/blog/yesod-form-revamp), leaving some stuff up in the air. Well, as part of the work on the i18n efforts for Yesod in general, and work on the new documentation site, I've hammered out a number of the details. There are still a few changes to be made, and I haven't decided if it will be released before the 0.9 release. But it's mostly complete. This post will give a high-level overview.
 
 ## Three types of forms

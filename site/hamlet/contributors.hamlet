@@ -2,6 +2,9 @@
 $forall c <- contribs y
     <div .contributor>
         <a href=#{curl c}>
-            <img src=#{gravatar 160 $ cemail c}>
+            $if (==) (cemail c) ""
+                <div .dummy>
+            $else
+                <img src=#{gravatar 160 $ cemail c}>
             <span>#{cname c}
         <div .bio>#{Textarea $ cbio c}

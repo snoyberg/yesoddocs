@@ -11,6 +11,14 @@ h1 {
     max-width: 650px;
 }
 
+.contributor > a {
+    width: 180px;
+}
+
+.dummy {
+    height: 160px;
+}
+
 .contributor > a, .contributor > div {
     display: table-cell;
     padding-right: 1em;

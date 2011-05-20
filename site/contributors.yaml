@@ -7,7 +7,7 @@
   url: http://www.haskellers.com/user/342
   bio: Greg is a freelance web developer used to using Ruby for its expressiveness. He was looking for something faster, easier to scale, and with more intrinsic safety instead of requiring enormous amounts of unit tests. Yesod has been up to the challenge without throwing away the expressiveness he is used to. He used Yesod for eatnutrients.com and now spends time working with a startup using Yesod.
 - name: Matt Brown
-  email: matt@softmechanics.net
+  email:
   url: http://www.haskellers.com/user/mattbrown
   bio: Matt Brown is the maintainer of both the WAI and Warp projects. He took the original WAI simpleserver code and transformed it into one of the fastest web servers out there. He's also implemented a number of the internal Yesod features, like dynamic subsites.
 - name: Patrick Brisbin
@@ -25,7 +25,7 @@
 - name: Rick Richardson
   email: rick.richardson@gmail.com
   url: http://www.haskellers.com/user/rick-richardson
-  bio: I was told that there was going to be punch and pie.
+  bio: Lured in by a false promise of punch and pie, Rick has made major contributions to the MongoDB Persistent backend.
 - name: Ian Duncan
   email: iand675@gmail.com
   url: http://www.surucreative.com/
@@ -33,7 +33,7 @@
 - name: Hiromi ISHII (a.k.a. mr_konn)
   email: konn.jinro@gmail.com
   url: http://www.haskellers.com/user/konn
-  bio: Undergraduate Student at Waseda University, Japan. I added OAuth Support to authenticate package. If there is anyone who has opinion about OAuth support, please tell me.
+  bio: Undergraduate Student at Waseda University, Japan. I maintain OAuth Support for the authenticate package.
 - name: Kazu Yamamoto
   email: kazu@iij.ad.jp
   url: http://www.mew.org/~kazu/

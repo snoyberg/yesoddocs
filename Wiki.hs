@@ -241,6 +241,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb AuthR{} = return (MsgNotFound, Nothing)
     breadcrumb AddBlogMapR{} = return (MsgNotFound, Nothing)
     breadcrumb AddBookR{} = return (MsgNotFound, Nothing)
+    breadcrumb BlogR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return

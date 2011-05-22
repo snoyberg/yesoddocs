@@ -1,3 +1,4 @@
+<h1>FIXME blog title and archive
 <p .date>#{prettyDate $ blogPosted blog}
 <p .author>
     #{userGravatar user}

@@ -34,6 +34,7 @@
 
 /browse BrowseR GET
 
+/blog/#UserHandle BlogR GET
 /blog/#UserHandle/#BlogSlug BlogPostR GET
 
 /book/#UserHandle/#BookSlug BookR GET

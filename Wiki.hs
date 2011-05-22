@@ -30,6 +30,7 @@ module Wiki
     , mappend
     , fromLabel
     , getBlogPost
+    , getBook
     ) where
 
 import Data.Time
@@ -173,7 +174,7 @@ instance YesodAuth Wiki where
                 fmap Just $ insert $ User (credsIdent creds) "Unnamed User" False handle Nothing Nothing Nothing
       where
         getUniqueHandle i = do
-            let h = pack $ "anon" ++ show i
+            let h = UserHandle $ pack $ "anon" ++ show i
             x <- getBy $ UniqueHandle h
             case x of
                 Nothing -> return h
@@ -216,6 +217,17 @@ instance YesodBreadcrumbs Wiki where
         blog <- getBlogPost handle slug
         tm <- runDB $ get404 $ blogMap blog
         return (MsgBlogPostTitle $ tMapTitle tm, Just RootR)
+    breadcrumb (BookR handle slug) = do
+        book <- getBook handle slug
+        tm <- runDB $ get404 $ bookMap book
+        return (MsgBookTitle $ tMapTitle tm, Just RootR)
+    breadcrumb (BookChapterR handle slug mnid) = do
+        mn <- runDB $ get404 mnid
+        title <-
+            case tMapNodeCtopic mn of
+                Just tid -> runDB $ topicTitle <$> get404 tid
+                Nothing -> return "" -- FIXME
+        return (MsgBookChapterTitle title, Just $ BookR handle slug)
 
     breadcrumb StaticR{} = return (MsgNotFound, Nothing)
     breadcrumb FaviconR{} = return (MsgNotFound, Nothing)
@@ -228,6 +240,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb MapLabelsR{} = return (MsgNotFound, Nothing)
     breadcrumb AuthR{} = return (MsgNotFound, Nothing)
     breadcrumb AddBlogMapR{} = return (MsgNotFound, Nothing)
+    breadcrumb AddBookR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return
@@ -263,7 +276,12 @@ addNewsItem title url content = do
 fromLabel :: WikiMessage -> FieldSettings WikiMessage
 fromLabel x = FieldSettings x Nothing Nothing Nothing
 
-getBlogPost :: Text -> Text -> GHandler sub Wiki Blog
+getBlogPost :: UserHandle -> BlogSlug -> GHandler sub Wiki Blog
 getBlogPost handle slug = runDB $ do
     (uid, _) <- getBy404 $ UniqueHandle handle
     fmap snd $ getBy404 $ UniqueBlogSlug uid slug
+
+getBook :: UserHandle -> BookSlug -> GHandler sub Wiki Book
+getBook handle slug = runDB $ do
+    (uid, _) <- getBy404 $ UniqueHandle handle
+    fmap snd $ getBy404 $ UniqueBookSlug uid slug

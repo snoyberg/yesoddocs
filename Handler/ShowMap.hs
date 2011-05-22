@@ -4,11 +4,13 @@ module Handler.ShowMap
     , getShowMapTopicR
     , loadTree
     , showTree
+    , loadTreeNode
     ) where
 
 import Wiki
 import Handler.Topic (getTopicR)
 import Util (renderContent)
+import Database.Persist.GenericSql (SqlPersist)
 
 data Tree = Tree
     { treeTopicId :: Maybe TopicId -- FIXME TMapNodeId
@@ -37,32 +39,31 @@ $forall tree <- trees
 
 loadTree :: TMapId -> Handler [Tree]
 loadTree tmid =
-    runDB $ selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= mapM (go True)
-  where
-    go deeper (tmnid, tmn) = do
-        c <- if deeper
-                then selectList [TMapNodeParentEq $ Just tmnid] [] 0 0 >>= mapM (go False)
-                else return []
-        title <-
-            case tMapNodeCtopic tmn of
-                Nothing -> return ""
-                Just tid -> do
-                    t <- get404 tid
-                    return $ topicTitle t
-        content <-
-            case tMapNodeCtopic tmn of
-                Nothing -> return Nothing
-                Just tid -> do
-                    x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
-                    case x of
-                        (_, y):_ -> return $ Just y
-                        [] -> return Nothing
-        return Tree
-            { treeTopicId = tMapNodeCtopic tmn
-            , treeTitle = title
-            , treeChildren = c
-            , treeContent = content
-            }
+    runDB $ selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= mapM loadTreeNode
+
+loadTreeNode :: (TMapNodeId, TMapNode) -> SqlPersist (GGHandler sub Wiki IO) Tree
+loadTreeNode (tmnid, tmn) = do
+    c <- selectList [TMapNodeParentEq $ Just tmnid] [] 0 0 >>= mapM loadTreeNode
+    title <-
+        case tMapNodeCtopic tmn of
+            Nothing -> return ""
+            Just tid -> do
+                t <- get404 tid
+                return $ topicTitle t
+    content <-
+        case tMapNodeCtopic tmn of
+            Nothing -> return Nothing
+            Just tid -> do
+                x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+                case x of
+                    (_, y):_ -> return $ Just y
+                    [] -> return Nothing
+    return Tree
+        { treeTopicId = tMapNodeCtopic tmn
+        , treeTitle = title
+        , treeChildren = c
+        , treeContent = content
+        }
 
 getShowMapR :: TMapId -> Handler RepHtml
 getShowMapR tmid = do

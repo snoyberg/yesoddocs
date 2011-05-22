@@ -5,6 +5,7 @@ module Handler.Settings
     , postSettingsR
     , postEditPageR
     , postAddBlogMapR
+    , postAddBookR
     ) where
 
 import Wiki
@@ -18,10 +19,26 @@ form' User {..} = runFormPost $ renderTable $ User
     <$> pure userIdent
     <*> areq textField (FieldSettings MsgYourName Nothing Nothing Nothing) (Just userName)
     <*> pure userAdmin
-    <*> areq textField (FieldSettings MsgYourHandle (Just MsgHandleTooltip) Nothing Nothing) (Just userHandle)
+    <*> fmap UserHandle (areq textField (FieldSettings MsgYourHandle (Just MsgHandleTooltip) Nothing Nothing) (Just $ unUserHandle userHandle))
     <*> aopt emailField (FieldSettings MsgYourEmail (Just MsgEmailTooltip) Nothing Nothing) (Just userEmail)
     <*> aopt urlField (FieldSettings MsgYourUrl Nothing Nothing Nothing) (Just userUrl)
     <*> aopt textareaField (FieldSettings MsgYourBio Nothing Nothing Nothing) (Just userBio)
+
+bookForm :: UserId -> Handler ((FormResult Book, Widget()), Enctype)
+bookForm owner = do
+    maps <- runDB $ selectList [TMapOwnerEq owner] [] 0 0
+    topics <- runDB $ selectList [TopicOwnerEq owner] [] 0 0
+    let ms = map go maps
+    let ts = map go' topics
+    runFormPost $ renderTable $ Book
+        <$> pure owner
+        <*> aopt (selectField ts) (FieldSettings MsgBookTopic (Just MsgBookTopicTooltip) Nothing Nothing) Nothing
+        <*> areq (selectField ms) (FieldSettings MsgBookMap (Just MsgBookMapTooltip) Nothing Nothing) Nothing
+        <*> fmap BookSlug (areq textField (FieldSettings MsgSlug (Just MsgSlugTooltip) Nothing Nothing) Nothing)
+        <*> areq intField (FieldSettings MsgChunking (Just MsgChunkingTooltip) Nothing Nothing) Nothing
+  where
+    go (x, y) = (tMapTitle y, x)
+    go' (x, y) = (topicTitle y, x)
 
 pageForm :: [(TopicId, Topic)] -> Maybe Page -> Handler ((FormResult (Maybe Text, TopicId), Widget ()), Enctype)
 pageForm topics mp = runFormPost $ renderTable $ (,)
@@ -40,6 +57,7 @@ getSettingsR = do
     ((_, pageNew), _) <- pageForm topics Nothing
     pforms <- (fmap . fmap) (snd . fst) $ mapM (pageForm topics . Just . snd) pages
     ((_, ab), _) <- addBlog uid
+    ((_, addBook), _) <- bookForm uid
     defaultLayout $(widgetFile "settings")
 
 postSettingsR :: Handler ()
@@ -86,8 +104,21 @@ postAddBlogMapR = do
         FormSuccess (tmid, slug) -> do
             -- FIXME check for unique slug
             now <- liftIO getCurrentTime
-            _ <- runDB $ insert $ Blog uid now tmid slug
-            redirect RedirectTemporary $ BlogPostR (userHandle u) slug
+            _ <- runDB $ insert $ Blog uid now tmid $ BlogSlug slug
+            redirect RedirectTemporary $ BlogPostR (userHandle u) $ BlogSlug slug
         _ -> do
             setMessageI MsgInvalidBlogInfo
+            redirect RedirectTemporary SettingsR
+
+postAddBookR :: Handler ()
+postAddBookR = do
+    (uid, u) <- requireAuth
+    ((res, _), _) <- bookForm uid
+    case res of
+        FormSuccess book -> do
+            -- FIXME check for unique slug
+            _ <- runDB $ insert book
+            redirect RedirectTemporary $ BookR (userHandle u) $ bookSlug book
+        _ -> do
+            setMessageI MsgInvalidBookInfo
             redirect RedirectTemporary SettingsR

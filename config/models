@@ -2,7 +2,7 @@ User
     ident Text
     name Text Update
     admin Bool default=false
-    handle Text Eq
+    handle UserHandle Eq
     email Text Maybe
     url Text Maybe
     bio Textarea Maybe
@@ -69,10 +69,13 @@ Blog
     owner UserId Eq
     posted UTCTime Desc
     map TMapId
-    slug Text
+    slug BlogSlug
     UniqueBlogSlug owner slug
 
 Book
     owner UserId Eq
+    topic TopicId Maybe
     map TMapId
+    slug BookSlug
     chunking Int
+    UniqueBookSlug owner slug

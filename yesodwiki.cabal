@@ -42,6 +42,7 @@ library
                      Handler.Labels
                      Handler.Browse
                      Handler.Blog
+                     Handler.Book
                      Util
 
 executable         yesodwiki

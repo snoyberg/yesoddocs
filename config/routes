@@ -27,10 +27,14 @@
 
 /settings SettingsR GET POST
 /settings/blog-map AddBlogMapR POST
+/settings/book AddBookR POST
 
 /edit/labels LabelsR GET POST
 /edit/labels/new NewLabelR POST
 
 /browse BrowseR GET
 
-/blog/#Text/#Text BlogPostR GET
+/blog/#UserHandle/#BlogSlug BlogPostR GET
+
+/book/#UserHandle/#BookSlug BookR GET
+/book/#UserHandle/#BookSlug/#TMapNodeId BookChapterR GET

@@ -33,12 +33,21 @@ MapForBlog: Map to post
 Slug: Slug
 SlugTooltip: Unique name for URLs
 InvalidBlogInfo: Invalid blog information, please try again.
+InvalidBookInfo: Invalid book information, please try again.
 
 YourName: Your name
 Title: Title
 Format: Format
 Content: Content
 Summary: Summary
+
+BookMap: Map
+BookMapTooltip: This map contains all the content for the book.
+BookTopic: Topic
+BookTopicTooltip: A brief introduction section displayed before the Table of Contents.
+
+Chunking: Chunking level
+ChunkingTooltip: Determines how many levels deep the TOC will descend.
 
 MapTitleTooltip: Name of the entire map.
 
@@ -64,6 +73,7 @@ LoginNow: Login now
 YouAreHere: You are here:
 
 AddBlogPost: Add blog post
+AddBook: Add book
 
 # Page titles
 LoginTitle: Login
@@ -79,3 +89,5 @@ LabelsTitle: Labels
 BrowseTitle: Browse
 BlogPostTitle title@Text: #{title}
 HomepageTitle: Homepage
+BookTitle title@Text: #{title}
+BookChapterTitle title@Text: #{title}

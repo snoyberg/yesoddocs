@@ -3,7 +3,7 @@ function setupDropZones() {
     $("li.dropzone").detach();
     $("#map li").before(dz);
     $("#map ul").append(dz);
-    $("#topics ul").append(dz);
+    $("#topics > ul").append(dz);
 }
 
 $(function(){

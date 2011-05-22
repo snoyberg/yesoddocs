@@ -33,6 +33,13 @@
             <td colspan=3>
                 <input type=submit value=_{MsgAddBlogPost}>
 
+<form #blog action=@{AddBookR} method=post>
+    <table>
+        ^{addBook}
+        <tr>
+            <td colspan=3>
+                <input type=submit value=_{MsgAddBook}>
+
 $if userAdmin user
     <p>
         <a href=@{LabelsR}>_{MsgLabelsTitle}

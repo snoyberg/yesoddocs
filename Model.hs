@@ -6,10 +6,18 @@ import Data.Text (Text)
 import Data.Time (UTCTime)
 import Text.Hamlet (Html)
 import Yesod.Form (Textarea)
+import Yesod.Core (SinglePiece)
 
 data TopicFormat = TFHtml | TFMarkdown | TFText | TFDita
     deriving (Read, Eq, Show)
 derivePersistField "TopicFormat"
+
+newtype BookSlug = BookSlug Text
+    deriving (Read, Eq, Show, PersistField, SinglePiece)
+newtype BlogSlug = BlogSlug Text
+    deriving (Read, Eq, Show, PersistField, SinglePiece)
+newtype UserHandle = UserHandle { unUserHandle :: Text }
+    deriving (Read, Eq, Show, PersistField, SinglePiece)
 
 formats :: [(Text, TopicFormat)]
 formats =

@@ -10,22 +10,25 @@ module Util
 import Model (TopicFormat (..), User (userEmail))
 import Data.Text (Text, pack, unpack)
 import Data.Text.Encoding (encodeUtf8)
-import Text.Hamlet (Html, preEscapedText, toHtml)
+import Text.Hamlet (Html, preEscapedText, toHtml, preEscapedString)
 import Text.HTML.SanitizeXSS (sanitizeBalance)
 import Text.Hamlet.NonPoly (html)
 import Data.Digest.Pure.MD5 (md5)
 import Data.Char (isSpace, toLower)
 import Data.Maybe (fromMaybe)
 import qualified Data.ByteString.Lazy as L
+import Text.Pandoc (writeHtmlString, defaultWriterOptions, readMarkdown, defaultParserState)
 
 renderContent :: TopicFormat -> Text -> Html
 renderContent TFHtml t = preEscapedText t
 renderContent TFText t = toHtml t
+renderContent TFMarkdown t = preEscapedString $ writeHtmlString defaultWriterOptions $ readMarkdown defaultParserState $ filter (/= '\r') $ unpack t
 renderContent tf _ = toHtml $ "renderContent: not yet written for " ++ show tf
 
 validateContent :: TopicFormat -> Text -> Text
 validateContent TFHtml t = pack $ sanitizeBalance $ unpack t
 validateContent TFText t = t
+validateContent TFMarkdown t = t
 validateContent tf _ = pack $ "validateContent: not yet written for " ++ show tf
 
 userGravatar :: User -> Html

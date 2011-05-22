@@ -89,3 +89,4 @@ executable         yesodwiki
                  , containers
                  , vector
                  , pureMD5
+                 , pandoc

@@ -4,10 +4,10 @@ $(function(){
         var isHtml = $("#format option:selected").text() == "HTML";
         if (isHtml == !!area) {
         } else if (area) {
-            area.removeInstance("content");
+            area.removeInstance("contentarea");
             area = null;
         } else {
-            area = new nicEditor({fullPanel: true}).panelInstance("content", {hasPanel: true});
+            area = new nicEditor({fullPanel: true}).panelInstance("contentarea", {hasPanel: true});
         }
     };
     update();

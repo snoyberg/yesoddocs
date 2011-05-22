@@ -14,13 +14,14 @@ import Control.Monad (unless, when)
 import Text.Hamlet.NonPoly (html)
 import Handler.Labels (LTree (..), getLTree)
 import Data.Maybe (mapMaybe)
+import Handler.CreateTopic (richEdit)
 
 topicForm :: (Text, TopicFormat, Textarea, Maybe Text)
           -> Handler ((FormResult (Text, TopicFormat, Textarea, Maybe Text), Widget ()), Enctype)
 topicForm (a, b, c, d) = runFormPost $ renderTable $ (,,,)
     <$> areq textField (fromLabel MsgTitle) (Just a) -- TRANS
-    <*> areq (selectField formats) (fromLabel MsgFormat) (Just b)
-    <*> areq textareaField (fromLabel MsgContent) (Just c)
+    <*> areq (selectField formats) (FieldSettings MsgFormat Nothing (Just "format") Nothing) (Just b)
+    <*> areq textareaField (FieldSettings MsgContent Nothing (Just "contentarea") Nothing) (Just c)
     <*> aopt textField (fromLabel MsgSummary) (Just d)
 
 getTopicR :: TopicId -> Handler RepHtml
@@ -50,7 +51,7 @@ getTopicR tid = do
     ltree <- getLTree
     slabels <- runDB $ fmap (map $ topicLabelLabel . snd) $ selectList [TopicLabelTopicEq tid] [] 0 0
     let activeLabel = flip elem slabels
-    defaultLayout $(widgetFile "topic")
+    defaultLayout $ richEdit >> $(widgetFile "topic")
 
 showLTree :: (LabelId -> Bool) -> [LTree] -> Widget ()
 showLTree al lt = [whamlet|

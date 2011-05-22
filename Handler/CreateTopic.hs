@@ -13,7 +13,7 @@ topicForm :: Handler ((FormResult (Text, TopicFormat, Textarea), Widget ()), Enc
 topicForm = runFormPost $ renderTable $ (,,)
     <$> areq textField (fromLabel MsgTitle) Nothing
     <*> areq (selectField formats) (FieldSettings MsgFormat Nothing (Just "format") Nothing) Nothing
-    <*> areq textareaField (FieldSettings MsgContent Nothing (Just "content") Nothing) Nothing
+    <*> areq textareaField (FieldSettings MsgContent Nothing (Just "contentarea") Nothing) Nothing
 
 richEdit :: Widget ()
 richEdit = do

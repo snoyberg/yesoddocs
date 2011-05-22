@@ -2,6 +2,7 @@
 module Handler.CreateTopic
     ( getCreateTopicR
     , postCreateTopicR
+    , richEdit
     ) where
 
 import Wiki
@@ -11,15 +12,21 @@ import Text.Hamlet.NonPoly (html)
 topicForm :: Handler ((FormResult (Text, TopicFormat, Textarea), Widget ()), Enctype)
 topicForm = runFormPost $ renderTable $ (,,)
     <$> areq textField (fromLabel MsgTitle) Nothing
-    <*> areq (selectField formats) (fromLabel MsgFormat) Nothing
-    <*> areq textareaField (fromLabel MsgContent) Nothing
+    <*> areq (selectField formats) (FieldSettings MsgFormat Nothing (Just "format") Nothing) Nothing
+    <*> areq textareaField (FieldSettings MsgContent Nothing (Just "content") Nothing) Nothing
+
+richEdit :: Widget ()
+richEdit = do
+    addScript $ StaticR jquery_js
+    addScript $ StaticR nicEdit_js
+    addJulius $(juliusFile "rich-edit")
 
 getCreateTopicR :: Handler RepHtml
 getCreateTopicR = do
     _ <- requireAuthId
     ((_, form), enctype) <- topicForm
     let merr = Nothing :: Maybe Text
-    defaultLayout $(widgetFile "create-topic")
+    defaultLayout $ richEdit >> $(widgetFile "create-topic")
 
 postCreateTopicR :: Handler RepHtml
 postCreateTopicR = do

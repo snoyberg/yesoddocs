@@ -78,3 +78,4 @@ ShowMapTopicTitle maptitle@Text topictitle@Text: #{maptitle} :: #{topictitle}
 LabelsTitle: Labels
 BrowseTitle: Browse
 BlogPostTitle title@Text: #{title}
+HomepageTitle: Homepage

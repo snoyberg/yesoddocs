@@ -187,13 +187,7 @@ instance YesodAuth Wiki where
         defaultLayout $(widgetFile "login")
 
 instance YesodBreadcrumbs Wiki where
-    breadcrumb RootR = do
-        t <- runDB $ do
-            x <- getBy $ UniquePage ""
-            case x of
-                Nothing -> return "You must set a homepage topic"
-                Just y -> fmap topicTitle $ get404 $ pageTopic $ snd y
-        return (MsgTopicTitle t, Nothing)
+    breadcrumb RootR = return (MsgHomepageTitle, Nothing)
     breadcrumb (PageR p) = do
         t <- runDB $ getBy404 (UniquePage p) >>= get404 . pageTopic . snd
         return (MsgTopicTitle $ topicTitle t, Just RootR)

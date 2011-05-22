@@ -31,7 +31,8 @@
                         _{MsgNotLoggedIn} #
                         <a href=@{AuthR LoginR}>_{MsgLoginNow}
                     $if isHome
-                        ^{const $ pageBody pc}
+                        <div .yesod-primary-content>
+                          ^{const $ pageBody pc}
                     $else
                         <div .yesod-breadcrumb>
                           <p .yesod-breadcrumb-label>_{MsgYouAreHere}
@@ -45,7 +46,7 @@
                                 _{title}
                             <div .yesod-clear>
                         <!-- <div .yesod-secondary-content> -->
-                        <div .yesod-primary-content>
+                        <div .yesod-primary-content .yesod-width-fix>
                             ^{const $ pageBody pc}
                 <div .yesod-footer>
                     Yesod is BSD licensed. This is is #

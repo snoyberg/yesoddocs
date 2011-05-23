@@ -18,17 +18,19 @@ import Data.Char (isSpace, toLower)
 import Data.Maybe (fromMaybe)
 import qualified Data.ByteString.Lazy as L
 import Text.Pandoc (writeHtmlString, defaultWriterOptions, readMarkdown, defaultParserState)
+import qualified Data.Text as T
+import Yesod.Form (Textarea (Textarea))
 
 renderContent :: TopicFormat -> Text -> Html
 renderContent TFHtml t = preEscapedText t
-renderContent TFText t = toHtml t
-renderContent TFMarkdown t = preEscapedString $ writeHtmlString defaultWriterOptions $ readMarkdown defaultParserState $ filter (/= '\r') $ unpack t
+renderContent TFText t = toHtml $ Textarea t
+renderContent TFMarkdown t = preEscapedString $ writeHtmlString defaultWriterOptions $ readMarkdown defaultParserState $ unpack t
 renderContent tf _ = toHtml $ "renderContent: not yet written for " ++ show tf
 
 validateContent :: TopicFormat -> Text -> Text
 validateContent TFHtml t = pack $ sanitizeBalance $ unpack t
 validateContent TFText t = t
-validateContent TFMarkdown t = t
+validateContent TFMarkdown t = T.filter (/= '\r') t
 validateContent tf _ = pack $ "validateContent: not yet written for " ++ show tf
 
 userGravatar :: User -> Html

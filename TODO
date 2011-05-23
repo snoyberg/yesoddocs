@@ -6,9 +6,8 @@ User page, set in breadcrumbs, includes
     Maps
     Bio
     Reputation (when we have it)
-Need helper functions to show a map node and all children
+    For admin: give admin rights
 Edit topic: preview button
-Create books with chunking level
 Upload ditamap
     Static files (yw://static/<staticid>)
     Special URLs (yw://topic/<topicid>#elementid)

@@ -45,7 +45,7 @@ approot :: Text
 -- Please note that there is no trailing slash.
 approot = "http://beta.yesodweb.com"
 #else
-approot = "http://localhost:3000"
+approot = "http://10.0.0.3:3000"
 #endif
 
 -- | The location of static files on your system. This is a file system

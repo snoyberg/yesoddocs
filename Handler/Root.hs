@@ -3,6 +3,7 @@
 module Handler.Root
     ( getRootR
     , getPageR
+    , getStaticContentR
     ) where
 
 import Wiki
@@ -34,3 +35,6 @@ getPageR :: Text -> Handler RepHtml
 getPageR t = do
     p <- runDB $ getBy404 (UniquePage t)
     getTopicR $ pageTopic $ snd p
+
+getStaticContentR :: StaticContentId -> Handler StaticContent
+getStaticContentR = runDB . get404

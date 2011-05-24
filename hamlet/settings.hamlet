@@ -26,6 +26,16 @@
                 <a href=@{EditMapR $ fst map}>_{MsgEdit}
                 )
 
+<form action=@{UploadDitamapR} method=post enctype=#{Multipart}>
+    <table>
+        <tr>
+            <th>_{MsgUploadDitaZip}
+            <td>
+                <input type=file name=zip>
+        <tr>
+            <td colspan=2>
+                <input type=submit>
+
 <form #blog action=@{AddBlogMapR} method=post>
     <table>
         ^{ab}

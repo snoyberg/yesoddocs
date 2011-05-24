@@ -1,5 +1,6 @@
 /static StaticR Static getStatic
 /auth   AuthR   Auth   getAuth
+/static-content/#StaticContentId StaticContentR GET
 
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
@@ -9,6 +10,8 @@
 
 /create/topic CreateTopicR GET POST
 /create/map CreateMapR GET POST
+
+/upload/ditamap UploadDitamapR POST
 
 /edit/page EditPageR POST
 

@@ -25,7 +25,11 @@ renderContent :: TopicFormat -> Text -> Html
 renderContent TFHtml t = preEscapedText t
 renderContent TFText t = toHtml $ Textarea t
 renderContent TFMarkdown t = preEscapedString $ writeHtmlString defaultWriterOptions $ readMarkdown defaultParserState $ unpack t
-renderContent tf _ = toHtml $ "renderContent: not yet written for " ++ show tf
+renderContent TFDitaConcept t = ditaToHtml t
+renderContent TFDitaTopic t = ditaToHtml t
+
+ditaToHtml :: Text -> Html
+ditaToHtml = error "FIXME ditaToHtml"
 
 validateContent :: TopicFormat -> Text -> Text
 validateContent TFHtml t = pack $ sanitizeBalance $ unpack t

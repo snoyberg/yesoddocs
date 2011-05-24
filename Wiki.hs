@@ -23,6 +23,7 @@ module Wiki
     , lift
     , liftIO
     , getCurrentTime
+    , UTCTime
     , (<$>)
     , (<*>)
     , Text
@@ -242,6 +243,8 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb AddBlogMapR{} = return (MsgNotFound, Nothing)
     breadcrumb AddBookR{} = return (MsgNotFound, Nothing)
     breadcrumb BlogR{} = return (MsgNotFound, Nothing)
+    breadcrumb StaticContentR{} = return (MsgNotFound, Nothing)
+    breadcrumb UploadDitamapR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return

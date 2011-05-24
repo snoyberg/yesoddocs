@@ -79,3 +79,7 @@ Book
     slug BookSlug
     chunking Int
     UniqueBookSlug owner slug
+
+StaticContent
+    mimetype ByteString
+    content ByteString

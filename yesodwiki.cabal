@@ -43,6 +43,7 @@ library
                      Handler.Browse
                      Handler.Blog
                      Handler.Book
+                     Handler.UploadDitamap
                      Util
 
 executable         yesodwiki
@@ -90,3 +91,7 @@ executable         yesodwiki
                  , vector
                  , pureMD5
                  , pandoc
+                 , xml-types
+                 , xml-enumerator
+                 , zip-archive
+                 , enumerator

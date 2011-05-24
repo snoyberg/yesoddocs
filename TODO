@@ -1,3 +1,6 @@
+Upload ditamap
+    Static files (yw://static/<staticid>)
+    Special URLs (yw://topic/<topicid>#elementid)
 Blog RSS feed
 User page, set in breadcrumbs, includes
     Blog link
@@ -8,9 +11,6 @@ User page, set in breadcrumbs, includes
     Reputation (when we have it)
     For admin: give admin rights
 Edit topic: preview button
-Upload ditamap
-    Static files (yw://static/<staticid>)
-    Special URLs (yw://topic/<topicid>#elementid)
 Comments
     Allowed on a topic as a whole
     For DITA, any <p> with an id

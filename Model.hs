@@ -2,13 +2,15 @@
 module Model where
 
 import Yesod.Persist
+import Yesod.Content (HasReps (..), toContent)
 import Data.Text (Text)
 import Data.Time (UTCTime)
 import Text.Hamlet (Html)
 import Yesod.Form (Textarea)
 import Yesod.Core (SinglePiece)
+import Data.ByteString (ByteString)
 
-data TopicFormat = TFHtml | TFMarkdown | TFText | TFDita
+data TopicFormat = TFHtml | TFMarkdown | TFText | TFDitaConcept | TFDitaTopic
     deriving (Read, Eq, Show)
 derivePersistField "TopicFormat"
 
@@ -24,7 +26,8 @@ formats =
     [ ("HTML", TFHtml)
     , ("Markdown", TFMarkdown)
     , ("Plain text", TFText)
-    , ("DITA", TFDita)
+    , ("DITA Concept", TFDitaConcept)
+    , ("DITA Topic", TFDitaTopic)
     ]
 
 -- You can define all of your database entities in the entities file.
@@ -32,3 +35,6 @@ formats =
 -- at:
 -- http://www.yesodweb.com/book/persistent/
 share [mkPersist, mkMigrate "migrateAll"] $(persistFile "config/models")
+
+instance HasReps StaticContent where
+    chooseRep (StaticContent mt content) _ = return (mt, toContent content)

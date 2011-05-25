@@ -39,5 +39,5 @@
             \ give a nice introduction to some of the advanced concepts, and #
             <a href=@{BookR}>the book
             \ is the recommended approach to learning Yesod. Ask the #
-            <a href=@{CommunityR}>commnunity
+            <a href=@{CommunityR}>community
             \ for help.

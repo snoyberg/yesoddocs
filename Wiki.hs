@@ -205,8 +205,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb CreateMapR = return (MsgCreateMapTitle, Just RootR)
     breadcrumb (EditMapR i) = do
         m <- runDB $ get404 i
-        return (MsgEditMapTitle $ tMapTitle m, Just MapListR)
-    breadcrumb MapListR = return (MsgMapListTitle, Just RootR)
+        return (MsgEditMapTitle $ tMapTitle m, Just SettingsR)
     breadcrumb LabelsR = return (MsgLabelsTitle, Just SettingsR)
     breadcrumb BrowseR = return (MsgBrowseTitle, Just RootR)
 

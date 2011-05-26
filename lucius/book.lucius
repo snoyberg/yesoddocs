@@ -1,0 +1,9 @@
+.note {
+    margin-left: 1em;
+    font-style: italic;
+}
+
+.note-advanced {
+    margin-left: 1em;
+    background-color: #eee;
+}

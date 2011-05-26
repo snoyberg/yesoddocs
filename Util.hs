@@ -23,16 +23,71 @@ import qualified Data.Text as T
 import Yesod.Form (Textarea (Textarea))
 import System.Locale
 import Data.Time (formatTime, UTCTime, fromGregorian)
+import Text.XML.Enumerator.Parse (parseText, decodeEntities)
+import Text.XML.Enumerator.Document (fromEvents)
+import Data.Enumerator (run, ($$), joinI, enumList)
+import Data.Functor.Identity (runIdentity)
+import Data.XML.Types (Node (..), Content (..), Document (..), Element (..))
+import Wiki (WikiRoute (..), fromSinglePiece)
+import Data.Maybe (fromJust)
+import Text.Hamlet (Hamlet)
 
-renderContent :: TopicFormat -> Text -> Html
-renderContent TFHtml t = preEscapedText t
-renderContent TFText t = toHtml $ Textarea t
-renderContent TFMarkdown t = preEscapedString $ writeHtmlString defaultWriterOptions $ readMarkdown defaultParserState $ unpack t
+renderContent :: TopicFormat -> Text -> Hamlet WikiRoute
+renderContent TFHtml t = const $ preEscapedText t
+renderContent TFText t = const $ toHtml $ Textarea t
+renderContent TFMarkdown t = const $ preEscapedString $ writeHtmlString defaultWriterOptions $ readMarkdown defaultParserState $ unpack t
 renderContent TFDitaConcept t = ditaToHtml t
 renderContent TFDitaTopic t = ditaToHtml t
 
-ditaToHtml :: Text -> Html
-ditaToHtml = error "FIXME ditaToHtml"
+ditaToHtml :: Text -> Hamlet WikiRoute
+ditaToHtml txml render =
+    case runIdentity $ run $ enumList 3 ["<body>", txml, "</body>"] $$ joinI $ parseText decodeEntities $$ fromEvents of
+        Left e -> toHtml $ show e
+        Right (Document _ (Element _ _ nodes) _) -> mapM_ go nodes
+  where
+    go (NodeContent (ContentText t')) = toHtml t'
+    go (NodeElement (Element n as children)) = go' n as $ mapM_ go children
+    go _ = return ()
+    go' "p" _ x = [html|<p>#{x}|]
+    go' "ul" _ x = [html|<ul>#{x}|]
+    go' "ol" _ x = [html|<ol>#{x}|]
+    go' "li" _ x = [html|<li>#{x}|]
+    go' "i" _ x = [html|<i>#{x}|]
+    go' "b" _ x = [html|<b>#{x}|]
+    go' "fig" _ x = [html|<fieldset>#{x}|]
+    go' "title" _ x = [html|<legend>#{x}|]
+    go' "image" as x =
+        case lookup "href" as of
+            Just [ContentText t] -> [html|<img src=#{toLink t}>#{show as}, #{x}|]
+            _ -> x
+    go' "xref" as x =
+        case lookup "href" as of
+            Just [ContentText t] -> [html|<a href=#{toLink t}>#{x}|]
+            _ -> x
+    go' "codeph" _ x = [html|<code>#{x}|]
+    go' "apiname" _ x = [html|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
+    go' "codeblock" _ x = [html|<pre>
+<code>#{x}|]
+    go' "note" as x =
+        case lookup "type" as of
+            Just [ContentText nt]
+                | nt == "other" ->
+                    case lookup "othertype" as of
+                        Just [ContentText ot] -> [html|<.note-#{ot}>#{x}|]
+                        _ -> [html|<.note#{x}>|]
+                | otherwise -> [html|<.#{nt}>#{x}|]
+            _ -> [html|<.note>#{x}|]
+    go' n _ _ = [html|<h1 style=color:red>Unknown DITA element: #{show n}|]
+    toLink t
+        | topicPref `T.isPrefixOf` t =
+            let suffix = T.drop (T.length topicPref) t
+                (tid, rest) = T.break (== '#') suffix
+             in render (TopicR $ fromJust $ fromSinglePiece tid) [] `T.append` rest
+        | staticPref `T.isPrefixOf` t = render (StaticContentR $ fromJust $ fromSinglePiece $ T.drop (T.length staticPref) t) []
+        | "yw://" `T.isPrefixOf` t = "FIXME: " `T.append` t
+        | otherwise = t
+    topicPref = "yw://topic/"
+    staticPref = "yw://static/"
 
 validateContent :: TopicFormat -> Text -> Text
 validateContent TFHtml t = pack $ sanitizeBalance $ unpack t

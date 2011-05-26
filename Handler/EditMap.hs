@@ -1,7 +1,6 @@
 {-# LANGUAGE TemplateHaskell, QuasiQuotes, OverloadedStrings #-}
 module Handler.EditMap
-    ( getMapListR
-    , getEditMapR
+    ( getEditMapR
     , postEditMapR
     , postMapLabelsR
     ) where
@@ -48,12 +47,6 @@ loadTM tmid =
             , tmMap = tMapNodeCmap tmn
             , tmChildren = children
             }
-
-getMapListR :: Handler RepHtml
-getMapListR = do
-    aid <- requireAuthId
-    tms <- runDB $ selectList [TMapOwnerEq aid] [] 0 0
-    defaultLayout $(widgetFile "map-list")
 
 getEditMapR :: TMapId -> Handler RepHtml
 getEditMapR mid = do

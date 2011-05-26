@@ -8,7 +8,7 @@ module Handler.Root
 
 import Wiki
 import Handler.Topic (getTopicR)
-import Text.Hamlet.NonPoly (html)
+import Text.Hamlet.NonPoly (hamlet)
 import Util (renderContent)
 
 getRootR :: Handler RepHtml
@@ -24,12 +24,12 @@ getRootR = do
                     (_, TopicContent {..}):_ -> return $ Just (topicContentFormat, topicContentContent)
     let html' =
             case mcontent of
-                Nothing -> [html|
+                Nothing -> [hamlet|
 <h1>No homepage set.
 <p>The site admin has no yet set a homepage topic.
 |]
                 Just (format, content) -> renderContent format content
-    defaultLayout $ addHtml html'
+    defaultLayout $ addHamlet html'
 
 getPageR :: Text -> Handler RepHtml
 getPageR t = do

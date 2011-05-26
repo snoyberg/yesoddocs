@@ -14,13 +14,13 @@
                         <a .yesod-wide-logo href=@{RootR}>
                         <ul .yesod-primary-nav>
                             <li>
-                                <a href=@\{BookR}>Book
+                                <a href=@{BookR}>Book
                             <li>
-                                <a href=@\{ContributorsR}>Contributors
+                                <a href=@{PageR "contributors"}>Contributors
                             <li>
-                                <a href=@\{CommunityR}>Community
+                                <a href=@{PageR "community"}>Community
                             <li>
-                                <a href=@\{BlogR}>Blog
+                                <a href=@{BlogR}>Blog
                 <div .yesod-body>
                     <div .yesod-userbar>
                       $maybe user <- muser

@@ -4,7 +4,7 @@
     $maybe author <- mauthor
         \ | _{MsgTopicAuthor $ userName author}
 <div #content>
-    #{renderContent topicContentFormat topicContentContent}
+    ^{addHamlet $ renderContent topicContentFormat topicContentContent}
 
 $maybe form <- mform
     <div .edit-page>

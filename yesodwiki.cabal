@@ -98,3 +98,4 @@ executable         yesodwiki
                  , enumerator
                  , random
                  , old-locale
+                 , base64-bytestring

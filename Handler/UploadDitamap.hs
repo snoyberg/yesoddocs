@@ -3,12 +3,13 @@ module Handler.UploadDitamap
     ( postUploadDitamapR
     ) where
 
+import Debug.Trace (traceShow)
 import Wiki hiding (joinPath, get)
 import Codec.Archive.Zip
 import Data.XML.Types
 import Data.ByteString (ByteString)
 import qualified Data.Map as Map
-import Data.Maybe (mapMaybe, fromJust, catMaybes)
+import Data.Maybe (mapMaybe, catMaybes)
 import Text.XML.Enumerator.Document (parseLBS)
 import Text.XML.Enumerator.Render (renderText)
 import Text.XML.Enumerator.Parse (decodeEntities)
@@ -22,6 +23,7 @@ import Data.Enumerator (run_, enumList, ($$), joinI)
 import Data.Enumerator.List (consume)
 import Control.Monad.Trans.State
 import qualified Data.Set as Set
+import Data.ByteString.Base64 (encode)
 
 newtype AbsPath = AbsPath FilePath
     deriving (Ord, Show, Eq)
@@ -34,17 +36,17 @@ joinPath (AbsPath fp) (RelPath t) =
   where
     exceptLast [] = []
     exceptLast x = init x
-    pieces = clean $ exceptLast pieces1 ++ pieces2
+    pieces = clean id $ exceptLast pieces1 ++ pieces2
     pieces1 = split fp
     pieces2 = split $ unpack t
     split "" = []
     split x =
         let (y, z) = break (== '/') x
          in y : split (drop 1 z)
-    clean [] = []
-    clean ("..":xs) = ".." : clean xs
-    clean (_:"..":xs) = clean xs
-    clean (x:xs) = x : clean xs
+    clean front [] = front []
+    clean front ("..":xs) = clean (front . (:) "..") xs
+    clean front (_:"..":xs) = clean id $ front xs
+    clean front (x:xs) = clean (front . (:) x) xs
 
 data Tree = Tree
     { _treeFile :: AbsPath
@@ -134,7 +136,7 @@ getId now uid (ap, f) = do
     fid <- go f
     return (ap, (f, fid))
   where
-    go (StaticFile _m _c) = return $ FIStatic $ fromJust $ fromSinglePiece "0" -- FIXME fmap FIStatic $ insert $ StaticContent m c
+    go (StaticFile m c) = fmap FIStatic $ insert $ StaticContent m $ encode c
     go (MapFile title _) = fmap FIMap $ insert $ TMap uid title now
     go (DitaFile title slug _ _) = fmap (flip FITopic slug) $ insert (TFamily now) >>= insert . Topic uid title now
 
@@ -222,13 +224,13 @@ parseDita abspath (Document _ (Element e as'' children) _) = do
         map go body
       where
         go (NodeElement (Element n as children')) =
-            NodeElement $ Element n as' children'
+            NodeElement $ Element n as' $ map go children'
           where
             as' = map fixAttr as
         go n = n
     fixAttr (n, [ContentText rel])
         | n `elem` ["href", "src"] =
-            (n, [ContentText $ mappend (pack joined) rest])
+            traceShow (abspath, rel, joined) (n, [ContentText $ mappend (pack joined) rest])
           where
             (path, rest) = T.break (== '#') rel
             AbsPath joined = joinPath abspath $ RelPath path

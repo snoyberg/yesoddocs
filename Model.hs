@@ -9,6 +9,7 @@ import Text.Hamlet (Html)
 import Yesod.Form (Textarea)
 import Yesod.Core (SinglePiece)
 import Data.ByteString (ByteString)
+import Data.ByteString.Base64 (decodeLenient)
 
 data TopicFormat = TFHtml | TFMarkdown | TFText | TFDitaConcept | TFDitaTopic
     deriving (Read, Eq, Show)
@@ -37,4 +38,4 @@ formats =
 share [mkPersist, mkMigrate "migrateAll"] $(persistFile "config/models")
 
 instance HasReps StaticContent where
-    chooseRep (StaticContent mt content) _ = return (mt, toContent content)
+    chooseRep (StaticContent mt content) _ = return (mt, toContent $ decodeLenient content)

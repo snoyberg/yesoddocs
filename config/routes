@@ -16,7 +16,6 @@
 
 /edit/page EditPageR POST
 
-/edit/map MapListR GET
 /edit/map/#TMapId EditMapR GET POST
 
 /show/topic/#TopicId TopicR GET POST

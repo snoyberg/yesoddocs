@@ -9,6 +9,7 @@
                         <li>
                             <a href=@{aeLink ae} title=#{aeDate ae} :(==) curr (aeLink ae):.current>#{aeTitle ae}
 <#article>
+    <h1>#{tMapTitle tmap}
     <p .date>#{prettyDate $ blogPosted blog}
     <p .author>
         #{userGravatar user}

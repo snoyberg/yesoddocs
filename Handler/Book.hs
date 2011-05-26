@@ -62,5 +62,6 @@ getBookChapterR mnslug = do
         tree <- loadTreeNode (mnid, mn)
         return (mn, tree)
     defaultLayout $ do
+        addLucius $(luciusFile "book")
         addLucius $(luciusFile "show-map")
         addHamlet $ showTree 2 (tMapNodeMap mn) [tree]

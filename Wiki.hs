@@ -72,6 +72,7 @@ mkMessage "Wiki" "messages" "en"
 data Wiki = Wiki
     { getStatic :: Static -- ^ Settings for static file serving.
     , connPool :: Settings.ConnectionPool -- ^ Database connection pool.
+    , myApproot :: Text
     }
 
 -- | A useful synonym; most of the handler functions in your application
@@ -106,7 +107,7 @@ mkYesodData "Wiki" $(parseRoutesFile "config/routes")
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
 instance Yesod Wiki where
-    approot _ = Settings.approot
+    approot = myApproot
 
     defaultLayout widget = do
         mmsg <- getMessage
@@ -127,7 +128,7 @@ instance Yesod Wiki where
     -- This is done to provide an optimization for serving static files from
     -- a separate domain. Please see the staticroot setting in Settings.hs
     urlRenderOverride a (StaticR s) =
-        Just $ uncurry (joinPath a Settings.staticroot) $ renderRoute s
+        Just $ uncurry (joinPath a $ Settings.staticroot $ myApproot a) $ renderRoute s
     urlRenderOverride _ _ = Nothing
 
     -- The page to be redirected to when authentication is required.

@@ -36,21 +36,21 @@
             <td colspan=2>
                 <input type=submit>
 
-<form #blog action=@{AddBlogMapR} method=post>
-    <table>
-        ^{ab}
-        <tr>
-            <td colspan=3>
-                <input type=submit value=_{MsgAddBlogPost}>
-
-<form #blog action=@{AddBookR} method=post>
-    <table>
-        ^{addBook}
-        <tr>
-            <td colspan=3>
-                <input type=submit value=_{MsgAddBook}>
-
 $if userAdmin user
+    <form #blog action=@{AddBlogMapR} method=post>
+        <table>
+            ^{ab}
+            <tr>
+                <td colspan=3>
+                    <input type=submit value=_{MsgAddBlogPost}>
+
+    <form #blog action=@{SetBookR} method=post>
+        <table>
+            ^{addBook}
+            <tr>
+                <td colspan=3>
+                    <input type=submit value=_{MsgAddBook}>
+
     <p>
         <a href=@{LabelsR}>_{MsgLabelsTitle}
     <form method=post action=@{EditPageR}>

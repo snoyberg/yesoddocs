@@ -95,3 +95,4 @@ executable         yesodwiki
                  , xml-enumerator
                  , zip-archive
                  , enumerator
+                 , random

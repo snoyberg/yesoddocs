@@ -214,21 +214,22 @@ instance YesodBreadcrumbs Wiki where
         t <- runDB $ get404 tid
         return (MsgShowMapTopicTitle (tMapTitle tm) (topicTitle t), Just $ ShowMapR tmid)
     breadcrumb (AuthR LoginR) = return (MsgLoginTitle, Just RootR)
-    breadcrumb (BlogPostR handle slug) = do
-        blog <- getBlogPost handle slug
+    breadcrumb (BlogPostR year month slug) = do
+        blog <- getBlogPost year month slug
         tm <- runDB $ get404 $ blogMap blog
         return (MsgBlogPostTitle $ tMapTitle tm, Just RootR)
-    breadcrumb (BookR handle slug) = do
-        book <- getBook handle slug
+    breadcrumb BookR = do
+        book <- getBook
         tm <- runDB $ get404 $ bookMap book
         return (MsgBookTitle $ tMapTitle tm, Just RootR)
-    breadcrumb (BookChapterR handle slug mnid) = do
-        mn <- runDB $ get404 mnid
+    breadcrumb (BookChapterR mnslug) = do
+        book <- getBook
+        (_, mn) <- runDB $ getBy404 $ UniqueMapNode (bookMap book) mnslug
         title <-
             case tMapNodeCtopic mn of
                 Just tid -> runDB $ topicTitle <$> get404 tid
                 Nothing -> return "" -- FIXME
-        return (MsgBookChapterTitle title, Just $ BookR handle slug)
+        return (MsgBookChapterTitle title, Just BookR)
 
     breadcrumb StaticR{} = return (MsgNotFound, Nothing)
     breadcrumb FaviconR{} = return (MsgNotFound, Nothing)
@@ -241,10 +242,11 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb MapLabelsR{} = return (MsgNotFound, Nothing)
     breadcrumb AuthR{} = return (MsgNotFound, Nothing)
     breadcrumb AddBlogMapR{} = return (MsgNotFound, Nothing)
-    breadcrumb AddBookR{} = return (MsgNotFound, Nothing)
+    breadcrumb SetBookR{} = return (MsgNotFound, Nothing)
     breadcrumb BlogR{} = return (MsgNotFound, Nothing)
     breadcrumb StaticContentR{} = return (MsgNotFound, Nothing)
     breadcrumb UploadDitamapR{} = return (MsgNotFound, Nothing)
+    breadcrumb BlogPostNoDateR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return
@@ -280,12 +282,13 @@ addNewsItem title url content = do
 fromLabel :: WikiMessage -> FieldSettings WikiMessage
 fromLabel x = FieldSettings x Nothing Nothing Nothing
 
-getBlogPost :: UserHandle -> BlogSlug -> GHandler sub Wiki Blog
-getBlogPost handle slug = runDB $ do
-    (uid, _) <- getBy404 $ UniqueHandle handle
-    fmap snd $ getBy404 $ UniqueBlogSlug uid slug
+getBlogPost :: Int -> Int -> BlogSlug -> GHandler sub Wiki Blog
+getBlogPost year month slug =
+    runDB $ fmap snd $ getBy404 $ UniqueBlogSlug year month slug
 
-getBook :: UserHandle -> BookSlug -> GHandler sub Wiki Book
-getBook handle slug = runDB $ do
-    (uid, _) <- getBy404 $ UniqueHandle handle
-    fmap snd $ getBy404 $ UniqueBookSlug uid slug
+getBook :: GHandler sub Wiki Book
+getBook = do
+    x <- runDB $ selectList [] [] 1 0
+    case x of
+        [] -> notFound
+        (_, y):_ -> return y

@@ -14,12 +14,12 @@ data TopicFormat = TFHtml | TFMarkdown | TFText | TFDitaConcept | TFDitaTopic
     deriving (Read, Eq, Show)
 derivePersistField "TopicFormat"
 
-newtype BookSlug = BookSlug Text
-    deriving (Read, Eq, Show, PersistField, SinglePiece)
+newtype MapNodeSlug = MapNodeSlug Text
+    deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)
 newtype BlogSlug = BlogSlug Text
-    deriving (Read, Eq, Show, PersistField, SinglePiece)
+    deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)
 newtype UserHandle = UserHandle { unUserHandle :: Text }
-    deriving (Read, Eq, Show, PersistField, SinglePiece)
+    deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)
 
 formats :: [(Text, TopicFormat)]
 formats =

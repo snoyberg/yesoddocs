@@ -5,7 +5,7 @@ module Handler.Settings
     , postSettingsR
     , postEditPageR
     , postAddBlogMapR
-    , postAddBookR
+    , postSetBookR
     ) where
 
 import Wiki
@@ -13,6 +13,7 @@ import Util
 import Control.Monad (unless)
 import Data.Maybe (fromMaybe)
 import Control.Applicative (pure)
+import Data.Time (toGregorian, utctDay)
 
 form' :: User -> Handler ((FormResult User, Widget ()), Enctype)
 form' User {..} = runFormPost $ renderTable $ User
@@ -31,10 +32,8 @@ bookForm owner = do
     let ms = map go maps
     let ts = map go' topics
     runFormPost $ renderTable $ Book
-        <$> pure owner
-        <*> aopt (selectField ts) (FieldSettings MsgBookTopic (Just MsgBookTopicTooltip) Nothing Nothing) Nothing
+        <$> aopt (selectField ts) (FieldSettings MsgBookTopic (Just MsgBookTopicTooltip) Nothing Nothing) Nothing
         <*> areq (selectField ms) (FieldSettings MsgBookMap (Just MsgBookMapTooltip) Nothing Nothing) Nothing
-        <*> fmap BookSlug (areq textField (FieldSettings MsgSlug (Just MsgSlugTooltip) Nothing Nothing) Nothing)
         <*> areq intField (FieldSettings MsgChunking (Just MsgChunkingTooltip) Nothing Nothing) Nothing
   where
     go (x, y) = (tMapTitle y, x)
@@ -99,26 +98,30 @@ addBlog uid = do
 postAddBlogMapR :: Handler ()
 postAddBlogMapR = do
     (uid, u) <- requireAuth
+    unless (userAdmin u) $ permissionDenied ""
     ((res, _), _) <- addBlog uid
     case res of
         FormSuccess (tmid, slug) -> do
             -- FIXME check for unique slug
             now <- liftIO getCurrentTime
-            _ <- runDB $ insert $ Blog uid now tmid $ BlogSlug slug
-            redirect RedirectTemporary $ BlogPostR (userHandle u) $ BlogSlug slug
+            let (year, month, _) = toGregorian $ utctDay now
+            _ <- runDB $ insert $ Blog now tmid (BlogSlug slug) (fromInteger year) month
+            redirect RedirectTemporary $ BlogPostR (fromInteger year) month $ BlogSlug slug
         _ -> do
             setMessageI MsgInvalidBlogInfo
             redirect RedirectTemporary SettingsR
 
-postAddBookR :: Handler ()
-postAddBookR = do
+postSetBookR :: Handler ()
+postSetBookR = do
     (uid, u) <- requireAuth
+    unless (userAdmin u) $ permissionDenied ""
     ((res, _), _) <- bookForm uid
     case res of
         FormSuccess book -> do
-            -- FIXME check for unique slug
-            _ <- runDB $ insert book
-            redirect RedirectTemporary $ BookR (userHandle u) $ bookSlug book
+            _ <- runDB $ do
+                deleteWhere ([] :: [Filter Book])
+                insert book
+            redirect RedirectTemporary BookR
         _ -> do
             setMessageI MsgInvalidBookInfo
             redirect RedirectTemporary SettingsR

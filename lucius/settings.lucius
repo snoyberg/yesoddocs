@@ -2,3 +2,6 @@
     display: table-cell;
     padding-right: 5em;
 }
+#form {
+    border: 1px solid black;
+}

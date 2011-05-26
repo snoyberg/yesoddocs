@@ -30,15 +30,16 @@
 
 /settings SettingsR GET POST
 /settings/blog-map AddBlogMapR POST
-/settings/book AddBookR POST
+/settings/book SetBookR POST
 
 /edit/labels LabelsR GET POST
 /edit/labels/new NewLabelR POST
 
 /browse BrowseR GET
 
-/blog/#UserHandle BlogR GET
-/blog/#UserHandle/#BlogSlug BlogPostR GET
+/blog BlogR GET
+/blog/#BlogSlug BlogPostNoDateR GET
+/blog/#Int/#Int/#BlogSlug BlogPostR GET
 
-/book/#UserHandle/#BookSlug BookR GET
-/book/#UserHandle/#BookSlug/#TMapNodeId BookChapterR GET
+/book BookR GET
+/book/#MapNodeSlug BookChapterR GET

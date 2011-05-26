@@ -17,6 +17,8 @@ import qualified Data.Text as T
 import Handler.Labels (getLTree)
 import Handler.Topic (showLTree)
 import Data.Maybe (mapMaybe)
+import System.Random (randomRIO)
+import Data.Text (pack)
 
 data TM = TM
     { tmTitle :: Maybe Text
@@ -96,8 +98,12 @@ postEditMapR tmid = do
             setMessageI MsgMapUpdated
             redirect RedirectTemporary $ EditMapR tmid
   where
+    randomSlug = do
+        str <- liftIO $ sequence $ replicate 15 $ randomRIO ('A', 'Z')
+        return $ MapNodeSlug $ pack str
     add parent (pos, SM tid children) = do
-        let tmn = TMapNode tmid parent pos (Just tid) Nothing Nothing
+        slug <- randomSlug -- FIXME keep some consistency
+        let tmn = TMapNode tmid parent pos (Just tid) Nothing Nothing slug
         tmnid <- insert tmn
         mapM_ (add $ Just tmnid) $ zip [1..] children
     go (Array x) = mapM go' $ V.toList x

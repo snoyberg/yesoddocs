@@ -47,6 +47,8 @@
                             <div .yesod-clear>
                         <!-- <div .yesod-secondary-content> -->
                         <div .yesod-primary-content .yesod-width-fix>
+                            $maybe msg <- mmsg
+                              <p .message>#{msg}
                             ^{const $ pageBody pc}
                 <div .yesod-footer>
                     Yesod is BSD licensed. This is is #

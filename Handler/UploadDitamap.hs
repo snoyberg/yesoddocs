@@ -3,12 +3,12 @@ module Handler.UploadDitamap
     ( postUploadDitamapR
     ) where
 
-import Wiki hiding (joinPath)
+import Wiki hiding (joinPath, get)
 import Codec.Archive.Zip
 import Data.XML.Types
 import Data.ByteString (ByteString)
 import qualified Data.Map as Map
-import Data.Maybe (mapMaybe, fromJust)
+import Data.Maybe (mapMaybe, fromJust, catMaybes)
 import Text.XML.Enumerator.Document (parseLBS)
 import Text.XML.Enumerator.Render (renderText)
 import Text.XML.Enumerator.Parse (decodeEntities)
@@ -20,6 +20,8 @@ import qualified Data.ByteString as S
 import qualified Data.ByteString.Lazy as L
 import Data.Enumerator (run_, enumList, ($$), joinI)
 import Data.Enumerator.List (consume)
+import Control.Monad.Trans.State
+import qualified Data.Set as Set
 
 newtype AbsPath = AbsPath FilePath
     deriving (Ord, Show, Eq)
@@ -30,7 +32,9 @@ joinPath :: AbsPath -> RelPath -> AbsPath
 joinPath (AbsPath fp) (RelPath t) =
     AbsPath $ intercalate "/" pieces
   where
-    pieces = clean $ pieces1 ++ pieces2
+    exceptLast [] = []
+    exceptLast x = init x
+    pieces = clean $ exceptLast pieces1 ++ pieces2
     pieces1 = split fp
     pieces2 = split $ unpack t
     split "" = []
@@ -53,6 +57,7 @@ data File = MapFile
     , _fileTree :: [Tree]
     } | DitaFile
     { _fileTitle :: Text
+    , _fileSlug :: MapNodeSlug
     , _fileType :: TopicFormat
     , _fileDita :: [Node]
     } | StaticFile
@@ -61,17 +66,17 @@ data File = MapFile
     }
     deriving Show
 
-data FileId = FIMap TMapId | FITopic TopicId | FIStatic StaticContentId
+data FileId = FIMap TMapId | FITopic TopicId MapNodeSlug | FIStatic StaticContentId
 
 postUploadDitamapR :: Handler ()
 postUploadDitamapR = do
     uid <- requireAuthId
     (_, files) <- runRequestBody
     file <- maybe notFound (return . fileContent) $ lookup "zip" files
-    let contents = mapMaybe toFile $ zEntries $ toArchive file
+    let contents = fmap catMaybes $ mapM toFile $ zEntries $ toArchive file
     now <- liftIO getCurrentTime
     runDB $ do
-        m <- Map.fromList <$> mapM (getId now uid) contents
+        m <- Map.fromList <$> mapM (getId now uid) (evalState contents Set.empty)
         mapM_ (uploadContent now uid m) $ Map.toList m
     setMessageI MsgDitaMapUploaded
     redirect RedirectTemporary SettingsR
@@ -82,12 +87,14 @@ uploadContent now uid m (_, (f, fid)) =
         (MapFile _ trees, FIMap mid) -> do
             let go parent (pos, Tree topic children) =
                     case Map.lookup topic m of
-                        Just (_, FITopic tid) -> do
-                            me <- insert $ TMapNode mid parent pos (Just tid) Nothing Nothing
+                        Just (_, FITopic tid slug) -> do
+                            me <- insert $ TMapNode mid parent pos (Just tid) Nothing Nothing slug
                             mapM_ (go $ Just me) $ zip [1..] children
-                        _ -> return ()
+                        _ -> do
+                            lift $ $(logWarn) $ pack $ "Could not find: " ++ show topic
+                            return ()
             mapM_ (go Nothing) $ zip [1..] trees
-        (DitaFile _ format dita, FITopic tid) -> do
+        (DitaFile _ _ format dita, FITopic tid _) -> do
             text <- run_ $ enumList 8 (goN m dita []) $$ joinI $ renderText $$ consume
             _ <- insert $ TopicContent tid uid Nothing now format $ mconcat text
             return ()
@@ -105,7 +112,7 @@ goE m (Element name as ns) =
         (file, rest) = T.break (== '#') t
         file' =
             case Map.lookup (AbsPath $ unpack file) m of
-                Just (_, FITopic tid) -> mconcat ["yw://topic/", toSinglePiece tid]
+                Just (_, FITopic tid _) -> mconcat ["yw://topic/", toSinglePiece tid]
                 Just (_, FIStatic sid) -> mconcat ["yw://static/", toSinglePiece sid]
                 Just (_, FIMap mid) -> mconcat ["yw://map/", toSinglePiece mid]
                 Nothing -> file
@@ -129,23 +136,24 @@ getId now uid (ap, f) = do
   where
     go (StaticFile _m _c) = return $ FIStatic $ fromJust $ fromSinglePiece "0" -- FIXME fmap FIStatic $ insert $ StaticContent m c
     go (MapFile title _) = fmap FIMap $ insert $ TMap uid title now
-    go (DitaFile title _ _) = fmap FITopic $ insert (TFamily now) >>= insert . Topic uid title now
+    go (DitaFile title slug _ _) = fmap (flip FITopic slug) $ insert (TFamily now) >>= insert . Topic uid title now
 
-toFile :: Entry -> Maybe (AbsPath, File)
+toFile :: Entry -> State (Set.Set MapNodeSlug) (Maybe (AbsPath, File))
 toFile entry
-    | ".ditamap" `isSuffixOf` fp =
+    | ".ditamap" `isSuffixOf` fp = return $
         case parseLBS contents decodeEntities of
             Left _ -> Nothing -- FIXME
             Right x -> Just (abspath, parseMap abspath x)
     | ".dita" `isSuffixOf` fp || ".xml" `isSuffixOf` fp =
         case parseLBS contents decodeEntities of
-            Left _ -> Nothing -- FIXME
-            Right x -> Just (abspath, parseDita abspath x)
-    | otherwise =
+            Left _ -> return Nothing -- FIXME
+            Right x -> do
+                d <- parseDita abspath x
+                return $ Just (abspath, d)
+    | otherwise = return $
         case lookup exten mimes of
             Nothing -> Nothing
             Just mt -> Just (abspath, StaticFile mt $ S.concat $ L.toChunks contents)
-    | otherwise = Nothing
   where
     mimes =
         [ ("png", "image/png")
@@ -179,10 +187,22 @@ parseMap abspath (Document _ (Element _ _ children) _) =
                 _ -> Nothing
         go _ = Nothing
 
-parseDita :: AbsPath -> Document -> File
-parseDita abspath (Document _ (Element e _ children) _) =
-    DitaFile title (if e == "concept" then TFDitaConcept else TFDitaTopic) tree
+parseDita :: AbsPath -> Document -> State (Set.Set MapNodeSlug) File
+parseDita abspath (Document _ (Element e as'' children) _) = do
+    slug <- getSlug $
+        case lookup "id" as'' of
+            Just [ContentText t] -> t
+            _ -> "untitled"
+    return $ DitaFile title slug (if e == "concept" then TFDitaConcept else TFDitaTopic) tree
   where
+    getSlug t = do
+        s <- get
+        let slug = MapNodeSlug t
+        if slug `Set.member` s
+            then getSlug $ T.append t "_"
+            else do
+                put $ Set.insert slug s
+                return slug
     title =
         go children
       where

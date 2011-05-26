@@ -27,12 +27,12 @@ $if not $ null tocs
                 ^{showTOC $ tocChildren toc}
 |]
 
-loadTOC :: Int -> (TMapNodeId -> WikiRoute) -> TMapId -> Handler [TOC]
+loadTOC :: Int -> (MapNodeSlug -> WikiRoute) -> TMapId -> Handler [TOC]
 loadTOC depth0 toRoute tmid =
     runDB $ selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= mapM (go depth0)
   where
     go depth (mnid, mn) = do
-        let link = Just $ toRoute mnid
+        let link = Just $ toRoute $ tMapNodeSlug mn
         title <-
             case tMapNodeCtopic mn of
                 Just tid -> topicTitle <$> get404 tid
@@ -43,10 +43,10 @@ loadTOC depth0 toRoute tmid =
                 else selectList [TMapNodeParentEq $ Just mnid] [TMapNodePositionAsc] 0 0 >>= mapM (go $ depth - 1)
         return $ TOC link title children
 
-getBookR :: UserHandle -> BookSlug -> Handler RepHtml
-getBookR uh bs = do
-    book <- getBook uh bs
-    tocs <- loadTOC (bookChunking book) (BookChapterR uh bs) (bookMap book)
+getBookR :: Handler RepHtml
+getBookR = do
+    book <- getBook
+    tocs <- loadTOC (bookChunking book) BookChapterR (bookMap book)
     tm <- runDB $ get404 $ bookMap book
     mtopic <-
         case bookTopic book of
@@ -54,10 +54,11 @@ getBookR uh bs = do
             Just tid -> fmap (map snd) $ runDB $ selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
     defaultLayout $(hamletFile "book")
 
-getBookChapterR :: UserHandle -> BookSlug -> TMapNodeId -> Handler RepHtml
-getBookChapterR _ _ mnid = do
+getBookChapterR :: MapNodeSlug -> Handler RepHtml
+getBookChapterR mnslug = do
+    book <- getBook
     (mn, tree) <- runDB $ do
-        mn <- get404 mnid
+        (mnid, mn) <- getBy404 $ UniqueMapNode (bookMap book) mnslug
         tree <- loadTreeNode (mnid, mn)
         return (mn, tree)
     defaultLayout $ do

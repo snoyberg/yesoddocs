@@ -65,6 +65,11 @@ ditaToHtml txml render =
             Just [ContentText t] -> [html|<a href=#{toLink t}>#{x}|]
             _ -> x
     go' "codeph" _ x = [html|<code>#{x}|]
+    go' "term" _ x = [html|<b>#{x}|]
+    go' "dl" _ x = [html|<dl>#{x}|]
+    go' "dlentry" _ x = [html|#{x}|]
+    go' "dt" _ x = [html|<dt>#{x}|]
+    go' "dd" _ x = [html|<dd>#{x}|]
     go' "apiname" _ x = [html|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
     go' "codeblock" _ x = [html|<pre>
     <code>#{x}|]

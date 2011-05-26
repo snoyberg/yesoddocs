@@ -30,7 +30,6 @@ loadEntry file content = do
                 return (EFMarkdown title, body)
             '!':x -> error $ "Unknown first line: " ++ x
             _ -> return (EFHtml firstLine, content')
-    print (format, content')
     let (date', body') = takeLine body
     date <- case reads date' of
                 (d, _):_ -> return d

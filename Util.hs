@@ -67,7 +67,7 @@ ditaToHtml txml render =
     go' "codeph" _ x = [html|<code>#{x}|]
     go' "apiname" _ x = [html|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
     go' "codeblock" _ x = [html|<pre>
-<code>#{x}|]
+    <code>#{x}|]
     go' "note" as x =
         case lookup "type" as of
             Just [ContentText nt]

@@ -3,7 +3,6 @@ module Handler.UploadDitamap
     ( postUploadDitamapR
     ) where
 
-import Debug.Trace (traceShow)
 import Wiki hiding (joinPath, get)
 import Codec.Archive.Zip
 import Data.XML.Types
@@ -230,7 +229,7 @@ parseDita abspath (Document _ (Element e as'' children) _) = do
         go n = n
     fixAttr (n, [ContentText rel])
         | n `elem` ["href", "src"] =
-            traceShow (abspath, rel, joined) (n, [ContentText $ mappend (pack joined) rest])
+            (n, [ContentText $ mappend (pack joined) rest])
           where
             (path, rest) = T.break (== '#') rel
             AbsPath joined = joinPath abspath $ RelPath path

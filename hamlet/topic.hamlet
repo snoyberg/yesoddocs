@@ -1,8 +1,9 @@
 <h1>#{topicTitle}
-<h2>
-    _{MsgTopicOwner $ userName owner}
-    $maybe author <- mauthor
-        \ | _{MsgTopicAuthor $ userName author}
+$if showAuthor
+    <h2>
+        _{MsgTopicOwner $ userName owner}
+        $maybe author <- mauthor
+            \ | _{MsgTopicAuthor $ userName author}
 <div #content>
     ^{addHamlet $ renderContent topicContentFormat topicContentContent}
 
@@ -20,3 +21,4 @@ $maybe form <- mform
         ^{showLTree activeLabel ltree}
         <div>
             <input type=submit>
+            <p>_{MsgCopyrightNotice}

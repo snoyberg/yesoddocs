@@ -7,7 +7,7 @@ module Handler.Root
     ) where
 
 import Wiki
-import Handler.Topic (getTopicR)
+import Handler.Topic (getTopicR')
 import Text.Hamlet.NonPoly (hamlet)
 import Util (renderContent)
 
@@ -34,7 +34,7 @@ getRootR = do
 getPageR :: Text -> Handler RepHtml
 getPageR t = do
     p <- runDB $ getBy404 (UniquePage t)
-    getTopicR $ pageTopic $ snd p
+    getTopicR' False $ pageTopic $ snd p
 
 getStaticContentR :: StaticContentId -> Handler StaticContent
 getStaticContentR = runDB . get404

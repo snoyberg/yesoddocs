@@ -51,7 +51,7 @@
                               <p .message>#{msg}
                             ^{const $ pageBody pc}
                 <div .yesod-footer>
-                    Yesod is BSD licensed. This is is #
+                    Yesod is BSD licensed. The content of this site is #
                     <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Attribution-NonCommercial-ShareAlike 3.0 Unported
                     <br>
                     Site design by #

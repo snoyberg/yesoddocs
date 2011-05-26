@@ -159,15 +159,19 @@ body.yesod-wide {
 .yesod-wide .yesod-secondary-content li {
     line-height: 2em;
 }
+.yesod-tertiary-content a {
+    color: #fff !important;
+    text-decoration: underline;
+}
 .yesod-secondary-content a {
-    color: #ffffff;
+    color: #ffffff !important;
     text-decoration: none;
     font-family: 'Droid Serif',serif;
     font-weight: bold;
     font-size: 1.05em
 }
 .yesod-secondary-content a:hover {
-    text-decoration: underline
+    text-decoration: underline !important;
 }
 .yesod-clear {
     clear:both;
@@ -176,10 +180,6 @@ body.yesod-wide {
     padding-top: 20px;
     background: #ffffff;
     border-bottom: 7px solid #7f808a;
-}
-.yesod-home .yesod-primary-content {
-  padding-left: 5px;
-  padding-right: 5px;
 }
 .yesod-primary-content-inner h1,
 .yesod-primary-content-inner h2 {
@@ -204,6 +204,10 @@ body.yesod-wide {
     line-height:1.5em;
     font-size: 18px;
     font-family: 'Droid Serif',serif;
+}
+.yesod-home .yesod-primary-content p {
+    line-height:1em;
+    font-size: 1em;
 }
 .yesod-primary-content a {
     color: #33487c;
@@ -299,9 +303,10 @@ body.yesod-wide {
 }
 .yesod-userbar {
   background-color: white;
-  padding: 3px;
+  padding: 3px 1em 3px 0;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
+  text-align: right;
 }
 .yesod-width-fix {
   max-width: 800px;
@@ -320,4 +325,32 @@ p.message {
     background-color: #fee;
     color: #900;
     font-weight: bold;
+}
+
+/* contributors */
+.contributor {
+    margin: 2em auto;
+    font-size: 1.2em;
+    border: 1px solid black;
+    padding: 1em;
+    background-color: #eee;
+    max-width: 650px;
+}
+
+.contributor > a {
+    width: 180px;
+}
+
+.dummy {
+    height: 160px;
+}
+
+.contributor > a, .contributor > div {
+    display: table-cell;
+    padding-right: 1em;
+    vertical-align: top;
+}
+
+.contributor > a > span {
+    display: block;
 }

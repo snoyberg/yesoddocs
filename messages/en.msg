@@ -83,6 +83,8 @@ YouAreHere: You are here:
 AddBlogPost: Add blog post
 AddBook: Add book
 
+CopyrightNotice: By submitting content to this site, you agree to release the content into the public domain and/or Creative Commons Zero license.
+
 # Page titles
 LoginTitle: Login
 CreateTopicTitle: Create Topic

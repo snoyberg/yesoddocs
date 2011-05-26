@@ -6,3 +6,4 @@ $maybe err <- merr
         <tr>
             <td colspan=3>
                 <input type=submit value=_{MsgCreateTopic}>
+                <p>_{MsgCopyrightNotice}

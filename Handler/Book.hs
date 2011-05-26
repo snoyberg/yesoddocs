@@ -56,6 +56,7 @@ getBookR = do
 
 getBookChapterR :: MapNodeSlug -> Handler RepHtml
 getBookChapterR mnslug = do
+    -- FIXME show TOC for shallow chapters
     book <- getBook
     (mn, tree) <- runDB $ do
         (mnid, mn) <- getBy404 $ UniqueMapNode (bookMap book) mnslug

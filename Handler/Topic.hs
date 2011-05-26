@@ -2,6 +2,7 @@
 {-# LANGUAGE RecordWildCards #-}
 module Handler.Topic
     ( getTopicR
+    , getTopicR'
     , postTopicR
     , postTopicLabelsR
     , showLTree
@@ -25,7 +26,10 @@ topicForm (a, b, c, d) = runFormPost $ renderTable $ (,,,)
     <*> aopt textField (fromLabel MsgSummary) (Just d)
 
 getTopicR :: TopicId -> Handler RepHtml
-getTopicR tid = do
+getTopicR = getTopicR' True
+
+getTopicR' :: Bool -> TopicId -> Handler RepHtml
+getTopicR' showAuthor tid = do
     Topic {..} <- runDB $ get404 tid
     TopicContent {..} <- runDB $ do
         x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0

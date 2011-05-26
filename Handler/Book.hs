@@ -63,4 +63,4 @@ getBookChapterR mnslug = do
         return (mn, tree)
     defaultLayout $ do
         addLucius $(luciusFile "show-map")
-        showTree 2 (tMapNodeMap mn) [tree]
+        addHamlet $ showTree 2 (tMapNodeMap mn) [tree]

@@ -44,6 +44,9 @@ Summary: Summary
 UploadDitaZip: DITA ZIP File
 DitaMapUploaded: Your DITA content has been uploaded.
 
+UploadBlogZip: Blog ZIP File
+BlogZipUploaded: Your blog content has been uploaded.
+
 BookMap: Map
 BookMapTooltip: This map contains all the content for the book.
 BookTopic: Topic

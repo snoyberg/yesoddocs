@@ -41,6 +41,7 @@ import Yesod.Persist
 import Yesod.Helpers.Static
 import Yesod.Auth
 import Yesod.Auth.OpenId
+import Yesod.Helpers.AtomFeed
 import qualified Settings
 import System.Directory
 import qualified Data.ByteString.Lazy as L
@@ -116,6 +117,8 @@ instance Yesod Wiki where
             widget
             addCassius $(Settings.cassiusFile "default-layout")
             addLucius $(Settings.luciusFile "default-layout")
+            atomLink FeedR "Site activity"
+            atomLink BlogFeedR "Blog posts"
         tm <- getRouteToMaster
         mcurr <- getCurrentRoute
         let isHome = fmap tm mcurr == Just RootR
@@ -235,6 +238,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb FaviconR{} = return (MsgNotFound, Nothing)
     breadcrumb RobotsR{} = return (MsgNotFound, Nothing)
     breadcrumb FeedR{} = return (MsgNotFound, Nothing)
+    breadcrumb BlogFeedR{} = return (MsgNotFound, Nothing)
     breadcrumb FeedItemR{} = return (MsgNotFound, Nothing)
     breadcrumb EditPageR{} = return (MsgNotFound, Nothing)
     breadcrumb NewLabelR{} = return (MsgNotFound, Nothing)
@@ -247,6 +251,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb StaticContentR{} = return (MsgNotFound, Nothing)
     breadcrumb UploadDitamapR{} = return (MsgNotFound, Nothing)
     breadcrumb BlogPostNoDateR{} = return (MsgNotFound, Nothing)
+    breadcrumb UploadBlogsR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return

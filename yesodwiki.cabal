@@ -44,6 +44,7 @@ library
                      Handler.Blog
                      Handler.Book
                      Handler.UploadDitamap
+                     Handler.UploadBlogs
                      Util
 
 executable         yesodwiki
@@ -96,3 +97,4 @@ executable         yesodwiki
                  , zip-archive
                  , enumerator
                  , random
+                 , old-locale

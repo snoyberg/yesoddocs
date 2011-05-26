@@ -37,6 +37,16 @@
                 <input type=submit>
 
 $if userAdmin user
+    <form action=@{UploadBlogsR} method=post enctype=#{Multipart}>
+        <table>
+            <tr>
+                <th>_{MsgUploadBlogZip}
+                <td>
+                    <input type=file name=zip>
+            <tr>
+                <td colspan=2>
+                    <input type=submit>
+
     <form #blog action=@{AddBlogMapR} method=post>
         <table>
             ^{ab}

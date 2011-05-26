@@ -20,6 +20,8 @@ import qualified Data.ByteString.Lazy as L
 import Text.Pandoc (writeHtmlString, defaultWriterOptions, readMarkdown, defaultParserState)
 import qualified Data.Text as T
 import Yesod.Form (Textarea (Textarea))
+import System.Locale
+import Data.Time (formatTime, UTCTime)
 
 renderContent :: TopicFormat -> Text -> Html
 renderContent TFHtml t = preEscapedText t
@@ -45,5 +47,5 @@ userGravatar u =
     hash = pack $ show $ md5 $ L.fromChunks $ return $ encodeUtf8 $ pack $ map toLower $ trim $ unpack email
     trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
 
-prettyDate :: Show a => a -> String -- FIXME
-prettyDate = show
+prettyDate :: UTCTime -> String
+prettyDate = formatTime defaultTimeLocale "%B %e, %Y" -- FIXME i18n

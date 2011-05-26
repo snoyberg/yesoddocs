@@ -12,6 +12,7 @@
 /create/map CreateMapR GET POST
 
 /upload/ditamap UploadDitamapR POST
+/upload/blogs UploadBlogsR POST
 
 /edit/page EditPageR POST
 
@@ -25,8 +26,9 @@
 /edit/topic-labels/#TopicId TopicLabelsR POST
 /edit/map-labels/#TMapId MapLabelsR POST
 
-/feed FeedR GET
-/feed/item/#NewsItemId FeedItemR GET
+/feed BlogFeedR GET
+/news FeedR GET
+/news/item/#NewsItemId FeedItemR GET
 
 /settings SettingsR GET POST
 /settings/blog-map AddBlogMapR POST

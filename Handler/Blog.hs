@@ -3,11 +3,13 @@ module Handler.Blog
     ( getBlogR
     , getBlogPostR
     , getBlogPostNoDateR
+    , getBlogFeedR
     ) where
 
 import Wiki
 import Handler.ShowMap (loadTree, showTree)
 import Util
+import Yesod.Helpers.Feed
 
 getBlogR :: Handler ()
 getBlogR = do
@@ -35,3 +37,33 @@ getBlogPostNoDateR slug = do
     case x of
         (_, y):_ -> redirect RedirectTemporary $ BlogPostR (blogYear y) (blogMonth y) slug
         [] -> notFound
+
+getBlogFeedR :: Handler RepAtomRss
+getBlogFeedR = do
+    x <- runDB $ selectList [] [BlogPostedDesc] 10 0
+    updated <-
+        case x of
+            [] -> liftIO getCurrentTime
+            (_, y):_ -> return $ blogPosted y
+    render <- getUrlRenderParams
+    let go (_, e) = do
+            blog <- getBlogPost (blogYear e) (blogMonth e) (blogSlug e)
+            tmap <- runDB $ get404 $ blogMap blog
+            let title = tMapTitle tmap
+            tree <- loadTree $ blogMap blog
+            return FeedEntry
+                { feedEntryLink = BlogPostR (blogYear e) (blogMonth e) (blogSlug e)
+                , feedEntryUpdated = blogPosted e
+                , feedEntryTitle = title
+                , feedEntryContent = showTree 2 (blogMap blog) tree render
+                }
+    entries <- mapM go x
+    newsFeed Feed
+        { feedTitle = "Yesod Web Framework"
+        , feedLinkSelf = BlogFeedR
+        , feedLinkHome = RootR
+        , feedDescription = "Yesod Web Framework"
+        , feedLanguage = "en"
+        , feedUpdated = updated
+        , feedEntries = entries
+        }

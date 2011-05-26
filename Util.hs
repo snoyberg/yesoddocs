@@ -5,6 +5,7 @@ module Util
     , validateContent
     , userGravatar
     , prettyDate
+    , prettyMonthYear
     ) where
 
 import Model (TopicFormat (..), User (userEmail))
@@ -21,7 +22,7 @@ import Text.Pandoc (writeHtmlString, defaultWriterOptions, readMarkdown, default
 import qualified Data.Text as T
 import Yesod.Form (Textarea (Textarea))
 import System.Locale
-import Data.Time (formatTime, UTCTime)
+import Data.Time (formatTime, UTCTime, fromGregorian)
 
 renderContent :: TopicFormat -> Text -> Html
 renderContent TFHtml t = preEscapedText t
@@ -49,3 +50,6 @@ userGravatar u =
 
 prettyDate :: UTCTime -> String
 prettyDate = formatTime defaultTimeLocale "%B %e, %Y" -- FIXME i18n
+
+prettyMonthYear :: Int -> Int -> String
+prettyMonthYear year month = formatTime defaultTimeLocale "%B %Y" $ fromGregorian (fromIntegral year) month 1 -- FIXME i18n

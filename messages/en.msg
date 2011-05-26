@@ -13,6 +13,8 @@ UpdateMap: Update map
 MapUpdated: Your map has been updated.
 LabelsUpdated: Labels have been updated.
 
+BlogArchive: Archive
+
 LabelName: Label name
 
 InvalidJsonInput json@Text: Invalid JSON input (#{json})

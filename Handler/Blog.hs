@@ -10,6 +10,10 @@ import Wiki
 import Handler.ShowMap (loadTree, showTree)
 import Util
 import Yesod.Helpers.Feed
+import Data.List (groupBy)
+import Data.Function (on)
+import Data.Text (pack)
+import Control.Arrow ((&&&))
 
 getBlogR :: Handler ()
 getBlogR = do
@@ -21,15 +25,34 @@ getBlogR = do
             (_, post):_ -> return post
     redirect RedirectTemporary $ BlogPostR (blogYear post) (blogMonth post) $ blogSlug post
 
+type Archive = [((Int, Int), [AEntry])]
+data AEntry = AEntry
+    { aeTitle :: Text
+    , aeLink :: WikiRoute
+    , aeDate :: Text
+    }
+
 getBlogPostR :: Int -> Int -> BlogSlug -> Handler RepHtml
 getBlogPostR year month slug = do
+    let curr = BlogPostR year month slug
     blog <- getBlogPost year month slug
+    archive' <- runDB $ selectList [] [BlogPostedDesc] 0 0 >>= mapM (\(_, b) -> do
+        tmap <- get404 $ blogMap b
+        let y = blogYear b
+            m = blogMonth b
+        return ((y, m), AEntry (tMapTitle tmap) (BlogPostR y m $ blogSlug b) (pack $ prettyDate $ blogPosted b)))
+    let archive :: Archive
+        archive = map (fst . head &&& map snd) $ groupBy ((==) `on` fst) archive'
     tmap <- runDB $ get404 $ blogMap blog
     user <- runDB $ get404 $ tMapOwner tmap
     let tmid = blogMap blog
     tree <- loadTree tmid
     let showMap = $(widgetFile "show-map")
-    defaultLayout $(widgetFile "blog")
+    defaultLayout $ do
+        addScript $ StaticR jquery_js
+        addScript $ StaticR jquery_cookie_js
+        addScript $ StaticR jquery_treeview_js
+        $(widgetFile "blog")
 
 getBlogPostNoDateR :: BlogSlug -> Handler ()
 getBlogPostNoDateR slug = do

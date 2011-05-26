@@ -316,3 +316,8 @@ textarea#content {
   width: 600px;
   height: 500px;
 }
+p.message {
+    background-color: #fee;
+    color: #900;
+    font-weight: bold;
+}

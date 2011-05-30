@@ -1,6 +1,7 @@
 <p>#{userGravatar user}
 <form method=post enctype=#{enctype}>
-    <table>
+    <table .withcaption>
+        <caption>_{MsgEditUserProfileCaption}
         ^{form}
         <tr>
             <td colspan=3>
@@ -13,6 +14,8 @@
         $forall topic <- topics
             <li>
                 <a href=@{TopicR $ fst topic}>#{topicTitle $ snd topic}
+                <form method=post action=@{DeleteTopicR $ fst topic}>
+                    <input .delete type=submit value=_{MsgDelete}>
 
 <#maps>
     <h2>_{MsgMapsListHeading}
@@ -25,7 +28,8 @@
                 <a .edit href=@{EditMapR $ fst map}>_{MsgEdit}
 
 <form action=@{UploadDitamapR} method=post enctype=#{Multipart}>
-    <table>
+    <table .withcaption>
+        <caption>_{MsgUploadDitaCaption}
         <tr>
             <th>_{MsgUploadDitaZip}
             <td>
@@ -36,7 +40,8 @@
 
 $if userAdmin user
     <form action=@{UploadBlogsR} method=post enctype=#{Multipart}>
-        <table>
+        <table .withcaption>
+            <caption>_{MsgUploadBlogPostsCaption}
             <tr>
                 <th>_{MsgUploadBlogZip}
                 <td>
@@ -46,30 +51,34 @@ $if userAdmin user
                     <input type=submit>
 
     <form #blog action=@{AddBlogMapR} method=post>
-        <table>
+        <table .withcaption>
+            <caption>Add Blog Post
             ^{ab}
             <tr>
                 <td colspan=3>
                     <input type=submit value=_{MsgAddBlogPost}>
 
     <form #blog action=@{SetBookR} method=post>
-        <table>
+        <table .withcaption>
+            <caption>Set Book
             ^{addBook}
             <tr>
                 <td colspan=3>
                     <input type=submit value=_{MsgAddBook}>
 
     <p>
-        <a href=@{LabelsR}>_{MsgLabelsTitle}
+        <a href=@{LabelsR}>_{MsgEditLabels}
     <form method=post action=@{EditPageR}>
-        <table>
+        <table .withcaption>
+            <caption>_{MsgCreateNewPageCaption}
             ^{pageNew}
             <tr>
                 <td colspan=3>
                     <input type=submit>
     $forall pform <- pforms
         <form method=post action=@{EditPageR}>
-            <table>
+            <table .withcaption>
+                <caption>_{MsgModifyExistingPageCaption}
                 ^{pform}
                 <tr>
                     <td colspan=3>

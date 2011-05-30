@@ -7,6 +7,17 @@
     width: 45%;
 }
 
+#map ul {
+    list-style: none;
+    padding-left: 5px;
+    margin-left: 5px;
+    border-left: 1px solid black;
+}
+
+#map li {
+    margin-bottom: 5px;
+}
+
 #map > ul, #topics > ul {
     max-height: 400px;
     overflow: auto;
@@ -28,4 +39,11 @@ li.dropzone {
 li.dropzone.hidden {
     background-color: #efe;
     color: #efe;
+}
+i.topicid {
+    font-size: 0.8em;
+    margin: 0 3px;
+}
+a.viewtopic {
+    font-size: 0.9em;
 }

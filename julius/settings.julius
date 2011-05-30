@@ -1,0 +1,6 @@
+$(function(){
+    $("input.delete").click(function(){
+        var x = confirm("#{mr MsgConfirmDelete}");
+        if (!x) return false;
+    });
+});

@@ -6,6 +6,8 @@ module Handler.Settings
     , postEditPageR
     , postAddBlogMapR
     , postSetBookR
+    , postDeleteTopicR
+    , postDeleteMapR
     , filterWidget
     ) where
 
@@ -15,6 +17,7 @@ import Control.Monad (unless)
 import Data.Maybe (fromMaybe)
 import Control.Applicative (pure)
 import Data.Time (toGregorian, utctDay)
+import Database.Persist.Base (deleteCascade)
 
 form' :: User -> Handler ((FormResult User, Widget ()), Enctype)
 form' User {..} = runFormPost $ renderTable $ User
@@ -58,6 +61,7 @@ getSettingsR = do
     pforms <- (fmap . fmap) (snd . fst) $ mapM (pageForm topics . Just . snd) pages
     ((_, ab), _) <- addBlog uid
     ((_, addBook), _) <- bookForm uid
+    mr <- getMessageRender
     defaultLayout $ do
         filterWidget
         $(widgetFile "settings")
@@ -134,3 +138,23 @@ postSetBookR = do
         _ -> do
             setMessageI MsgInvalidBookInfo
             redirect RedirectTemporary SettingsR
+
+postDeleteTopicR :: TopicId -> Handler ()
+postDeleteTopicR tid = do
+    (uid, u) <- requireAuth
+    Topic {..} <- runDB $ get404 tid
+    unless (userAdmin u || uid == topicOwner) $ permissionDenied ""
+    runDB $ do
+        updateWhere [TMapNodeCtopicEq $ Just tid] [TMapNodeCtopic Nothing]
+        deleteCascade tid
+    setMessageI $ MsgTopicDeleted topicTitle
+    redirect RedirectTemporary SettingsR
+
+postDeleteMapR :: TMapId -> Handler ()
+postDeleteMapR mid = do
+    (uid, u) <- requireAuth
+    TMap {..} <- runDB $ get404 mid
+    unless (userAdmin u || uid == tMapOwner) $ permissionDenied ""
+    runDB $ deleteCascade mid
+    setMessageI $ MsgMapDeleted tMapTitle
+    redirect RedirectTemporary SettingsR

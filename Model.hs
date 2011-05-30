@@ -2,6 +2,7 @@
 module Model where
 
 import Yesod.Persist
+import Database.Persist.Base (DeleteCascade (..))
 import Yesod.Content (HasReps (..), toContent)
 import Data.Text (Text)
 import Data.Time (UTCTime)
@@ -35,7 +36,7 @@ formats =
 -- You can find more information on persistent and how to declare entities
 -- at:
 -- http://www.yesodweb.com/book/persistent/
-share [mkPersist, mkMigrate "migrateAll"] $(persistFile "config/models")
+share [mkPersist, mkMigrate "migrateAll", mkDeleteCascade] $(persistFile "config/models")
 
 instance HasReps StaticContent where
     chooseRep (StaticContent mt content) _ = return (mt, toContent $ decodeLenient content)

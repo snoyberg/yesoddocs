@@ -50,3 +50,6 @@
 
 /comments/count CommentCountR GET
 /comments CommentsR GET POST
+
+/delete/topic/#TopicId DeleteTopicR POST
+/delete/map/#TMapId DeleteMapR POST

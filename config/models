@@ -16,12 +16,12 @@ Topic
     owner UserId Eq
     title Text Update
     created UTCTime
-    family TFamilyId
+    family TFamilyId Eq
     allWrite Bool default=false Update
 
 TopicContent
     topic TopicId Eq
-    author UserId
+    author UserId Eq
     summary Text Maybe
     changed UTCTime Desc
     format TopicFormat
@@ -36,8 +36,8 @@ TMapNode
     map TMapId Eq
     parent TMapNodeId Maybe Eq
     position Int Asc
-    ctopic TopicId Maybe
-    cmap TMapId Maybe
+    ctopic TopicId Maybe Eq Update
+    cmap TMapId Maybe Eq
     title Text Maybe
     slug MapNodeSlug
     UniqueMapNode map slug
@@ -51,7 +51,7 @@ NewsItem
 
 Page
     name Text
-    topic TopicId
+    topic TopicId Eq
     UniquePage name
 
 Label
@@ -60,25 +60,25 @@ Label
 
 TopicLabel
     topic TopicId Eq
-    label LabelId
+    label LabelId Eq
     UniqueTopicLabel topic label
 
 MapLabel
     map TMapId Eq
-    label LabelId
+    label LabelId Eq
     UniqueMapLabel map label
 
 Blog
     posted UTCTime Desc
-    map TMapId
+    map TMapId Eq
     slug BlogSlug Eq
     year Int
     month Int
     UniqueBlogSlug year month slug
 
 Book -- singleton
-    topic TopicId Maybe
-    map TMapId
+    topic TopicId Maybe Eq
+    map TMapId Eq
     chunking Int
 
 StaticContent
@@ -88,5 +88,5 @@ StaticContent
 Comment
     topic TopicId Eq
     element Text Eq
-    content TopicId
+    content TopicId Eq
     time UTCTime Asc

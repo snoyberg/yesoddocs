@@ -13,10 +13,19 @@ UpdateMap: Update map
 MapUpdated: Your map has been updated.
 LabelsUpdated: Labels have been updated.
 
+ViewTopic: View
+
+UploadDitaCaption: Upload DITA Content
+
 WorldWriteable: World writeable
 WorldWriteableTooltip: Any logged in user may edit this topic.
 MakeWorldWriteable: Make world writeable
 MakeNotWorldWriteable: Make not world writeable
+
+Delete: Delete
+ConfirmDelete: Are you sure you want to delete this item?
+TopicDeleted title@Text: Topic deleted: #{title}
+MapDeleted title@Text: Map deleted: #{title}
 
 BlogArchive: Archive
 
@@ -89,6 +98,12 @@ AddBlogPost: Add blog post
 AddBook: Add book
 
 CopyrightNotice: By submitting content to this site, you agree to release the content into the public domain and/or Creative Commons Zero license.
+
+EditLabels: Edit site labels
+CreateNewPageCaption: Create New Page
+ModifyExistingPageCaption: Modify Existing Page
+UploadBlogPostsCaption: Upload Blog Posts
+EditUserProfileCaption: Edit User Profile
 
 # Page titles
 LoginTitle: Login

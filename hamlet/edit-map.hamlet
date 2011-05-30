@@ -6,7 +6,10 @@
     <ul .filterable>
         $forall topic <- topics
             <li .node #topic#{toSinglePiece $ fst topic}>
-                <span>#{topicTitle $ snd topic} (#{toSinglePiece $ fst topic})
+                <span>
+                    #{topicTitle $ snd topic}
+                    <i .topicid>#{toSinglePiece $ fst topic}
+                <a target=_blank .viewtopic href=@{TopicR $ fst topic}>_{MsgViewTopic}
 <form #submit method=post>
     <input type=hidden id=tree name=tree>
     <button>_{MsgUpdateMap}

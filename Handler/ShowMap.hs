@@ -20,20 +20,20 @@ data Tree = Tree
     , treeChildren :: [Tree]
     }
 
-showTree :: Int -> TMapId -> [Tree] -> Hamlet WikiRoute
-showTree depth tmid trees = [hamlet|
+showTree :: Int -> [Tree] -> Hamlet WikiRoute
+showTree depth trees = [hamlet|
 $forall tree <- trees
     <section>
         \<h#{show depth}>
         $maybe tid <- treeTopicId tree
-            <a .topic-link href=@{ShowMapTopicR tmid tid}>#{treeTitle tree}
+            <a .topic-link href=@{TopicR tid}>#{treeTitle tree}
         $nothing
             \#{treeTitle tree}
         \</h#{show depth}>
         $maybe c <- treeContent tree
             $maybe tid <- treeTopicId tree
                 ^{renderContent tid (topicContentFormat c) (topicContentContent c)}
-        ^{showTree (incr depth) tmid $ treeChildren tree}
+        ^{showTree (incr depth) $ treeChildren tree}
 |]
   where
     incr 6 = 6

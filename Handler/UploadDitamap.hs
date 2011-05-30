@@ -175,7 +175,7 @@ parseMap abspath (Document _ (Element _ asMap children) _) =
     title =
         case lookup "title" asMap of
             Just [ContentText t] -> t
-            Nothing -> go children
+            _ -> go children
       where
         go [] = "Unnamed Map"
         go (NodeElement (Element "title" _ x):_) = mconcat $ map takeText x

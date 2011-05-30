@@ -1,1 +1,1 @@
-^{addHamlet $ showTree 2 tmid tree}
+^{addHamlet $ showTree 2 tree}

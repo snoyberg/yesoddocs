@@ -80,7 +80,7 @@ getBlogFeedR = do
                 { feedEntryLink = BlogPostR (blogYear e) (blogMonth e) (blogSlug e)
                 , feedEntryUpdated = blogPosted e
                 , feedEntryTitle = title
-                , feedEntryContent = showTree 2 (blogMap blog) tree render
+                , feedEntryContent = showTree 2 tree render
                 }
     entries <- mapM go x
     newsFeed Feed

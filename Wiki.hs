@@ -212,10 +212,6 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb (ShowMapR tmid) = do
         tm <- runDB $ get404 tmid
         return (MsgShowMapTitle $ tMapTitle tm, Just RootR)
-    breadcrumb (ShowMapTopicR tmid tid) = do
-        tm <- runDB $ get404 tmid
-        t <- runDB $ get404 tid
-        return (MsgShowMapTopicTitle (tMapTitle tm) (topicTitle t), Just $ ShowMapR tmid)
     breadcrumb (AuthR LoginR) = return (MsgLoginTitle, Just RootR)
     breadcrumb (BlogPostR year month slug) = do
         blog <- getBlogPost year month slug

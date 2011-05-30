@@ -9,7 +9,7 @@
     <h2>_{MsgTopicsListHeading}
     <p>
         <a href=@{CreateTopicR}>_{MsgCreateTopic}
-    <ul>
+    <ul .filterable>
         $forall topic <- topics
             <li>
                 <a href=@{TopicR $ fst topic}>#{topicTitle $ snd topic}
@@ -18,13 +18,11 @@
     <h2>_{MsgMapsListHeading}
     <p>
         <a href=@{CreateMapR}>_{MsgCreateMap}
-    <ul>
+    <ul .filterable>
         $forall map <- maps
             <li>
                 <a href=@{ShowMapR $ fst map}>#{tMapTitle $ snd map}
-                \ (
-                <a href=@{EditMapR $ fst map}>_{MsgEdit}
-                )
+                <a .edit href=@{EditMapR $ fst map}>_{MsgEdit}
 
 <form action=@{UploadDitamapR} method=post enctype=#{Multipart}>
     <table>

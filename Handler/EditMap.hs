@@ -18,6 +18,7 @@ import Handler.Topic (showLTree)
 import Data.Maybe (mapMaybe)
 import System.Random (randomRIO)
 import Data.Text (pack)
+import Handler.Settings (filterWidget)
 
 data TM = TM
     { tmTitle :: Maybe Text
@@ -62,6 +63,7 @@ getEditMapR mid = do
     let activeLabel = flip elem slabels
     defaultLayout $ do
         addScript $ StaticR jquery_js
+        filterWidget
         $(widgetFile "edit-map")
 
 getTopics :: [TM] -> [TopicId]

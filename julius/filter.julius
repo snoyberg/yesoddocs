@@ -1,0 +1,15 @@
+$(function(){
+    $("ul.filterable").before("<input class='filter' type='search'>");
+    var f = function(){
+        var v = $(this).val().toLowerCase();
+        $.each($(this).next().children("li"), function(i, xx){
+            var x = $(xx);
+            if (x.text().toLowerCase().indexOf(v) > -1) {
+                x.show();
+            } else {
+                x.hide();
+            }
+        });
+    };
+    $("input.filter").change(f).keyup(f);
+});

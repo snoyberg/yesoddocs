@@ -3,6 +3,15 @@
     padding-right: 5em;
 }
 
+#map, #topics {
+    width: 45%;
+}
+
+#map > ul, #topics > ul {
+    max-height: 400px;
+    overflow: auto;
+}
+
 li.node, li.dropzone {
     cursor: pointer;
 }

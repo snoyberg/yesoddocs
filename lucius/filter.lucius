@@ -1,0 +1,4 @@
+input.filter {
+    margin-left: 2em;
+    padding-left: 18px;
+}

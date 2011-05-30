@@ -3,7 +3,7 @@
     ^{showTMs tree}
 <div #topics>
     <h2>_{MsgAvailableTopics}
-    <ul>
+    <ul .filterable>
         $forall topic <- topics
             <li .node #topic#{toSinglePiece $ fst topic}>
                 <span>#{topicTitle $ snd topic} (#{toSinglePiece $ fst topic})

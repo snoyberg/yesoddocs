@@ -6,6 +6,7 @@ module Handler.Settings
     , postEditPageR
     , postAddBlogMapR
     , postSetBookR
+    , filterWidget
     ) where
 
 import Wiki
@@ -57,7 +58,15 @@ getSettingsR = do
     pforms <- (fmap . fmap) (snd . fst) $ mapM (pageForm topics . Just . snd) pages
     ((_, ab), _) <- addBlog uid
     ((_, addBook), _) <- bookForm uid
-    defaultLayout $(widgetFile "settings")
+    defaultLayout $ do
+        filterWidget
+        $(widgetFile "settings")
+
+filterWidget :: Widget ()
+filterWidget = do
+    addScript $ StaticR jquery_js
+    addLucius $(luciusFile "filter")
+    addJulius $(juliusFile "filter")
 
 postSettingsR :: Handler ()
 postSettingsR = do

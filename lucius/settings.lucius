@@ -1,7 +1,20 @@
 #topics, #maps {
     display: table-cell;
     padding-right: 5em;
+    width: 45%;
+}
+#topics ul, #maps ul {
+    max-height: 300px;
+    overflow: auto;
+}
+ul.filterable li {
+    margin-bottom: 10px;
 }
 #form {
     border: 1px solid black;
+}
+a.edit, a.edit:visited {
+    color: #900;
+    text-decoration: none;
+    margin-left: 3px
 }

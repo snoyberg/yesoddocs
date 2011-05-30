@@ -23,6 +23,7 @@ import Data.Enumerator.List (consume)
 import Control.Monad.Trans.State
 import qualified Data.Set as Set
 import Data.ByteString.Base64 (encode)
+import Util (validateDita)
 
 newtype AbsPath = AbsPath FilePath
     deriving (Ord, Show, Eq)
@@ -97,7 +98,7 @@ uploadContent now uid m (_, (f, fid)) =
             mapM_ (go Nothing) $ zip [1..] trees
         (DitaFile _ _ format dita, FITopic tid _) -> do
             text <- run_ $ enumList 8 (goN m dita []) $$ joinI $ renderText $$ consume
-            _ <- insert $ TopicContent tid uid Nothing now format $ mconcat text
+            _ <- insert $ TopicContent tid uid Nothing now format $ validateDita $ mconcat text
             return ()
         _ -> return ()
 

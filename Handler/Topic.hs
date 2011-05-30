@@ -23,6 +23,7 @@ import Handler.CreateTopic (richEdit)
 import Yesod.Json
 import qualified Data.Text as T
 import qualified Text.Blaze.Renderer.String as S
+import Text.Hamlet (toHtml)
 
 topicForm :: (Text, TopicFormat, Textarea, Maybe Text)
           -> Handler ((FormResult (Text, TopicFormat, Textarea, Maybe Text), Widget ()), Enctype)
@@ -103,7 +104,7 @@ postTopicR tid = do
             _ <- runDB $ do
                 update tid [TopicTitle title]
                 _ <- insert $ TopicContent tid aid msummary now format $ validateContent format content
-                addNewsItem ("Topic updated: " `mappend` title) (TopicR tid) [html|
+                addNewsItem ("Topic updated: " `mappend` title) (TopicR tid) Nothing [html|
 <p>#{userName user} updated the topic: #{title}
 $maybe summary <- msummary
     <p>Update summary: #{summary}
@@ -165,24 +166,32 @@ getCommentsR = do
 
 postCommentsR :: Handler ()
 postCommentsR = do
-    uid <- requireAuthId
+    (uid, u) <- requireAuth
     topic' <- runInputGet $ ireq textField "topic"
     let topic = fromJust $ fromSinglePiece topic'
     element <- runInputGet $ ireq textField "element"
     content <- runInputPost $ ireq textField "content"
     source <- runInputPost $ ireq textField "source"
     now <- liftIO getCurrentTime
+    let hash = T.concat
+            [ "comment-"
+            , topic'
+            , "-"
+            , element
+            ]
     runDB $ do
         src <- get404 topic
         fam <- insert $ TFamily now
         tid <- insert $ Topic uid ("Comment on " `T.append` topicTitle src) now fam
         _ <- insert $ TopicContent tid uid Nothing now TFText content
         _ <- insert $ Comment topic element tid now
-        return ()
+        addNewsItem (T.concat
+            [ userName u
+            , " commented on "
+            , topicTitle src
+            ]) (TopicR topic) (Just hash) (toHtml content)
     redirectText RedirectTemporary $ T.concat
         [ T.takeWhile (/= '#') source
-        , "#comment-"
-        , topic'
-        , "-"
-        , element
+        , "#"
+        , hash
         ]

@@ -39,7 +39,7 @@ postCreateTopicR = do
                 fam <- insert $ TFamily now
                 topic <- insert $ Topic aid title now fam
                 _ <- insert $ TopicContent topic aid Nothing now format $ validateContent format content
-                addNewsItem ("New topic created: " `mappend` title) (TopicR topic) [html|
+                addNewsItem ("New topic created: " `mappend` title) (TopicR topic) Nothing [html|
 <p>#{userName user} created a new topic: #{title}
 |]
                 return topic

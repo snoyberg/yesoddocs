@@ -279,11 +279,12 @@ breadcrumbs = do
         (title, next) <- breadcrumb this
         go ((this, title) : back) next
 
-addNewsItem :: Text -> WikiRoute -> Html -> SqlPersist (GGHandler s Wiki IO) ()
-addNewsItem title url content = do
+addNewsItem :: Text -> WikiRoute -> Maybe Text -> Html -> SqlPersist (GGHandler s Wiki IO) ()
+addNewsItem title url mhash content = do
     now <- liftIO getCurrentTime
     render <- lift getUrlRender
-    _ <- insert $ NewsItem now title (render url) content
+    let hash = maybe "" ("#" `T.append`) mhash
+    _ <- insert $ NewsItem now title (render url `T.append` hash) content
     return ()
 
 fromLabel :: WikiMessage -> FieldSettings WikiMessage

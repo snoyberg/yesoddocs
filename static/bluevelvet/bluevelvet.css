@@ -354,3 +354,11 @@ p.message {
 .contributor > a > span {
     display: block;
 }
+
+p.author img {
+    padding-right: 1em;
+}
+p.author {
+    font-weight: bold;
+    text-shadow: #ccc 2px 2px;
+}

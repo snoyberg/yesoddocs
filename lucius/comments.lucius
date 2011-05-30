@@ -6,8 +6,10 @@ a.commentlink {
 
 div.comments {
     margin-left: 1em;
+    margin-right: 2em;
     border: 1px solid #666;
     padding: 0.5em;
+    background: #e8e8e8;
 }
 
 div.comments.hidden {
@@ -16,4 +18,17 @@ div.comments.hidden {
 
 div.comments input {
     display: block;
+}
+
+div.comments dt {
+    font-size: 0.8em;
+    color: #333;
+}
+
+div.comments dd {
+    margin-bottom: 1em;
+}
+
+div.comments textarea {
+    width: 100%;
 }

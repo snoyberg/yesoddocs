@@ -1,22 +1,10 @@
-Upload ditamap
-    Static files (yw://static/<staticid>)
-    Special URLs (yw://topic/<topicid>#elementid)
-Blog RSS feed
 User page, set in breadcrumbs, includes
-    Blog link
-    Books
     Topics
     Maps
     Bio
     Reputation (when we have it)
     For admin: give admin rights
 Edit topic: preview button
-Comments
-    Allowed on a topic as a whole
-    For DITA, any <p> with an id
-Submit DITA: automatically add unique id by topic for each element
-    First filter IDs to ensure uniqueness, then add missing ones
 Voting on topics
 Forking topics
 Option when creating maps: see other people's topics
-RSS feeds for each blog, one for whole site

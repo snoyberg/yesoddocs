@@ -229,9 +229,10 @@ parseDita abspath (Document _ (Element e as'' children) _) = do
             as' = map fixAttr as
         go n = n
     fixAttr (n, [ContentText rel])
-        | n `elem` ["href", "src"] =
+        | n `elem` ["href", "src"] && notAbs rel =
             (n, [ContentText $ mappend (pack joined) rest])
           where
             (path, rest) = T.break (== '#') rel
             AbsPath joined = joinPath abspath $ RelPath path
+            notAbs t = not $ "/" `T.isPrefixOf` t || "http://" `T.isPrefixOf` t || "mailto:" `T.isPrefixOf` t
     fixAttr x = x

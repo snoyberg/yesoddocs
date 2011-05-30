@@ -13,6 +13,11 @@ UpdateMap: Update map
 MapUpdated: Your map has been updated.
 LabelsUpdated: Labels have been updated.
 
+WorldWriteable: World writeable
+WorldWriteableTooltip: Any logged in user may edit this topic.
+MakeWorldWriteable: Make world writeable
+MakeNotWorldWriteable: Make not world writeable
+
 BlogArchive: Archive
 
 LabelName: Label name

@@ -27,7 +27,7 @@ postUploadBlogsR = do
         post <- liftIO $ loadEntry fp $ S.concat $ L.toChunks contents
         let utc = UTCTime (entryDay post) 0
         fam <- insert $ TFamily utc
-        topic <- insert $ Topic uid (entryTitle post) utc fam
+        topic <- insert $ Topic uid (entryTitle post) utc fam False
         _ <- insert $ TopicContent topic uid Nothing utc (entryFormat post) (entryContent post)
         tmap <- insert $ TMap uid (entryTitle post) utc
         _ <- insert $ TMapNode tmap Nothing 1 (Just topic) Nothing Nothing (MapNodeSlug $ pack slug)

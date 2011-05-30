@@ -22,3 +22,11 @@ $maybe form <- mform
         <div>
             <input type=submit>
             <p>_{MsgCopyrightNotice}
+
+$if hasFullControl
+    $if topicAllWrite
+        <form method=post action=@{TopicNotWorldWriteableR tid}>
+            <input type=submit value=_{MsgMakeNotWorldWriteable}>
+    $else
+        <form method=post action=@{TopicWorldWriteableR tid}>
+            <input type=submit value=_{MsgMakeWorldWriteable}>

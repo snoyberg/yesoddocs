@@ -17,6 +17,7 @@ Topic
     title Text Update
     created UTCTime
     family TFamilyId
+    allWrite Bool default=false Update
 
 TopicContent
     topic TopicId Eq

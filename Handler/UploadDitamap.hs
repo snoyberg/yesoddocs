@@ -138,7 +138,7 @@ getId now uid (ap, f) = do
   where
     go (StaticFile m c) = fmap FIStatic $ insert $ StaticContent m $ encode c
     go (MapFile title _) = fmap FIMap $ insert $ TMap uid title now
-    go (DitaFile title slug _ _) = fmap (flip FITopic slug) $ insert (TFamily now) >>= insert . Topic uid title now
+    go (DitaFile title slug _ _) = fmap (flip FITopic slug) $ insert (TFamily now) >>= insert . (flip (Topic uid title now) False)
 
 toFile :: Entry -> State (Set.Set MapNodeSlug) (Maybe (AbsPath, File))
 toFile entry

@@ -254,6 +254,8 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb UploadBlogsR{} = return (MsgNotFound, Nothing)
     breadcrumb CommentCountR{} = return (MsgNotFound, Nothing)
     breadcrumb CommentsR{} = return (MsgNotFound, Nothing)
+    breadcrumb TopicWorldWriteableR{} = return (MsgNotFound, Nothing)
+    breadcrumb TopicNotWorldWriteableR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return

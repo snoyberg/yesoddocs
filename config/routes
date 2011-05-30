@@ -18,6 +18,9 @@
 
 /edit/map/#TMapId EditMapR GET POST
 
+/edit/topic/#TopicId/world-writeable TopicWorldWriteableR POST
+/edit/topic/#TopicId/not-world-writeable TopicNotWorldWriteableR POST
+
 /show/topic/#TopicId TopicR GET POST
 /show/map/#TMapId ShowMapR GET
 /show/map/#TMapId/#TopicId ShowMapTopicR GET

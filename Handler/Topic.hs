@@ -10,6 +10,8 @@ module Handler.Topic
     , getCommentCountR
     , getCommentsR
     , postCommentsR
+    , postTopicWorldWriteableR
+    , postTopicNotWorldWriteableR
     ) where
 
 import Wiki
@@ -18,7 +20,7 @@ import Data.Text (pack)
 import Control.Monad (unless, when)
 import Text.Hamlet.NonPoly (html)
 import Handler.Labels (LTree (..), getLTree)
-import Data.Maybe (mapMaybe, fromJust, catMaybes)
+import Data.Maybe (mapMaybe, fromJust, catMaybes, isJust)
 import Handler.CreateTopic (richEdit)
 import Yesod.Json
 import qualified Data.Text as T
@@ -50,11 +52,15 @@ getTopicR' showAuthor tid = do
     owner <- runDB $ get404 topicOwner
     mauthor <- if topicOwner == topicContentAuthor then return Nothing else fmap Just $ runDB $ get404 topicContentAuthor
     ma <- maybeAuth
+    let hasFullControl =
+            case ma of
+                Nothing -> False
+                Just (uid, u) -> userAdmin u || uid == topicOwner
     let maid = fmap fst ma
         muser = fmap snd ma
     $(logDebug) $ pack $ concat ["maid: ", show maid, ", topicOwner", show topicOwner]
     mform <-
-        if maid == Just topicOwner || fmap userAdmin muser == Just True
+        if maid == Just topicOwner || fmap userAdmin muser == Just True || (topicAllWrite && isJust ma)
             then Just `fmap` (do
                 ((_, w), e) <- topicForm (topicTitle, topicContentFormat, (Textarea $ topicContentContent), Nothing)
                 return (w, e)
@@ -96,7 +102,7 @@ postTopicR tid = do
                 $(logError) "Should only have returned 0 or 1 results"
                 notFound
     (aid, user) <- requireAuth
-    unless (aid == topicOwner || userAdmin user) $ permissionDenied ""
+    unless (aid == topicOwner || userAdmin user || topicAllWrite) $ permissionDenied ""
     ((res, wform), enctype) <- topicForm (topicTitle, topicContentFormat, (Textarea $ topicContentContent), Nothing)
     case res of
         FormSuccess (title, format, (Textarea content), msummary) -> do
@@ -182,7 +188,7 @@ postCommentsR = do
     runDB $ do
         src <- get404 topic
         fam <- insert $ TFamily now
-        tid <- insert $ Topic uid ("Comment on " `T.append` topicTitle src) now fam
+        tid <- insert $ Topic uid ("Comment on " `T.append` topicTitle src) now fam False
         _ <- insert $ TopicContent tid uid Nothing now TFText content
         _ <- insert $ Comment topic element tid now
         addNewsItem (T.concat
@@ -195,3 +201,17 @@ postCommentsR = do
         , "#"
         , hash
         ]
+
+postTopicWorldWriteableR :: TopicId -> Handler ()
+postTopicWorldWriteableR = wwHelper True
+
+postTopicNotWorldWriteableR :: TopicId -> Handler ()
+postTopicNotWorldWriteableR = wwHelper False
+
+wwHelper :: Bool -> TopicId -> Handler ()
+wwHelper isW tid = do
+    (uid, u) <- requireAuth
+    t <- runDB $ get404 tid
+    unless (topicAllWrite t || topicOwner t == uid || userAdmin u) $ permissionDenied ""
+    runDB $ update tid [TopicAllWrite isW]
+    redirect RedirectTemporary $ TopicR tid

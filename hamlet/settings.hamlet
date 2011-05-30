@@ -14,7 +14,7 @@
         $forall topic <- topics
             <li>
                 <a href=@{TopicR $ fst topic}>#{topicTitle $ snd topic}
-                <form method=post action=@{DeleteTopicR $ fst topic}>
+                <form .delete method=post action=@{DeleteTopicR $ fst topic}>
                     <input .delete type=submit value=_{MsgDelete}>
 
 <#maps>
@@ -26,6 +26,8 @@
             <li>
                 <a href=@{ShowMapR $ fst map}>#{tMapTitle $ snd map}
                 <a .edit href=@{EditMapR $ fst map}>_{MsgEdit}
+                <form .delete method=post action=@{DeleteMapR $ fst map}>
+                    <input .delete type=submit value=_{MsgDelete}>
 
 <form action=@{UploadDitamapR} method=post enctype=#{Multipart}>
     <table .withcaption>

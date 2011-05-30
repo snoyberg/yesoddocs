@@ -169,11 +169,13 @@ toFile entry
     abspath = AbsPath fp
 
 parseMap :: AbsPath -> Document -> File
-parseMap abspath (Document _ (Element _ _ children) _) =
+parseMap abspath (Document _ (Element _ asMap children) _) =
     MapFile title tree
   where
     title =
-        go children
+        case lookup "title" asMap of
+            Just [ContentText t] -> t
+            Nothing -> go children
       where
         go [] = "Unnamed Map"
         go (NodeElement (Element "title" _ x):_) = mconcat $ map takeText x

@@ -153,6 +153,8 @@ instance Yesod Wiki where
         unless exists $ liftIO $ L.writeFile fn' content'
         return $ Just $ Right (StaticR $ StaticRoute ["tmp", T.pack fn] [], [])
 
+    clientSessionDuration _ = 60 * 24 * 7 * 2 -- 2 weeks
+
 -- How to run database actions.
 instance YesodPersist Wiki where
     type YesodDB Wiki = SqlPersist

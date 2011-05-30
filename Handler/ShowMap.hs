@@ -31,7 +31,8 @@ $forall tree <- trees
             \#{treeTitle tree}
         \</h#{show depth}>
         $maybe c <- treeContent tree
-            ^{renderContent (topicContentFormat c) (topicContentContent c)}
+            $maybe tid <- treeTopicId tree
+                ^{renderContent tid (topicContentFormat c) (topicContentContent c)}
         ^{showTree (incr depth) tmid $ treeChildren tree}
 |]
   where

@@ -9,7 +9,7 @@ module Util
     , prettyMonthYear
     ) where
 
-import Model (TopicFormat (..), User (userEmail))
+import Model (TopicFormat (..), User (userEmail), TopicId)
 import Data.Text (Text, pack, unpack)
 import Data.Text.Encoding (encodeUtf8)
 import Text.Hamlet (Html, preEscapedText, toHtml, preEscapedString)
@@ -38,16 +38,17 @@ import Control.Monad.Trans.State (evalState, get, put)
 import Text.XML.Enumerator.Render (renderText)
 import Data.Monoid (mconcat)
 import System.IO.Unsafe (unsafePerformIO)
+import Yesod.Core (toSinglePiece)
 
-renderContent :: TopicFormat -> Text -> Hamlet WikiRoute
-renderContent TFHtml t = const $ preEscapedText t
-renderContent TFText t = const $ toHtml $ Textarea t
-renderContent TFMarkdown t = const $ preEscapedString $ writeHtmlString defaultWriterOptions $ readMarkdown defaultParserState $ unpack t
-renderContent TFDitaConcept t = ditaToHtml t
-renderContent TFDitaTopic t = ditaToHtml t
+renderContent :: TopicId -> TopicFormat -> Text -> Hamlet WikiRoute
+renderContent _ TFHtml t = const $ preEscapedText t
+renderContent _ TFText t = const $ toHtml $ Textarea t
+renderContent _ TFMarkdown t = const $ preEscapedString $ writeHtmlString defaultWriterOptions $ readMarkdown defaultParserState $ unpack t
+renderContent tid TFDitaConcept t = ditaToHtml tid t
+renderContent tid TFDitaTopic t = ditaToHtml tid t
 
-ditaToHtml :: Text -> Hamlet WikiRoute
-ditaToHtml txml render =
+ditaToHtml :: TopicId -> Text -> Hamlet WikiRoute
+ditaToHtml topic txml render =
     case runIdentity $ run $ enumList 3 ["<body>", txml, "</body>"] $$ joinI $ parseText decodeEntities $$ fromEvents of
         Left e -> toHtml $ show e
         Right (Document _ (Element _ _ nodes) _) -> mapM_ go nodes
@@ -55,7 +56,10 @@ ditaToHtml txml render =
     go (NodeContent (ContentText t')) = toHtml t'
     go (NodeElement (Element n as children)) = go' n as $ mapM_ go children
     go _ = return ()
-    go' "p" _ x = [html|<p>#{x}|]
+    go' "p" as x =
+        case lookup "id" as of
+            Just [ContentText t] -> [html|<p .hascomments #comment-#{toSinglePiece topic}-#{t}>#{x}|]
+            _ -> [html|<p>#{x}|]
     go' "ul" _ x = [html|<ul>#{x}|]
     go' "ol" _ x = [html|<ol>#{x}|]
     go' "li" _ x = [html|<li>#{x}|]

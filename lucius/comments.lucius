@@ -1,0 +1,19 @@
+a.commentlink {
+    font-size: 0.7em;
+    color: #666;
+    cursor: pointer;
+}
+
+div.comments {
+    margin-left: 1em;
+    border: 1px solid #666;
+    padding: 0.5em;
+}
+
+div.comments.hidden {
+    display: none;
+}
+
+div.comments input {
+    display: block;
+}

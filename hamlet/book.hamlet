@@ -1,4 +1,4 @@
 <h1>#{tMapTitle tm}
 $forall topic <- mtopic
-    ^{addHamlet $ renderContent (topicContentFormat topic) (topicContentContent topic)}
+    ^{addHamlet $ renderContent (fst topic) (topicContentFormat $ snd topic) (topicContentContent $ snd topic)}
 ^{showTOC tocs}

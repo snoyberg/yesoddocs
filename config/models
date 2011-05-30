@@ -83,3 +83,9 @@ Book -- singleton
 StaticContent
     mimetype ByteString
     content ByteString
+
+Comment
+    topic TopicId Eq
+    element Text Eq
+    content TopicId
+    time UTCTime Asc

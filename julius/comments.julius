@@ -1,0 +1,44 @@
+$(function(){
+    $.each($(".hascomments"), function(i, e){
+        var x = $(e);
+        var y = x.attr("id").split("-");
+        $.getJSON("@{CommentCountR}", {topic:y[1], element:y[2]}, function(z){
+            var c = z.count == 1 ? "comment" : "comments";
+            x.append(" <a class='commentlink'> " + z.count + " " + c + "</a>"); // TRANS
+            var notLoaded = true;
+            var open = function(){
+                if (notLoaded) {
+                    notLoaded = false;
+                    x.after("<div class='comments'>Loading...</div>");
+                    $.getJSON("@{CommentsR}", {topic:y[1], element:y[2]}, function(comments){
+                        var html = ["<dl>"];
+                        $.each(comments.comments, function(i, comment){
+                            html.push("<dt>");
+                            html.push(comment.name);
+                            html.push(" <i>");
+                            html.push(comment.date);
+                            html.push("</i></dt><dd>");
+                            html.push(comment.content);
+                            html.push("</dd></dt>");
+                        });
+                        html.push("</dl>");
+                        if (comments.loggedin) {
+                            html.push("<form method='post' action='@{CommentsR}?topic=" + y[1] + "&element=" + y[2] + "'>");
+                            html.push("<input type='hidden' name='source' value='" + document.location + "'>");
+                            html.push("<textarea name='content' placeholder='Enter your comment here'></textarea>");
+                            html.push("<input type='submit' value='Add comment'>");
+                            html.push("</form>");
+                        } else {
+                            html.push("<p>You must be <a href='@{AuthR LoginR}'>logged in</a> to comment.</p>");
+                        }
+                        x.next().html(html.join(""));
+                    });
+                } else {
+                    x.next().toggleClass("hidden");
+                }
+            }
+            x.children("a.commentlink").click(open);
+            if (document.location.hash == "#" + x.attr("id")) open();
+        });
+    });
+});

@@ -44,3 +44,6 @@
 
 /book BookR GET
 /book/#MapNodeSlug BookChapterR GET
+
+/comments/count CommentCountR GET
+/comments CommentsR GET POST

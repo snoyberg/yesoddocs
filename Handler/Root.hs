@@ -21,14 +21,14 @@ getRootR = do
                 x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
                 case x of
                     [] -> return Nothing
-                    (_, TopicContent {..}):_ -> return $ Just (topicContentFormat, topicContentContent)
+                    (_, TopicContent {..}):_ -> return $ Just (topicContentFormat, topicContentContent, tid)
     let html' =
             case mcontent of
                 Nothing -> [hamlet|
 <h1>No homepage set.
 <p>The site admin has no yet set a homepage topic.
 |]
-                Just (format, content) -> renderContent format content
+                Just (format, content, tid) -> renderContent tid format content
     defaultLayout $ addHamlet html'
 
 getPageR :: Text -> Handler RepHtml

@@ -6,16 +6,23 @@ module Handler.Topic
     , postTopicR
     , postTopicLabelsR
     , showLTree
+    , comments
+    , getCommentCountR
+    , getCommentsR
+    , postCommentsR
     ) where
 
 import Wiki
-import Util (renderContent, validateContent)
+import Util (renderContent, validateContent, prettyDate)
 import Data.Text (pack)
 import Control.Monad (unless, when)
 import Text.Hamlet.NonPoly (html)
 import Handler.Labels (LTree (..), getLTree)
-import Data.Maybe (mapMaybe)
+import Data.Maybe (mapMaybe, fromJust, catMaybes)
 import Handler.CreateTopic (richEdit)
+import Yesod.Json
+import qualified Data.Text as T
+import qualified Text.Blaze.Renderer.String as S
 
 topicForm :: (Text, TopicFormat, Textarea, Maybe Text)
           -> Handler ((FormResult (Text, TopicFormat, Textarea, Maybe Text), Widget ()), Enctype)
@@ -55,7 +62,15 @@ getTopicR' showAuthor tid = do
     ltree <- getLTree
     slabels <- runDB $ fmap (map $ topicLabelLabel . snd) $ selectList [TopicLabelTopicEq tid] [] 0 0
     let activeLabel = flip elem slabels
-    defaultLayout $ richEdit >> $(widgetFile "topic")
+    defaultLayout $ do
+        comments
+        richEdit >> $(widgetFile "topic")
+
+comments :: Widget ()
+comments = do
+    addScript $ StaticR jquery_js
+    addJulius $(juliusFile "comments")
+    addLucius $(luciusFile "comments")
 
 showLTree :: (LabelId -> Bool) -> [LTree] -> Widget ()
 showLTree al lt = [whamlet|
@@ -112,3 +127,62 @@ postTopicLabelsR tid = do
             when (lid' `elem` sel) $
                 insert (TopicLabel tid lid') >> return ()
     redirect RedirectTemporary $ TopicR tid
+
+getCommentCountR :: Handler RepJson
+getCommentCountR = do
+    topic' <- runInputGet $ ireq textField "topic"
+    let topic = fromJust $ fromSinglePiece topic'
+    element <- runInputGet $ ireq textField "element"
+    x <- runDB $ count [CommentTopicEq topic, CommentElementEq element]
+    jsonToRepJson $ jsonMap [("count", jsonScalar $ show x)]
+
+getCommentsR :: Handler RepJson
+getCommentsR = do
+    muid <- maybeAuthId
+    topic' <- runInputGet $ ireq textField "topic"
+    let topic = fromJust $ fromSinglePiece topic'
+    element <- runInputGet $ ireq textField "element"
+    render <- getUrlRenderParams
+    comments' <- runDB $ selectList [CommentTopicEq topic, CommentElementEq element] [CommentTimeAsc] 0 0 >>= (mapM $ \(_, c) -> do
+        let tid = commentContent c
+        tcs <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+        case tcs of
+            [] -> return Nothing
+            (_, tc):_ -> do
+                a <- get404 $ topicContentAuthor tc
+                let ham = renderContent tid (topicContentFormat tc) (topicContentContent tc)
+                let html' = ham render
+                return $ Just $ jsonMap
+                    [ ("name", jsonScalar $ T.unpack $ userName a)
+                    , ("date", jsonScalar $ prettyDate $ topicContentChanged tc)
+                    , ("content", jsonScalar $ S.renderHtml html')
+                    ]
+        )
+    jsonToRepJson $ jsonMap
+        [ ("comments", jsonList $ catMaybes comments')
+        , ("loggedin", jsonScalar $ maybe "false" (const "true") muid)
+        ]
+
+postCommentsR :: Handler ()
+postCommentsR = do
+    uid <- requireAuthId
+    topic' <- runInputGet $ ireq textField "topic"
+    let topic = fromJust $ fromSinglePiece topic'
+    element <- runInputGet $ ireq textField "element"
+    content <- runInputPost $ ireq textField "content"
+    source <- runInputPost $ ireq textField "source"
+    now <- liftIO getCurrentTime
+    runDB $ do
+        src <- get404 topic
+        fam <- insert $ TFamily now
+        tid <- insert $ Topic uid ("Comment on " `T.append` topicTitle src) now fam
+        _ <- insert $ TopicContent tid uid Nothing now TFText content
+        _ <- insert $ Comment topic element tid now
+        return ()
+    redirectText RedirectTemporary $ T.concat
+        [ T.takeWhile (/= '#') source
+        , "#comment-"
+        , topic'
+        , "-"
+        , element
+        ]

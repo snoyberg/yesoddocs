@@ -99,3 +99,5 @@ executable         yesodwiki
                  , random
                  , old-locale
                  , base64-bytestring
+                 , yesod-json
+                 , blaze-html

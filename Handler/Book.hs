@@ -7,6 +7,7 @@ module Handler.Book
 import Wiki
 import Util (renderContent)
 import Handler.ShowMap (loadTreeNode, showTree)
+import Handler.Topic (comments)
 
 data TOC = TOC
     { tocLink :: Maybe WikiRoute
@@ -51,7 +52,9 @@ getBookR = do
     mtopic <-
         case bookTopic book of
             Nothing -> return []
-            Just tid -> fmap (map snd) $ runDB $ selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+            Just tid -> do
+                x <- fmap (map snd) $ runDB $ selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+                return $ map (\y -> (tid, y)) x
     defaultLayout $(hamletFile "book")
 
 getBookChapterR :: MapNodeSlug -> Handler RepHtml
@@ -66,3 +69,4 @@ getBookChapterR mnslug = do
         addLucius $(luciusFile "book")
         addLucius $(luciusFile "show-map")
         addHamlet $ showTree 2 (tMapNodeMap mn) [tree]
+        comments

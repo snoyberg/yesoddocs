@@ -5,7 +5,7 @@
 
 module Main where
 
-import Yesod hiding (Message)
+import Yesod
 import Yesod.Helpers.Static
 
 import Control.Concurrent.STM

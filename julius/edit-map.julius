@@ -45,6 +45,16 @@ $(function(){
     $("#submit > button").click(function(){
         $("#tree").attr("value", mkTree($("#map > ul > li.node")));
     });
+
+    $("li[slug] > span > a.viewtopic").after("<a href='#' class='editslug'>Edit Slug</a>");
+    $("a.editslug").click(function(){
+        var li = $(this).parent().parent();
+        var slug = li.attr("slug");
+        var msg = slug ? "Your current slug is: " + slug + ". Please enter a new slug." : "Please enter a slug";
+        slug = prompt(msg);
+        if (slug) li.attr("slug", slug);
+        return false;
+    });
 });
 
 function mkTree(lis) {
@@ -54,6 +64,11 @@ function mkTree(lis) {
         if (i != 0) x.push(",");
         x.push("{\"topic\":\"");
         x.push(l.attr("id"));
+        var slug = l.attr("slug");
+        if (slug) {
+            x.push("\",\"slug\":\"");
+            x.push(slug);
+        }
         x.push("\",\"children\":");
         x.push(mkTree(l.children("ul").children("li.node")));
         x.push("}");

@@ -16,7 +16,7 @@ data TopicFormat = TFMarkdown | TFHtml | TFText | TFDitaConcept | TFDitaTopic
     deriving (Read, Eq, Show)
 derivePersistField "TopicFormat"
 
-newtype MapNodeSlug = MapNodeSlug Text
+newtype MapNodeSlug = MapNodeSlug { unMapNodeSlug :: Text }
     deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)
 newtype BlogSlug = BlogSlug Text
     deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)

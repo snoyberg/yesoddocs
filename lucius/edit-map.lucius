@@ -44,6 +44,7 @@ i.topicid {
     font-size: 0.8em;
     margin: 0 3px;
 }
-a.viewtopic {
+a.viewtopic, a.editslug {
     font-size: 0.9em;
+    margin-right: 3px;
 }

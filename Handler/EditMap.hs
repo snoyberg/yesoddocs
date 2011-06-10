@@ -25,6 +25,7 @@ data TM = TM
     , tmTopic :: Maybe TopicId
     , tmMap :: Maybe TMapId
     , tmChildren :: [TM]
+    , tmSlug :: MapNodeSlug
     }
 
 showTMs :: [TM] -> Widget ()
@@ -32,7 +33,7 @@ showTMs tms = [whamlet|
 <ul>
     $forall tm <- tms
         $maybe t <- tmTopic tm
-            <li .node #_topic#{toSinglePiece t}>
+            <li .node #_topic#{toSinglePiece t} slug=#{unMapNodeSlug $ tmSlug tm}>
                 ^{showTMs $ tmChildren tm}
 |]
 
@@ -47,6 +48,7 @@ loadTM tmid =
             , tmTopic = tMapNodeCtopic tmn
             , tmMap = tMapNodeCmap tmn
             , tmChildren = children
+            , tmSlug = tMapNodeSlug tmn
             }
 
 getEditMapR :: TMapId -> Handler RepHtml
@@ -75,6 +77,7 @@ getTopics =
 data SM = SM
     { smtopic :: TopicId
     , smchildren :: [SM]
+    , smslug :: Maybe MapNodeSlug
     }
     deriving Show
 
@@ -96,8 +99,8 @@ postEditMapR tmid = do
     randomSlug = do
         str <- liftIO $ sequence $ replicate 15 $ randomRIO ('A', 'Z')
         return $ MapNodeSlug $ pack str
-    add parent (pos, SM tid children) = do
-        slug <- randomSlug -- FIXME keep some consistency
+    add parent (pos, SM tid children mslug) = do
+        slug <- maybe randomSlug return mslug
         let tmn = TMapNode tmid parent pos (Just tid) Nothing Nothing slug
         tmnid <- insert tmn
         mapM_ (add $ Just tmnid) $ zip [1..] children
@@ -108,7 +111,11 @@ postEditMapR tmid = do
         t' <- go'' t
         c <- Map.lookup "children" o
         c' <- go c
-        return $ SM t' c'
+        let slug =
+                case Map.lookup "slug" o of
+                    Just (String slug') -> Just $ MapNodeSlug slug'
+                    _ -> Nothing
+        return $ SM t' c' slug
     go' _ = Nothing
     go'' (String t)
         | "topic" `T.isPrefixOf` t = fromSinglePiece $ T.drop 5 t

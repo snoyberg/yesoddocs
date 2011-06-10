@@ -12,7 +12,7 @@ import Yesod.Core (SinglePiece)
 import Data.ByteString (ByteString)
 import Data.ByteString.Base64 (decodeLenient)
 
-data TopicFormat = TFHtml | TFMarkdown | TFText | TFDitaConcept | TFDitaTopic
+data TopicFormat = TFMarkdown | TFHtml | TFText | TFDitaConcept | TFDitaTopic
     deriving (Read, Eq, Show)
 derivePersistField "TopicFormat"
 
@@ -25,8 +25,8 @@ newtype UserHandle = UserHandle { unUserHandle :: Text }
 
 formats :: [(Text, TopicFormat)]
 formats =
-    [ ("HTML", TFHtml)
-    , ("Markdown", TFMarkdown)
+    [ ("Markdown", TFMarkdown)
+    , ("HTML", TFHtml)
     , ("Plain text", TFText)
     , ("DITA Concept", TFDitaConcept)
     , ("DITA Topic", TFDitaTopic)

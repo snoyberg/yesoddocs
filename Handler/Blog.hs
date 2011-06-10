@@ -33,7 +33,7 @@ data AEntry = AEntry
     , aeDate :: Text
     }
 
-getBlogPostR :: Int -> Int -> BlogSlug -> Handler RepHtml
+getBlogPostR :: Int -> Month -> BlogSlug -> Handler RepHtml
 getBlogPostR year month slug = do
     let curr = BlogPostR year month slug
     blog <- getBlogPost year month slug
@@ -41,7 +41,8 @@ getBlogPostR year month slug = do
         tmap <- get404 $ blogMap b
         let y = blogYear b
             m = blogMonth b
-        return ((y, m), AEntry (tMapTitle tmap) (BlogPostR y m $ blogSlug b) (pack $ prettyDate $ blogPosted b)))
+            Month m' = m
+        return ((y, m'), AEntry (tMapTitle tmap) (BlogPostR y m $ blogSlug b) (pack $ prettyDate $ blogPosted b)))
     let archive :: Archive
         archive = map (fst . head &&& map snd) $ groupBy ((==) `on` fst) archive'
     tmap <- runDB $ get404 $ blogMap blog

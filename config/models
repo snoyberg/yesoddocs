@@ -73,7 +73,7 @@ Blog
     map TMapId Eq
     slug BlogSlug Eq
     year Int
-    month Int
+    month Month
     UniqueBlogSlug year month slug
 
 Book -- singleton

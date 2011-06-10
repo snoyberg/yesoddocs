@@ -4,11 +4,11 @@ module Model where
 import Yesod.Persist
 import Database.Persist.Base (DeleteCascade (..))
 import Yesod.Content (HasReps (..), toContent)
-import Data.Text (Text)
+import Data.Text (Text, pack)
 import Data.Time (UTCTime)
 import Text.Hamlet (Html)
 import Yesod.Form (Textarea)
-import Yesod.Core (SinglePiece)
+import Yesod.Core (SinglePiece (..))
 import Data.ByteString (ByteString)
 import Data.ByteString.Base64 (decodeLenient)
 
@@ -22,6 +22,18 @@ newtype BlogSlug = BlogSlug Text
     deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)
 newtype UserHandle = UserHandle { unUserHandle :: Text }
     deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)
+
+newtype Month = Month Int
+    deriving (Read, Eq, Show, PersistField, Ord)
+instance SinglePiece Month where
+    toSinglePiece (Month i)
+        | i < 10 && i >= 0 = pack $ '0' : show i
+        | otherwise = toSinglePiece i
+    fromSinglePiece t = do
+        i <- fromSinglePiece t
+        if i >= 1 && i <= 12
+            then Just $ Month i
+            else Nothing
 
 formats :: [(Text, TopicFormat)]
 formats =

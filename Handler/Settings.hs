@@ -118,10 +118,10 @@ postAddBlogMapR = do
     ((res, _), _) <- addBlog uid
     case res of
         FormSuccess (tmid, slug') -> runDB $ do
-            -- FIXME check for unique slug
             now <- liftIO getCurrentTime
-            let (year', month, _) = toGregorian $ utctDay now
+            let (year', month', _) = toGregorian $ utctDay now
             let year = fromInteger year'
+            let month = Month month'
             let slug = BlogSlug slug'
             x <- getBy $ UniqueBlogSlug year month slug
             case x of

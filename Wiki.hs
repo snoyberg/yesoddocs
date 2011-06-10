@@ -292,7 +292,7 @@ addNewsItem title url mhash content = do
 fromLabel :: WikiMessage -> FieldSettings WikiMessage
 fromLabel x = FieldSettings x Nothing Nothing Nothing
 
-getBlogPost :: Int -> Int -> BlogSlug -> GHandler sub Wiki Blog
+getBlogPost :: Int -> Month -> BlogSlug -> GHandler sub Wiki Blog
 getBlogPost year month slug =
     runDB $ fmap snd $ getBy404 $ UniqueBlogSlug year month slug
 

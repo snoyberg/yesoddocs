@@ -42,7 +42,7 @@
 
 /blog BlogR GET
 /blog/#BlogSlug BlogPostNoDateR GET
-/blog/#Int/#Int/#BlogSlug BlogPostR GET
+/blog/#Int/#Month/#BlogSlug BlogPostR GET
 
 /book BookR GET
 /book/#MapNodeSlug BookChapterR GET

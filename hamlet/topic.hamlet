@@ -10,7 +10,7 @@ $if showAuthor
 $maybe form <- mform
     <div .edit-page>
         <h2>_{MsgEditThisTopic}
-        <form method=post enctype=#{snd form}>
+        <form method=post enctype=#{snd form} action=@{TopicR tid}>
             <table>
                 ^{fst form}
                 <tr>

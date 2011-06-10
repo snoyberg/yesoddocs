@@ -22,7 +22,7 @@ $(function(){
                             html.push("</dd></dt>");
                         });
                         html.push("</dl>");
-                        if (comments.loggedin) {
+                        if (comments.loggedin == "true") {
                             html.push("<form method='post' action='@{CommentsR}?topic=" + y[1] + "&element=" + y[2] + "'>");
                             html.push("<input type='hidden' name='source' value='" + document.location + "'>");
                             html.push("<textarea name='content' placeholder='Enter your comment here'></textarea>");

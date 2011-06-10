@@ -1,0 +1,3 @@
+form, textarea, tr, td + td {
+    width: 100%;
+}

@@ -21,7 +21,7 @@ $maybe form <- mform
         <form #topiclabels method=post action=@{TopicLabelsR tid}>
             ^{showLTree activeLabel ltree}
             <div>
-                <input type=submit>
+                <input type=submit value=_{MsgUpdateLabels}>
                 <p>_{MsgCopyrightNotice}
 
 $if hasFullControl

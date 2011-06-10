@@ -77,10 +77,13 @@ postSettingsR = do
     (uid, user) <- requireAuth
     ((res, _), _) <- form' user
     case res of
-        FormSuccess user' -> do
-            -- FIXME check for duplicate handle
-            runDB $ replace uid user'
-            setMessageI MsgSettingsUpdated
+        FormSuccess user' -> runDB $ do
+            x <- getBy $ UniqueHandle $ userHandle user'
+            case x of
+                Nothing -> do
+                    replace uid user'
+                    lift $ setMessageI MsgSettingsUpdated
+                Just _ -> lift $ setMessageI MsgUserHandleInUse
         _ -> return ()
     redirect RedirectTemporary SettingsR
 
@@ -114,12 +117,20 @@ postAddBlogMapR = do
     unless (userAdmin u) $ permissionDenied ""
     ((res, _), _) <- addBlog uid
     case res of
-        FormSuccess (tmid, slug) -> do
+        FormSuccess (tmid, slug') -> runDB $ do
             -- FIXME check for unique slug
             now <- liftIO getCurrentTime
-            let (year, month, _) = toGregorian $ utctDay now
-            _ <- runDB $ insert $ Blog now tmid (BlogSlug slug) (fromInteger year) month
-            redirect RedirectTemporary $ BlogPostR (fromInteger year) month $ BlogSlug slug
+            let (year', month, _) = toGregorian $ utctDay now
+            let year = fromInteger year'
+            let slug = BlogSlug slug'
+            x <- getBy $ UniqueBlogSlug year month slug
+            case x of
+                Nothing -> do
+                    _ <- insert $ Blog now tmid slug year month
+                    lift $ redirect RedirectTemporary $ BlogPostR year month slug
+                Just _ -> lift $ do
+                    setMessageI MsgBlogSlugInUse
+                    redirect RedirectTemporary SettingsR
         _ -> do
             setMessageI MsgInvalidBlogInfo
             redirect RedirectTemporary SettingsR

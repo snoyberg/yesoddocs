@@ -11,7 +11,10 @@ MapCreated title@Text: Your map "#{title}" has been created.
 CreateMap: Create map
 UpdateMap: Update map
 MapUpdated: Your map has been updated.
+UpdateLabels: Update labels
 LabelsUpdated: Labels have been updated.
+UserHandleInUse: The requested handle is already in use. Please try again.
+BlogSlugInUse: The request blog slug in already in use. Please try again.
 
 ViewTopic: View
 

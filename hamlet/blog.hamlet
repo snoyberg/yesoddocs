@@ -14,5 +14,6 @@
     <p .author>
         #{userGravatar user}
         #{userName user}
+    <script src="http://www.reddit.com/static/button/button1.js">
     <article>
         ^{showMap}

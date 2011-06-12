@@ -21,6 +21,8 @@
                                 <a href=@{PageR "community"}>Community
                             <li>
                                 <a href=@{BlogR}>Blog
+                            <li>
+                                <a href=@{PageR "wiki"}>Wiki
                 <div .yesod-body>
                     <div .yesod-userbar>
                       $maybe user <- muser

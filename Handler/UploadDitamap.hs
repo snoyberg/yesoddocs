@@ -24,6 +24,7 @@ import Control.Monad.Trans.State
 import qualified Data.Set as Set
 import Data.ByteString.Base64 (encode)
 import Util (validateDita)
+import Data.Char (isSpace)
 
 newtype AbsPath = AbsPath FilePath
     deriving (Ord, Show, Eq)
@@ -56,6 +57,7 @@ data Tree = Tree
 
 data File = MapFile
     { _fileTitle :: Text
+    , _fileSlug :: MapNodeSlug
     , _fileTree :: [Tree]
     } | DitaFile
     { _fileTitle :: Text
@@ -68,7 +70,7 @@ data File = MapFile
     }
     deriving Show
 
-data FileId = FIMap TMapId | FITopic TopicId MapNodeSlug | FIStatic StaticContentId
+data FileId = FIMap TMapId MapNodeSlug | FITopic TopicId MapNodeSlug | FIStatic StaticContentId
 
 postUploadDitamapR :: Handler ()
 postUploadDitamapR = do
@@ -86,14 +88,14 @@ postUploadDitamapR = do
 uploadContent :: UTCTime -> UserId -> Map.Map AbsPath (File, FileId) -> (AbsPath, (File, FileId)) -> YesodDB Wiki (GGHandler Wiki Wiki IO) ()
 uploadContent now uid m (_, (f, fid)) =
     case (f, fid) of
-        (MapFile _ trees, FIMap mid) -> do
+        (MapFile _ _ trees, FIMap mid _) -> do
             let go parent (pos, Tree topic children) =
                     case Map.lookup topic m of
                         Just (_, FITopic tid slug) -> do
                             me <- insert $ TMapNode mid parent pos (Just tid) Nothing Nothing slug
                             mapM_ (go $ Just me) $ zip [1..] children
-                        Just (_, FIMap submap) -> do
-                            _ <- insert $ TMapNode mid parent pos Nothing (Just submap) Nothing (MapNodeSlug $ "submap-" `T.append` toSinglePiece submap)
+                        Just (_, FIMap submap (MapNodeSlug slug)) -> do
+                            _ <- insert $ TMapNode mid parent pos Nothing (Just submap) Nothing (MapNodeSlug $ T.append slug $ toSinglePiece submap)
                             return ()
                         Just (_, FIStatic _) -> do
                             lift $ $(logWarn) $ pack $ "DITA map refers to static content"
@@ -109,21 +111,33 @@ uploadContent now uid m (_, (f, fid)) =
 
 goE :: Map.Map AbsPath (File, FileId) -> Element -> [Event] -> [Event]
 goE m (Element name as ns) =
-      (EventBeginElement name (map fixA as) :)
-    . goN m ns
+      (EventBeginElement name as' :)
+    . goN m inside
     . (EventEndElement name :)
   where
+    asPairs = map fixA as
+    as' = map fst asPairs
+    inside =
+        case mapMaybe snd asPairs of
+            title:_
+                | all isWhitespace ns -> [NodeContent $ ContentText title]
+            _ -> ns
+    isWhitespace (NodeContent (ContentText t)) = T.all isSpace t
+    isWhitespace (NodeComment _) = True
+    isWhitespace (NodeInstruction _) = True
+    isWhitespace _ = False
     fixA ("href", [ContentText t]) =
-        ("href", [ContentText $ mappend file' rest])
+        (("href", [ContentText $ mappend file' rest]), x)
       where
         (file, rest) = T.break (== '#') t
-        file' =
+        (file', x) =
             case Map.lookup (AbsPath $ unpack file) m of
-                Just (_, FITopic tid _) -> mconcat ["yw://topic/", toSinglePiece tid]
-                Just (_, FIStatic sid) -> mconcat ["yw://static/", toSinglePiece sid]
-                Just (_, FIMap mid) -> mconcat ["yw://map/", toSinglePiece mid]
-                Nothing -> file
-    fixA x = x
+                Just (DitaFile title _ _ _, FITopic tid _) -> (mconcat ["yw://topic/", toSinglePiece tid], Just title)
+                Just (_, FITopic _ _) -> error "Problem in Handler.UploadDitamap.goE: This should never happen"
+                Just (_, FIStatic sid) -> (mconcat ["yw://static/", toSinglePiece sid], Nothing)
+                Just (_, FIMap mid _) -> (mconcat ["yw://map/", toSinglePiece mid], Nothing)
+                Nothing -> (file, Nothing)
+    fixA x = (x, Nothing)
 
 goN :: Map.Map AbsPath (File, FileId) -> [Node] -> [Event] -> [Event]
 goN _ [] = id
@@ -142,7 +156,7 @@ getId now uid (ap, f) = do
     return (ap, (f, fid))
   where
     go (StaticFile m c) = fmap FIStatic $ insert $ StaticContent m $ encode c
-    go (MapFile title _) = fmap FIMap $ insert $ TMap uid title now
+    go (MapFile title slug _) = fmap (flip FIMap slug) $ insert $ TMap uid title now
     go (DitaFile title slug _ _) = fmap (flip FITopic slug) $ insert (TFamily now) >>= insert . (flip (Topic uid title now) False)
 
 toFile :: Entry -> State (Set.Set MapNodeSlug) (Maybe (AbsPath, File))
@@ -175,8 +189,12 @@ toFile entry
 
 parseMap :: AbsPath -> Document -> File
 parseMap abspath (Document _ (Element _ asMap children) _) =
-    MapFile title tree
+    MapFile title (MapNodeSlug theId) tree
   where
+    theId =
+        case lookup "id" asMap of
+            Just [ContentText t] -> t
+            _ -> ""
     title =
         case lookup "title" asMap of
             Just [ContentText t] -> t

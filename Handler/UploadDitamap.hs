@@ -111,10 +111,17 @@ uploadContent now uid m (_, (f, fid)) =
 
 goE :: Map.Map AbsPath (File, FileId) -> Element -> [Event] -> [Event]
 goE m (Element name as ns) =
-      (EventBeginElement name as' :)
-    . goN m inside
-    . (EventEndElement name :)
+    case lookup "conref" as of
+        Just [ContentText conref] ->
+            case resolveConref m conref of
+                Just e -> goE m e
+                Nothing -> defRes
+        _ -> defRes
   where
+    defRes =
+          (EventBeginElement name as' :)
+        . goN m inside
+        . (EventEndElement name :)
     asPairs = map fixA as
     as' = map fst asPairs
     inside =
@@ -138,6 +145,25 @@ goE m (Element name as ns) =
                 Just (_, FIMap mid _) -> (mconcat ["yw://map/", toSinglePiece mid], Nothing)
                 Nothing -> (file, Nothing)
     fixA x = (x, Nothing)
+
+resolveConref :: Map.Map AbsPath (File, FileId) -> Text -> Maybe Element
+resolveConref m conref = do
+    (DitaFile _ _ _ dita, _) <- Map.lookup (AbsPath $ unpack file) m
+    --Element _ _ topic <- findById topicid dita
+    findById elemId dita -- topic -- FIXME support case if this or topicid are missing?
+  where
+    (file, rest) = T.break (== '#') conref
+    (_topicid, rest') = T.break (== '/') $ T.drop 1 rest
+    elemId = T.drop 1 rest'
+
+    findById _ [] = Nothing
+    findById i (NodeElement e@(Element _ as cs):ns)
+        | lookup "id" as == Just [ContentText i] = Just e
+        | otherwise =
+            case findById i cs of
+                Just x -> return x
+                Nothing -> findById i ns
+    findById i (_:ns) = findById i ns
 
 goN :: Map.Map AbsPath (File, FileId) -> [Node] -> [Event] -> [Event]
 goN _ [] = id
@@ -261,7 +287,7 @@ parseDita abspath (Document _ (Element e as'' children) _) = do
             as' = map fixAttr as
         go n = n
     fixAttr (n, [ContentText rel])
-        | n `elem` ["href", "src"] && notAbs rel =
+        | n `elem` ["href", "src", "conref"] && notAbs rel =
             (n, [ContentText $ mappend (pack joined) rest])
           where
             (path, rest) = T.break (== '#') rel

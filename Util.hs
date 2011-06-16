@@ -70,8 +70,6 @@ ditaToHtml topic txml render =
         case lookup "href" as of
             Just [ContentText t] -> [html|<a href=#{toLink t}>#{x}|]
             _ -> x
-    go' "example" _ x = [html|<section>
-\#{x}|]
     go' "apiname" _ x = [html|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
     go' "codeblock" _ x = [html|<pre>
     <code>#{x}|]
@@ -232,6 +230,7 @@ ditaMap = Map.fromList
     , ("strow", elem' "tr")
     , ("stentry", elem' "td")
     , ("entry", elem' "td")
+    , ("example", elem' "section")
     ]
   where
     elem' x = (x, Nothing)

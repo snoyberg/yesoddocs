@@ -92,7 +92,12 @@ uploadContent now uid m (_, (f, fid)) =
                         Just (_, FITopic tid slug) -> do
                             me <- insert $ TMapNode mid parent pos (Just tid) Nothing Nothing slug
                             mapM_ (go $ Just me) $ zip [1..] children
-                        _ -> do
+                        Just (_, FIMap submap) -> do
+                            _ <- insert $ TMapNode mid parent pos Nothing (Just submap) Nothing (MapNodeSlug $ "submap-" `T.append` toSinglePiece submap)
+                            return ()
+                        Just (_, FIStatic _) -> do
+                            lift $ $(logWarn) $ pack $ "DITA map refers to static content"
+                        Nothing -> do
                             lift $ $(logWarn) $ pack $ "Could not find: " ++ show topic
                             return ()
             mapM_ (go Nothing) $ zip [1..] trees
@@ -179,16 +184,23 @@ parseMap abspath (Document _ (Element _ asMap children) _) =
       where
         go [] = "Unnamed Map"
         go (NodeElement (Element "title" _ x):_) = mconcat $ map takeText x
+        go (NodeElement (Element "booktitle" _ x):_) =
+            go' x
+          where
+            go' [] = "Unnamed Bookmap"
+            go' (NodeElement (Element "mainbooktitle" _ y):_) = mconcat $ map takeText y
+            go' (_:ys) = go' ys
         go (_:xs) = go xs
     takeText (NodeContent (ContentText t)) = t
     takeText _ = ""
     tree =
         mapMaybe go children
       where
-        go (NodeElement (Element "topicref" as children')) =
-            case lookup "href" as of
-                Just [ContentText rel] -> Just $ Tree (joinPath abspath $ RelPath rel) $ mapMaybe go children'
-                _ -> Nothing
+        go (NodeElement (Element name as children'))
+            | name `elem` ["topicref", "chapter"] =
+                case lookup "href" as of
+                    Just [ContentText rel] -> Just $ Tree (joinPath abspath $ RelPath rel) $ mapMaybe go children'
+                    _ -> Nothing
         go _ = Nothing
 
 parseDita :: AbsPath -> Document -> State (Set.Set MapNodeSlug) File
@@ -220,7 +232,7 @@ parseDita abspath (Document _ (Element e as'' children) _) = do
       where
         go [] = []
         go (NodeElement (Element n _ children'):_)
-            | n `elem` ["conbody", "body"] = children'
+            | n `elem` ["conbody", "body", "refbody", "taskbody"] = children'
         go (_:xs) = go xs
     tree =
         map go body

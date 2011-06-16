@@ -68,3 +68,8 @@ section h1 {
 #main li {
   margin: 0.2em 0;
 }
+.tooltip {
+  font-style: italic;
+  font-size: 0.8em;
+  color: #333;
+}

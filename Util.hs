@@ -134,10 +134,10 @@ ditaToHtml topic txml render =
             Just [ContentText nt]
                 | nt == "other" ->
                     case lookup "othertype" as of
-                        Just [ContentText ot] -> [html|<.note-#{ot}>#{x}|]
-                        _ -> [html|<.note#{x}>|]
-                | otherwise -> [html|<.#{nt}>#{x}|]
-            _ -> [html|<.note>#{x}|]
+                        Just [ContentText ot] -> [html|<aside .note-#{ot}>#{x}|]
+                        _ -> [html|<aside .note-#{x}>|]
+                | otherwise -> [html|<aside .#{nt}>#{x}|]
+            _ -> [html|<aside .note>#{x}|]
     go' n _ _ =
         trace ("Unknown DITA element: " ++ show n) $
         [html|<h1 style=color:red>Unknown DITA element: #{show n}|]

@@ -123,4 +123,5 @@ BrowseTitle: Browse
 BlogPostTitle title@Text: #{title}
 HomepageTitle: Homepage
 BookTitle title@Text: #{title}
+BookTitleRaw: Book
 BookChapterTitle title@Text: #{title}

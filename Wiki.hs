@@ -60,7 +60,7 @@ import Data.Text (Text, pack)
 import Control.Applicative ((<$>), (<*>))
 import Text.Hamlet (Html)
 import Data.Monoid (mappend)
-import Text.Hamlet.NonPoly (ihamletFile)
+import Text.Hamlet.NonPoly (ihamletFile, IHamlet)
 import qualified Yesod.Auth.OpenId as OpenId
 import qualified Yesod.Auth.Message as Msg
 
@@ -116,15 +116,14 @@ instance Yesod Wiki where
         muser <- fmap (fmap snd) maybeAuth
         pc <- widgetToPageContent $ do
             setTitleI title
+            addLucius $(Settings.luciusFile "html5reset")
             widget
-            addCassius $(Settings.cassiusFile "default-layout")
-            addLucius $(Settings.luciusFile "default-layout")
             atomLink FeedR "Site activity"
             atomLink BlogFeedR "Blog posts"
         tm <- getRouteToMaster
         mcurr <- getCurrentRoute
         let isHome = fmap tm mcurr == Just RootR
-        ihamletToRepHtml $(ihamletFile "hamlet/default-layout.hamlet")
+        ihamletToRepHtml ($(ihamletFile "hamlet/default-layout.hamlet") :: IHamlet WikiMessage WikiRoute)
 
     -- This is done to provide an optimization for serving static files from
     -- a separate domain. Please see the staticroot setting in Settings.hs

@@ -1,65 +1,56 @@
-\<!DOCTYPE html>
+!!!
+\<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+\<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+\<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+\<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-<html lang="en">
-    <head>
-        <title>Yesod :: #{pageTitle pc}
-        <link rel=stylesheet href=@{StaticR bluevelvet_bluevelvet_css}>
-        <meta charset="utf-8">
-        ^{const $ pageHead pc}
-    <body :isHome:.yesod-home :not isHome:.yesod-wide>
-        <div .yesod-main-wrapper>
-            <div .yesod-border-wrap>
-                <div .yesod-header-wrap>
-                    <div .yesod-header>
-                        <a .yesod-wide-logo href=@{RootR}>
-                        <ul .yesod-primary-nav>
-                            <li>
-                                <a href=@{BookR}>Book
-                            <li>
-                                <a href=@{PageR "contributors"}>Contributors
-                            <li>
-                                <a href=@{PageR "community"}>Community
-                            <li>
-                                <a href=@{BlogR}>Blog
-                            <li>
-                                <a href=@{PageR "wiki"}>Wiki
-                <div .yesod-body>
-                    <div .yesod-userbar>
-                      $maybe user <- muser
-                        <a href=@{SettingsR}>_{MsgLoggedInAs $ userName user}
-                        \ | #
-                        <a href=@{AuthR LogoutR}>_{MsgLogout}
-                      $nothing
-                        _{MsgNotLoggedIn} #
-                        <a href=@{AuthR LoginR}>_{MsgLoginNow}
-                    $if isHome
-                        <div .yesod-primary-content>
-                          ^{const $ pageBody pc}
-                    $else
-                        <div .yesod-breadcrumb>
-                          <p .yesod-breadcrumb-label>_{MsgYouAreHere}
-                            <ul>
-                              $forall bc <- bcs
-                                <li>
-                                  <span class="yesod-breadcrumb-separator">»</span>
-                                  <a href=@{fst bc}>_{snd bc}
-                              <li>
-                                <span class="yesod-breadcrumb-separator">»</span>
-                                _{title}
-                            <div .yesod-clear>
-                        <!-- <div .yesod-secondary-content> -->
-                        <div .yesod-primary-content .yesod-width-fix>
-                            $maybe msg <- mmsg
-                              <p .message>#{msg}
-                            ^{const $ pageBody pc}
-                <div .yesod-footer>
-                    Yesod is BSD licensed. The content of this site is #
-                    <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Attribution-NonCommercial-ShareAlike 3.0 Unported
-                    <br>
-                    Site design by #
-                    <a href="http://chrisdone.com/">Chris Done
-                    . For site issues, contact #
-                    <a href="mailto:michael@snoyman.com">Michael Snoyman
-                    .
-        <script>
-            \var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-1434510-13']);_gaq.push(['_trackPageview']);(function(){var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);})();
+  <title>#{pageTitle pc}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <script src=@{StaticR modernizr_js}>
+  ^{const $ pageHead pc}
+  <link rel=stylesheet href=@{StaticR custom_style_css}>
+<body>
+
+  <div id="container">
+    <nav #userbar>
+      $maybe user <- muser
+        <a href=@{SettingsR}>_{MsgLoggedInAs $ userName user}
+        \ | #
+        <a href=@{AuthR LogoutR}>_{MsgLogout}
+      $nothing
+        _{MsgNotLoggedIn} #
+        <a href=@{AuthR LoginR}>_{MsgLoginNow}
+    <nav #breadcrumbs>
+      _{MsgYouAreHere}
+      <ul>
+        $forall bc <- bcs
+          <li>
+            <a href=@{fst bc}>_{snd bc}
+            \ »
+        <li>
+          _{title}
+
+    <header>
+      <h1>#{pageTitle pc}
+
+    <div id="main" role="main">
+      ^{const $ pageBody pc}
+
+    <footer>
+      <h1>
+        <a href="http://www.yesodweb.com/">Powered by Yesod
+
+
+  \<!--[if lt IE 7 ]><script src="js/libs/dd_belatedpng.js"></script><script>DD_belatedPNG.fix("img, .png_bg");</script><![endif]-->
+  <script>
+    var _gaq=[["_setAccount","UA-1434510-19"],["_trackPageview"]];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+    g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
+    s.parentNode.insertBefore(g,s)}(document,"script"));
+\</html>

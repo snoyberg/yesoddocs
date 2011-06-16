@@ -1,13 +1,15 @@
-<p>_{MsgPleaseLogIn}
-<form action=@{AuthR OpenId.forwardUrl}>
-    <input type=hidden name=#{name} value="https://www.google.com/accounts/o8/id">
-    <button>
-        <img src=@{StaticR google_gif} alt=Google>
-<form action=@{AuthR OpenId.forwardUrl}>
-    <input type=hidden name=#{name} value="http://me.yahoo.com/">
-    <button>
-        <img src=@{StaticR yahoo_gif} alt=Yahoo!>
-<form action=@{AuthR OpenId.forwardUrl}>
-    <label for=#{ident}>OpenID: #
-    <input id=#{ident} type=text name=#{name} value="http://">
-    <input type=submit value=_{Msg.LoginOpenID}>
+<section #logins>
+    <h1>_{MsgPleaseLogIn}
+
+    <form action=@{AuthR OpenId.forwardUrl}>
+        <input type=hidden name=#{name} value="https://www.google.com/accounts/o8/id">
+        <button>
+            <img src=@{StaticR google_gif} alt=Google>
+    <form action=@{AuthR OpenId.forwardUrl}>
+        <input type=hidden name=#{name} value="http://me.yahoo.com/">
+        <button>
+            <img src=@{StaticR yahoo_gif} alt=Yahoo!>
+    <form action=@{AuthR OpenId.forwardUrl}>
+        <label for=#{ident}>OpenID: #
+        <input id=#{ident} type=text name=#{name} value="http://">
+        <input type=submit value=_{Msg.LoginOpenID}>

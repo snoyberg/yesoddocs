@@ -30,7 +30,7 @@ import Text.XML.Enumerator.Document (fromEvents)
 import Data.Enumerator (run, ($$), joinI, enumList, run_)
 import Data.Enumerator.List (consume)
 import Data.Functor.Identity (runIdentity)
-import Data.XML.Types (Node (..), Content (..), Document (..), Element (..), Event (..))
+import Data.XML.Types (Node (..), Content (..), Document (..), Element (..), Event (..), nameLocalName)
 import Wiki (WikiRoute (..), fromSinglePiece)
 import Data.Maybe (fromJust)
 import Text.Hamlet (Hamlet)
@@ -40,6 +40,7 @@ import Text.XML.Enumerator.Render (renderText)
 import Data.Monoid (mconcat)
 import System.IO.Unsafe (unsafePerformIO)
 import Yesod.Core (toSinglePiece)
+import qualified Data.Map as Map
 
 renderContent :: TopicId -> TopicFormat -> Text -> Hamlet WikiRoute
 renderContent _ TFHtml t = const $ preEscapedText t
@@ -55,19 +56,12 @@ ditaToHtml topic txml render =
         Right (Document _ (Element _ _ nodes) _) -> mapM_ go nodes
   where
     go (NodeContent (ContentText t')) = toHtml t'
-    go (NodeElement (Element n as children)) = go' n as $ mapM_ go children
+    go (NodeElement (Element n as children)) = go' (nameLocalName n) as $ mapM_ go children
     go _ = return ()
     go' "p" as x =
         case lookup "id" as of
             Just [ContentText t] -> [html|<p .hascomments #comment-#{toSinglePiece topic}-#{t}>#{x}|]
             _ -> [html|<p>#{x}|]
-    go' "ul" _ x = [html|<ul>#{x}|]
-    go' "ol" _ x = [html|<ol>#{x}|]
-    go' "li" _ x = [html|<li>#{x}|]
-    go' "i" _ x = [html|<i>#{x}|]
-    go' "b" _ x = [html|<b>#{x}|]
-    go' "fig" _ x = [html|<figure>#{x}|]
-    go' "title" _ x = [html|<h1>#{x}|]
     go' "image" as x =
         case lookup "href" as of
             Just [ContentText t] -> [html|<img src=#{toLink t}>|]
@@ -76,56 +70,8 @@ ditaToHtml topic txml render =
         case lookup "href" as of
             Just [ContentText t] -> [html|<a href=#{toLink t}>#{x}|]
             _ -> x
-    go' "codeph" _ x = [html|<code>#{x}|]
-    go' "draft-comment" _ _ = [html||]
-    go' "indexterm" _ _ = [html||]
-    go' "lines" _ x = [html|<.lines>#{x}|]
-    go' "term" _ x = [html|<b>#{x}|]
-    go' "dl" _ x = [html|<dl>#{x}|]
-    go' "dlhead" _ x = [html|#{x}|]
-    go' "sup" _ x = [html|<sup>#{x}|]
-    go' "dlentry" _ x = [html|#{x}|]
-    go' "dt" _ x = [html|<dt>#{x}|]
-    go' "dd" _ x = [html|<dd>#{x}|]
-    go' "dthd" _ x = [html|<dt .head>#{x}|]
-    go' "ddhd" _ x = [html|<dd .head>#{x}|]
-    go' "shortcut" _ x = [html|<i>#{x}|]
-    go' "figgroup" _ x = [html|<section>#{x}|]
-    go' "desc" _ x = [html|<div .desc>#{x}|] -- FIXME
-    go' "ph" _ x = [html|#{x}|]
-    go' "varname" _ x = [html|<code>#{x}|]
-    go' "option" _ x = [html|<i>#{x}|]
-    go' "msgph" _ x = [html|<code>#{x}|]
-    go' "keyword" _ x = [html|#{x}|]
-    go' "cite" _ x = [html|<cite>#{x}|]
-    go' "sl" _ x = [html|<ul>#{x}|]
-    go' "sli" _ x = [html|<li>#{x}|]
-    go' "table" _ x = [html|<table>#{x}|]
-    go' "filepath" _ x = [html|<code>#{x}|]
-    go' "simpletable" _ x = [html|<table>#{x}|]
-    go' "strow" _ x = [html|<tr>#{x}|]
-    go' "stentry" _ x = [html|<td>#{x}|]
-    go' "entry" _ x = [html|<td>#{x}|]
-    go' "userinput" _ x = [html|<kbd>#{x}|]
-    go' "lq" _ x = [html|<blockquote>#{x}|]
-    go' "menucascade" _ x = [html|#{x}|]
-    go' "parml" _ x = [html|<dl>#{x}|]
-    go' "plentry" _ x = [html|#{x}|]
-    go' "pt" _ x = [html|<dt>#{x}|]
-    go' "pd" _ x = [html|<dd>#{x}|]
-    go' "q" _ x = [html|<q>#{x}|]
-    go' "uicontrol" _ x = [html|<code>#{x}|]
-    go' "colspec" _ x = [html|#{x}|]
-    go' "sthead" _ x = [html|<thead>#{x}|]
-    go' "thead" _ x = [html|<thead>#{x}|]
-    go' "tbody" _ x = [html|<tbody>#{x}|]
-    go' "row" _ x = [html|<tr>#{x}|]
-    go' "tgroup" _ x = [html|#{x}|]
-    go' "pre" _ x = [html|<pre>#{x}|]
     go' "example" _ x = [html|<section>
-<h1>Example
 \#{x}|]
-    go' "section" _ x = [html|<section>#{x}|]
     go' "apiname" _ x = [html|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
     go' "codeblock" _ x = [html|<pre>
     <code>#{x}|]
@@ -138,9 +84,19 @@ ditaToHtml topic txml render =
                         _ -> [html|<aside .note-#{x}>|]
                 | otherwise -> [html|<aside .#{nt}>#{x}|]
             _ -> [html|<aside .note>#{x}|]
-    go' n _ _ =
-        trace ("Unknown DITA element: " ++ show n) $
-        [html|<h1 style=color:red>Unknown DITA element: #{show n}|]
+    go' n _ x
+        | n `Set.member` ditaDrop = [html||]
+        | n `Set.member` ditaIgnore = x
+        | n `Set.member` ditaUnchanged = [html|\<#{n}>#{x}</#{n}>|]
+    go' n _ x =
+        case Map.lookup n ditaMap of
+            Just (n', Nothing) ->
+                [html|\<#{n'}>#{x}</#{n'}>|]
+            Just (n', Just c) ->
+                [html|\<#{n'} .#{c}>#{x}</#{n'}>|]
+            Nothing ->
+                trace ("Unknown DITA element: " ++ show n) $
+                [html|<h1 style=color:red>Unknown DITA element: #{show n}|]
     toLink t
         | topicPref `T.isPrefixOf` t =
             let suffix = T.drop (T.length topicPref) t
@@ -233,3 +189,50 @@ prettyDate = formatTime defaultTimeLocale "%B %e, %Y" -- FIXME i18n
 
 prettyMonthYear :: Int -> Int -> String
 prettyMonthYear year month = formatTime defaultTimeLocale "%B %Y" $ fromGregorian (fromIntegral year) month 1 -- FIXME i18n
+
+-- drop element and children
+ditaDrop :: Set.Set Text
+ditaDrop = Set.fromList $ T.words "draft-comment indexterm colspec"
+
+-- ignore this element, but continue with children
+ditaIgnore :: Set.Set Text
+ditaIgnore = Set.fromList $ T.words "dlhead dlentry ph keyword menucascade plentry tgroup"
+
+-- translate as-is
+ditaUnchanged :: Set.Set Text
+ditaUnchanged = Set.fromList $ T.words "table ul ol li i b dl dt dd sup cite q thead tbody pre section"
+
+ditaMap :: Map.Map Text (Text, Maybe Text)
+ditaMap = Map.fromList
+    [ ("userinput", elem' "kbd")
+    , ("lq", elem' "blockquote")
+    , ("row", elem' "tr")
+    , ("sthead", elem' "thead")
+    , ("parml", elem' "dl")
+    , ("pt", elem' "dt")
+    , ("pd", elem' "dd")
+    , ("fig", elem' "figure")
+    , ("title", elem' "h1")
+    , ("codeph", elem' "code")
+    , ("varname", elem' "code")
+    , ("msgph", elem' "code")
+    , ("option", elem' "i")
+    , ("lines", div' "lines")
+    , ("desc", div' "desc") -- FIXME
+    , ("term", elem' "b")
+    , ("uicontrol", elem' "code")
+    , ("dthd", ("dt", Just "head"))
+    , ("ddhd", ("dd", Just "head"))
+    , ("shortcut", elem' "i")
+    , ("figgroup", elem' "section")
+    , ("sl", elem' "ul")
+    , ("sli", elem' "li")
+    , ("filepath", elem' "code")
+    , ("simpletable", elem' "table")
+    , ("strow", elem' "tr")
+    , ("stentry", elem' "td")
+    , ("entry", elem' "td")
+    ]
+  where
+    elem' x = (x, Nothing)
+    div' x = ("div", Just x)

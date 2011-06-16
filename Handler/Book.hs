@@ -28,12 +28,17 @@ $if not $ null tocs
                 ^{showTOC $ tocChildren toc}
 |]
 
-loadTOC :: Int -> (MapNodeSlug -> WikiRoute) -> TMapId -> Handler [TOC]
-loadTOC depth0 toRoute tmid =
-    runDB $ selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= mapM (go depth0)
+loadTOC :: Int -> ([MapNodeSlug] -> WikiRoute) -> TMapId -> Handler [TOC]
+loadTOC depth0 toRoute =
+    runDB . go' id depth0
   where
-    go depth (mnid, mn) = do
-        let link = Just $ toRoute $ tMapNodeSlug mn
+    go' front depth tmid = selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= (fmap concat . mapM (go front depth))
+    go front depth (_, TMapNode
+        { tMapNodeCmap = Just submap
+        , tMapNodeSlug = slug
+        }) = go' (front . (:) slug) depth submap
+    go front depth (mnid, mn) = do
+        let link = Just $ toRoute $ front [tMapNodeSlug mn]
         title <-
             case tMapNodeCtopic mn of
                 Just tid -> topicTitle <$> get404 tid
@@ -41,13 +46,15 @@ loadTOC depth0 toRoute tmid =
         children <-
             if depth <= 1
                 then return []
-                else selectList [TMapNodeParentEq $ Just mnid] [TMapNodePositionAsc] 0 0 >>= mapM (go $ depth - 1)
-        return $ TOC link title children
+                else selectList [TMapNodeParentEq $ Just mnid] [TMapNodePositionAsc] 0 0 >>= mapM (go front $ depth - 1)
+        return [TOC link title $ concat children]
 
 getBookR :: Handler RepHtml
 getBookR = do
-    book <- getBook
-    tocs <- loadTOC (bookChunking book) BookChapterR (bookMap book)
+    book <- runDB getBook
+    let toRoute [] = error "in getBookR: toRoute received an empty list"
+        toRoute (x:xs) = BookChapterR x xs
+    tocs <- loadTOC (bookChunking book) toRoute (bookMap book)
     tm <- runDB $ get404 $ bookMap book
     mtopic <-
         case bookTopic book of
@@ -57,16 +64,15 @@ getBookR = do
                 return $ map (\y -> (tid, y)) x
     defaultLayout $(hamletFile "book")
 
-getBookChapterR :: MapNodeSlug -> Handler RepHtml
-getBookChapterR mnslug = do
+getBookChapterR :: MapNodeSlug -> MapNodeSlugs -> Handler RepHtml
+getBookChapterR mnslug mnslugs = do
     -- FIXME show TOC for shallow chapters
-    book <- getBook
     (mn, tree) <- runDB $ do
-        (mnid, mn) <- getBy404 $ UniqueMapNode (bookMap book) mnslug
+        (mnid, mn) <- getMapNode mnslug mnslugs
         tree <- loadTreeNode (mnid, mn)
         return (mn, tree)
     defaultLayout $ do
         addLucius $(luciusFile "book")
         addLucius $(luciusFile "show-map")
-        addHamlet $ showTree 2 [tree]
+        addHamlet $ showTree 2 tree
         comments

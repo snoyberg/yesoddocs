@@ -32,6 +32,7 @@ module Wiki
     , fromLabel
     , getBlogPost
     , getBook
+    , getMapNode
     ) where
 
 import Data.Time
@@ -155,6 +156,9 @@ instance Yesod Wiki where
 
     clientSessionDuration _ = 60 * 24 * 7 * 2 -- 2 weeks
 
+    maximumContentLength _ (Just UploadDitamapR) = 1000 * 1000 * 5
+    maximumContentLength _ _ = 1000 * 1000 * 1
+
 -- How to run database actions.
 instance YesodPersist Wiki where
     type YesodDB Wiki = SqlPersist
@@ -220,12 +224,11 @@ instance YesodBreadcrumbs Wiki where
         tm <- runDB $ get404 $ blogMap blog
         return (MsgBlogPostTitle $ tMapTitle tm, Just RootR)
     breadcrumb BookR = do
-        book <- getBook
+        book <- runDB getBook
         tm <- runDB $ get404 $ bookMap book
         return (MsgBookTitle $ tMapTitle tm, Just RootR)
-    breadcrumb (BookChapterR mnslug) = do
-        book <- getBook
-        (_, mn) <- runDB $ getBy404 $ UniqueMapNode (bookMap book) mnslug
+    breadcrumb (BookChapterR mnslug mnslugs) = do
+        (_, mn) <- runDB $ getMapNode mnslug mnslugs
         title <-
             case tMapNodeCtopic mn of
                 Just tid -> runDB $ topicTitle <$> get404 tid
@@ -296,9 +299,24 @@ getBlogPost :: Int -> Month -> BlogSlug -> GHandler sub Wiki Blog
 getBlogPost year month slug =
     runDB $ fmap snd $ getBy404 $ UniqueBlogSlug year month slug
 
-getBook :: GHandler sub Wiki Book
+getBook :: SqlPersist (GGHandler s Wiki IO) Book
 getBook = do
-    x <- runDB $ selectList [] [] 1 0
+    x <- selectList [] [] 1 0
     case x of
-        [] -> notFound
+        [] -> lift notFound
         (_, y):_ -> return y
+
+getMapNode :: MapNodeSlug -> MapNodeSlugs -> SqlPersist (GGHandler s Wiki IO) (TMapNodeId, TMapNode)
+getMapNode mnslug mnslugs = do
+    book <- getBook
+    (mnid, mn) <- go' (bookMap book) mnslug
+    go mnid mn mnslugs
+  where
+    go' tmid slug = getBy404 $ UniqueMapNode tmid slug
+    go mnid mn [] = return (mnid, mn)
+    go _ mn (x:xs) =
+        case tMapNodeCmap mn of
+            Nothing -> lift notFound -- FIXME more debug info?
+            Just tmid -> do
+                (mnid', mn') <- go' tmid x
+                go mnid' mn' xs

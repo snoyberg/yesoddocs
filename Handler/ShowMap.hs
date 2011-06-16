@@ -40,32 +40,38 @@ $forall tree <- trees
     incr i = i + 1
 
 loadTree :: TMapId -> Handler [Tree]
-loadTree tmid =
-    runDB $ selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= mapM loadTreeNode
+loadTree = runDB . loadTree'
 
-loadTreeNode :: (TMapNodeId, TMapNode) -> SqlPersist (GGHandler sub Wiki IO) Tree
+loadTree' :: TMapId -> SqlPersist (GGHandler sub Wiki IO) [Tree]
+loadTree' tmid =
+    selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= (fmap concat . mapM loadTreeNode)
+
+loadTreeNode :: (TMapNodeId, TMapNode) -> SqlPersist (GGHandler sub Wiki IO) [Tree]
 loadTreeNode (tmnid, tmn) = do
-    c <- selectList [TMapNodeParentEq $ Just tmnid] [] 0 0 >>= mapM loadTreeNode
-    title <-
-        case tMapNodeCtopic tmn of
-            Nothing -> return ""
-            Just tid -> do
-                t <- get404 tid
-                return $ topicTitle t
-    content <-
-        case tMapNodeCtopic tmn of
-            Nothing -> return Nothing
-            Just tid -> do
-                x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
-                case x of
-                    (_, y):_ -> return $ Just y
-                    [] -> return Nothing
-    return Tree
-        { treeTopicId = tMapNodeCtopic tmn
-        , treeTitle = title
-        , treeChildren = c
-        , treeContent = content
-        }
+    case tMapNodeCmap tmn of
+        Nothing -> do
+            c <- selectList [TMapNodeParentEq $ Just tmnid] [] 0 0 >>= mapM loadTreeNode
+            title <-
+                case tMapNodeCtopic tmn of
+                    Nothing -> return ""
+                    Just tid -> do
+                        t <- get404 tid
+                        return $ topicTitle t
+            content <-
+                case tMapNodeCtopic tmn of
+                    Nothing -> return Nothing
+                    Just tid -> do
+                        x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+                        case x of
+                            (_, y):_ -> return $ Just y
+                            [] -> return Nothing
+            return [Tree
+                { treeTopicId = tMapNodeCtopic tmn
+                , treeTitle = title
+                , treeChildren = concat c
+                , treeContent = content
+                }]
+        Just tmid -> loadTree' tmid
 
 getShowMapR :: TMapId -> Handler RepHtml
 getShowMapR tmid = do

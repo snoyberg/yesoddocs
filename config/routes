@@ -45,7 +45,7 @@
 /blog/#Int/#Month/#BlogSlug BlogPostR GET
 
 /book BookR GET
-/book/#MapNodeSlug BookChapterR GET
+/book/#MapNodeSlug/*MapNodeSlugs BookChapterR GET
 
 /comments/count CommentCountR GET
 /comments CommentsR GET POST

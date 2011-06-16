@@ -1,4 +1,4 @@
-{-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving, TemplateHaskell, OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving, TemplateHaskell, OverloadedStrings, TypeSynonymInstances #-}
 module Model where
 
 import Yesod.Persist
@@ -8,7 +8,7 @@ import Data.Text (Text, pack)
 import Data.Time (UTCTime)
 import Text.Hamlet (Html)
 import Yesod.Form (Textarea)
-import Yesod.Core (SinglePiece (..))
+import Yesod.Core (SinglePiece (..), MultiPiece (..))
 import Data.ByteString (ByteString)
 import Data.ByteString.Base64 (decodeLenient)
 
@@ -18,6 +18,10 @@ derivePersistField "TopicFormat"
 
 newtype MapNodeSlug = MapNodeSlug { unMapNodeSlug :: Text }
     deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)
+type MapNodeSlugs = [MapNodeSlug]
+instance MultiPiece MapNodeSlugs where
+    toMultiPiece = map unMapNodeSlug
+    fromMultiPiece = fmap (map MapNodeSlug) . fromMultiPiece
 newtype BlogSlug = BlogSlug Text
     deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)
 newtype UserHandle = UserHandle { unUserHandle :: Text }

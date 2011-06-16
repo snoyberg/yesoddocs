@@ -59,6 +59,7 @@ ul, ol {
 p, aside {
   margin: 0.5em 0;
   line-height: 1.4em;
+  text-align: justify;
 }
 section h1 {
   margin: 0.3em 0;
@@ -72,4 +73,30 @@ section h1 {
   font-style: italic;
   font-size: 0.8em;
   color: #333;
+}
+table {
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #999;
+    padding: 0.4em;
+}
+
+pre {
+    background-color: #eee;
+    margin: 0.4em;
+    padding: 0.4em;
+}
+
+dl {
+    margin: 0.5em;
+}
+
+dt {
+    font-style: italic;
+    margin-bottom: 0.25em;
+}
+dd {
+    margin-left: 2em;
+    margin-bottom: 0.5em;
 }

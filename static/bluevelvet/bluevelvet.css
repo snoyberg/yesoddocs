@@ -362,3 +362,7 @@ p.author {
     font-weight: bold;
     text-shadow: #ccc 2px 2px;
 }
+
+.lines {
+    white-space: pre;
+}

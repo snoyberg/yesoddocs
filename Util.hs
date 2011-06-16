@@ -9,6 +9,7 @@ module Util
     , prettyMonthYear
     ) where
 
+import Debug.Trace (trace)
 import Model (TopicFormat (..), User (userEmail), TopicId)
 import Data.Text (Text, pack, unpack)
 import Data.Text.Encoding (encodeUtf8)
@@ -65,22 +66,66 @@ ditaToHtml topic txml render =
     go' "li" _ x = [html|<li>#{x}|]
     go' "i" _ x = [html|<i>#{x}|]
     go' "b" _ x = [html|<b>#{x}|]
-    go' "fig" _ x = [html|<fieldset>#{x}|]
-    go' "title" _ x = [html|<legend>#{x}|]
+    go' "fig" _ x = [html|<figure>#{x}|]
+    go' "title" _ x = [html|<h1>#{x}|]
     go' "image" as x =
         case lookup "href" as of
-            Just [ContentText t] -> [html|<img src=#{toLink t}>#{show as}, #{x}|]
+            Just [ContentText t] -> [html|<img src=#{toLink t}>|]
             _ -> x
     go' "xref" as x =
         case lookup "href" as of
             Just [ContentText t] -> [html|<a href=#{toLink t}>#{x}|]
             _ -> x
     go' "codeph" _ x = [html|<code>#{x}|]
+    go' "draft-comment" _ _ = [html||]
+    go' "indexterm" _ _ = [html||]
+    go' "lines" _ x = [html|<.lines>#{x}|]
     go' "term" _ x = [html|<b>#{x}|]
     go' "dl" _ x = [html|<dl>#{x}|]
+    go' "dlhead" _ x = [html|#{x}|]
+    go' "sup" _ x = [html|<sup>#{x}|]
     go' "dlentry" _ x = [html|#{x}|]
     go' "dt" _ x = [html|<dt>#{x}|]
     go' "dd" _ x = [html|<dd>#{x}|]
+    go' "dthd" _ x = [html|<dt .head>#{x}|]
+    go' "ddhd" _ x = [html|<dd .head>#{x}|]
+    go' "shortcut" _ x = [html|<i>#{x}|]
+    go' "figgroup" _ x = [html|<section>#{x}|]
+    go' "desc" _ x = [html|<div .desc>#{x}|] -- FIXME
+    go' "ph" _ x = [html|#{x}|]
+    go' "varname" _ x = [html|<code>#{x}|]
+    go' "option" _ x = [html|<i>#{x}|]
+    go' "msgph" _ x = [html|<code>#{x}|]
+    go' "keyword" _ x = [html|#{x}|]
+    go' "cite" _ x = [html|<cite>#{x}|]
+    go' "sl" _ x = [html|<ul>#{x}|]
+    go' "sli" _ x = [html|<li>#{x}|]
+    go' "table" _ x = [html|<table>#{x}|]
+    go' "filepath" _ x = [html|<code>#{x}|]
+    go' "simpletable" _ x = [html|<table>#{x}|]
+    go' "strow" _ x = [html|<tr>#{x}|]
+    go' "stentry" _ x = [html|<td>#{x}|]
+    go' "entry" _ x = [html|<td>#{x}|]
+    go' "userinput" _ x = [html|<kbd>#{x}|]
+    go' "lq" _ x = [html|<blockquote>#{x}|]
+    go' "menucascade" _ x = [html|#{x}|]
+    go' "parml" _ x = [html|<dl>#{x}|]
+    go' "plentry" _ x = [html|#{x}|]
+    go' "pt" _ x = [html|<dt>#{x}|]
+    go' "pd" _ x = [html|<dd>#{x}|]
+    go' "q" _ x = [html|<q>#{x}|]
+    go' "uicontrol" _ x = [html|<code>#{x}|]
+    go' "colspec" _ x = [html|#{x}|]
+    go' "sthead" _ x = [html|<thead>#{x}|]
+    go' "thead" _ x = [html|<thead>#{x}|]
+    go' "tbody" _ x = [html|<tbody>#{x}|]
+    go' "row" _ x = [html|<tr>#{x}|]
+    go' "tgroup" _ x = [html|#{x}|]
+    go' "pre" _ x = [html|<pre>#{x}|]
+    go' "example" _ x = [html|<section>
+<h1>Example
+\#{x}|]
+    go' "section" _ x = [html|<section>#{x}|]
     go' "apiname" _ x = [html|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
     go' "codeblock" _ x = [html|<pre>
     <code>#{x}|]
@@ -93,7 +138,9 @@ ditaToHtml topic txml render =
                         _ -> [html|<.note#{x}>|]
                 | otherwise -> [html|<.#{nt}>#{x}|]
             _ -> [html|<.note>#{x}|]
-    go' n _ _ = [html|<h1 style=color:red>Unknown DITA element: #{show n}|]
+    go' n _ _ =
+        trace ("Unknown DITA element: " ++ show n) $
+        [html|<h1 style=color:red>Unknown DITA element: #{show n}|]
     toLink t
         | topicPref `T.isPrefixOf` t =
             let suffix = T.drop (T.length topicPref) t

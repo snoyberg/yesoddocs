@@ -1,9 +1,3 @@
-<h1>#{topicTitle}
-$if showAuthor
-    <h2>
-        _{MsgTopicOwner $ userName owner}
-        $maybe author <- mauthor
-            \ | _{MsgTopicAuthor $ userName author}
 <div #content>
     ^{addHamlet $ renderContent tid topicContentFormat topicContentContent}
 

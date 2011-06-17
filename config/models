@@ -90,3 +90,8 @@ Comment
     element Text Eq
     content TopicId Eq
     time UTCTime Asc
+
+SearchTerm
+    topic TopicId Eq
+    content Text
+    UniqueSearchTerm topic

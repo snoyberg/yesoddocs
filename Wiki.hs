@@ -233,6 +233,7 @@ instance YesodBreadcrumbs Wiki where
                 Just tid -> runDB $ topicTitle <$> get404 tid
                 Nothing -> return "" -- FIXME
         return (MsgBookChapterTitle title, Just BookR)
+    breadcrumb SearchR = return (MsgSearchTitle, Just RootR)
 
     breadcrumb StaticR{} = return (MsgNotFound, Nothing)
     breadcrumb FaviconR{} = return (MsgNotFound, Nothing)
@@ -247,9 +248,11 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb AuthR{} = return (MsgNotFound, Nothing)
     breadcrumb AddBlogMapR{} = return (MsgNotFound, Nothing)
     breadcrumb SetBookR{} = return (MsgNotFound, Nothing)
+    breadcrumb RebuildSearchR{} = return (MsgNotFound, Nothing)
     breadcrumb BlogR{} = return (MsgNotFound, Nothing)
     breadcrumb StaticContentR{} = return (MsgNotFound, Nothing)
     breadcrumb UploadDitamapR{} = return (MsgNotFound, Nothing)
+    breadcrumb UploadDitamapUrlR{} = return (MsgNotFound, Nothing)
     breadcrumb BlogPostNoDateR{} = return (MsgNotFound, Nothing)
     breadcrumb UploadBlogsR{} = return (MsgNotFound, Nothing)
     breadcrumb CommentCountR{} = return (MsgNotFound, Nothing)

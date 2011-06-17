@@ -11,6 +11,7 @@ import Data.Text (pack)
 import Control.Monad (unless)
 import qualified Data.ByteString as S
 import qualified Data.ByteString.Lazy as L
+import Handler.Search (updateTerms)
 
 postUploadBlogsR :: Handler ()
 postUploadBlogsR = do
@@ -28,7 +29,9 @@ postUploadBlogsR = do
         let utc = UTCTime (entryDay post) 0
         fam <- insert $ TFamily utc
         topic <- insert $ Topic uid (entryTitle post) utc fam False
-        _ <- insert $ TopicContent topic uid Nothing utc (entryFormat post) (entryContent post)
+        let tc = TopicContent topic uid Nothing utc (entryFormat post) (entryContent post)
+        _ <- insert tc
+        updateTerms tc
         tmap <- insert $ TMap uid (entryTitle post) utc
         _ <- insert $ TMapNode tmap Nothing 1 (Just topic) Nothing Nothing (MapNodeSlug $ pack slug)
         let (year, month, _) = toGregorian $ entryDay post

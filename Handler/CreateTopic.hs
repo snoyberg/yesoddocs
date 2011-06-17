@@ -8,6 +8,7 @@ module Handler.CreateTopic
 import Wiki
 import Util (validateContent)
 import Text.Hamlet.NonPoly (html)
+import Handler.Search (updateTerms)
 
 topicForm :: Handler ((FormResult (Text, TopicFormat, Textarea, Bool), Widget ()), Enctype)
 topicForm = runFormPost $ renderTable $ (,,,)
@@ -39,7 +40,9 @@ postCreateTopicR = do
             topic <- runDB $ do
                 fam <- insert $ TFamily now
                 topic <- insert $ Topic aid title now fam allWrite
-                _ <- insert $ TopicContent topic aid Nothing now format $ validateContent format content
+                let tc = TopicContent topic aid Nothing now format $ validateContent format content
+                _ <- insert tc
+                updateTerms tc
                 addNewsItem ("New topic created: " `mappend` title) (TopicR topic) Nothing [html|
 <p>#{userName user} created a new topic: #{title}
 |]

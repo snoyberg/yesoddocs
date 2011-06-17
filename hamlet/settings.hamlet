@@ -41,6 +41,17 @@
             <td colspan=2>
                 <input type=submit>
 
+<form action=@{UploadDitamapUrlR} method=post enctype=#{Multipart}>
+    <table .withcaption>
+        <caption>_{MsgUploadDitaUrlCaption}
+        <tr>
+            <th>_{MsgUploadDitaUrl}
+            <td>
+                <input type=url name=url value=http://>
+        <tr>
+            <td colspan=2>
+                <input type=submit>
+
 $if userAdmin user
     <form action=@{UploadBlogsR} method=post enctype=#{Multipart}>
         <table .withcaption>
@@ -86,3 +97,6 @@ $if userAdmin user
                 <tr>
                     <td colspan=3>
                         <input type=submit>
+
+    <form method=post action=@{RebuildSearchR}>
+        <input type=submit value=_{MsgRebuildSearchIndex}>

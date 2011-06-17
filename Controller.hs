@@ -29,6 +29,7 @@ import Handler.Labels
 import Handler.Browse
 import Handler.Blog
 import Handler.Book
+import Handler.Search
 import Handler.UploadDitamap
 import Handler.UploadBlogs
 

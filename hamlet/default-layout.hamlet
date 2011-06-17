@@ -26,6 +26,9 @@
       $nothing
         _{MsgNotLoggedIn} #
         <a href=@{AuthR LoginR}>_{MsgLoginNow}
+      <form #search-form action=@{SearchR}>
+        <input type=search name=query placeholder=_{MsgSearchPlaceholder}>
+        <input type=submit value=_{MsgPerformSearch}>
     <nav #breadcrumbs>
       _{MsgYouAreHere}
       <ul>

@@ -1,0 +1,10 @@
+$if null results
+    <p>_{MsgNoSearchResults}
+$else
+    <ol>
+        $forall result <- results
+            <li>
+                <a href=@{TopicR $ fst $ fst result}>
+                    #{topicTitle $ snd $ fst result}
+                \ #
+                <span .rank>#{snd result}

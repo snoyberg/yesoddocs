@@ -100,3 +100,9 @@ dd {
     margin-left: 2em;
     margin-bottom: 0.5em;
 }
+
+span.rank {
+    font-size: 0.7em;
+    color: #444;
+    font-style: italic;
+}

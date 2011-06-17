@@ -12,6 +12,7 @@
 /create/map CreateMapR GET POST
 
 /upload/ditamap UploadDitamapR POST
+/upload/ditamap/url UploadDitamapUrlR POST
 /upload/blogs UploadBlogsR POST
 
 /edit/page EditPageR POST
@@ -35,6 +36,8 @@
 /settings/blog-map AddBlogMapR POST
 /settings/book SetBookR POST
 
+/settings/search RebuildSearchR POST
+
 /edit/labels LabelsR GET POST
 /edit/labels/new NewLabelR POST
 
@@ -52,3 +55,5 @@
 
 /delete/topic/#TopicId DeleteTopicR POST
 /delete/map/#TMapId DeleteMapR POST
+
+/search SearchR GET

@@ -45,6 +45,7 @@ library
                      Handler.Book
                      Handler.UploadDitamap
                      Handler.UploadBlogs
+                     Handler.Search
                      Util
 
 executable         yesodwiki
@@ -101,3 +102,5 @@ executable         yesodwiki
                  , base64-bytestring
                  , yesod-json
                  , blaze-html
+                 , http-enumerator
+                 , tagsoup >= 0.12.2 && < 0.13

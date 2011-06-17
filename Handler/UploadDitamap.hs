@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell, QuasiQuotes, OverloadedStrings #-}
 module Handler.UploadDitamap
     ( postUploadDitamapR
+    , postUploadDitamapUrlR
     ) where
 
 import Wiki hiding (joinPath, get)
@@ -25,6 +26,8 @@ import qualified Data.Set as Set
 import Data.ByteString.Base64 (encode)
 import Util (validateDita)
 import Data.Char (isSpace)
+import Network.HTTP.Enumerator (simpleHttp)
+import Handler.Search (updateTerms)
 
 newtype AbsPath = AbsPath FilePath
     deriving (Ord, Show, Eq)
@@ -72,11 +75,21 @@ data File = MapFile
 
 data FileId = FIMap TMapId MapNodeSlug | FITopic TopicId MapNodeSlug | FIStatic StaticContentId
 
+postUploadDitamapUrlR :: Handler ()
+postUploadDitamapUrlR = do
+    uid <- requireAuthId
+    url <- runInputPost $ ireq urlField "url"
+    file <- liftIO $ simpleHttp $ unpack url
+    doUpload uid file
+
 postUploadDitamapR :: Handler ()
 postUploadDitamapR = do
     uid <- requireAuthId
     (_, files) <- runRequestBody
-    file <- maybe notFound (return . fileContent) $ lookup "zip" files
+    maybe notFound (doUpload uid . fileContent) $ lookup "zip" files
+
+doUpload :: UserId -> L.ByteString -> Handler ()
+doUpload uid file = do
     let contents = fmap catMaybes $ mapM toFile $ zEntries $ toArchive file
     now <- liftIO getCurrentTime
     runDB $ do
@@ -105,8 +118,9 @@ uploadContent now uid m (_, (f, fid)) =
             mapM_ (go Nothing) $ zip [1..] trees
         (DitaFile _ _ format dita, FITopic tid _) -> do
             text <- run_ $ enumList 8 (goN m dita []) $$ joinI $ renderText $$ consume
-            _ <- insert $ TopicContent tid uid Nothing now format $ validateDita $ mconcat text
-            return ()
+            let tc = TopicContent tid uid Nothing now format $ validateDita $ mconcat text
+            _ <- insert tc
+            updateTerms tc
         _ -> return ()
 
 goE :: Map.Map AbsPath (File, FileId) -> Element -> [Event] -> [Event]

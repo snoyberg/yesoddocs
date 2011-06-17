@@ -26,6 +26,7 @@ import Yesod.Json
 import qualified Data.Text as T
 import qualified Text.Blaze.Renderer.String as S
 import Text.Hamlet (toHtml)
+import Handler.Search (updateTerms)
 
 topicForm :: (Text, TopicFormat, Textarea, Maybe Text)
           -> Handler ((FormResult (Text, TopicFormat, Textarea, Maybe Text), Widget ()), Enctype)
@@ -109,7 +110,9 @@ postTopicR tid = do
             now <- liftIO getCurrentTime
             _ <- runDB $ do
                 update tid [TopicTitle title]
-                _ <- insert $ TopicContent tid aid msummary now format $ validateContent format content
+                let tc = TopicContent tid aid msummary now format $ validateContent format content
+                _ <- insert tc
+                updateTerms tc
                 addNewsItem ("Topic updated: " `mappend` title) (TopicR tid) Nothing [html|
 <p>#{userName user} updated the topic: #{title}
 $maybe summary <- msummary
@@ -189,7 +192,9 @@ postCommentsR = do
         src <- get404 topic
         fam <- insert $ TFamily now
         tid <- insert $ Topic uid ("Comment on " `T.append` topicTitle src) now fam False
-        _ <- insert $ TopicContent tid uid Nothing now TFText content
+        let tc = TopicContent tid uid Nothing now TFText content
+        _ <- insert tc
+        updateTerms tc
         _ <- insert $ Comment topic element tid now
         addNewsItem (T.concat
             [ userName u

@@ -16,9 +16,17 @@ LabelsUpdated: Labels have been updated.
 UserHandleInUse: The requested handle is already in use. Please try again.
 BlogSlugInUse: The request blog slug in already in use. Please try again.
 
+RebuildSearchIndex: Rebuild search index
+SearchIndexUpdated: Search index updated
+NoSearchResults: Your query produced no results.
+
+SearchPlaceholder: Search
+PerformSearch: Search
+
 ViewTopic: View
 
 UploadDitaCaption: Upload DITA Content
+UploadDitaUrlCaption: Upload DITA Content
 
 WorldWriteable: World writeable
 WorldWriteableTooltip: Any logged in user may edit this topic.
@@ -61,6 +69,7 @@ Content: Content
 Summary: Summary
 
 UploadDitaZip: DITA ZIP File
+UploadDitaUrl: DITA ZIP URL
 DitaMapUploaded: Your DITA content has been uploaded.
 
 UploadBlogZip: Blog ZIP File
@@ -125,3 +134,4 @@ HomepageTitle: Homepage
 BookTitle title@Text: #{title}
 BookTitleRaw: Book
 BookChapterTitle title@Text: #{title}
+SearchTitle: Search Results

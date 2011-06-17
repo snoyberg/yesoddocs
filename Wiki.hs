@@ -107,7 +107,6 @@ instance Yesod Wiki where
         muser <- fmap (fmap snd) maybeAuth
         pc <- widgetToPageContent $ do
             setTitleI title
-            addLucius $(Settings.luciusFile "html5reset")
             widget
             atomLink FeedR "Site activity"
             atomLink BlogFeedR "Blog posts"

@@ -1,3 +1,9 @@
+<div>
+    <form method=post action=@{EditMapNameR mid}>
+        _{MsgEditMapName} #
+        <input type=text name=name value=#{tMapTitle tm}>
+        <input type=submit value=_{MsgChangeMapName}
+    <a target=_blank href=@{ShowMapR mid}>_{MsgViewMap}
 <div #map>
     <h2>_{MsgSelectedContent}
     ^{showTMs tree}

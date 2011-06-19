@@ -28,13 +28,14 @@ import qualified Text.Blaze.Renderer.String as S
 import Text.Hamlet (toHtml)
 import Handler.Search (updateTerms)
 
-topicForm :: (Text, TopicFormat, Textarea, Maybe Text)
-          -> Handler ((FormResult (Text, TopicFormat, Textarea, Maybe Text), Widget ()), Enctype)
-topicForm (a, b, c, d) = runFormPost $ renderTable $ (,,,)
+topicForm :: (Text, TopicFormat, Textarea, Maybe Text, Bool)
+          -> Handler ((FormResult (Text, TopicFormat, Textarea, Maybe Text, Bool), Widget ()), Enctype)
+topicForm (a, b, c, d, e) = runFormPost $ renderTable $ (,,,,)
     <$> areq textField (fromLabel MsgTitle) (Just a) -- TRANS
     <*> areq (selectField formats) (FieldSettings MsgFormat Nothing (Just "format") Nothing) (Just b)
     <*> areq textareaField (FieldSettings MsgContent Nothing (Just "contentarea") Nothing) (Just c)
     <*> aopt textField (fromLabel MsgSummary) (Just d)
+    <*> areq boolField (FieldSettings MsgMinorUpdate (Just MsgMinorUpdateTooltip) Nothing Nothing) (Just e)
 
 getTopicR :: TopicId -> Handler RepHtml
 getTopicR = getTopicR' True
@@ -63,7 +64,7 @@ getTopicR' showAuthor tid = do
     mform <-
         if maid == Just topicOwner || fmap userAdmin muser == Just True || (topicAllWrite && isJust ma)
             then Just `fmap` (do
-                ((_, w), e) <- topicForm (topicTitle, topicContentFormat, (Textarea $ topicContentContent), Nothing)
+                ((_, w), e) <- topicForm (topicTitle, topicContentFormat, (Textarea $ topicContentContent), Nothing, False)
                 return (w, e)
                 )
             else return Nothing
@@ -104,21 +105,20 @@ postTopicR tid = do
                 notFound
     (aid, user) <- requireAuth
     unless (aid == topicOwner || userAdmin user || topicAllWrite) $ permissionDenied ""
-    ((res, wform), enctype) <- topicForm (topicTitle, topicContentFormat, (Textarea $ topicContentContent), Nothing)
+    ((res, wform), enctype) <- topicForm (topicTitle, topicContentFormat, (Textarea $ topicContentContent), Nothing, False)
     case res of
-        FormSuccess (title, format, (Textarea content), msummary) -> do
+        FormSuccess (title, format, (Textarea content), msummary, isMinor) -> do
             now <- liftIO getCurrentTime
             _ <- runDB $ do
                 update tid [TopicTitle title]
                 let tc = TopicContent tid aid msummary now format $ validateContent format content
                 _ <- insert tc
                 updateTerms tc
-                addNewsItem ("Topic updated: " `mappend` title) (TopicR tid) Nothing [html|
+                unless isMinor $ addNewsItem ("Topic updated: " `mappend` title) (TopicR tid) Nothing [html|
 <p>#{userName user} updated the topic: #{title}
 $maybe summary <- msummary
     <p>Update summary: #{summary}
 |]
-                return ()
             setMessageI MsgTopicUpdated
             redirect RedirectTemporary $ TopicR tid
         _ -> defaultLayout $(widgetFile "topic_post")

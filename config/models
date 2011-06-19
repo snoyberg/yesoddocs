@@ -29,7 +29,7 @@ TopicContent
 
 TMap
     owner UserId Eq
-    title Text
+    title Text Update
     created UTCTime
 
 TMapNode

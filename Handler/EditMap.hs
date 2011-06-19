@@ -3,6 +3,7 @@ module Handler.EditMap
     ( getEditMapR
     , postEditMapR
     , postMapLabelsR
+    , postEditMapNameR
     ) where
 
 import Wiki
@@ -135,3 +136,13 @@ postMapLabelsR mid = do
             when (lid' `elem` sel) $
                 insert (MapLabel mid lid') >> return ()
     redirect RedirectTemporary $ EditMapR mid
+
+postEditMapNameR :: TMapId -> Handler ()
+postEditMapNameR tmid = do
+    (aid, user) <- requireAuth
+    tm <- runDB $ get404 tmid
+    unless (aid == tMapOwner tm || userAdmin user) $ permissionDeniedI MsgNotYourMap
+    name <- runInputPost $ ireq textField "name"
+    runDB $ update tmid [TMapTitle name]
+    setMessageI (MsgMapTitleUpdated name)
+    redirect RedirectTemporary $ EditMapR tmid

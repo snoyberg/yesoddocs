@@ -16,6 +16,14 @@ LabelsUpdated: Labels have been updated.
 UserHandleInUse: The requested handle is already in use. Please try again.
 BlogSlugInUse: The request blog slug in already in use. Please try again.
 
+EditMapName: Map name:
+ChangeMapName: Change map name
+ViewMap: View map
+MapTitleUpdated name@Text: Map title changed to: "#{name}"
+
+MinorUpdate: Minor update
+MinorUpdateTooltip: Minor updates will not be reported in the site news feed.
+
 RebuildSearchIndex: Rebuild search index
 SearchIndexUpdated: Search index updated
 NoSearchResults: Your query produced no results.

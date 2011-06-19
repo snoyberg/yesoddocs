@@ -102,5 +102,6 @@ executable         yesodwiki
                  , base64-bytestring
                  , yesod-json
                  , blaze-html
-                 , http-enumerator
+                 , http-enumerator < 0.6.5.4
+                 , authenticate < 0.9.1.4
                  , tagsoup >= 0.12.2 && < 0.13

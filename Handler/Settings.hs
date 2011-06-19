@@ -80,10 +80,11 @@ postSettingsR = do
         FormSuccess user' -> runDB $ do
             x <- getBy $ UniqueHandle $ userHandle user'
             case x of
-                Nothing -> do
+                Just (uid', _)
+                    | uid /= uid' -> lift $ setMessageI MsgUserHandleInUse
+                _ -> do
                     replace uid user'
                     lift $ setMessageI MsgSettingsUpdated
-                Just _ -> lift $ setMessageI MsgUserHandleInUse
         _ -> return ()
     redirect RedirectTemporary SettingsR
 

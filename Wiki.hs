@@ -58,8 +58,8 @@ import Control.Monad.IO.Class (liftIO)
 import Yesod.Message
 import Data.Text (Text, pack)
 import Control.Applicative ((<$>), (<*>))
-import Data.Monoid (mappend)
 import Text.Hamlet (Html, ihamletFile)
+import Data.Monoid (mappend, mempty)
 import qualified Yesod.Auth.OpenId as OpenId
 import qualified Yesod.Auth.Message as Msg
 

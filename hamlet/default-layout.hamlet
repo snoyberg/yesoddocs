@@ -22,7 +22,7 @@
                             <li>
                                 <a href=@{BlogR}>Blog
                             <li>
-                                <a href=@{PageR "wiki"}>Wiki
+                                <a href=@{WikiR mempty}>Wiki
                 <div .yesod-body>
                     <div .yesod-userbar>
                       <form #search-form action=@{SearchR}>

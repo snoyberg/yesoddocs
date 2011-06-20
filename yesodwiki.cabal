@@ -46,6 +46,7 @@ library
                      Handler.UploadDitamap
                      Handler.UploadBlogs
                      Handler.Search
+                     Handler.Wiki
                      Util
 
 executable         yesodwiki

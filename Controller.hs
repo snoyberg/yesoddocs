@@ -32,6 +32,7 @@ import Handler.Book
 import Handler.Search
 import Handler.UploadDitamap
 import Handler.UploadBlogs
+import Handler.Wiki
 
 -- This line actually creates our YesodSite instance. It is the second half
 -- of the call to mkYesodData which occurs in Wiki.hs. Please see

@@ -14,10 +14,10 @@ TFamily
 
 Topic
     owner UserId Eq
-    title Text Update
+    title Text Update Asc
     created UTCTime
     family TFamilyId Eq
-    allWrite Bool default=false Update
+    allWrite Bool default=false Update Eq
 
 TopicContent
     topic TopicId Eq
@@ -95,3 +95,8 @@ SearchTerm
     topic TopicId Eq
     content Text
     UniqueSearchTerm topic
+
+WikiPage
+    name Text
+    topic TopicId Eq
+    UniqueWikiPage name

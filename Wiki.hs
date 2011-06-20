@@ -234,6 +234,10 @@ instance YesodBreadcrumbs Wiki where
                 Nothing -> return "" -- FIXME
         return (MsgBookChapterTitle title, Just BookR)
     breadcrumb SearchR = return (MsgSearchTitle, Just RootR)
+    breadcrumb (WikiR ps) = do
+        let title = if null ps then MsgWikiHomeTitle else MsgWikiTitle (last ps)
+        let parent = if null ps then RootR else WikiR (init ps)
+        return (title, Just parent)
 
     breadcrumb StaticR{} = return (MsgNotFound, Nothing)
     breadcrumb FaviconR{} = return (MsgNotFound, Nothing)

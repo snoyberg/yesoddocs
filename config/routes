@@ -58,3 +58,5 @@
 /delete/map/#TMapId DeleteMapR POST
 
 /search SearchR GET
+
+/wiki/*Texts WikiR GET POST

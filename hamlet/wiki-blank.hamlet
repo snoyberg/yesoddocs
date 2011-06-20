@@ -1,0 +1,10 @@
+<p>_{MsgWikiBlank}
+$maybe _ <- muid
+    <form method=post>
+        <table>
+            ^{form}
+            <tr>
+                <td colspan=3>
+                    <input type=submit value=_{MsgAssignWikiTopic}>
+$nothing
+    <p>_{MsgWikiLoginRequired}

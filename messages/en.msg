@@ -125,6 +125,11 @@ ModifyExistingPageCaption: Modify Existing Page
 UploadBlogPostsCaption: Upload Blog Posts
 EditUserProfileCaption: Edit User Profile
 
+WikiBlank: The given Wiki page does not exist. You may create it now.
+AssignWikiTopic: Assign Wiki topic
+WikiTopic: Topic
+WikiLoginRequired: You must be logged in to make changes to the Wiki.
+
 # Page titles
 LoginTitle: Login
 CreateTopicTitle: Create Topic
@@ -143,3 +148,6 @@ BookTitle title@Text: #{title}
 BookTitleRaw: Book
 BookChapterTitle title@Text: #{title}
 SearchTitle: Search Results
+WikiTitle title@Text: #{title}
+WikiHomeTitle: Wiki
+MissingWikiTitle: Empty wiki page

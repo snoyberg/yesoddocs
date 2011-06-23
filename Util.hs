@@ -37,7 +37,7 @@ import Text.Hamlet (Hamlet)
 import qualified Data.Set as Set
 import Control.Monad.Trans.State (evalState, get, put)
 import Text.XML.Enumerator.Render (renderText)
-import Data.Monoid (mconcat)
+import Data.Monoid (mconcat, mempty, mappend)
 import System.IO.Unsafe (unsafePerformIO)
 import Yesod.Core (toSinglePiece)
 import qualified Data.Map as Map
@@ -56,24 +56,26 @@ ditaToHtml topic txml render =
         Right (Document _ (Element _ _ nodes) _) -> mapM_ go nodes
   where
     go (NodeContent (ContentText t')) = toHtml t'
-    go (NodeElement (Element n as children)) = go' (nameLocalName n) as $ mapM_ go children
+    go (NodeElement (Element n as children)) = go' (nameLocalName n) as children $ mapM_ go children
     go _ = return ()
-    go' "p" as x =
+    go' "p" as _ x =
         case lookup "id" as of
             Just [ContentText t] -> [html|<p .hascomments #comment-#{toSinglePiece topic}-#{t}>#{x}|]
             _ -> [html|<p>#{x}|]
-    go' "image" as x =
+    go' "image" as _ x =
         case lookup "href" as of
             Just [ContentText t] -> [html|<img src=#{toLink t}>|]
             _ -> x
-    go' "xref" as x =
+    go' "xref" as _ x =
         case lookup "href" as of
             Just [ContentText t] -> [html|<a href=#{toLink t}>#{x}|]
             _ -> x
-    go' "apiname" _ x = [html|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
-    go' "codeblock" _ x = [html|<pre>
+    go' "apiname" _ _ x = [html|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
+    go' "codeblock" as [NodeContent (ContentText t)] _
+        | lookup "outputclass" as == Just [ContentText "lhaskell"] = lhaskellToHTML t
+    go' "codeblock" _ _ x = [html|<pre>
     <code>#{x}|]
-    go' "note" as x =
+    go' "note" as _ x =
         case lookup "type" as of
             Just [ContentText nt]
                 | nt == "other" ->
@@ -82,11 +84,11 @@ ditaToHtml topic txml render =
                         _ -> [html|<aside .note-#{x}>|]
                 | otherwise -> [html|<aside .#{nt}>#{x}|]
             _ -> [html|<aside .note>#{x}|]
-    go' n _ x
+    go' n _ _ x
         | n `Set.member` ditaDrop = [html||]
         | n `Set.member` ditaIgnore = x
         | n `Set.member` ditaUnchanged = [html|\<#{n}>#{x}</#{n}>|]
-    go' n _ x =
+    go' n _ _ x =
         case Map.lookup n ditaMap of
             Just (n', Nothing) ->
                 [html|\<#{n'}>#{x}</#{n'}>|]
@@ -235,3 +237,23 @@ ditaMap = Map.fromList
   where
     elem' x = (x, Nothing)
     div' x = ("div", Just x)
+
+lhaskellToHTML :: Text -> Html
+lhaskellToHTML =
+    go' . map go . T.lines
+  where
+    go t
+        | a == "> " = Right b
+        | otherwise = Left $ preEscapedText t
+      where
+        (a, b) = T.splitAt 2 t
+    go' [] = mempty
+    go' (Left x:xs) = x `mappend` go' xs
+    go' x =
+        y' `mappend` go' z
+      where
+        (y, z) = someRights id x
+        y' = [html|<pre>
+    <code>#{T.unlines y}|]
+    someRights front (Right x:xs) = someRights (front . (:) x) xs
+    someRights front x = (front [], x)

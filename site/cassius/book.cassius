@@ -3,3 +3,10 @@
     font-size: 80%
     padding-left: 15px
     color: #666
+
+pre
+  background-color: #F6F6F6
+  overflow:auto
+  padding: 1em
+  border:#CCC solid 1px
+  box-shadow: 0 0 8px #888 inset

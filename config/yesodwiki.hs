@@ -28,5 +28,5 @@ main :: IO ()
 main = do
     let port = 3000
     hPutStrLn stderr $ "Application launched, listening on port " ++ show port
-    withWiki "http://10.0.0.3:3000" $ run port -- . debug
+    withWiki "http://localhost:3000" $ run port -- . debug
 #endif

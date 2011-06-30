@@ -17,3 +17,6 @@
     <script src="http://www.reddit.com/static/button/button1.js">
     <article>
         ^{showMap}
+    <#disqus>
+        <script type="text/javascript" src="http://yesoddocs.disqus.com/combination_widget.js?num_items=5&hide_mods=0&color=blue&default_tab=people&excerpt_length=200">
+        <a href="http://disqus.com/">Powered by Disqus</a>

@@ -14,7 +14,6 @@ import Data.List (groupBy)
 import Data.Function (on)
 import Data.Text (pack)
 import Control.Arrow ((&&&))
-import Handler.Topic (comments)
 
 getBlogR :: Handler ()
 getBlogR = do
@@ -51,7 +50,6 @@ getBlogPostR year month slug = do
     tree <- loadTree tmid
     let showMap = $(widgetFile "show-map")
     defaultLayout $ do
-        comments
         addScript $ StaticR jquery_js
         addScript $ StaticR jquery_cookie_js
         addScript $ StaticR jquery_treeview_js

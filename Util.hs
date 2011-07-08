@@ -43,6 +43,9 @@ import Data.Monoid (mconcat, mempty, mappend)
 import System.IO.Unsafe (unsafePerformIO)
 import Yesod.Core (toSinglePiece)
 import qualified Data.Map as Map
+import qualified Text.Highlighting.Illuminate as I
+import qualified Text.Highlighting.Illuminate.Haskell as Haskell
+import qualified Text.XHtml
 
 renderContent :: TopicId -> TopicFormat -> Text -> HtmlUrl WikiRoute
 renderContent _ TFHtml t = const $ preEscapedText t
@@ -75,6 +78,7 @@ ditaToHtml topic txml render =
     go' "apiname" _ _ x = [shamlet|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
     go' "codeblock" as [NodeContent (ContentText t)] _
         | lookup "outputclass" as == Just [ContentText "lhaskell"] = lhaskellToHTML t
+        | lookup "outputclass" as == Just [ContentText "haskell"] = haskellToHTML 1 t
     go' "codeblock" _ _ x = [shamlet|<pre>
     <code>#{x}|]
     go' "note" as _ x =
@@ -248,20 +252,45 @@ ditaMap = Map.fromList
 
 lhaskellToHTML :: Text -> Html
 lhaskellToHTML =
-    go' . map go . T.lines
+    go' 1 . map go . T.lines
   where
     go t
         | a == "> " = Right b
-        | otherwise = Left $ preEscapedText t
+        | a' == ">" = Right b'
+        | otherwise = Left $ [shamlet|<p>#{preEscapedText t}|]
       where
         (a, b) = T.splitAt 2 t
-    go' [] = mempty
-    go' (Left x:xs) = x `mappend` go' xs
-    go' x =
-        y' `mappend` go' z
+        (a', b') = T.splitAt 1 t
+    go' _ [] = mempty
+    go' i (Left x:xs) = x `mappend` go' i xs
+    go' i x =
+        y' `mappend` go' (i + length y) z
       where
         (y, z) = someRights id x
-        y' = [shamlet|<pre>
-    <code>#{T.unlines y}|]
+        y' = haskellToHTML i (T.unlines y)
     someRights front (Right x:xs) = someRights (front . (:) x) xs
     someRights front x = (front [], x)
+
+haskellToHTML :: Int -> Text -> Html
+haskellToHTML line t =
+    case I.tokenize (Just Haskell.lexer) str' of
+        Left _ -> [shamlet|<code>
+    <pre>#{t}|]
+        Right ts ->
+            let h = preEscapedString $ Text.XHtml.showHtmlFragment $ I.toXHtmlInline (I.defaultOptions
+                        { I.optNumberLines = True
+                        , I.optStartNumber = line
+                        }) ts
+             in [shamlet|<div .haskell>#{h}|]
+  where
+    str = T.unpack t
+    lines' = lines str
+    hasStart = any (== "-- START") lines'
+    str' = if hasStart
+            then unlines $ go False lines'
+            else str
+    go _ [] = []
+    go _ ("-- START":rest) = go True rest
+    go _ ("-- STOP":rest) = go False rest
+    go True (x:xs) = x : go True xs
+    go False (_:xs) = go False xs

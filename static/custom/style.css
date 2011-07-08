@@ -380,3 +380,9 @@ pre {
     box-shadow: 0 0 8px #888 inset;
     font-size: 0.9em;
 }
+
+div.haskell pre {
+    border: 0;
+    box-shadow: 0 0 0 #fff;
+    padding: 0;
+}

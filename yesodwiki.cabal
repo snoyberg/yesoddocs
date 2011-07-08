@@ -109,3 +109,5 @@ executable         yesodwiki
                  , authenticate
                  , tagsoup >= 0.12.2 && < 0.13
                  , xml-hamlet >= 0.0 && < 0.1
+                 , illuminate >= 0.1 && < 0.2
+                 , xhtml >= 3000.2 && < 3000.3

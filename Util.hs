@@ -284,7 +284,11 @@ haskellToHTML line t =
              in [shamlet|<div .haskell>#{h}|]
   where
     str = T.unpack t
-    lines' = lines str
+    noCR [] = []
+    noCR x
+        | last x == '\r' = init x
+        | otherwise = x
+    lines' = map noCR $ lines str
     hasStart = any (== "-- START") lines'
     str' = if hasStart
             then unlines $ go False lines'

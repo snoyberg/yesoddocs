@@ -23,6 +23,12 @@
                                 <a href=@{BlogR}>Blog
                             <li>
                                 <a href=@{WikiR mempty}>Wiki
+                            <li>
+                                <a href=@{BlogFeedR}>
+                                    <img width=14 src=@{StaticR blog_png} alt=_{MsgBlogFeedTitle} title=_{MsgBlogFeedTitle}>
+                            <li>
+                                <a href=@{FeedR}>
+                                    <img width=14 src=@{StaticR feed_png} alt=_{MsgFeedTitle} title=_{MsgFeedTitle}>
                 <div .yesod-body>
                     <div .yesod-userbar>
                       <form #search-form action=@{SearchR}>

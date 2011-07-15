@@ -18,6 +18,9 @@ BlogSlugInUse: The request blog slug in already in use. Please try again.
 MakeSubmapNotATopic: The requested node is not a topic.
 SubmapCreated: Submap created.
 
+BlogFeedTitle: Blog feed
+FeedTitle: Site updates
+
 LastUpdated: Last updated
 
 EditMapName: Map name:

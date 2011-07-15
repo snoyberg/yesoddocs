@@ -7,6 +7,8 @@ module Util
     , userGravatar
     , prettyDate
     , prettyMonthYear
+    , formatDateTime
+    , prettyDateTime
     ) where
 
 import Debug.Trace (trace)
@@ -189,6 +191,12 @@ prettyDate = formatTime defaultTimeLocale "%B %e, %Y" -- FIXME i18n
 
 prettyMonthYear :: Int -> Int -> String
 prettyMonthYear year month = formatTime defaultTimeLocale "%B %Y" $ fromGregorian (fromIntegral year) month 1 -- FIXME i18n
+
+formatDateTime :: UTCTime -> String
+formatDateTime = formatTime defaultTimeLocale "%FT%T%z"
+
+prettyDateTime :: UTCTime -> String
+prettyDateTime = formatTime defaultTimeLocale "%B %e, %y %l:%M %P"
 
 -- drop element and children
 ditaDrop :: Set.Set Text

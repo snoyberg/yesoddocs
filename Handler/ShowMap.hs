@@ -49,7 +49,7 @@ loadTreeNode :: (TMapNodeId, TMapNode) -> SqlPersist (GGHandler sub Wiki IO) [Tr
 loadTreeNode (tmnid, tmn) = do
     case tMapNodeCmap tmn of
         Nothing -> do
-            c <- selectList [TMapNodeParentEq $ Just tmnid] [] 0 0 >>= mapM loadTreeNode
+            c <- selectList [TMapNodeParentEq $ Just tmnid] [TMapNodePositionAsc] 0 0 >>= mapM loadTreeNode
             title <-
                 case tMapNodeCtopic tmn of
                     Nothing -> return ""

@@ -1,5 +1,9 @@
-<div #content>
+<article #content>
     ^{addHamlet $ renderContent tid topicContentFormat topicContentContent}
+    <p>
+        _{MsgLastUpdated} #
+        <time pubdate datetime=#{formatDateTime topicContentChanged}>
+            #{prettyDateTime topicContentChanged}
 
 $maybe form <- mform
     <div .edit-page>

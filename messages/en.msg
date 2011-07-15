@@ -16,6 +16,8 @@ LabelsUpdated: Labels have been updated.
 UserHandleInUse: The requested handle is already in use. Please try again.
 BlogSlugInUse: The request blog slug in already in use. Please try again.
 
+LastUpdated: Last updated
+
 EditMapName: Map name:
 ChangeMapName: Change map name
 ViewMap: View map

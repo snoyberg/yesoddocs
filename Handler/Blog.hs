@@ -9,7 +9,7 @@ module Handler.Blog
 import Wiki
 import Handler.ShowMap (loadTree, showTree)
 import Util
-import Yesod.Helpers.Feed
+import Yesod.Feed
 import Data.List (groupBy)
 import Data.Function (on)
 import Data.Text (pack)

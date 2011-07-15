@@ -42,7 +42,7 @@ import Yesod.Persist
 import Yesod.Helpers.Static
 import Yesod.Auth
 import Yesod.Auth.OpenId
-import Yesod.Helpers.AtomFeed
+import Yesod.AtomFeed
 import qualified Settings
 import System.Directory
 import qualified Data.ByteString.Lazy as L

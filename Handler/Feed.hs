@@ -5,7 +5,7 @@ module Handler.Feed
     ) where
 
 import Wiki
-import Yesod.Helpers.Feed
+import Yesod.Feed
 
 getFeedR :: Handler RepAtomRss
 getFeedR = do

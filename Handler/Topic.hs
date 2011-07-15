@@ -15,7 +15,7 @@ module Handler.Topic
     ) where
 
 import Wiki
-import Util (renderContent, validateContent, prettyDate)
+import Util (renderContent, validateContent, prettyDate, formatDateTime, prettyDateTime)
 import Data.Text (pack)
 import Control.Monad (unless, when)
 import Text.Hamlet.NonPoly (html)

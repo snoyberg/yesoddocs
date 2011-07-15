@@ -63,12 +63,12 @@ executable         yesodwiki
     hs-source-dirs: ., config
 
     build-depends: base         >= 4       && < 5
-                 , yesod-core   >= 0.8.3   && < 0.9
+                 , yesod-core   >= 0.8.3.2 && < 0.9
                  , yesod-auth   >= 0.6     && < 0.7
                  , yesod-form   >= 0.2     && < 0.3
                  , yesod-static < 0.2
                  , yesod-persistent
-                 , yesod-newsfeed
+                 , yesod-newsfeed >= 0.2 && < 0.3
                  , wai-extra
                  , directory
                  , bytestring

@@ -15,7 +15,7 @@ topicForm = runFormPost $ renderTable $ (,,,)
     <$> areq textField (fromLabel MsgTitle) Nothing
     <*> areq (selectField formats) (FieldSettings MsgFormat Nothing (Just "format") Nothing) Nothing
     <*> areq textareaField (FieldSettings MsgContent Nothing (Just "contentarea") Nothing) Nothing
-    <*> areq boolField (FieldSettings MsgWorldWriteable (Just MsgWorldWriteableTooltip) Nothing Nothing) Nothing
+    <*> areq boolField (FieldSettings MsgWorldWriteable (Just MsgWorldWriteableTooltip) Nothing Nothing) (Just False)
 
 richEdit :: Widget ()
 richEdit = do

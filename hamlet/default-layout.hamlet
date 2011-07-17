@@ -24,10 +24,10 @@
                             <li>
                                 <a href=@{WikiR mempty}>Wiki
                             <li>
-                                <a href=@{BlogFeedR}>
+                                <a href="http://feeds.feedburner.com/YesodWebFramework">
                                     <img width=14 src=@{StaticR blog_png} alt=_{MsgBlogFeedTitle} title=_{MsgBlogFeedTitle}>
                             <li>
-                                <a href=@{FeedR}>
+                                <a href="http://feeds.feedburner.com/YesodDocs">
                                     <img width=14 src=@{StaticR feed_png} alt=_{MsgFeedTitle} title=_{MsgFeedTitle}>
                 <div .yesod-body>
                     <div .yesod-userbar>

@@ -10,7 +10,7 @@ import Yesod.Feed
 getFeedR :: Handler RepAtomRss
 getFeedR = do
     now <- liftIO getCurrentTime
-    entries <- runDB $ selectList [] [NewsItemCreatedDesc] 30 0 >>= (mapM $ \(nid, n) -> return FeedEntry
+    entries <- runDB $ selectList [] [Desc NewsItemCreated, LimitTo 30] >>= (mapM $ \(nid, n) -> return FeedEntry
         { feedEntryLink = FeedItemR nid
         , feedEntryUpdated = newsItemCreated n
         , feedEntryTitle = newsItemTitle n

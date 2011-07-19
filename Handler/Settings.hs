@@ -24,15 +24,15 @@ form' User {..} = runFormPost $ renderTable $ User
     <$> pure userIdent
     <*> areq textField (FieldSettings MsgYourName Nothing Nothing Nothing) (Just userName)
     <*> pure userAdmin
-    <*> fmap UserHandle (areq textField (FieldSettings MsgYourHandle (Just MsgHandleTooltip) Nothing Nothing) (Just $ unUserHandle userHandle))
+    <*> fmap UserHandleT (areq textField (FieldSettings MsgYourHandle (Just MsgHandleTooltip) Nothing Nothing) (Just $ unUserHandle userHandle))
     <*> aopt emailField (FieldSettings MsgYourEmail (Just MsgEmailTooltip) Nothing Nothing) (Just userEmail)
     <*> aopt urlField (FieldSettings MsgYourUrl Nothing Nothing Nothing) (Just userUrl)
     <*> aopt textareaField (FieldSettings MsgYourBio Nothing Nothing Nothing) (Just userBio)
 
 bookForm :: UserId -> Handler ((FormResult Book, Widget()), Enctype)
 bookForm owner = do
-    maps <- runDB $ selectList [TMapOwnerEq owner] [] 0 0
-    topics <- runDB $ selectList [TopicOwnerEq owner] [] 0 0
+    maps <- runDB $ selectList [TMapOwner ==. owner] []
+    topics <- runDB $ selectList [TopicOwner ==. owner] []
     let ms = map go maps
     let ts = map go' topics
     runFormPost $ renderTable $ Book
@@ -54,9 +54,9 @@ getSettingsR :: Handler RepHtml
 getSettingsR = do
     (uid, user) <- requireAuth
     ((_, form), enctype) <- form' user
-    maps <- runDB $ selectList [TMapOwnerEq uid] [] 0 0
-    topics <- runDB $ selectList [TopicOwnerEq uid] [] 0 0
-    pages <- runDB $ selectList [] [] 0 0
+    maps <- runDB $ selectList [TMapOwner ==. uid] []
+    topics <- runDB $ selectList [TopicOwner ==. uid] []
+    pages <- runDB $ selectList [] []
     ((_, pageNew), _) <- pageForm topics Nothing
     pforms <- (fmap . fmap) (snd . fst) $ mapM (pageForm topics . Just . snd) pages
     ((_, ab), _) <- addBlog uid
@@ -92,7 +92,7 @@ postEditPageR :: Handler ()
 postEditPageR = do
     (uid, user) <- requireAuth
     unless (userAdmin user) $ permissionDenied ""
-    topics <- runDB $ selectList [TopicOwnerEq uid] [] 0 0
+    topics <- runDB $ selectList [TopicOwner ==. uid] []
     ((res, _), _) <- pageForm topics Nothing
     case res of
         FormSuccess (mname, tid) -> runDB $ do
@@ -105,7 +105,7 @@ postEditPageR = do
 
 addBlog :: UserId -> Handler ((FormResult (TMapId, Text), Widget ()), Enctype)
 addBlog uid = do
-    maps <- runDB $ selectList [TMapOwnerEq uid] [] 0 0
+    maps <- runDB $ selectList [TMapOwner ==. uid] []
     runFormPost $ renderTable $ (,)
         <$> areq (selectField $ map go maps) (FieldSettings MsgMapForBlog Nothing Nothing Nothing) Nothing
         <*> areq textField (FieldSettings MsgSlug (Just MsgSlugTooltip) Nothing Nothing) Nothing
@@ -123,7 +123,7 @@ postAddBlogMapR = do
             let (year', month', _) = toGregorian $ utctDay now
             let year = fromInteger year'
             let month = Month month'
-            let slug = BlogSlug slug'
+            let slug = BlogSlugT slug'
             x <- getBy $ UniqueBlogSlug year month slug
             case x of
                 Nothing -> do
@@ -157,7 +157,7 @@ postDeleteTopicR tid = do
     Topic {..} <- runDB $ get404 tid
     unless (userAdmin u || uid == topicOwner) $ permissionDenied ""
     runDB $ do
-        updateWhere [TMapNodeCtopicEq $ Just tid] [TMapNodeCtopic Nothing]
+        updateWhere [TMapNodeCtopic ==. Just tid] [TMapNodeCtopic =. Nothing]
         deleteCascade tid
     setMessageI $ MsgTopicDeleted topicTitle
     redirect RedirectTemporary SettingsR

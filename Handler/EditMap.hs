@@ -40,10 +40,10 @@ showTMs tms = [whamlet|
 
 loadTM :: TMapId -> Handler [TM]
 loadTM tmid =
-    runDB $ selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= mapM go
+    runDB $ selectList [TMapNodeMap ==. tmid, TMapNodeParent ==. Nothing] [Asc TMapNodePosition] >>= mapM go
   where
     go (tmnid, tmn) = do
-        children <- selectList [TMapNodeParentEq $ Just tmnid] [TMapNodePositionAsc] 0 0 >>= mapM go
+        children <- selectList [TMapNodeParent ==. Just tmnid] [Asc TMapNodePosition] >>= mapM go
         return TM
             { tmTitle = tMapNodeTitle tmn
             , tmTopic = tMapNodeCtopic tmn
@@ -57,12 +57,12 @@ getEditMapR mid = do
     (aid, user) <- requireAuth
     tm <- runDB $ get404 mid
     unless (aid == tMapOwner tm || userAdmin user) $ permissionDeniedI MsgNotYourMap
-    topics <- runDB $ selectList [TopicOwnerEq aid] [] 0 0
+    topics <- runDB $ selectList [TopicOwner ==. aid] []
     tree <- loadTM mid
     let treeTopics = getTopics tree
     -- FIXME list maps also
     ltree <- getLTree
-    slabels <- runDB $ fmap (map $ mapLabelLabel . snd) $ selectList [MapLabelMapEq mid] [] 0 0
+    slabels <- runDB $ fmap (map $ mapLabelLabel . snd) $ selectList [MapLabelMap ==. mid] []
     let activeLabel = flip elem slabels
     defaultLayout $ do
         addScript $ StaticR jquery_js
@@ -92,7 +92,7 @@ postEditMapR tmid = do
         Nothing -> invalidArgsI [MsgInvalidJsonInput text]
         Just x -> do
             runDB $ do
-                deleteWhere [TMapNodeMapEq tmid]
+                deleteWhere [TMapNodeMap ==. tmid]
                 mapM_ (add Nothing) $ zip [1..] x
             setMessageI MsgMapUpdated
             redirect RedirectTemporary $ EditMapR tmid
@@ -130,8 +130,8 @@ postMapLabelsR mid = do
     (pp, _) <- runRequestBody
     let sel = mapMaybe (fromSinglePiece . fst) pp
     runDB $ do
-        deleteWhere [MapLabelMapEq mid]
-        labels <- selectList [] [] 0 0
+        deleteWhere [MapLabelMap ==. mid]
+        labels <- selectList [] []
         flip mapM_ labels $ \(lid', _) -> do -- FIXME use a Set?
             when (lid' `elem` sel) $
                 insert (MapLabel mid lid') >> return ()
@@ -143,6 +143,6 @@ postEditMapNameR tmid = do
     tm <- runDB $ get404 tmid
     unless (aid == tMapOwner tm || userAdmin user) $ permissionDeniedI MsgNotYourMap
     name <- runInputPost $ ireq textField "name"
-    runDB $ update tmid [TMapTitle name]
+    runDB $ update tmid [TMapTitle =. name]
     setMessageI (MsgMapTitleUpdated name)
     redirect RedirectTemporary $ EditMapR tmid

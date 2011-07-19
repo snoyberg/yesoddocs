@@ -37,7 +37,7 @@ module Wiki
 
 import Data.Time
 import Yesod.Core hiding (YesodBreadcrumbs (..), breadcrumbs, setMessage)
-import Yesod.Form
+import Yesod.Form hiding (Field)
 import Yesod.Persist
 import Yesod.Helpers.Static
 import Yesod.Auth
@@ -184,7 +184,7 @@ instance YesodAuth Wiki where
                 fmap Just $ insert $ User (credsIdent creds) "Unnamed User" False handle Nothing Nothing Nothing
       where
         getUniqueHandle i = do
-            let h = UserHandle $ pack $ "anon" ++ show i
+            let h = UserHandleT $ pack $ "anon" ++ show i
             x <- getBy $ UniqueHandle h
             case x of
                 Nothing -> return h
@@ -302,13 +302,13 @@ addNewsItem title url mhash content = do
 fromLabel :: WikiMessage -> FieldSettings WikiMessage
 fromLabel x = FieldSettings x Nothing Nothing Nothing
 
-getBlogPost :: Int -> Month -> BlogSlug -> GHandler sub Wiki Blog
+getBlogPost :: Int -> Month -> BlogSlugT -> GHandler sub Wiki Blog
 getBlogPost year month slug =
     runDB $ fmap snd $ getBy404 $ UniqueBlogSlug year month slug
 
 getBook :: SqlPersist (GGHandler s Wiki IO) Book
 getBook = do
-    x <- selectList [] [] 1 0
+    x <- selectList [] [LimitTo 1]
     case x of
         [] -> lift notFound
         (_, y):_ -> return y

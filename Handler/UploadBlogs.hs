@@ -35,7 +35,7 @@ postUploadBlogsR = do
         tmap <- insert $ TMap uid (entryTitle post) utc
         _ <- insert $ TMapNode tmap Nothing 1 (Just topic) Nothing Nothing (MapNodeSlug $ pack slug)
         let (year, month, _) = toGregorian $ entryDay post
-        _ <- insert $ Blog utc tmap (BlogSlug $ pack slug) (fromInteger year) (Month month)
+        _ <- insert $ Blog utc tmap (BlogSlugT $ pack slug) (fromInteger year) (Month month)
         return ()
     setMessageI MsgBlogZipUploaded
     redirect RedirectTemporary BlogR

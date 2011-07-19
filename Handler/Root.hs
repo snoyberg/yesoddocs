@@ -18,7 +18,7 @@ getRootR = do
         case mpage of
             Nothing -> return Nothing
             Just (_, Page { pageTopic = tid }) -> runDB $ do
-                x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+                x <- selectList [TopicContentTopic ==. tid] [Desc TopicContentChanged, LimitTo 1]
                 case x of
                     [] -> return Nothing
                     (_, TopicContent {..}):_ -> return $ Just (topicContentFormat, topicContentContent, tid)

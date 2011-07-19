@@ -2,7 +2,7 @@ User
     ident Text
     name Text Update
     admin Bool default=false
-    handle UserHandle Eq
+    handle UserHandleT Eq
     email Text Maybe
     url Text Maybe
     bio Textarea Maybe
@@ -71,7 +71,7 @@ MapLabel
 Blog
     posted UTCTime Desc
     map TMapId Eq
-    slug BlogSlug Eq
+    slug BlogSlugT Eq
     year Int
     month Month
     UniqueBlogSlug year month slug

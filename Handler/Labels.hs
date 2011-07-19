@@ -36,7 +36,7 @@ showLTree ls = [whamlet|
 
 getLTree :: Handler [LTree]
 getLTree = do
-    allLabels <- runDB $ selectList [] [] 0 0
+    allLabels <- runDB $ selectList [] []
     return $ map (go allLabels) $ filter (filt Nothing) (allLabels :: [(LabelId, Label)])
   where
     filt :: Maybe LabelId -> (LabelId, Label) -> Bool
@@ -66,7 +66,7 @@ postLabelsR = do
             redirect RedirectTemporary LabelsR
   where
     fix parent lt = do
-        update (lid lt) [LabelParent parent]
+        update (lid lt) [LabelParent =. parent]
         mapM_ (fix $ Just $ lid lt) $ lchildren lt
     go (Array x) = mapM go' $ V.toList x
     go _ = Nothing

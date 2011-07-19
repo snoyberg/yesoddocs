@@ -19,7 +19,7 @@ import Handler.Topic (comments)
 getBlogR :: Handler ()
 getBlogR = do
     -- FIXME admin interface when appropriate
-    posts <- runDB $ selectList [] [BlogPostedDesc] 1 0
+    posts <- runDB $ selectList [] [Desc BlogPosted, LimitTo 1]
     post <-
         case posts of
             [] -> notFound
@@ -33,11 +33,11 @@ data AEntry = AEntry
     , aeDate :: Text
     }
 
-getBlogPostR :: Int -> Month -> BlogSlug -> Handler RepHtml
+getBlogPostR :: Int -> Month -> BlogSlugT -> Handler RepHtml
 getBlogPostR year month slug = do
     let curr = BlogPostR year month slug
     blog <- getBlogPost year month slug
-    archive' <- runDB $ selectList [] [BlogPostedDesc] 0 0 >>= mapM (\(_, b) -> do
+    archive' <- runDB $ selectList [] [Desc BlogPosted] >>= mapM (\(_, b) -> do
         tmap <- get404 $ blogMap b
         let y = blogYear b
             m = blogMonth b
@@ -57,16 +57,16 @@ getBlogPostR year month slug = do
         addScript $ StaticR jquery_treeview_js
         $(widgetFile "blog")
 
-getBlogPostNoDateR :: BlogSlug -> Handler ()
+getBlogPostNoDateR :: BlogSlugT -> Handler ()
 getBlogPostNoDateR slug = do
-    x <- runDB $ selectList [BlogSlugEq slug] [BlogPostedDesc] 1 0
+    x <- runDB $ selectList [BlogSlug ==. slug] [Desc BlogPosted, LimitTo 1]
     case x of
         (_, y):_ -> redirect RedirectTemporary $ BlogPostR (blogYear y) (blogMonth y) slug
         [] -> notFound
 
 getBlogFeedR :: Handler RepAtomRss
 getBlogFeedR = do
-    x <- runDB $ selectList [] [BlogPostedDesc] 10 0
+    x <- runDB $ selectList [] [Desc BlogPosted, LimitTo 10]
     updated <-
         case x of
             [] -> liftIO getCurrentTime

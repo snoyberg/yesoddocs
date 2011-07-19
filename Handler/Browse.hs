@@ -22,8 +22,8 @@ getBrowseR = do
     ltree <- getLTree
     sel <- mapMaybe (fromSinglePiece . fst) . reqGetParams <$> getRequest
     let active = flip elem sel
-    entriesT <- catMaybes <$> (runDB $ selectList [] [] 0 0 >>= mapM (\(tid, t) -> do
-        lids <- (map $ topicLabelLabel . snd) <$> selectList [TopicLabelTopicEq tid] [] 0 0
+    entriesT <- catMaybes <$> (runDB $ selectList [] [] >>= mapM (\(tid, t) -> do
+        lids <- (map $ topicLabelLabel . snd) <$> selectList [TopicLabelTopic ==. tid] []
         if applyFilter sel lids
             then do
                 u <- get404 $ topicOwner t
@@ -33,8 +33,8 @@ getBrowseR = do
                     , eurl = TopicR tid
                     }
             else return Nothing))
-    entriesM <- catMaybes <$> (runDB $ selectList [] [] 0 0 >>= mapM (\(mid, m) -> do
-        lids <- (map $ mapLabelLabel . snd) <$> selectList [MapLabelMapEq mid] [] 0 0
+    entriesM <- catMaybes <$> (runDB $ selectList [] [] >>= mapM (\(mid, m) -> do
+        lids <- (map $ mapLabelLabel . snd) <$> selectList [MapLabelMap ==. mid] []
         if applyFilter sel lids
             then do
                 u <- get404 $ tMapOwner m

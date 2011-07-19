@@ -43,13 +43,13 @@ loadTree = runDB . loadTree'
 
 loadTree' :: TMapId -> SqlPersist (GGHandler sub Wiki IO) [Tree]
 loadTree' tmid =
-    selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= (fmap concat . mapM loadTreeNode)
+    selectList [TMapNodeMap ==. tmid, TMapNodeParent ==. Nothing] [Asc TMapNodePosition] >>= (fmap concat . mapM loadTreeNode)
 
 loadTreeNode :: (TMapNodeId, TMapNode) -> SqlPersist (GGHandler sub Wiki IO) [Tree]
 loadTreeNode (tmnid, tmn) = do
     case tMapNodeCmap tmn of
         Nothing -> do
-            c <- selectList [TMapNodeParentEq $ Just tmnid] [TMapNodePositionAsc] 0 0 >>= mapM loadTreeNode
+            c <- selectList [TMapNodeParent ==. Just tmnid] [Asc TMapNodePosition] >>= mapM loadTreeNode
             title <-
                 case tMapNodeCtopic tmn of
                     Nothing -> return ""
@@ -60,7 +60,7 @@ loadTreeNode (tmnid, tmn) = do
                 case tMapNodeCtopic tmn of
                     Nothing -> return Nothing
                     Just tid -> do
-                        x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+                        x <- selectList [TopicContentTopic ==. tid] [Desc TopicContentChanged, LimitTo 1]
                         case x of
                             (_, y):_ -> return $ Just y
                             [] -> return Nothing

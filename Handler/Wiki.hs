@@ -11,7 +11,7 @@ import Handler.Topic (getTopicR')
 
 wikiForm :: Handler ((FormResult TopicId, Widget ()), Enctype)
 wikiForm = do
-    ts <- runDB $ selectList [TopicAllWriteEq True] [TopicTitleAsc] 0 0
+    ts <- runDB $ selectList [TopicAllWrite ==. True] [Asc TopicTitle]
     runFormPost $ renderTable $ areq (selectField $ map go ts) (FieldSettings MsgWikiTopic Nothing Nothing Nothing) Nothing
   where
     go :: (TopicId, Topic) -> (Text, TopicId)

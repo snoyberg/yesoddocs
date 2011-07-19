@@ -24,7 +24,7 @@ postRebuildSearchR = do
     (_uid, u) <- requireAuth
     unless (userAdmin u) $ permissionDenied ""
     runDB $ run_ $ selectKeys [] $$ flip EL.foldM () $ \() tid ->
-        selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+        selectList [TopicContentTopic ==. tid] [Desc TopicContentChanged, LimitTo 1]
             >>= mapM_ (updateTerms . snd)
     setMessageI MsgSearchIndexUpdated
     redirect RedirectTemporary SettingsR
@@ -58,7 +58,7 @@ getSearchR = do
         x <- pop
         case x of
             Just [PersistInt64 i, PersistDouble rank] -> do
-                let tid = TopicId $ PersistInt64 i
+                let tid = Key $ PersistInt64 i
                 t <- get404 tid
                 go (front . (:) ((tid, t), prettyRank rank)) pop
             Nothing -> return $ front []

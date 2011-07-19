@@ -1,4 +1,4 @@
-{-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving, TemplateHaskell, OverloadedStrings, TypeSynonymInstances #-}
+{-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving, TemplateHaskell, OverloadedStrings, TypeSynonymInstances, GADTs #-}
 module Model where
 
 import Yesod.Persist
@@ -22,9 +22,9 @@ type MapNodeSlugs = [MapNodeSlug]
 instance MultiPiece MapNodeSlugs where
     toMultiPiece = map unMapNodeSlug
     fromMultiPiece = fmap (map MapNodeSlug) . fromMultiPiece
-newtype BlogSlug = BlogSlug Text
+newtype BlogSlugT = BlogSlugT Text
     deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)
-newtype UserHandle = UserHandle { unUserHandle :: Text }
+newtype UserHandleT = UserHandleT { unUserHandle :: Text }
     deriving (Read, Eq, Show, PersistField, SinglePiece, Ord)
 
 newtype Month = Month Int

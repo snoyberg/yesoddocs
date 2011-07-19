@@ -45,8 +45,8 @@
 /browse BrowseR GET
 
 /blog BlogR GET
-/blog/#BlogSlug BlogPostNoDateR GET
-/blog/#Int/#Month/#BlogSlug BlogPostR GET
+/blog/#BlogSlugT BlogPostNoDateR GET
+/blog/#Int/#Month/#BlogSlugT BlogPostR GET
 
 /book BookR GET
 /book/#MapNodeSlug/*MapNodeSlugs BookChapterR GET

@@ -32,7 +32,7 @@ loadTOC :: Int -> ([MapNodeSlug] -> WikiRoute) -> TMapId -> Handler [TOC]
 loadTOC depth0 toRoute =
     runDB . go' id depth0
   where
-    go' front depth tmid = selectList [TMapNodeMapEq tmid, TMapNodeParentEq Nothing] [TMapNodePositionAsc] 0 0 >>= (fmap concat . mapM (go front depth))
+    go' front depth tmid = selectList [TMapNodeMap ==. tmid, TMapNodeParent ==. Nothing] [Asc TMapNodePosition] >>= (fmap concat . mapM (go front depth))
     go front depth (_, TMapNode
         { tMapNodeCmap = Just submap
         , tMapNodeSlug = slug
@@ -46,7 +46,7 @@ loadTOC depth0 toRoute =
         children <-
             if depth <= 1
                 then return []
-                else selectList [TMapNodeParentEq $ Just mnid] [TMapNodePositionAsc] 0 0 >>= mapM (go front $ depth - 1)
+                else selectList [TMapNodeParent ==. Just mnid] [Asc TMapNodePosition] >>= mapM (go front $ depth - 1)
         return [TOC link title $ concat children]
 
 getBookR :: Handler RepHtml
@@ -60,7 +60,7 @@ getBookR = do
         case bookTopic book of
             Nothing -> return []
             Just tid -> do
-                x <- fmap (map snd) $ runDB $ selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+                x <- fmap (map snd) $ runDB $ selectList [TopicContentTopic ==. tid] [Desc TopicContentChanged, LimitTo 1]
                 return $ map (\y -> (tid, y)) x
     defaultLayout $(hamletFile "book")
 

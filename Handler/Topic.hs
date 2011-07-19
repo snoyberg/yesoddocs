@@ -44,7 +44,7 @@ getTopicR' :: Bool -> TopicId -> Handler RepHtml
 getTopicR' showAuthor tid = do
     Topic {..} <- runDB $ get404 tid
     TopicContent {..} <- runDB $ do
-        x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+        x <- selectList [TopicContentTopic ==. tid] [Desc TopicContentChanged, LimitTo 1]
         case x of
             [y] -> return $ snd y
             [] -> lift notFound
@@ -69,7 +69,7 @@ getTopicR' showAuthor tid = do
                 )
             else return Nothing
     ltree <- getLTree
-    slabels <- runDB $ fmap (map $ topicLabelLabel . snd) $ selectList [TopicLabelTopicEq tid] [] 0 0
+    slabels <- runDB $ fmap (map $ topicLabelLabel . snd) $ selectList [TopicLabelTopic ==. tid] []
     let activeLabel = flip elem slabels
     defaultLayout $ do
         comments
@@ -96,7 +96,7 @@ postTopicR :: TopicId -> Handler RepHtml
 postTopicR tid = do
     Topic {..} <- runDB $ get404 tid
     TopicContent {..} <- runDB $ do
-        x <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+        x <- selectList [TopicContentTopic ==. tid] [Desc TopicContentChanged, LimitTo 1]
         case x of
             [y] -> return $ snd y
             [] -> lift notFound
@@ -110,7 +110,7 @@ postTopicR tid = do
         FormSuccess (title, format, (Textarea content), msummary, isMinor) -> do
             now <- liftIO getCurrentTime
             _ <- runDB $ do
-                update tid [TopicTitle title]
+                update tid [TopicTitle =. title]
                 let tc = TopicContent tid aid msummary now format $ validateContent format content
                 _ <- insert tc
                 updateTerms tc
@@ -131,8 +131,8 @@ postTopicLabelsR tid = do
     (pp, _) <- runRequestBody
     let sel = mapMaybe (fromSinglePiece . fst) pp
     runDB $ do
-        deleteWhere [TopicLabelTopicEq tid]
-        labels <- selectList [] [] 0 0
+        deleteWhere [TopicLabelTopic ==. tid]
+        labels <- selectList [] []
         flip mapM_ labels $ \(lid', _) -> do -- FIXME use a Set?
             when (lid' `elem` sel) $
                 insert (TopicLabel tid lid') >> return ()
@@ -143,7 +143,7 @@ getCommentCountR = do
     topic' <- runInputGet $ ireq textField "topic"
     let topic = fromJust $ fromSinglePiece topic'
     element <- runInputGet $ ireq textField "element"
-    x <- runDB $ count [CommentTopicEq topic, CommentElementEq element]
+    x <- runDB $ count [CommentTopic ==. topic, CommentElement ==. element]
     jsonToRepJson $ jsonMap [("count", jsonScalar $ show x)]
 
 getCommentsR :: Handler RepJson
@@ -153,9 +153,9 @@ getCommentsR = do
     let topic = fromJust $ fromSinglePiece topic'
     element <- runInputGet $ ireq textField "element"
     render <- getUrlRenderParams
-    comments' <- runDB $ selectList [CommentTopicEq topic, CommentElementEq element] [CommentTimeAsc] 0 0 >>= (mapM $ \(_, c) -> do
+    comments' <- runDB $ selectList [CommentTopic ==. topic, CommentElement ==. element] [Asc CommentTime] >>= (mapM $ \(_, c) -> do
         let tid = commentContent c
-        tcs <- selectList [TopicContentTopicEq tid] [TopicContentChangedDesc] 1 0
+        tcs <- selectList [TopicContentTopic ==. tid] [Desc TopicContentChanged, LimitTo 1]
         case tcs of
             [] -> return Nothing
             (_, tc):_ -> do
@@ -218,5 +218,5 @@ wwHelper isW tid = do
     (uid, u) <- requireAuth
     t <- runDB $ get404 tid
     unless (topicAllWrite t || topicOwner t == uid || userAdmin u) $ permissionDenied ""
-    runDB $ update tid [TopicAllWrite isW]
+    runDB $ update tid [TopicAllWrite =. isW]
     redirect RedirectTemporary $ TopicR tid

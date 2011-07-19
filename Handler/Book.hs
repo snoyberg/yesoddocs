@@ -62,7 +62,7 @@ getBookR = do
             Just tid -> do
                 x <- fmap (map snd) $ runDB $ selectList [TopicContentTopic ==. tid] [Desc TopicContentChanged, LimitTo 1]
                 return $ map (\y -> (tid, y)) x
-    defaultLayout $(hamletFile "book")
+    defaultLayout $(widgetFile "book")
 
 getBookChapterR :: MapNodeSlug -> MapNodeSlugs -> Handler RepHtml
 getBookChapterR mnslug mnslugs = do

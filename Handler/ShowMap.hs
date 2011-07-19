@@ -11,7 +11,7 @@ import Wiki
 import Handler.Topic (getTopicR)
 import Util (renderContent)
 import Database.Persist.GenericSql (SqlPersist)
-import Text.Hamlet.NonPoly (Hamlet, hamlet)
+import Text.Hamlet (Hamlet, hamlet)
 
 data Tree = Tree
     { treeTopicId :: Maybe TopicId -- FIXME TMapNodeId

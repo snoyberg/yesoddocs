@@ -7,7 +7,7 @@ module Handler.CreateTopic
 
 import Wiki
 import Util (validateContent)
-import Text.Hamlet.NonPoly (html)
+import Text.Hamlet (html)
 import Handler.Search (updateTerms)
 
 topicForm :: Handler ((FormResult (Text, TopicFormat, Textarea, Bool), Widget ()), Enctype)

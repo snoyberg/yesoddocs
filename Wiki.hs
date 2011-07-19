@@ -39,7 +39,7 @@ import Data.Time
 import Yesod.Core hiding (YesodBreadcrumbs (..), breadcrumbs, setMessage)
 import Yesod.Form hiding (Field)
 import Yesod.Persist
-import Yesod.Helpers.Static
+import Yesod.Static
 import Yesod.Auth
 import Yesod.Auth.OpenId
 import Yesod.AtomFeed
@@ -58,9 +58,8 @@ import Control.Monad.IO.Class (liftIO)
 import Yesod.Message
 import Data.Text (Text, pack)
 import Control.Applicative ((<$>), (<*>))
-import Text.Hamlet (Html)
 import Data.Monoid (mappend)
-import Text.Hamlet.NonPoly (ihamletFile, IHamlet)
+import Text.Hamlet (Html, ihamletFile, IHamlet)
 import qualified Yesod.Auth.OpenId as OpenId
 import qualified Yesod.Auth.Message as Msg
 

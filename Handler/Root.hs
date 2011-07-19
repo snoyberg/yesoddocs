@@ -8,7 +8,7 @@ module Handler.Root
 
 import Wiki
 import Handler.Topic (getTopicR')
-import Text.Hamlet.NonPoly (hamlet)
+import Text.Hamlet (hamlet)
 import Util (renderContent)
 
 getRootR :: Handler RepHtml

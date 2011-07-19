@@ -18,14 +18,14 @@ import Wiki
 import Util (renderContent, validateContent, prettyDate, formatDateTime, prettyDateTime)
 import Data.Text (pack)
 import Control.Monad (unless, when)
-import Text.Hamlet.NonPoly (html)
+import Text.Hamlet (html)
 import Handler.Labels (LTree (..), getLTree)
 import Data.Maybe (mapMaybe, fromJust, catMaybes, isJust)
 import Handler.CreateTopic (richEdit)
 import Yesod.Json
 import qualified Data.Text as T
 import qualified Text.Blaze.Renderer.String as S
-import Text.Hamlet (toHtml)
+import Text.Blaze (toHtml)
 import Handler.Search (updateTerms)
 
 topicForm :: (Text, TopicFormat, Textarea, Maybe Text, Bool)

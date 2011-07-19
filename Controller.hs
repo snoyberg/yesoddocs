@@ -9,7 +9,7 @@ module Controller
 
 import Wiki
 import Settings
-import Yesod.Helpers.Static
+import Yesod.Static
 import Yesod.Auth
 import Database.Persist.GenericSql
 import Data.ByteString (ByteString)

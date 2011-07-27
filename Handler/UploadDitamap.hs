@@ -306,5 +306,5 @@ parseDita abspath (Document _ (Element e as'' children) _) = do
           where
             (path, rest) = T.break (== '#') rel
             AbsPath joined = joinPath abspath $ RelPath path
-            notAbs t = not $ "/" `T.isPrefixOf` t || "http://" `T.isPrefixOf` t || "mailto:" `T.isPrefixOf` t
+            notAbs t = not $ "/" `T.isPrefixOf` t || "http://" `T.isPrefixOf` t || "https://" `T.isPrefixOf` t || "mailto:" `T.isPrefixOf` t
     fixAttr x = x

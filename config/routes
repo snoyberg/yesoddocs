@@ -25,6 +25,7 @@
 
 /show/topic/#TopicId TopicR GET POST
 /show/map/#TMapId ShowMapR GET
+/show/map/#TMapId/download DownloadDitamapR GET
 
 /edit/topic-labels/#TopicId TopicLabelsR POST
 /edit/map-labels/#TMapId MapLabelsR POST

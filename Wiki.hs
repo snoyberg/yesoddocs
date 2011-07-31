@@ -255,6 +255,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb BlogR{} = return (MsgNotFound, Nothing)
     breadcrumb StaticContentR{} = return (MsgNotFound, Nothing)
     breadcrumb UploadDitamapR{} = return (MsgNotFound, Nothing)
+    breadcrumb DownloadDitamapR{} = return (MsgNotFound, Nothing)
     breadcrumb UploadDitamapUrlR{} = return (MsgNotFound, Nothing)
     breadcrumb BlogPostNoDateR{} = return (MsgNotFound, Nothing)
     breadcrumb UploadBlogsR{} = return (MsgNotFound, Nothing)

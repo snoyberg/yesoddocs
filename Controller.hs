@@ -31,6 +31,7 @@ import Handler.Blog
 import Handler.Book
 import Handler.Search
 import Handler.UploadDitamap
+import Handler.DownloadDitamap
 import Handler.UploadBlogs
 import Handler.Wiki
 

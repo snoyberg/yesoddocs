@@ -1,6 +1,10 @@
 $(function(){
     $.each($(".hascomments"), function(i, e){
         var x = $(e);
+
+        // Add the paragraph links
+        x.before("<div class='paragraph-link'><a href='#" + x.attr("id") + "'>&#x00B6;</a></div>");
+
         var y = x.attr("id").split("-");
         $.getJSON("@{CommentCountR}", {topic:y[1], element:y[2]}, function(z){
             var c = z.count == 1 ? "comment" : "comments";

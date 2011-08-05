@@ -32,3 +32,15 @@ div.comments dd {
 div.comments textarea {
     width: 100%;
 }
+
+div.paragraph-link {
+    position: relative;
+
+}
+
+div.paragraph-link a, div.paragraph-link a:visited {
+    position: absolute;
+    left: -0.8em;
+    top: 0.2em;
+    color: #aaa;
+}

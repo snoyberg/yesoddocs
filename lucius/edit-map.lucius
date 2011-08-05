@@ -44,7 +44,7 @@ i.topicid {
     font-size: 0.8em;
     margin: 0 3px;
 }
-a.viewtopic, a.editslug {
+a.viewtopic, a.editslug, a.tosubmap {
     font-size: 0.9em;
     margin-right: 3px;
 }

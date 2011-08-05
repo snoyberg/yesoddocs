@@ -47,12 +47,24 @@ $(function(){
     });
 
     $("li[slug] > span > a.viewtopic").after("<a href='#' class='editslug'>Edit Slug</a>");
+    $("li[slug].realtopic > span > a.editslug").after("<a href='#' class='tosubmap'>Make submap</a>");
     $("a.editslug").click(function(){
         var li = $(this).parent().parent();
         var slug = li.attr("slug");
         var msg = slug ? "Your current slug is: " + slug + ". Please enter a new slug." : "Please enter a slug";
         slug = prompt(msg);
         if (slug) li.attr("slug", slug);
+        return false;
+    });
+    $("a.tosubmap").click(function(){
+        var li = $(this).parent().parent();
+        var slug = li.attr("slug");
+
+        var html = [];
+        html.push("<form method='post' action='@{MakeSubMapR mid $ MapNodeSlug ""}" + li.attr("slug") + "'>");
+        html.push("<input type=submit value='Do it'>");
+        html.push("</form>");
+        $(this).before(html.join("")).detach();
         return false;
     });
 });

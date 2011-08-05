@@ -4,6 +4,7 @@ module Handler.EditMap
     , postEditMapR
     , postMapLabelsR
     , postEditMapNameR
+    , postMakeSubMapR
     ) where
 
 import Wiki
@@ -34,7 +35,7 @@ showTMs tms = [whamlet|
 <ul>
     $forall tm <- tms
         $maybe t <- tmTopic tm
-            <li .node #_topic#{toSinglePiece t} slug=#{unMapNodeSlug $ tmSlug tm}>
+            <li .node #_topic#{toSinglePiece t} slug=#{unMapNodeSlug $ tmSlug tm} .realtopic>
                 ^{showTMs $ tmChildren tm}
         $maybe t <- tmMap tm
             <li .node #_map#{toSinglePiece t} slug=#{unMapNodeSlug $ tmSlug tm}>
@@ -157,3 +158,28 @@ postEditMapNameR tmid = do
     runDB $ update tmid [TMapTitle =. name]
     setMessageI (MsgMapTitleUpdated name)
     redirect RedirectTemporary $ EditMapR tmid
+
+postMakeSubMapR :: TMapId -> MapNodeSlug -> Handler ()
+postMakeSubMapR tmid mns = do
+    (aid, user) <- requireAuth
+    tm <- runDB $ get404 tmid
+    unless (aid == tMapOwner tm || userAdmin user) $ permissionDeniedI MsgNotYourMap
+    (mnid, mn) <- runDB $ getBy404 $ UniqueMapNode tmid mns
+    case tMapNodeCtopic mn of
+        Nothing -> setMessageI MsgMakeSubmapNotATopic
+        Just tid -> runDB $ do
+            t <- get404 tid
+            now <- liftIO getCurrentTime
+            tmid' <- insert $ TMap aid (topicTitle t) now
+            update mnid [TMapNodeMap =. tmid', TMapNodeParent =. Nothing, TMapNodePosition =. 1]
+            fixMap mnid tmid'
+            _ <- insert mn
+                { tMapNodeCtopic = Nothing
+                , tMapNodeCmap = Just tmid'
+                }
+            lift $ setMessageI MsgSubmapCreated
+    redirect RedirectTemporary $ EditMapR tmid
+  where
+    fixMap mnid tmid' = selectList [TMapNodeParent ==. Just mnid] [] >>= (mapM_ $ \(mnid', _) -> do
+        update mnid' [TMapNodeMap =. tmid']
+        fixMap mnid' tmid')

@@ -36,6 +36,9 @@ showTMs tms = [whamlet|
         $maybe t <- tmTopic tm
             <li .node #_topic#{toSinglePiece t} slug=#{unMapNodeSlug $ tmSlug tm}>
                 ^{showTMs $ tmChildren tm}
+        $maybe t <- tmMap tm
+            <li .node #_map#{toSinglePiece t} slug=#{unMapNodeSlug $ tmSlug tm}>
+                ^{showTMs $ tmChildren tm}
 |]
 
 loadTM :: TMapId -> Handler [TM]
@@ -58,9 +61,9 @@ getEditMapR mid = do
     tm <- runDB $ get404 mid
     unless (aid == tMapOwner tm || userAdmin user) $ permissionDeniedI MsgNotYourMap
     topics <- runDB $ selectList [TopicOwner ==. aid] []
+    maps <- fmap (filter ((/=) mid . fst)) $ runDB $ selectList [TMapOwner ==. aid] []
     tree <- loadTM mid
     let treeTopics = getTopics tree
-    -- FIXME list maps also
     ltree <- getLTree
     slabels <- runDB $ fmap (map $ mapLabelLabel . snd) $ selectList [MapLabelMap ==. mid] []
     let activeLabel = flip elem slabels
@@ -76,7 +79,7 @@ getTopics =
     go x = maybe id (:) (tmTopic x) $ getTopics $ tmChildren x
 
 data SM = SM
-    { smtopic :: TopicId
+    { smtopic :: NodeId
     , smchildren :: [SM]
     , smslug :: Maybe MapNodeSlug
     }
@@ -102,7 +105,11 @@ postEditMapR tmid = do
         return $ MapNodeSlug $ pack str
     add parent (pos, SM tid children mslug) = do
         slug <- maybe randomSlug return mslug
-        let tmn = TMapNode tmid parent pos (Just tid) Nothing Nothing slug
+        let (topicid, mapid) =
+                case tid of
+                    NITopic x -> (Just x, Nothing)
+                    NIMap x -> (Nothing, Just x)
+        let tmn = TMapNode tmid parent pos topicid mapid Nothing slug
         tmnid <- insert tmn
         mapM_ (add $ Just tmnid) $ zip [1..] children
     go (Array x) = mapM go' $ V.toList x
@@ -119,8 +126,12 @@ postEditMapR tmid = do
         return $ SM t' c' slug
     go' _ = Nothing
     go'' (String t)
-        | "topic" `T.isPrefixOf` t = fromSinglePiece $ T.drop 5 t
+        | "topic" `T.isPrefixOf` t = fmap NITopic $ fromSinglePiece $ T.drop 5 t
+        | "map" `T.isPrefixOf` t = fmap NIMap $ fromSinglePiece $ T.drop 3 t
     go'' _ = Nothing
+
+data NodeId = NITopic TopicId | NIMap TMapId
+    deriving Show
 
 postMapLabelsR :: TMapId -> Handler ()
 postMapLabelsR mid = do

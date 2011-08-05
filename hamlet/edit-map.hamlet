@@ -16,6 +16,12 @@
                     #{topicTitle $ snd topic}
                     <i .topicid>#{toSinglePiece $ fst topic}
                 <a target=_blank .viewtopic href=@{TopicR $ fst topic}>_{MsgViewTopic}
+        $forall map <- maps
+            <li .node #map#{toSinglePiece $ fst map}>
+                <span>
+                    #{tMapTitle $ snd map}
+                    <i .topicid>#{toSinglePiece $ fst map}
+                <a target=_blank .viewtopic href=@{ShowMapR $ fst map}>_{MsgViewTopic}
 <form #submit method=post>
     <input type=hidden id=tree name=tree>
     <button>_{MsgUpdateMap}

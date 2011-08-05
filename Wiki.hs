@@ -228,9 +228,10 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb (BookChapterR mnslug mnslugs) = do
         (_, mn) <- runDB $ getMapNode mnslug mnslugs
         title <-
-            case tMapNodeCtopic mn of
-                Just tid -> runDB $ topicTitle <$> get404 tid
-                Nothing -> return "" -- FIXME
+            case (tMapNodeCtopic mn, tMapNodeCmap mn) of
+                (Just tid, _) -> runDB $ topicTitle <$> get404 tid
+                (Nothing, Just tmid) -> runDB $ tMapTitle <$> get404 tmid
+                (Nothing, Nothing) -> return "" -- FIXME
         return (MsgBookChapterTitle title, Just BookR)
     breadcrumb SearchR = return (MsgSearchTitle, Just RootR)
     breadcrumb (WikiR ps) = do

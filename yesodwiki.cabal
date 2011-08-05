@@ -79,7 +79,6 @@ executable         yesodwiki
                  , persistent-postgresql >= 0.6 && < 0.7
                  , template-haskell
                  , hamlet
-                 , web-routes
                  , hjsmin
                  , transformers
                  , warp

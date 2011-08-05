@@ -37,7 +37,7 @@ module Wiki
 
 import Data.Time
 import Yesod.Core hiding (YesodBreadcrumbs (..), breadcrumbs, setMessage)
-import Yesod.Form hiding (Field)
+import Yesod.Form hiding (Field, MsgDelete)
 import Yesod.Persist
 import Yesod.Static
 import Yesod.Auth

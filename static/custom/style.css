@@ -386,3 +386,9 @@ div.haskell pre {
     box-shadow: 0 0 0 #fff;
     padding: 0;
 }
+
+aside {
+    margin: 0.5em;
+    background-color: #eee;
+    padding: 0.5em;
+}

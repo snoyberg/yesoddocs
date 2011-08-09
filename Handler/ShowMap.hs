@@ -24,11 +24,11 @@ showTree :: Int -> [Tree] -> Hamlet WikiRoute
 showTree depth trees = [hamlet|
 $forall tree <- trees
     <section>
-        <h1>
-            $maybe tid <- treeTopicId tree
+        $maybe tid <- treeTopicId tree
+            <h1 #topic-#{toSinglePiece tid}>
                 <a .topic-link href=@{TopicR tid}>#{treeTitle tree}
-            $nothing
-                \#{treeTitle tree}
+        $nothing
+            <h1>#{treeTitle tree}
         $maybe c <- treeContent tree
             $maybe tid <- treeTopicId tree
                 ^{renderContent tid (topicContentFormat c) (topicContentContent c)}

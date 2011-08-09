@@ -12,6 +12,7 @@ module Handler.Topic
     , postCommentsR
     , postTopicWorldWriteableR
     , postTopicNotWorldWriteableR
+    , getBestTopicR
     ) where
 
 import Wiki
@@ -220,3 +221,67 @@ wwHelper isW tid = do
     unless (topicAllWrite t || topicOwner t == uid || userAdmin u) $ permissionDenied ""
     runDB $ update tid [TopicAllWrite =. isW]
     redirect RedirectTemporary $ TopicR tid
+
+-- | Redirects to the \"best\" version of the topic. For example, if the topic
+-- appears in the book, it links there.
+getBestTopicR :: TopicId -> Handler ()
+getBestTopicR tid = do
+    chains <- getChains tid
+    mbook <- runDB $ selectFirst [] []
+    case mbook of
+        Just (_, book) ->
+            case filter (\x -> chainMap x == bookMap book) chains of
+                chain:_ -> do
+                    let chap = atLeast (bookChunking book - 1) $ chainToChapters chain
+                    render <- getUrlRender
+                    redirectText RedirectTemporary $ render chap `T.append` "#topic-" `T.append` toSinglePiece tid
+                [] -> return ()
+        Nothing -> return ()
+    redirect RedirectTemporary $ TopicR tid
+
+atLeast :: Int -> [a] -> a
+atLeast _ [] = error "atLeast on empty list"
+atLeast _ [a] = a
+atLeast 0 (a:_) = a
+atLeast i (_:as) = atLeast (i - 1) as
+
+data Chain = Chain
+    { chainMap :: TMapId
+    , chainRest :: [(MapNodeSlug, Either TopicId TMapId)]
+    }
+    deriving Show
+
+chainToChapters :: Chain -> [WikiRoute]
+chainToChapters =
+    go id . chainRest
+  where
+    go _ [] = []
+    go front ((mns, Left _):xs) = go' front mns : go front xs
+    go front ((mns, Right _):xs) = go (front . (:) mns) xs
+    go' front mns =
+        case front [] of
+            [] -> BookChapterR mns []
+            x:xs -> BookChapterR x (xs ++ [mns])
+
+getChains :: TopicId -> Handler [Chain]
+getChains tid0 = runDB $ do
+    fmap concat $ selectList [TMapNodeCtopic ==. Just tid0] [] >>= mapM (go [] . snd)
+  where
+    go rest mn = do
+        let rest' =
+                case tMapNodeCtopic mn of
+                    Nothing -> rest -- FIXME
+                    Just tid -> (tMapNodeSlug mn, Left tid) : rest
+        go' rest' mn
+    go' rest mn =
+        case tMapNodeParent mn of
+            Nothing -> do
+                let tmid = tMapNodeMap mn
+                chains <- selectList [TMapNodeCmap ==. Just tmid] [] >>= mapM (\(_, mn') -> do
+                    let rest' = (tMapNodeSlug mn, Right tmid) : rest
+                    go' rest' mn'
+                    )
+                return $ (Chain tmid rest) : concat chains
+            Just mnid -> do
+                mn' <- get404 mnid
+                go rest mn'

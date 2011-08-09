@@ -25,6 +25,7 @@
 /edit/topic/#TopicId/not-world-writeable TopicNotWorldWriteableR POST
 
 /show/topic/#TopicId TopicR GET POST
+/show/topic/#TopicId/best BestTopicR GET
 /show/map/#TMapId ShowMapR GET
 /show/map/#TMapId/download DownloadDitamapR GET
 

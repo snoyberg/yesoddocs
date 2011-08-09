@@ -268,6 +268,7 @@ instance YesodBreadcrumbs Wiki where
     breadcrumb DeleteMapR{} = return (MsgNotFound, Nothing)
     breadcrumb EditMapNameR{} = return (MsgNotFound, Nothing)
     breadcrumb MakeSubMapR{} = return (MsgNotFound, Nothing)
+    breadcrumb BestTopicR{} = return (MsgNotFound, Nothing)
 
 class YesodBreadcrumbs y where
     -- | Returns the title and the parent resource, if available. If you return

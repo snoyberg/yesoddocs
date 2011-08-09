@@ -103,7 +103,7 @@ ditaToHtml topic txml render =
         | topicPref `T.isPrefixOf` t =
             let suffix = T.drop (T.length topicPref) t
                 (tid, rest) = T.break (== '#') suffix
-             in render (TopicR $ fromJust $ fromSinglePiece tid) [] `T.append` rest
+             in render (BestTopicR $ fromJust $ fromSinglePiece tid) [] `T.append` rest
         | staticPref `T.isPrefixOf` t = render (StaticContentR $ fromJust $ fromSinglePiece $ T.drop (T.length staticPref) t) []
         | "yw://" `T.isPrefixOf` t = "FIXME: " `T.append` t
         | otherwise = t

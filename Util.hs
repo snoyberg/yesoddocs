@@ -46,6 +46,7 @@ import qualified Data.Map as Map
 import qualified Text.Highlighting.Illuminate as I
 import qualified Text.Highlighting.Illuminate.Haskell as Haskell
 import qualified Text.XHtml
+import Data.Char (isUpper)
 
 renderContent :: TopicId -> TopicFormat -> Text -> HtmlUrl WikiRoute
 renderContent _ TFHtml t = const $ preEscapedText t
@@ -75,7 +76,9 @@ ditaToHtml topic txml render =
         case lookup "href" as of
             Just [ContentText t] -> [shamlet|<a href=#{toLink t}>#{x}|]
             _ -> x
-    go' "apiname" _ _ x = [shamlet|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
+    go' "apiname" _ [NodeContent (ContentText x)] _ =
+        let (href, display) = renderApiname x
+         in [shamlet|<a href=#{href}>#{display}|]
     go' "codeblock" as [NodeContent (ContentText t)] _
         | lookup "outputclass" as == Just [ContentText "lhaskell"] = lhaskellToHTML t
         | lookup "outputclass" as == Just [ContentText "haskell"] = haskellToHTML 1 t
@@ -298,3 +301,31 @@ haskellToHTML line t =
     go _ ("-- STOP":rest) = go False rest
     go True (x:xs) = x : go True xs
     go False (_:xs) = go False xs
+
+renderApiname :: Text -> (Text, Text)
+renderApiname a
+    | T.null modul = ("http://hackage.haskell.org/package/" `T.append` a, a)
+    | T.null ident = (modulHref, modul)
+    | otherwise = (identHref, ident)
+  where
+    (package, b) = T.break (== ':') a
+    (modul, c) = T.break (== ':') $ T.drop 1 b
+    ident = T.drop 1 c
+
+    modulHref = T.concat
+        [ "http://hackage.haskell.org/packages/archive/"
+        , package
+        , "/latest/doc/html/"
+        , T.map dotToDash modul
+        , ".html"
+        ]
+    dotToDash '.' = '-'
+    dotToDash c' = c'
+
+    identHref = T.concat
+        [ modulHref
+        , "#"
+        , if isUpper (T.head ident) then "t" else "v"
+        , ":"
+        , ident
+        ]

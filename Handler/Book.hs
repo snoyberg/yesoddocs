@@ -15,7 +15,7 @@ data TOC = TOC
     , tocChildren :: [TOC]
     }
 
-showTOC :: [TOC] -> Widget ()
+showTOC :: [TOC] -> Widget
 showTOC tocs = [whamlet|
 $if not $ null tocs
     <ol>

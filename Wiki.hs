@@ -59,7 +59,7 @@ import Yesod.Message
 import Data.Text (Text, pack)
 import Control.Applicative ((<$>), (<*>))
 import Data.Monoid (mappend)
-import Text.Hamlet (Html, ihamletFile, IHamlet)
+import Text.Hamlet (Html, ihamletFile)
 import qualified Yesod.Auth.OpenId as OpenId
 import qualified Yesod.Auth.Message as Msg
 
@@ -74,14 +74,6 @@ data Wiki = Wiki
     , connPool :: Settings.ConnectionPool -- ^ Database connection pool.
     , myApproot :: Text
     }
-
--- | A useful synonym; most of the handler functions in your application
--- will need to be of this type.
-type Handler = GHandler Wiki Wiki
-
--- | A useful synonym; most of the widgets functions in your application
--- will need to be of this type.
-type Widget = GWidget Wiki Wiki
 
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
@@ -122,7 +114,7 @@ instance Yesod Wiki where
         tm <- getRouteToMaster
         mcurr <- getCurrentRoute
         let isHome = fmap tm mcurr == Just RootR
-        ihamletToRepHtml ($(ihamletFile "hamlet/default-layout.hamlet") :: IHamlet WikiMessage WikiRoute)
+        ihamletToRepHtml $(ihamletFile "hamlet/default-layout.hamlet")
 
     -- This is done to provide an optimization for serving static files from
     -- a separate domain. Please see the staticroot setting in Settings.hs
@@ -159,7 +151,7 @@ instance Yesod Wiki where
 
 -- How to run database actions.
 instance YesodPersist Wiki where
-    type YesodDB Wiki = SqlPersist
+    type YesodPersistBackend Wiki = SqlPersist
     runDB db = liftIOHandler
              $ fmap connPool getYesod >>= Settings.runConnectionPool db
 

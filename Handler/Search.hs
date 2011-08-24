@@ -29,7 +29,7 @@ postRebuildSearchR = do
     setMessageI MsgSearchIndexUpdated
     redirect RedirectTemporary SettingsR
 
-updateTerms :: TopicContent -> YesodDB Wiki (GGHandler sub Wiki IO) ()
+updateTerms :: TopicContent -> YesodDB sub Wiki ()
 updateTerms tc = do
     let tid = topicContentTopic tc
     let ham = renderContent tid (topicContentFormat tc) (topicContentContent tc)

@@ -12,12 +12,12 @@ module Util
     ) where
 
 import Debug.Trace (trace)
-import Model (TopicFormat (..), User (userEmail), TopicId)
+import Model (TopicFormat (..), User, userEmail, TopicId)
 import Data.Text (Text, pack, unpack)
 import Data.Text.Encoding (encodeUtf8)
 import Text.Blaze (Html, preEscapedText, toHtml, preEscapedString)
 import Text.HTML.SanitizeXSS (sanitizeBalance)
-import Text.Hamlet (html)
+import Text.Hamlet (shamlet)
 import Data.Digest.Pure.MD5 (md5)
 import Data.Char (isSpace, toLower)
 import Data.Maybe (fromMaybe, catMaybes)
@@ -35,7 +35,7 @@ import Data.Functor.Identity (runIdentity)
 import Data.XML.Types (Node (..), Content (..), Document (..), Element (..), Event (..), nameLocalName)
 import Wiki (WikiRoute (..), fromSinglePiece)
 import Data.Maybe (fromJust)
-import Text.Hamlet (Hamlet)
+import Text.Hamlet (HtmlUrl)
 import qualified Data.Set as Set
 import Control.Monad.Trans.State (evalState, get, put)
 import Text.XML.Enumerator.Render (renderText)
@@ -44,14 +44,14 @@ import System.IO.Unsafe (unsafePerformIO)
 import Yesod.Core (toSinglePiece)
 import qualified Data.Map as Map
 
-renderContent :: TopicId -> TopicFormat -> Text -> Hamlet WikiRoute
+renderContent :: TopicId -> TopicFormat -> Text -> HtmlUrl WikiRoute
 renderContent _ TFHtml t = const $ preEscapedText t
 renderContent _ TFText t = const $ toHtml $ Textarea t
 renderContent _ TFMarkdown t = const $ preEscapedString $ writeHtmlString defaultWriterOptions $ readMarkdown defaultParserState $ unpack t
 renderContent tid TFDitaConcept t = ditaToHtml tid t
 renderContent tid TFDitaTopic t = ditaToHtml tid t
 
-ditaToHtml :: TopicId -> Text -> Hamlet WikiRoute
+ditaToHtml :: TopicId -> Text -> HtmlUrl WikiRoute
 ditaToHtml topic txml render =
     case runIdentity $ run $ enumList 3 ["<body>", txml, "</body>"] $$ joinI $ parseText decodeEntities $$ fromEvents of
         Left e -> toHtml $ show e
@@ -62,43 +62,43 @@ ditaToHtml topic txml render =
     go _ = return ()
     go' "p" as _ x =
         case lookup "id" as of
-            Just [ContentText t] -> [html|<p .hascomments #comment-#{toSinglePiece topic}-#{t}>#{x}|]
-            _ -> [html|<p>#{x}|]
+            Just [ContentText t] -> [shamlet|<p .hascomments #comment-#{toSinglePiece topic}-#{t}>#{x}|]
+            _ -> [shamlet|<p>#{x}|]
     go' "image" as _ x =
         case lookup "href" as of
-            Just [ContentText t] -> [html|<img src=#{toLink t}>|]
+            Just [ContentText t] -> [shamlet|<img src=#{toLink t}>|]
             _ -> x
     go' "xref" as _ x =
         case lookup "href" as of
-            Just [ContentText t] -> [html|<a href=#{toLink t}>#{x}|]
+            Just [ContentText t] -> [shamlet|<a href=#{toLink t}>#{x}|]
             _ -> x
-    go' "apiname" _ _ x = [html|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
+    go' "apiname" _ _ x = [shamlet|<a href="http://hackage.haskell.org/package/#{x}">#{x}|]
     go' "codeblock" as [NodeContent (ContentText t)] _
         | lookup "outputclass" as == Just [ContentText "lhaskell"] = lhaskellToHTML t
-    go' "codeblock" _ _ x = [html|<pre>
+    go' "codeblock" _ _ x = [shamlet|<pre>
     <code>#{x}|]
     go' "note" as _ x =
         case lookup "type" as of
             Just [ContentText nt]
                 | nt == "other" ->
                     case lookup "othertype" as of
-                        Just [ContentText ot] -> [html|<aside .note-#{ot}>#{x}|]
-                        _ -> [html|<aside .note-#{x}>|]
-                | otherwise -> [html|<aside .#{nt}>#{x}|]
-            _ -> [html|<aside .note>#{x}|]
+                        Just [ContentText ot] -> [shamlet|<aside .note-#{ot}>#{x}|]
+                        _ -> [shamlet|<aside .note-#{x}>|]
+                | otherwise -> [shamlet|<aside .#{nt}>#{x}|]
+            _ -> [shamlet|<aside .note>#{x}|]
     go' n _ _ x
-        | n `Set.member` ditaDrop = [html||]
+        | n `Set.member` ditaDrop = [shamlet||]
         | n `Set.member` ditaIgnore = x
-        | n `Set.member` ditaUnchanged = [html|\<#{n}>#{x}</#{n}>|]
+        | n `Set.member` ditaUnchanged = [shamlet|\<#{n}>#{x}</#{n}>|]
     go' n _ _ x =
         case Map.lookup n ditaMap of
             Just (n', Nothing) ->
-                [html|\<#{n'}>#{x}</#{n'}>|]
+                [shamlet|\<#{n'}>#{x}</#{n'}>|]
             Just (n', Just c) ->
-                [html|\<#{n'} .#{c}>#{x}</#{n'}>|]
+                [shamlet|\<#{n'} .#{c}>#{x}</#{n'}>|]
             Nothing ->
                 trace ("Unknown DITA element: " ++ show n) $
-                [html|<h1 style=color:red>Unknown DITA element: #{show n}|]
+                [shamlet|<h1 style=color:red>Unknown DITA element: #{show n}|]
     toLink t
         | topicPref `T.isPrefixOf` t =
             let suffix = T.drop (T.length topicPref) t
@@ -111,7 +111,7 @@ ditaToHtml topic txml render =
     staticPref = "yw://static/"
 
 validateContent :: TopicFormat -> Text -> Text
-validateContent TFHtml t = pack $ sanitizeBalance $ unpack t
+validateContent TFHtml t = sanitizeBalance t
 validateContent TFText t = t
 validateContent TFMarkdown t = T.filter (/= '\r') t
 validateContent TFDitaConcept t = validateDita t
@@ -180,7 +180,7 @@ nodesToText input =
 
 userGravatar :: User -> Html
 userGravatar u =
-    [html|<img src="http://www.gravatar.com/avatar/#{hash}?d=identicon&s=100">|]
+    [shamlet|<img src="http://www.gravatar.com/avatar/#{hash}?d=identicon&s=100">|]
   where
     email = fromMaybe "" $ userEmail u
     hash = pack $ show $ md5 $ L.fromChunks $ return $ encodeUtf8 $ pack $ map toLower $ trim $ unpack email
@@ -261,7 +261,7 @@ lhaskellToHTML =
         y' `mappend` go' z
       where
         (y, z) = someRights id x
-        y' = [html|<pre>
+        y' = [shamlet|<pre>
     <code>#{T.unlines y}|]
     someRights front (Right x:xs) = someRights (front . (:) x) xs
     someRights front x = (front [], x)

@@ -11,7 +11,7 @@ import Wiki
 import Handler.Topic (getTopicR)
 import Util (renderContent)
 import Database.Persist.GenericSql (SqlPersist)
-import Text.Hamlet (Hamlet, hamlet)
+import Text.Hamlet (HtmlUrl, hamlet)
 
 data Tree = Tree
     { treeTopicId :: Maybe TopicId -- FIXME TMapNodeId
@@ -20,7 +20,7 @@ data Tree = Tree
     , treeChildren :: [Tree]
     }
 
-showTree :: Int -> [Tree] -> Hamlet WikiRoute
+showTree :: Int -> [Tree] -> HtmlUrl WikiRoute
 showTree depth trees = [hamlet|
 $forall tree <- trees
     <section>

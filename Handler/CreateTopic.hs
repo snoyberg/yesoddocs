@@ -7,17 +7,17 @@ module Handler.CreateTopic
 
 import Wiki
 import Util (validateContent)
-import Text.Hamlet (html)
+import Text.Hamlet (shamlet)
 import Handler.Search (updateTerms)
 
-topicForm :: Handler ((FormResult (Text, TopicFormat, Textarea, Bool), Widget ()), Enctype)
+topicForm :: Handler ((FormResult (Text, TopicFormat, Textarea, Bool), Widget), Enctype)
 topicForm = runFormPost $ renderTable $ (,,,)
     <$> areq textField (fromLabel MsgTitle) Nothing
     <*> areq (selectField formats) (FieldSettings MsgFormat Nothing (Just "format") Nothing) Nothing
     <*> areq textareaField (FieldSettings MsgContent Nothing (Just "contentarea") Nothing) Nothing
     <*> areq boolField (FieldSettings MsgWorldWriteable (Just MsgWorldWriteableTooltip) Nothing Nothing) (Just False)
 
-richEdit :: Widget ()
+richEdit :: Widget
 richEdit = do
     addScript $ StaticR jquery_js
     addScript $ StaticR nicEdit_js
@@ -43,7 +43,7 @@ postCreateTopicR = do
                 let tc = TopicContent topic aid Nothing now format $ validateContent format content
                 _ <- insert tc
                 updateTerms tc
-                addNewsItem ("New topic created: " `mappend` title) (TopicR topic) Nothing [html|
+                addNewsItem ("New topic created: " `mappend` title) (TopicR topic) Nothing [shamlet|
 <p>#{userName user} created a new topic: #{title}
 |]
                 return topic

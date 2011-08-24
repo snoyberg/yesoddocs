@@ -55,10 +55,9 @@ getRobotsR = return $ RepPlain $ toContent ("User-agent: *" :: ByteString)
 withWiki :: Text -> (Application -> IO a) -> IO a
 withWiki approot' f = Settings.withConnectionPool $ \p -> do
     runConnectionPool (runMigration migrateAll) p
+    s <- static Settings.staticdir
     let h = Wiki s p approot'
     toWaiApp h >>= f
-  where
-    s = static Settings.staticdir
 
 withDevelApp :: Dynamic
 withDevelApp = toDyn (withWiki "http://10.0.0.3:3000" :: (Application -> IO ()) -> IO ())

@@ -9,7 +9,7 @@ import Wiki
 import qualified Data.Text as T
 import Handler.Topic (getTopicR')
 
-wikiForm :: Handler ((FormResult TopicId, Widget ()), Enctype)
+wikiForm :: Handler ((FormResult TopicId, Widget), Enctype)
 wikiForm = do
     ts <- runDB $ selectList [TopicAllWrite ==. True] [Asc TopicTitle]
     runFormPost $ renderTable $ areq (selectField $ map go ts) (FieldSettings MsgWikiTopic Nothing Nothing Nothing) Nothing

@@ -79,6 +79,8 @@ executable         yesodwiki
                  , persistent-postgresql >= 0.6 && < 0.7
                  , template-haskell
                  , hamlet
+                 , shakespeare-css
+                 , shakespeare-js
                  , hjsmin
                  , transformers
                  , warp
@@ -89,7 +91,7 @@ executable         yesodwiki
                  , parsec
                  , xss-sanitize
                  , attoparsec
-                 , aeson
+                 , aeson-native
                  , containers
                  , vector
                  , pureMD5

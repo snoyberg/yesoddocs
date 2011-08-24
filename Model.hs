@@ -1,4 +1,4 @@
-{-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving, TemplateHaskell, OverloadedStrings, TypeSynonymInstances, GADTs #-}
+{-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving, TemplateHaskell, OverloadedStrings, TypeSynonymInstances, GADTs, FlexibleInstances, MultiParamTypeClasses #-}
 module Model where
 
 import Yesod.Persist
@@ -52,7 +52,7 @@ formats =
 -- You can find more information on persistent and how to declare entities
 -- at:
 -- http://www.yesodweb.com/book/persistent/
-share [mkPersist, mkMigrate "migrateAll", mkDeleteCascade] $(persistFile "config/models")
+share [mkPersist sqlSettings, mkMigrate "migrateAll", mkDeleteCascade] $(persistFile "config/models")
 
 instance HasReps StaticContent where
     chooseRep (StaticContent mt content) _ = return (mt, toContent $ decodeLenient content)

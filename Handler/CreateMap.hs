@@ -6,7 +6,7 @@ module Handler.CreateMap
 
 import Wiki
 
-mapForm :: Handler ((FormResult Text, Widget ()), Enctype)
+mapForm :: Handler ((FormResult Text, Widget), Enctype)
 mapForm = runFormPost $ renderTable $ id
     <$> areq textField (FieldSettings MsgTitle (Just MsgMapTitleTooltip) Nothing Nothing) Nothing
 

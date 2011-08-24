@@ -19,7 +19,7 @@ import Wiki
 import Util (renderContent, validateContent, prettyDate, formatDateTime, prettyDateTime)
 import Data.Text (pack)
 import Control.Monad (unless, when)
-import Text.Hamlet (html)
+import Text.Hamlet (shamlet)
 import Handler.Labels (LTree (..), getLTree)
 import Data.Maybe (mapMaybe, fromJust, catMaybes, isJust)
 import Handler.CreateTopic (richEdit)
@@ -30,7 +30,7 @@ import Text.Blaze (toHtml)
 import Handler.Search (updateTerms)
 
 topicForm :: (Text, TopicFormat, Textarea, Maybe Text, Bool)
-          -> Handler ((FormResult (Text, TopicFormat, Textarea, Maybe Text, Bool), Widget ()), Enctype)
+          -> Handler ((FormResult (Text, TopicFormat, Textarea, Maybe Text, Bool), Widget), Enctype)
 topicForm (a, b, c, d, e) = runFormPost $ renderTable $ (,,,,)
     <$> areq textField (fromLabel MsgTitle) (Just a) -- TRANS
     <*> areq (selectField formats) (FieldSettings MsgFormat Nothing (Just "format") Nothing) (Just b)
@@ -76,13 +76,13 @@ getTopicR' showAuthor tid = do
         comments
         richEdit >> $(widgetFile "topic")
 
-comments :: Widget ()
+comments :: Widget
 comments = do
     addScript $ StaticR jquery_js
     addJulius $(juliusFile "comments")
     addLucius $(luciusFile "comments")
 
-showLTree :: (LabelId -> Bool) -> [LTree] -> Widget ()
+showLTree :: (LabelId -> Bool) -> [LTree] -> Widget
 showLTree al lt = [whamlet|
 $if not $ null lt
     <ul>
@@ -115,7 +115,7 @@ postTopicR tid = do
                 let tc = TopicContent tid aid msummary now format $ validateContent format content
                 _ <- insert tc
                 updateTerms tc
-                unless isMinor $ addNewsItem ("Topic updated: " `mappend` title) (TopicR tid) Nothing [html|
+                unless isMinor $ addNewsItem ("Topic updated: " `mappend` title) (TopicR tid) Nothing [shamlet|
 <p>#{userName user} updated the topic: #{title}
 $maybe summary <- msummary
     <p>Update summary: #{summary}
@@ -142,7 +142,7 @@ postTopicLabelsR tid = do
 getCommentCountR :: Handler RepJson
 getCommentCountR = do
     topic' <- runInputGet $ ireq textField "topic"
-    let topic = fromJust $ fromSinglePiece topic'
+    topic <- maybe notFound return $ fromSinglePiece topic' :: Handler TopicId -- FIXME this type signature should be unnecessary
     element <- runInputGet $ ireq textField "element"
     x <- runDB $ count [CommentTopic ==. topic, CommentElement ==. element]
     jsonToRepJson $ jsonMap [("count", jsonScalar $ show x)]

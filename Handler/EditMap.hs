@@ -30,7 +30,7 @@ data TM = TM
     , tmSlug :: MapNodeSlug
     }
 
-showTMs :: [TM] -> Widget ()
+showTMs :: [TM] -> Widget
 showTMs tms = [whamlet|
 <ul>
     $forall tm <- tms

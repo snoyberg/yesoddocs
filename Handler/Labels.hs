@@ -15,7 +15,7 @@ import Data.Attoparsec (parse, maybeResult)
 import qualified Data.Map as Map
 import qualified Data.Vector as V
 
-newLabelForm :: Handler ((FormResult Text, Widget ()), Enctype)
+newLabelForm :: Handler ((FormResult Text, Widget), Enctype)
 newLabelForm = runFormPost $ renderTable $ id
     <$> areq textField (FieldSettings MsgLabelName Nothing Nothing Nothing) Nothing
 
@@ -25,7 +25,7 @@ data LTree = LTree
     , lchildren :: [LTree]
     }
 
-showLTree :: [LTree] -> Widget ()
+showLTree :: [LTree] -> Widget
 showLTree ls = [whamlet|
 <ul>
     $forall l <- ls

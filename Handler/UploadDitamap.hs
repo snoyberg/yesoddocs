@@ -98,7 +98,7 @@ doUpload uid file = do
     setMessageI MsgDitaMapUploaded
     redirect RedirectTemporary SettingsR
 
-uploadContent :: UTCTime -> UserId -> Map.Map AbsPath (File, FileId) -> (AbsPath, (File, FileId)) -> YesodDB Wiki (GGHandler Wiki Wiki IO) ()
+uploadContent :: UTCTime -> UserId -> Map.Map AbsPath (File, FileId) -> (AbsPath, (File, FileId)) -> YesodDB Wiki Wiki ()
 uploadContent now uid m (_, (f, fid)) =
     case (f, fid) of
         (MapFile _ _ trees, FIMap mid _) -> do
@@ -190,7 +190,7 @@ goN' _ (NodeInstruction i) = (EventInstruction i :)
 goN' _ (NodeContent c) = (EventContent c :)
 goN' _ (NodeComment t) = (EventComment t :)
 
-getId :: UTCTime -> UserId -> (AbsPath, File) -> YesodDB Wiki (GGHandler Wiki Wiki IO) (AbsPath, (File, FileId))
+getId :: UTCTime -> UserId -> (AbsPath, File) -> YesodDB Wiki Wiki (AbsPath, (File, FileId))
 getId now uid (ap, f) = do
     fid <- go f
     return (ap, (f, fid))

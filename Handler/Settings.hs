@@ -19,7 +19,7 @@ import Control.Applicative (pure)
 import Data.Time (toGregorian, utctDay)
 import Database.Persist.Base (deleteCascade)
 
-form' :: User -> Handler ((FormResult User, Widget ()), Enctype)
+form' :: User -> Handler ((FormResult User, Widget), Enctype)
 form' User {..} = runFormPost $ renderTable $ User
     <$> pure userIdent
     <*> areq textField (FieldSettings MsgYourName Nothing Nothing Nothing) (Just userName)
@@ -29,7 +29,7 @@ form' User {..} = runFormPost $ renderTable $ User
     <*> aopt urlField (FieldSettings MsgYourUrl Nothing Nothing Nothing) (Just userUrl)
     <*> aopt textareaField (FieldSettings MsgYourBio Nothing Nothing Nothing) (Just userBio)
 
-bookForm :: UserId -> Handler ((FormResult Book, Widget()), Enctype)
+bookForm :: UserId -> Handler ((FormResult Book, Widget), Enctype)
 bookForm owner = do
     maps <- runDB $ selectList [TMapOwner ==. owner] []
     topics <- runDB $ selectList [TopicOwner ==. owner] []
@@ -43,7 +43,7 @@ bookForm owner = do
     go (x, y) = (tMapTitle y, x)
     go' (x, y) = (topicTitle y, x)
 
-pageForm :: [(TopicId, Topic)] -> Maybe Page -> Handler ((FormResult (Maybe Text, TopicId), Widget ()), Enctype)
+pageForm :: [(TopicId, Topic)] -> Maybe Page -> Handler ((FormResult (Maybe Text, TopicId), Widget), Enctype)
 pageForm topics mp = runFormPost $ renderTable $ (,)
     <$> aopt textField (FieldSettings MsgPageName Nothing Nothing Nothing) (Just $ fmap pageName mp)
     <*> areq (selectField ts) (FieldSettings MsgPageTopic Nothing Nothing Nothing) (fmap pageTopic mp)
@@ -66,7 +66,7 @@ getSettingsR = do
         filterWidget
         $(widgetFile "settings")
 
-filterWidget :: Widget ()
+filterWidget :: Widget
 filterWidget = do
     addScript $ StaticR jquery_js
     addLucius $(luciusFile "filter")
@@ -103,7 +103,7 @@ postEditPageR = do
         _ -> return ()
     redirect RedirectTemporary SettingsR
 
-addBlog :: UserId -> Handler ((FormResult (TMapId, Text), Widget ()), Enctype)
+addBlog :: UserId -> Handler ((FormResult (TMapId, Text), Widget), Enctype)
 addBlog uid = do
     maps <- runDB $ selectList [TMapOwner ==. uid] []
     runFormPost $ renderTable $ (,)

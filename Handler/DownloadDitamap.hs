@@ -16,6 +16,8 @@ import Text.Hamlet.XML (xml)
 import Database.Persist.GenericSql (SqlPersist)
 import Data.Monoid (mconcat)
 import Data.Maybe (fromMaybe)
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as TE
 
 newtype ZipFile = ZipFile [Entry]
 instance HasReps ZipFile where
@@ -27,8 +29,9 @@ data LoadedFile = LFMap TMapId | LFTopic TopicId | LFStatic StaticContentId
 data LoadState = LoadState [Entry] (Set.Set LoadedFile) [LoadedFile]
 
 getDownloadDitamapR :: TMapId -> Handler ZipFile
-getDownloadDitamapR =
-    runDB . load . LoadState [] Set.empty . return . LFMap
+getDownloadDitamapR tmid0 = do
+    setHeader "Content-Disposition" $ TE.encodeUtf8 $ T.concat ["attachment; filename=map-", toSinglePiece tmid0, ".zip"]
+    runDB . load . LoadState [] Set.empty . return . LFMap $ tmid0
   where
     load (LoadState es _ []) = return $ ZipFile es
     load (LoadState es loaded (lf:lfs)) = do

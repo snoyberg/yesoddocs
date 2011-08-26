@@ -63,3 +63,4 @@
 /search SearchR GET
 
 /wiki/*Texts WikiR GET POST
+/wiki-unlink/*Texts UnlinkWikiR POST

@@ -133,6 +133,7 @@ WikiBlank: The given Wiki page does not exist. You may create it now.
 AssignWikiTopic: Assign Wiki topic
 WikiTopic: Topic
 WikiLoginRequired: You must be logged in to make changes to the Wiki.
+UnlinkWiki: Unassign Wiki topic
 
 # Page titles
 LoginTitle: Login

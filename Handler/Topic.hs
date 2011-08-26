@@ -39,10 +39,10 @@ topicForm (a, b, c, d, e) = runFormPost $ renderTable $ (,,,,)
     <*> areq boolField (FieldSettings MsgMinorUpdate (Just MsgMinorUpdateTooltip) Nothing Nothing) (Just e)
 
 getTopicR :: TopicId -> Handler RepHtml
-getTopicR = getTopicR' True
+getTopicR = getTopicR' (return ()) True
 
-getTopicR' :: Bool -> TopicId -> Handler RepHtml
-getTopicR' showAuthor tid = do
+getTopicR' :: Widget -> Bool -> TopicId -> Handler RepHtml
+getTopicR' footer showAuthor tid = do
     Topic {..} <- runDB $ get404 tid
     TopicContent {..} <- runDB $ do
         x <- selectList [TopicContentTopic ==. tid] [Desc TopicContentChanged, LimitTo 1]
@@ -74,7 +74,9 @@ getTopicR' showAuthor tid = do
     let activeLabel = flip elem slabels
     defaultLayout $ do
         comments
-        richEdit >> $(widgetFile "topic")
+        richEdit
+        $(widgetFile "topic")
+        footer
 
 comments :: Widget
 comments = do

@@ -3,6 +3,7 @@
 module Handler.Wiki
     ( getWikiR
     , postWikiR
+    , postUnlinkWikiR
     ) where
 
 import Wiki
@@ -24,7 +25,7 @@ getWikiR ps = do
     ((_, form), _) <- wikiForm
     case x of
         Nothing -> defaultLayout $(widgetFile "wiki-blank")
-        Just (_, wp) -> getTopicR' False $ wikiPageTopic wp
+        Just (_, wp) -> getTopicR' $(widgetFile "wiki-unlink") False $ wikiPageTopic wp
 
 postWikiR :: [Text] -> Handler RepHtml
 postWikiR ps = do
@@ -41,3 +42,9 @@ postWikiR ps = do
         _ -> do
             let muid = Just uid
             defaultLayout $(widgetFile "wiki-blank")
+
+postUnlinkWikiR :: [Text] -> Handler ()
+postUnlinkWikiR ps = do
+    _ <- requireAuthId
+    runDB $ deleteBy $ UniqueWikiPage $ T.intercalate "/" ps
+    redirect RedirectTemporary $ WikiR ps

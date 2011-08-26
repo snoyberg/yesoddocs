@@ -34,7 +34,7 @@ getRootR = do
 getPageR :: Text -> Handler RepHtml
 getPageR t = do
     p <- runDB $ getBy404 (UniquePage t)
-    getTopicR' False $ pageTopic $ snd p
+    getTopicR' (return ()) False $ pageTopic $ snd p
 
 getStaticContentR :: StaticContentId -> Handler StaticContent
 getStaticContentR = runDB . get404

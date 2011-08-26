@@ -200,29 +200,7 @@ getId now uid (ap@(AbsPath fp), f) = do
   where
     fn = reverse $ takeWhile (/= '/') $ reverse fp
     go (StaticFile m c) = fmap FIStatic $ insert $ StaticContent m $ encode c
-    go (MapFile title slug _) = do
-        mtid <- return $ do
-            let topicDash = "map-"
-            guard $ topicDash `isPrefixOf` fn
-            let fp' = reverse $ drop (length topicDash) fn
-            let ditaBack = "pamatid."
-            guard $ ditaBack `isPrefixOf` fp'
-            let fp'' = reverse $ drop (length ditaBack) fp'
-            fromSinglePiece $ T.pack fp''
-        mtid' <-
-            case mtid of
-                Nothing -> return Nothing
-                Just tid -> do
-                    mt <- W.get tid
-                    case mt of
-                        Just t
-                            | tMapOwner t == uid -> do
-                                deleteWhere [TMapNodeMap ==. tid]
-                                return $ Just tid
-                        _ -> return Nothing
-        case mtid' of
-            Nothing -> fmap (flip FIMap slug) $ insert $ TMap uid title now
-            Just tmid -> return $ FIMap tmid slug
+    go (MapFile title slug _) = fmap (flip FIMap slug) $ insert $ TMap uid title now
     go (DitaFile title slug _ _) = do
         mtid <- return $ do
             let topicDash = "topic-"

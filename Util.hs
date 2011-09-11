@@ -291,7 +291,7 @@ haskellToHTML line t =
     lines' = lines str
     hasStart = any (== "-- START") lines'
     str' = if hasStart
-            then unlines $ go False $ lines'
+            then unlines $ go False lines'
             else str
     go _ [] = []
     go _ ("-- START":rest) = go True rest
